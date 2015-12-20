@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/Ztop.Todo.Web/bin
+/Ztop.Todo.Model/obj/Debug
+/Ztop.Todo.Web/obj/Debug
+*.suo
+*.user

@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ztop.Todo.Web", "Ztop.Todo.Web\Ztop.Todo.Web.csproj", "{90B2931F-B922-4DF8-AC9B-FD44BC22E3C5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ztop.Todo.Model", "Ztop.Todo.Model\Ztop.Todo.Model.csproj", "{7CD2B374-71D9-4D16-AFD2-4AD8B8E578DE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{90B2931F-B922-4DF8-AC9B-FD44BC22E3C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90B2931F-B922-4DF8-AC9B-FD44BC22E3C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90B2931F-B922-4DF8-AC9B-FD44BC22E3C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90B2931F-B922-4DF8-AC9B-FD44BC22E3C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CD2B374-71D9-4D16-AFD2-4AD8B8E578DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CD2B374-71D9-4D16-AFD2-4AD8B8E578DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CD2B374-71D9-4D16-AFD2-4AD8B8E578DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CD2B374-71D9-4D16-AFD2-4AD8B8E578DE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
