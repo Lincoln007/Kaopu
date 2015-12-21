@@ -7,3 +7,8 @@
 /Ztop.Todo.Web/obj/Debug
 *.suo
 *.user
+/Ztop.Todo.Common/bin/Debug
+/Ztop.Todo.Manager/bin/Debug
+/Ztop.Todo.Manager/obj/Debug
+/Ztop.Todo.Common/obj/Debug
+/Ztop.Todo.Model/bin/Debug

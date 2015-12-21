@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Ztop.Todo.Model
 {
+    [Table("user_task")]
     public class UserTask
     {
         public UserTask()

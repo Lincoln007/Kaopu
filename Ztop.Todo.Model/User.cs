@@ -21,10 +21,15 @@ namespace Ztop.Todo.Model
         public string RealName { get; set; }
 
         public Role Role { get; set; }
+
+        public int LoginTimes { get; set; }
+
+        public DateTime? LastLoginTime { get; set; }
     }
 
     public enum Role
     {
+        Everyone,
         User,
         Admin
     }
