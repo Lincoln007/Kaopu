@@ -13,14 +13,14 @@ namespace Ztop.Todo.Web
 
         public static void SaveAuth(this HttpContextBase context, User user)
         {
-            var ticket = new FormsAuthenticationTicket(user.ID.ToString() + "|" + user.Role + "|" + user.Username, true, 60);
+            var ticket = new FormsAuthenticationTicket(user.ID.ToString(), true, 60);
             var cookieValue = FormsAuthentication.Encrypt(ticket);
             var cookie = new HttpCookie(_cookieName, cookieValue);
             context.Response.Cookies.Remove(_cookieName);
             context.Response.Cookies.Add(cookie);
         }
 
-        public static UserIdentity GetCurrentUser(this HttpContextBase context)
+        public static int GetUserID(this HttpContextBase context)
         {
             var cookie = context.Request.Cookies.Get(_cookieName);
             if (cookie != null)
@@ -28,27 +28,12 @@ namespace Ztop.Todo.Web
                 var ticket = FormsAuthentication.Decrypt(cookie.Value);
                 if (ticket != null && !string.IsNullOrEmpty(ticket.Name))
                 {
-                    var values = ticket.Name.Split('|');
-                    if (values.Length == 3)
-                    {
-                        var userId = 0;
-                        if (int.TryParse(values[0], out userId))
-                        {
-                            var role = Role.Everyone;
-                            if (values.Length > 1 && Enum.TryParse<Role>(values[1], out role))
-                            {
-                                return new UserIdentity
-                                {
-                                    UserID = userId,
-                                    Role = role,
-                                    Username = values[2]
-                                };
-                            }
-                        }
-                    }
+                    var userId = 0;
+                    int.TryParse(ticket.Name, out userId);
+                    return userId;
                 }
             }
-            return UserIdentity.Guest;
+            return 0;
         }
 
         public static void ClearAuth(this HttpContextBase context)
@@ -56,7 +41,7 @@ namespace Ztop.Todo.Web
             var cookie = context.Request.Cookies.Get(_cookieName);
             if (cookie == null) return;
             cookie.Value = null;
-            cookie.Expires = DateTime.Now.AddDays(-1);
+            cookie.Expires = DateTime.Now.AddHours(2);
             context.Response.SetCookie(cookie);
         }
     }

@@ -12,9 +12,13 @@ namespace Ztop.Todo.Manager
     {
         public DataContext():base("name=DbConnection")
         {
-
+            Database.SetInitializer<DataContext>(null);
         }
 
         public DbSet<User> Users { get; set; }
+
+        public DbSet<Model.Task> Tasks { get; set; }
+
+        public DbSet<UserTask> UserTasks { get; set; }
     }
 }

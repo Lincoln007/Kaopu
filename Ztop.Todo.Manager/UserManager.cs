@@ -21,7 +21,7 @@ namespace Ztop.Todo.Manager
                     var list = db.Users.ToList();
                     foreach (var user in list)
                     {
-                        Cache.HSet("users", user.ID.ToString(), user);
+                        Cache.HSet(_cacheKey, user.ID.ToString(), user);
                     }
                 }
             }
@@ -37,22 +37,13 @@ namespace Ztop.Todo.Manager
             return Cache.HGet<User>(_cacheKey, id.ToString());
         }
 
-        public User GetUser(string username, string password)
+        public User GetUser(string username)
         {
             if (string.IsNullOrEmpty(username))
             {
                 return null;
             }
-            var entity = GetList().FirstOrDefault(e => e.Username.ToLower() == username.ToLower());
-            if (entity == null)
-            {
-                throw new ArgumentException("不存在该用户名");
-            }
-            if (entity.Password != password.MD5())
-            {
-                throw new ArgumentException("密码不正确");
-            }
-            return entity;
+            return GetList().FirstOrDefault(e => e.Username == username);
         }
 
         /// <summary>
@@ -66,21 +57,15 @@ namespace Ztop.Todo.Manager
                 if (user.ID > 0)
                 {
                     var entity = db.Users.FirstOrDefault(e => e.ID == user.ID);
-                    if(entity!=null)
+                    if (entity != null)
                     {
-                        if(!string.IsNullOrEmpty(user.Password))
-                        {
-                            entity.Password = user.Password.MD5();   
-                        }
                         entity.RealName = user.RealName;
-                        entity.LoginTimes++;
-                        entity.LastLoginTime = DateTime.Now;
                     }
                 }
                 else
                 {
-                    var entity = db.Users.FirstOrDefault(e => e.Username.ToLower() == user.Username.ToLower());
-                    if(entity !=null)
+                    var entity = db.Users.FirstOrDefault(e => e.Username == user.Username);
+                    if (entity != null)
                     {
                         throw new ArgumentException("用户名已被使用");
                     }
@@ -89,6 +74,18 @@ namespace Ztop.Todo.Manager
                 db.SaveChanges();
             }
             Cache.HSet(_cacheKey, user.ID.ToString(), user);
+        }
+
+        public void UpdateLogin(User user)
+        {
+            using(var db = GetDbContext())
+            {
+                var entity = db.Users.FirstOrDefault(e => e.ID == user.ID);
+                entity.LoginTimes++;
+                entity.LastLoginTime = DateTime.Now;
+                db.SaveChanges();
+                Cache.HSet(_cacheKey, user.ID.ToString(), user);
+            }
         }
     }
 }

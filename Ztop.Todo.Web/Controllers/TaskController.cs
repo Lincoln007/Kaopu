@@ -6,10 +6,9 @@ using System.Web.Mvc;
 
 namespace Ztop.Todo.Web.Controllers
 {
-    [UserAuthorize(Enabled = false)]
-    public class UserController : ControllerBase
+    public class TaskController : ControllerBase
     {
-        public ActionResult Login()
+        public ActionResult Index()
         {
             return View();
         }

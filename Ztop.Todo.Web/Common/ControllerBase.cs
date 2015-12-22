@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using Ztop.Todo.Manager;
 using Ztop.Todo.Common;
+using Ztop.Todo.Model;
 
 namespace Ztop.Todo.Web.Controllers
 {
@@ -16,7 +17,7 @@ namespace Ztop.Todo.Web.Controllers
     {
         protected ManagerCore Core = ManagerCore.Instance;
 
-        protected UserIdentity Identity { get; private set; }
+        protected User CurrentUser { get; private set; }
 
         protected ActionResult SuccessJsonResult(object data = null)
         {
@@ -33,19 +34,32 @@ namespace Ztop.Todo.Web.Controllers
             return new ContentResult { Content = new { result = 0, content = ex.Message, data = ex }.ToJson(), ContentEncoding = System.Text.Encoding.UTF8, ContentType = "text/json" };
         }
 
+        private User GetCurrentUser()
+        {
+            var userId = HttpContext.GetUserID();
+            if (userId > 0)
+            {
+                CurrentUser = Core.UserManager.GetUser(userId);
+            }
+            else
+            {
+                var user = Core.UserManager.GetUser(Thread.CurrentPrincipal.Identity.Name);
+                if (user == null)
+                {
+                    CurrentUser = new User { Username = Thread.CurrentPrincipal.Identity.Name };
+                    Core.UserManager.Save(CurrentUser);
+                }
+                HttpContext.SaveAuth(CurrentUser);
+                Core.UserManager.UpdateLogin(CurrentUser);
+            }
+            return CurrentUser;
+        }
+
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             ViewBag.Controller = filterContext.RequestContext.RouteData.Values["controller"];
             ViewBag.Action = filterContext.RequestContext.RouteData.Values["action"];
-            if (Thread.CurrentPrincipal.Identity is UserIdentity)
-            {
-                Identity = (UserIdentity)Thread.CurrentPrincipal.Identity;
-            }
-            else
-            {
-                Identity = UserIdentity.Guest;
-            }
-            ViewBag.Identity = Identity;
+            ViewBag.CurrentUser = GetCurrentUser();
             base.OnActionExecuting(filterContext);
         }
 

@@ -78,22 +78,24 @@ namespace Ztop.Todo.Common
 
         public void HSet(string hashId, string key, object value)
         {
-            Dict hValue = null;
-            if (HData.TryGetValue(hashId, out hValue))
+            if (!HData.ContainsKey(hashId))
             {
-                var json = JsonConvert.SerializeObject(value);
-                hValue.AddOrUpdate(key, new CacheValue { Value = json }, (k, v) =>
-                {
-                    v.Value = json;
-                    v.UpdateTime = DateTime.Now;
-                    return v;
-                });
+                HData.TryAdd(hashId, new Dict());
             }
+            var hValue = HData[hashId];
+            var json = JsonConvert.SerializeObject(value);
+
+            hValue.AddOrUpdate(key, new CacheValue { Value = json }, (k, v) =>
+            {
+                v.Value = JsonConvert.SerializeObject(value);
+                v.UpdateTime = DateTime.Now;
+                return v;
+            });
         }
 
         public T HGet<T>(string hashId, string key)
         {
-            Dict hValue = null;
+            Dict hValue;
             if (HData.TryGetValue(hashId, out hValue))
             {
                 CacheValue val = null;

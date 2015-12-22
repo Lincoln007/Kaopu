@@ -8,29 +8,28 @@ using System.Threading.Tasks;
 
 namespace Ztop.Todo.Model
 {
+    [Table("user")]
     public class User
     {
         [Key]
-        [DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity)]    
+        [DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
 
         public string Username { get; set; }
 
-        public string Password { get; set; }
+        [NotMapped]
+        public string DisplayName
+        {
+            get
+            {
+                return string.IsNullOrEmpty(RealName) ? (Username.Contains('\\') ? Username.Split('\\')[1] : Username) : RealName;
+            }
+        }
 
         public string RealName { get; set; }
-
-        public Role Role { get; set; }
 
         public int LoginTimes { get; set; }
 
         public DateTime? LastLoginTime { get; set; }
-    }
-
-    public enum Role
-    {
-        Everyone,
-        User,
-        Admin
     }
 }

@@ -1,9 +1,28 @@
-﻿@model System.Web.Mvc.HandleErrorInfo
-
-@{
-    ViewBag.Title = "Error";
+﻿@{
+    Exception ex = ViewBag.Exception;
+    if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+    {
+        Layout = null;
+        var data = new { result = false, message = ex.Message, stackTrace = ex.StackTrace };
+        Response.Write(Newtonsoft.Json.JsonConvert.SerializeObject(data));
+    }
+    else
+    {
+        ViewBag.Title = "程序异常";
+        <div>
+            @(ex.Message)
+            @if (Request.UrlReferrer != null)
+            {
+                <a href="@(Request.UrlReferrer.ToString())" class="btn btn-default">返回</a>
+            }
+        </div>
+        <!--
+        @(ex.StackTrace)
+        -->
+        <script>
+            $(function () {
+                $("#main-panel").removeClass("panel-default").addClass("panel-danger");
+            });
+        </script>
+    }
 }
-
-<h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">An error occurred while processing your request.</h2>
-
