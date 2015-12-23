@@ -10,7 +10,7 @@ namespace Ztop.Todo.Manager
     public class ManagerBase
     {
         protected static readonly LocalCacheService Cache = new LocalCacheService();
-
+        protected static readonly ManagerCore Core = ManagerCore.Instance;
         protected DataContext GetDbContext()
         {
             return new DataContext();

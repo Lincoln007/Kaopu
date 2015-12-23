@@ -16,6 +16,8 @@ namespace Ztop.Todo.Web
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            Environment.CurrentDirectory = AppDomain.CurrentDomain.BaseDirectory;
         }
     }
 }

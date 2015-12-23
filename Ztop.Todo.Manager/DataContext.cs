@@ -20,5 +20,11 @@ namespace Ztop.Todo.Manager
         public DbSet<Model.Task> Tasks { get; set; }
 
         public DbSet<UserTask> UserTasks { get; set; }
+
+        public DbSet<UserTaskView> UserTaskViews { get; set; }
+
+        public DbSet<Comment> Comments { get; set; }
+
+        public DbSet<Attachment> Attachments { get; set; }
     }
 }

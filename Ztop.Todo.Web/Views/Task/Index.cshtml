@@ -1,7 +1,29 @@
 ﻿@{
     ViewBag.Title = "任务列表";
+
+    List<UserTaskView> list = ViewBag.List;
 }
 
-<table>
+<h3 class="page-header">
+    @(ViewBag.Title)
+    <a href="/task/edit" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i> 创建任务</a>
+</h3>
 
+<table class="table table-bordered">
+    <tr>
+        <th>任务标题</th>
+        <th>计划完成时间</th>
+        <th>创建时间</th>
+        <th>详情</th>
+    </tr>
+    @foreach (var item in list)
+    {
+        <tr>
+            <td>@(item.Title)</td>
+            <td>@(item.ScheduledTime.HasValue ? item.ScheduledTime.Value.ToShortDateString() : null)</td>
+            <td>@(item.CreateTime.ToShortDateString())</td>
+            <th><a href="/task/detail?id=@(item.TaskID)" class="btn btn-xs"><i class="glyphicon glyphicon-list"></i>详情</a></th>
+        </tr>
+    }
 </table>
+@Html.Partial("_pagination",ViewBag.Page as object)

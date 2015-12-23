@@ -27,5 +27,11 @@ namespace Ztop.Todo.Manager
         }
 
         public UserManager UserManager { get; private set; }
+
+        public TaskManager TaskManager { get; private set; }
+
+        public CommentManager CommentManager { get; private set; }
+
+        public AttachmentManager AttachmentManager { get; private set; }
     }
 }

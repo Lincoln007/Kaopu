@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ztop.Todo.Web", "Ztop.Todo.Web\Ztop.Todo.Web.csproj", "{90B2931F-B922-4DF8-AC9B-FD44BC22E3C5}"
 EndProject
@@ -10,6 +10,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ztop.Todo.Manager", "Ztop.Todo.Manager\Ztop.Todo.Manager.csproj", "{9CD9C6BB-3D53-4C9B-A99D-B0ED7FD9FD06}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ztop.Todo.Common", "Ztop.Todo.Common\Ztop.Todo.Common.csproj", "{81BB1B7C-C8B3-4C00-BDF4-D35A7055EF3C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{8C54BA5C-36CF-4E70-9DB5-54B61F34428D}"
+	ProjectSection(SolutionItems) = preProject
+		docs\ztoptodo.sql = docs\ztoptodo.sql
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
