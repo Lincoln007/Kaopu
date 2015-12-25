@@ -26,7 +26,7 @@ namespace Ztop.Todo.Manager
             }
         }
 
-        public bool HasRight(int taskId,int userId)
+        public bool HasRight(int taskId, int userId)
         {
             using (var db = GetDbContext())
             {
@@ -40,7 +40,7 @@ namespace Ztop.Todo.Manager
             {
                 var list = db.UserTasks.Where(e => e.TaskID == id);
                 var users = new List<User>();
-                foreach(var item in list)
+                foreach (var item in list)
                 {
                     users.Add(Core.UserManager.GetUser(item.UserID));
                 }
@@ -50,6 +50,7 @@ namespace Ztop.Todo.Manager
 
         public Task GetModel(int id)
         {
+            if (id == 0) return null;
             using (var db = GetDbContext())
             {
                 return db.Tasks.FirstOrDefault(e => e.ID == id);
@@ -61,12 +62,54 @@ namespace Ztop.Todo.Manager
             using (var db = GetDbContext())
             {
                 var entity = db.Tasks.FirstOrDefault(e => e.ID == id);
-                if(entity !=null)
+                if (entity != null)
                 {
                     entity.Deleted = true;
                     db.SaveChanges();
                 }
             }
+        }
+
+        public void Save(Task model)
+        {
+            using (var db = GetDbContext())
+            {
+                if (model.ID > 0)
+                {
+                    var entity = db.Tasks.FirstOrDefault(e => e.ID == model.ID);
+                    if (entity != null)
+                    {
+                        db.Entry(entity).CurrentValues.SetValues(model);
+                    }
+                    //如果重新编辑了任务，则删除之前分配的项
+                    var oldUsers = db.UserTasks.Where(e => e.TaskID == model.ID);
+                    db.UserTasks.RemoveRange(oldUsers);
+                    //拷贝的任务一并更新
+                    var copies = db.Tasks.Where(e => e.ParentID == model.ID);
+                    foreach(var item in copies)
+                    {
+                        item.Title = model.Title;
+                        item.Content = model.Content;
+                        item.ScheduledTime = model.ScheduledTime;
+                    }
+                }
+                else
+                {
+                    db.Tasks.Add(model);
+                }
+
+                db.SaveChanges();
+                
+                db.UserTasks.AddRange(model.Users.Select(e => new UserTask
+                {
+                    TaskID = model.ID,
+                    UserID = e.ID,
+                    CompletedTime = model.ScheduledTime,
+                }));
+
+                db.SaveChanges();
+            }
+
         }
     }
 }

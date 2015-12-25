@@ -49,6 +49,10 @@ namespace Ztop.Todo.Web.Controllers
                     CurrentUser = new User { Username = Thread.CurrentPrincipal.Identity.Name };
                     Core.UserManager.Save(CurrentUser);
                 }
+                else
+                {
+                    CurrentUser = user;
+                }
                 HttpContext.SaveAuth(CurrentUser);
                 Core.UserManager.UpdateLogin(CurrentUser);
             }

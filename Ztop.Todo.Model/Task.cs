@@ -35,5 +35,8 @@ namespace Ztop.Todo.Model
         public DateTime CreateTime { get; set; }
 
         public bool Deleted { get; set; }
+
+        [NotMapped]
+        public List<User> Users { get; set; }
     }
 }

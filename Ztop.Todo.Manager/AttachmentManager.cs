@@ -43,7 +43,10 @@ namespace Ztop.Todo.Manager
                 });
             }
         }
-
+        /// <summary>
+        /// TODO 没做权限验证
+        /// </summary>
+        /// <param name="id"></param>
         public void Delete(int id)
         {
             using (var db = GetDbContext())
@@ -59,6 +62,14 @@ namespace Ztop.Todo.Manager
                     }
                     catch { }
                 }
+            }
+        }
+
+        public Attachment GetModel(int id)
+        {
+            using (var db = GetDbContext())
+            {
+                return db.Attachments.FirstOrDefault(e => e.ID == id);
             }
         }
     }

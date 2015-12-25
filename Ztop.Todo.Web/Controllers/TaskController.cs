@@ -30,12 +30,47 @@ namespace Ztop.Todo.Web.Controllers
             ViewBag.Model = model;
             if (model != null && model.ID > 0)
             {
+                ViewBag.Users = Core.TaskManager.GetUsers(id);
                 ViewBag.Attachments = Core.AttachmentManager.GetList(model.ID);
-                ViewBag.Comments = Core.CommentManager.GetList(model.ID);
-                ViewBag.Users = Core.TaskManager.GetUsers(model.ID);
+            }
+            ViewBag.AllUsers = Core.UserManager.GetAllUsers();
+            return View();
+        }
+
+        public ActionResult Save(Task data, string[] usernames)
+        {
+            var model = Core.TaskManager.GetModel(data.ID) ?? new Task
+            {
+                OwnerID = CurrentUser.ID,
+            };
+            model.ScheduledTime = data.ScheduledTime;
+            model.Title = data.Title;
+            model.Content = data.Content;
+            if (usernames == null || usernames.Length == 0)
+            {
+                throw new ArgumentException("没有选择相关人员");
+            }
+            //相关人员
+            foreach (var username in usernames)
+            {
+                var user = Core.UserManager.GetUser(username);
+                if (user != null)
+                {
+                    model.Users.Add(user);
+                }
+            }
+            if (model.Users.Count == 0)
+            {
+                throw new ArgumentException("没有选择相关人员");
+            }
+            Core.TaskManager.Save(model);
+            //相关附件
+            foreach(HttpPostedFileBase file in Request.Files)
+            {
+                Core.AttachmentManager.Upload(file, model.ID);
             }
 
-            return View();
+            return SuccessJsonResult();
         }
 
         public ActionResult Detail(int id)
@@ -48,6 +83,7 @@ namespace Ztop.Todo.Web.Controllers
             ViewBag.Model = model;
             ViewBag.HasRight = Core.TaskManager.HasRight(model.ID, CurrentUser.ID);
             ViewBag.Comments = Core.CommentManager.GetList(model.ID);
+            ViewBag.Users = Core.TaskManager.GetUsers(model.ID);
             return View();
         }
 
@@ -63,7 +99,21 @@ namespace Ztop.Todo.Web.Controllers
                 Core.TaskManager.Delete(id);
                 return SuccessJsonResult();
             }
-            return ErrorJsonResult("参数错误，没找到该任务");
+            throw new ArgumentException("参数错误，没找到该任务");
+        }
+
+        public ActionResult DeleteAttachment(int id)
+        {
+            var model = Core.AttachmentManager.GetModel(id);
+            if (model != null)
+            {
+                if (!Core.TaskManager.HasRight(model.TaskID, CurrentUser.ID))
+                {
+                    throw new ArgumentException("权限不足");
+                }
+            }
+            Core.AttachmentManager.Delete(id);
+            return SuccessJsonResult();
         }
 
         public ActionResult DeleteComment(int id)
@@ -78,7 +128,7 @@ namespace Ztop.Todo.Web.Controllers
                 Core.CommentManager.Delete(model.ID);
                 return SuccessJsonResult();
             }
-            return ErrorJsonResult("参数错误，没找到该评论");
+            throw new ArgumentException("参数错误，没找到该评论");
         }
     }
 }

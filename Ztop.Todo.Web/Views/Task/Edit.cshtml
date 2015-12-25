@@ -1,1 +1,115 @@
-﻿
+﻿@{
+    Task model = ViewBag.Model;
+    ViewBag.Title = model.ID > 0 ? "修改任务" : "创建任务";
+    List<Attachment> files = ViewBag.Attachments;
+    List<User> allUsers = ViewBag.AllUsers;
+    List<User> selectedUsers = ViewBag.Users;
+}
+<h3 class="page-header">
+    @(ViewBag.Title)
+</h3>
+<form id="form-task" method="post" action="/task/save" class="form-horizontal">
+    <input type="hidden" name="ID" value="@(model.ID)" />
+    <div class="form-group">
+        <label class="control-label col-lg-1">标题</label>
+        <div class="col-lg-4">
+            <input type="text" class="form-control" name="Title" value="@(model.Title)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-lg-1">内容</label>
+        <div class="col-lg-5">
+            <textarea class="form-control" name="Content" rows="4">@(model.Content)</textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-lg-1">完成时间</label>
+        <div class="col-lg-2">
+            <input type="text" id="datetimepicker1" class="form-control" name="ScheduledTime" value="@(model.ScheduledTime.HasValue?model.ScheduledTime.Value.ToShortDateString():null)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-lg-1">参与人员</label>
+        <div class="col-lg-4">
+            <select name="usernames" multiple="multiple" class="form-control" style="height:200px;">
+                @foreach (var user in allUsers)
+                {
+                    var selected = model.ID > 0 && selectedUsers.Any(e => e.ID == user.ID);
+                    <option value="@(user.ID)" @(selected ? "selected" : null)>@(user.DisplayName)</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-lg-1">
+            附件
+        </label>
+        <div class="col-lg-5">
+            <a href="javascript:;" id="btn-add" class="btn btn-success btn-sm" style="margin-bottom:5px;"><i class="glyphicon glyphicon-open-file"></i> 添加附件</a>
+            @if (files != null)
+            {
+                <table class="table">
+                    @foreach (var file in files)
+                    {
+                        <tr>
+                            <td>
+                                @(file.FileName)
+                            </td>
+                            <td>@(file.FileSize / 1024)k</td>
+                            <td><a href="/attachment/delete?id=@(file.ID)" class="btn btn-xs btn-delete"><i class="glyphicon glyphicon-remove"></i></a></td>
+                        </tr>
+                    }
+                </table>
+            }
+            <div id="list-file">
+
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-lg-2 col-lg-offset-1">
+            <button type="submit" id="btn-submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i> 提交</button>
+        </div>
+    </div>
+</form>
+
+<template id="template" style="display:none;">
+    <div class="form-group">
+        <div class="col-lg-8">
+            <input type="file" class="file form-control" name="file{index}" />
+        </div>
+        <div class="col-lg-4">
+            <button type="button" class="btn btn-xs btn-remove"><i class="glyphicon glyphicon-remove"></i></button>
+        </div>
+    </div>
+</template>
+
+<script>
+    $(function () {
+        var template = $("#template").html();
+        $("#btn-add").click(function () {
+            var count = $("input[type='file']").length;
+            var html = template.replace("{index}", count + 1);
+            $("#list-file").append(html);
+            $(".btn-remove").unbind("click").bind("click", function () {
+                $(this).parent().parent().remove();
+            });
+            return false;
+        });
+
+        $(".btn-delete").click(function () {
+            var self = this;
+            var href = $(this).attr("href");
+            $.request(href, null, function () {
+                $(self).parent().parent().remove();
+            });
+        });
+
+        $("#datetimepicker1").datetimepicker({
+            timepicker: false,
+            format: 'Y/m/d',
+            minDate: '@(DateTime.Today.ToShortDateString())',
+            mask: true
+        });
+    });
+</script>

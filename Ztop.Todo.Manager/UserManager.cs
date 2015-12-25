@@ -12,7 +12,7 @@ namespace Ztop.Todo.Manager
     {
         private string _cacheKey = "users";
 
-        private List<User> GetList()
+        public List<User> GetAllUsers()
         {
             if (!Cache.Exists(_cacheKey))
             {
@@ -32,7 +32,7 @@ namespace Ztop.Todo.Manager
         {
             if (!Cache.Exists(_cacheKey))
             {
-                GetList();
+                GetAllUsers();
             }
             return Cache.HGet<User>(_cacheKey, id.ToString());
         }
@@ -43,7 +43,7 @@ namespace Ztop.Todo.Manager
             {
                 return null;
             }
-            return GetList().FirstOrDefault(e => e.Username == username);
+            return GetAllUsers().FirstOrDefault(e => e.Username == username);
         }
 
         /// <summary>
