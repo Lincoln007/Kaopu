@@ -21,7 +21,10 @@ namespace Ztop.Todo.Model
 
         public int TaskID { get; set; }
 
-        public bool IsCompleted { get; set; }
+        [NotMapped]
+        public bool Completed { get; set; }
+
+        public DateTime? CompletedTime { get; set; }
 
         public string Title { get; set; }
 

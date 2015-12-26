@@ -8,7 +8,7 @@
 <h3 class="page-header">
     @(ViewBag.Title)
 </h3>
-<form id="form-task" method="post" action="/task/save" class="form-horizontal">
+<form id="form-task" method="post" action="/task/save" class="form-horizontal" enctype="multipart/form-data">
     <input type="hidden" name="ID" value="@(model.ID)" />
     <div class="form-group">
         <label class="control-label col-lg-1">标题</label>
@@ -31,7 +31,7 @@
     <div class="form-group">
         <label class="control-label col-lg-1">参与人员</label>
         <div class="col-lg-4">
-            <select name="usernames" multiple="multiple" class="form-control" style="height:200px;">
+            <select name="userIds" multiple="multiple" class="form-control" style="height:200px;">
                 @foreach (var user in allUsers)
                 {
                     var selected = model.ID > 0 && selectedUsers.Any(e => e.ID == user.ID);
@@ -108,8 +108,7 @@
         $("#datetimepicker1").datetimepicker({
             timepicker: false,
             format: 'Y/m/d',
-            minDate: '@(DateTime.Today.ToShortDateString())',
-            mask: true
+            minDate: '@(DateTime.Today.ToShortDateString())'
         });
     });
 </script>

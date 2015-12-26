@@ -13,7 +13,16 @@ namespace Ztop.Todo.Manager
         {
             using (var db = GetDbContext())
             {
-                var query = db.UserTaskViews.Where(e => e.UserID == parameter.UserID && e.IsCompleted == parameter.IsCompleted);
+                var query = db.UserTaskViews.Where(e => e.UserID == parameter.UserID);
+                if(parameter.IsCompleted)
+                {
+                    query = query.Where(e => e.CompletedTime.HasValue);
+                }
+                else
+                {
+                    query = query.Where(e => e.CompletedTime == null);
+                }
+
                 if (parameter.Order == UserTaskOrder.ScheduleTime)
                 {
                     query = query.Where(e => e.ScheduledTime.HasValue);
@@ -86,7 +95,7 @@ namespace Ztop.Todo.Manager
                     db.UserTasks.RemoveRange(oldUsers);
                     //拷贝的任务一并更新
                     var copies = db.Tasks.Where(e => e.ParentID == model.ID);
-                    foreach(var item in copies)
+                    foreach (var item in copies)
                     {
                         item.Title = model.Title;
                         item.Content = model.Content;
@@ -99,12 +108,11 @@ namespace Ztop.Todo.Manager
                 }
 
                 db.SaveChanges();
-                
+
                 db.UserTasks.AddRange(model.Users.Select(e => new UserTask
                 {
                     TaskID = model.ID,
                     UserID = e.ID,
-                    CompletedTime = model.ScheduledTime,
                 }));
 
                 db.SaveChanges();

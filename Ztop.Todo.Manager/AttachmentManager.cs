@@ -43,6 +43,13 @@ namespace Ztop.Todo.Manager
                 });
             }
         }
+        
+        public byte[] GetFileData(Attachment model)
+        {
+            var filePath = Path.Combine(_uploadDir, model.SavePath);
+            return File.ReadAllBytes(filePath);
+        }
+
         /// <summary>
         /// TODO 没做权限验证
         /// </summary>

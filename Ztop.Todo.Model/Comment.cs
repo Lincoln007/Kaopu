@@ -27,5 +27,8 @@ namespace Ztop.Todo.Model
         public int TaskID { get; set; }
 
         public DateTime CreateTime { get; set; }
+
+        [NotMapped]
+        public User User { get; set; }
     }
 }

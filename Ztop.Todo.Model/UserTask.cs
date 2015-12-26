@@ -24,7 +24,8 @@ namespace Ztop.Todo.Model
 
         public int UserID { get; set; }
 
-        public bool IsCompleted { get; set; }
+        [NotMapped]
+        public bool IsCompleted { get { return CompletedTime.HasValue; } }
 
         public DateTime CreateTime { get; set; }
 

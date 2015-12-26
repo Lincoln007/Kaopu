@@ -11,6 +11,12 @@ namespace Ztop.Todo.Model
     [Table("task")]
     public class Task
     {
+        public Task()
+        {
+            Users = new List<User>();
+            CreateTime = DateTime.Now;
+        }
+
         [Key]
         [DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }

@@ -30,7 +30,13 @@ namespace Ztop.Todo.Manager
         {
             using (var db = GetDbContext())
             {
-                return db.Comments.Where(e => e.TaskID == taskId).ToList();
+                var list = db.Comments.Where(e => e.TaskID == taskId).ToList();
+                foreach(var item in list)
+                {
+                    item.User = Core.UserManager.GetUser(item.UserID);
+                }
+
+                return list;
             }
         }
 

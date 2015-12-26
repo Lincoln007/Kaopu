@@ -37,7 +37,7 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
 
-        public ActionResult Save(Task data, string[] usernames)
+        public ActionResult Save(Task data, int[] userIds)
         {
             var model = Core.TaskManager.GetModel(data.ID) ?? new Task
             {
@@ -46,14 +46,14 @@ namespace Ztop.Todo.Web.Controllers
             model.ScheduledTime = data.ScheduledTime;
             model.Title = data.Title;
             model.Content = data.Content;
-            if (usernames == null || usernames.Length == 0)
+            if (userIds == null || userIds.Length == 0)
             {
                 throw new ArgumentException("没有选择相关人员");
             }
             //相关人员
-            foreach (var username in usernames)
+            foreach (var userId in userIds)
             {
-                var user = Core.UserManager.GetUser(username);
+                var user = Core.UserManager.GetUser(userId);
                 if (user != null)
                 {
                     model.Users.Add(user);
@@ -70,7 +70,7 @@ namespace Ztop.Todo.Web.Controllers
                 Core.AttachmentManager.Upload(file, model.ID);
             }
 
-            return SuccessJsonResult();
+            return RedirectToAction("Index");
         }
 
         public ActionResult Detail(int id)
@@ -81,9 +81,17 @@ namespace Ztop.Todo.Web.Controllers
                 throw new ArgumentException("参数错误");
             }
             ViewBag.Model = model;
-            ViewBag.HasRight = Core.TaskManager.HasRight(model.ID, CurrentUser.ID);
-            ViewBag.Comments = Core.CommentManager.GetList(model.ID);
-            ViewBag.Users = Core.TaskManager.GetUsers(model.ID);
+            var hasRight = Core.TaskManager.HasRight(model.ID, CurrentUser.ID);
+            if (hasRight)
+            {
+                ViewBag.Comments = Core.CommentManager.GetList(model.ID);
+                ViewBag.Users = Core.TaskManager.GetUsers(model.ID);
+                ViewBag.Attachments = Core.AttachmentManager.GetList(model.ID);
+            }
+            else
+            {
+                throw new HttpException(401, "你没有权限删除该任务");
+            }
             return View();
         }
 

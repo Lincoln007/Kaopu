@@ -1,1 +1,75 @@
-﻿
+﻿@{
+    Task model = ViewBag.Model;
+    ViewBag.Title = model.Title;
+    List<Comment> comments = ViewBag.Comments;
+    List<Attachment> attachments = ViewBag.Attachments;
+    List<User> users = ViewBag.Users;
+}
+<h3 class="page-header">
+    @(model.Title)
+</h3>
+<blockquote>
+    @(model.Content)
+</blockquote>
+<h4>相关附件</h4>
+<table class="table">
+    @foreach (var item in attachments)
+    {
+        <tr>
+            <td>@(item.FileName)</td>
+            <td>@(item.FileSize / 1024)k</td>
+            <td><a href="/attachment/download?id=@(item.ID)">查看/下载</a></td>
+        </tr>
+    }
+</table>
+
+<h4>讨论</h4>
+<div id="div-comments">
+    @foreach (var item in comments)
+    {
+        <div class="well">
+            <p>
+                @(Html.Raw(item.Content.Replace(" ", "&nbsp;").Replace("\n", "<br />")))
+            </p>
+            <div>
+                <b>
+                    <a title="点击回复Ta" href="javascript:;" class="btn btn-xs btn-danger btn-reply" data-user="@(item.User.DisplayName)">@(item.User.DisplayName)</a>
+                </b>
+                <span>@(item.CreateTime.ToString())</span>
+            </div>
+        </div>
+    }
+</div>
+<form id="form-comment" action="/comment/save?taskId=@(model.ID)" method="post">
+    <div class="form-group">
+        <label class="control-label">
+            评论内容
+        </label>
+        <textarea id="txt-content" name="Content" class="form-control"></textarea>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-check"></i> 提交</button>
+    </div>
+</form>
+<script>
+    $(function () {
+        $(".btn-reply").click(function () {
+            var replyTo = $(this).attr("data-user");
+            $("#txt-content").append("@@" + replyTo);
+            return false;
+        });
+        $("#form-comment").submit(function () {
+            var url = $(this).attr("action");
+            var content = $("#txt-content").val();
+            if (!content) {
+                alert("评论内容没有填写");
+                return false;
+            }
+            var data = $(this).serialize();
+            $.requet(url, data, function () {
+                $("#div-comments").append("<div class=well><p>" + content + "</p><span>"+@(((User)ViewBag.CurrentUser).DisplayName)+"</span></div>");
+            });
+            return false;
+        });
+    });
+</script>
