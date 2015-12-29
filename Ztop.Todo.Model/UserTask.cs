@@ -13,7 +13,7 @@ namespace Ztop.Todo.Model
     {
         public UserTask()
         {
-            CreateTime = new DateTime();
+            CreateTime = DateTime.Now;
         }
 
         [Key]

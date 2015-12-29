@@ -26,5 +26,20 @@ namespace Ztop.Todo.Web.Controllers
             });
             return SuccessJsonResult();
         }
+
+        public ActionResult Delete(int id)
+        {
+            var model = Core.CommentManager.GetModel(id);
+            if(model == null)
+            {
+                throw new ArgumentException("参数错误");
+            }
+            if(model.UserID != CurrentUser.ID)
+            {
+                throw new HttpException(401,"你没有权限删除该评论");
+            }
+            Core.CommentManager.Delete(id);
+            return SuccessJsonResult();
+        }
     }
 }

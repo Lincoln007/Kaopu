@@ -97,6 +97,10 @@
             return false;
         });
 
+        $("#form-task").submit(function () {
+            $("#btn-submit").text("正在提交").disabled();
+        });
+
         $(".btn-delete").click(function () {
             var self = this;
             var href = $(this).attr("href");

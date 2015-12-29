@@ -25,12 +25,18 @@ namespace Ztop.Todo.Web
             var cookie = context.Request.Cookies.Get(_cookieName);
             if (cookie != null)
             {
-                var ticket = FormsAuthentication.Decrypt(cookie.Value);
-                if (ticket != null && !string.IsNullOrEmpty(ticket.Name))
+                try
                 {
-                    var userId = 0;
-                    int.TryParse(ticket.Name, out userId);
-                    return userId;
+                    var ticket = FormsAuthentication.Decrypt(cookie.Value);
+                    if (ticket != null && !string.IsNullOrEmpty(ticket.Name))
+                    {
+                        var userId = 0;
+                        int.TryParse(ticket.Name, out userId);
+                        return userId;
+                    }
+                }
+                catch
+                {
                 }
             }
             return 0;

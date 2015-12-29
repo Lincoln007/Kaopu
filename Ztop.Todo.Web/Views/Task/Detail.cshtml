@@ -4,12 +4,13 @@
     List<Comment> comments = ViewBag.Comments;
     List<Attachment> attachments = ViewBag.Attachments;
     List<User> users = ViewBag.Users;
+    User currentUser = ViewBag.CurrentUser;
 }
 <h3 class="page-header">
     @(model.Title)
 </h3>
 <blockquote>
-    @(model.Content)
+    @(Html.Raw(HtmlUtils.ToHtml(model.Content)))
 </blockquote>
 <h4>相关附件</h4>
 <table class="table">
@@ -18,7 +19,7 @@
         <tr>
             <td>@(item.FileName)</td>
             <td>@(item.FileSize / 1024)k</td>
-            <td><a href="/attachment/download?id=@(item.ID)">查看/下载</a></td>
+            <td><a href="/attachment/download?id=@(item.ID)" target="_blank">查看/下载</a></td>
         </tr>
     }
 </table>
@@ -27,15 +28,19 @@
 <div id="div-comments">
     @foreach (var item in comments)
     {
-        <div class="well">
+        <div class="well" id="div-comment-@(item.ID)">
             <p>
-                @(Html.Raw(item.Content.Replace(" ", "&nbsp;").Replace("\n", "<br />")))
+                @(Html.Raw(HtmlUtils.ToHtml(item.Content)))
             </p>
             <div>
                 <b>
                     <a title="点击回复Ta" href="javascript:;" class="btn btn-xs btn-danger btn-reply" data-user="@(item.User.DisplayName)">@(item.User.DisplayName)</a>
                 </b>
                 <span>@(item.CreateTime.ToString())</span>
+                @if(item.UserID == currentUser.ID)
+                {
+                    <a href="/comment/delete?id=@(item.ID)" class="btn-comment-delete">删除</a>
+                }
             </div>
         </div>
     }
@@ -51,11 +56,15 @@
         <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-check"></i> 提交</button>
     </div>
 </form>
+@if (model.OwnerID == currentUser.ID)
+{
+    <button id="btn-task-delete" class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i> 删除该任务</button>
+}
 <script>
     $(function () {
         $(".btn-reply").click(function () {
             var replyTo = $(this).attr("data-user");
-            $("#txt-content").append("@@" + replyTo);
+            $("#txt-content").append("@@" + replyTo + "\r\n").focus();
             return false;
         });
         $("#form-comment").submit(function () {
@@ -66,9 +75,30 @@
                 return false;
             }
             var data = $(this).serialize();
-            $.requet(url, data, function () {
-                $("#div-comments").append("<div class=well><p>" + content + "</p><span>"+@(((User)ViewBag.CurrentUser).DisplayName)+"</span></div>");
+            $.request(url, data, function () {
+                $("#div-comments").append("<div class=well><p>" + content + "</p><span>" +@(((User)ViewBag.CurrentUser).DisplayName) +"</span></div>");
             });
+            return false;
+        });
+
+        $(".btn-comment-delete").click(function () {
+            if (confirm("你确定要删除该评论吗？")) {
+                var url = $(this).attr("href");
+                var div = $(this).parent().parent();
+                $.request(url, null, function () {
+                    div.remove();
+                });
+            }
+            return false;
+        });
+
+        $("#btn-task-delete").click(function () {
+            if (confirm("你确定要删除这个任务吗？")) {
+                $.request("/task/delete?id=@(model.ID)", null, function () {
+                    window.location.href = "/task";
+                });
+            }
+
             return false;
         });
     });

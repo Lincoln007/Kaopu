@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EncryptExtensions.cs" />
+    <Compile Include="HtmlUtils.cs" />
     <Compile Include="JsonExtension.cs" />
     <Compile Include="LocalCacheService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

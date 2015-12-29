@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -11,7 +12,12 @@ namespace Ztop.Todo.Manager
 {
     public class AttachmentManager : ManagerBase
     {
-        private static string _uploadDir = System.Configuration.ConfigurationManager.AppSettings["upload_floder"] ?? "upload_files";
+        private static string _uploadDir;
+
+        static AttachmentManager()
+        {
+            _uploadDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ConfigurationManager.AppSettings["upload_floder"] ?? "upload_files");
+        }
 
         public List<Attachment> GetList(int taskId)
         {
@@ -23,7 +29,7 @@ namespace Ztop.Todo.Manager
 
         public void Upload(HttpPostedFileBase file, int taskId)
         {
-            if (Directory.Exists(_uploadDir))
+            if (!Directory.Exists(_uploadDir))
             {
                 Directory.CreateDirectory(_uploadDir);
             }
@@ -41,6 +47,7 @@ namespace Ztop.Todo.Manager
                     SavePath = newFileName,
                     TaskID = taskId
                 });
+                db.SaveChanges();
             }
         }
         

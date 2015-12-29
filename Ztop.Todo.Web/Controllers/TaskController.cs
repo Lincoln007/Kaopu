@@ -65,8 +65,9 @@ namespace Ztop.Todo.Web.Controllers
             }
             Core.TaskManager.Save(model);
             //相关附件
-            foreach(HttpPostedFileBase file in Request.Files)
+            for (var i = 0; i < Request.Files.Count; i++)
             {
+                var file = Request.Files[i];
                 Core.AttachmentManager.Upload(file, model.ID);
             }
 
