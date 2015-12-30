@@ -20,7 +20,7 @@
     @foreach (var item in list)
     {
         <tr>
-            <td>@(item.Title)</td>
+            <td><a href="/task/detail?id=@(item.TaskID)">@(item.Title)</a> </td>
             <td>@(item.ScheduledTime.HasValue ? item.ScheduledTime.Value.ToShortDateString() : null)</td>
             <td>@(item.CreateTime.ToShortDateString())</td>
             <th>

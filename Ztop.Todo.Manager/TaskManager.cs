@@ -14,7 +14,7 @@ namespace Ztop.Todo.Manager
             using (var db = GetDbContext())
             {
                 var query = db.UserTaskViews.Where(e => e.UserID == parameter.UserID);
-                if(parameter.IsCompleted)
+                if (parameter.IsCompleted)
                 {
                     query = query.Where(e => e.CompletedTime.HasValue);
                 }
@@ -43,17 +43,28 @@ namespace Ztop.Todo.Manager
             }
         }
 
-        public List<User> GetUsers(int id)
+        public List<UserTask> GetUserTasks(int id)
         {
             using (var db = GetDbContext())
             {
-                var list = db.UserTasks.Where(e => e.TaskID == id);
+                var list = db.UserTasks.Where(e => e.TaskID == id).ToList();
                 var users = new List<User>();
                 foreach (var item in list)
                 {
-                    users.Add(Core.UserManager.GetUser(item.UserID));
+                    item.User = Core.UserManager.GetUser(item.UserID);
                 }
-                return users;
+                return list;
+            }
+        }
+
+        public List<User> GetUsers(int taskId)
+        {
+            using (var db = GetDbContext())
+            {
+                return db.UserTasks
+                    .Where(e => e.TaskID == taskId).Select(e => e.UserID)
+                    .ToArray()
+                    .Select(id => Core.UserManager.GetUser(id)).ToList();
             }
         }
 
@@ -109,15 +120,35 @@ namespace Ztop.Todo.Manager
 
                 db.SaveChanges();
 
-                db.UserTasks.AddRange(model.Users.Select(e => new UserTask
+                //保存参与人员，移除重复数据
+                db.UserTasks.AddRange(model.Users.GroupBy(e => e.ID).ToDictionary(g => g.Key, g => g.First()).Select(e => new UserTask
                 {
                     TaskID = model.ID,
-                    UserID = e.ID,
+                    UserID = e.Value.ID,
                 }));
 
                 db.SaveChanges();
             }
 
+        }
+
+        public void CompleteTask(int taskId, int userId)
+        {
+            using (var db = GetDbContext())
+            {
+                var entity = db.UserTasks.FirstOrDefault(e => e.TaskID == taskId && e.UserID == userId);
+                if (entity != null && !entity.CompletedTime.HasValue)
+                {
+                    entity.CompletedTime = DateTime.Now;
+                }
+
+                var task = db.Tasks.FirstOrDefault(e => e.ID == taskId && e.OwnerID == userId);
+                if (task != null)
+                {
+                    task.IsCompleted = true;
+                }
+                db.SaveChanges();
+            }
         }
     }
 }

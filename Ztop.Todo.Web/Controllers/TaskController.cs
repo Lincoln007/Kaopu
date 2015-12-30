@@ -59,10 +59,7 @@ namespace Ztop.Todo.Web.Controllers
                     model.Users.Add(user);
                 }
             }
-            if (model.Users.Count == 0)
-            {
-                throw new ArgumentException("没有选择相关人员");
-            }
+            model.Users.Add(CurrentUser);
             Core.TaskManager.Save(model);
             //相关附件
             for (var i = 0; i < Request.Files.Count; i++)
@@ -82,18 +79,84 @@ namespace Ztop.Todo.Web.Controllers
                 throw new ArgumentException("参数错误");
             }
             ViewBag.Model = model;
-            var hasRight = Core.TaskManager.HasRight(model.ID, CurrentUser.ID);
-            if (hasRight)
+            var userTasks = Core.TaskManager.GetUserTasks(model.ID);
+            var userTask = userTasks.FirstOrDefault(e => e.UserID == CurrentUser.ID);
+            if (userTask != null)
             {
+                ViewBag.UserTasks = userTasks;
+                ViewBag.UserTask = userTask;
                 ViewBag.Comments = Core.CommentManager.GetList(model.ID);
-                ViewBag.Users = Core.TaskManager.GetUsers(model.ID);
-                ViewBag.Attachments = Core.AttachmentManager.GetList(model.ID);
+                ViewBag.Attachments = Core.AttachmentManager.GetList(model.ParentID);
             }
             else
             {
-                throw new HttpException(401, "你没有权限删除该任务");
+                throw new HttpException(401, "你没有权限查看该任务");
             }
             return View();
+        }
+
+        public ActionResult Copy(int id)
+        {
+            var model = Core.TaskManager.GetModel(id);
+            if (model == null)
+            {
+                throw new ArgumentException("参数错误");
+            }
+            ViewBag.Model = model;
+            var selectedUsers = Core.TaskManager.GetUsers(model.ID);
+            var allUsers = Core.UserManager.GetAllUsers();
+            //转发会排除掉原任务已有的参与人员
+            ViewBag.Users = allUsers.Select(e => !selectedUsers.Any(e1 => e1.ID == e.ID)).ToList();
+            return View();
+        }
+
+        public ActionResult SaveCopy(int id, int[] userIds)
+        {
+            Task copy = null;
+            var data = Core.TaskManager.GetModel(id);
+            if (data != null)
+            {
+                copy = new Task
+                {
+                    Title = data.Title,
+                    Content = data.Content,
+                    ScheduledTime = data.ScheduledTime,
+                    OwnerID = CurrentUser.ID,
+                    ParentID = data.ID,
+                };
+            }
+            else
+            {
+                throw new ArgumentException("参数错误");
+            }
+
+            if (userIds == null || userIds.Length == 0)
+            {
+                throw new ArgumentException("没有选择相关人员");
+            }
+            //相关人员
+            foreach (var userId in userIds)
+            {
+                var user = Core.UserManager.GetUser(userId);
+                if (user != null)
+                {
+                    copy.Users.Add(user);
+                }
+            }
+            copy.Users.Add(CurrentUser);
+            Core.TaskManager.Save(copy);
+            Core.AttachmentManager.Copy(data.ID, copy.ID);
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult Complete(int id)
+        {
+            if (!Core.TaskManager.HasRight(id, CurrentUser.ID))
+            {
+                throw new HttpException(401, "你没有权限完成该任务");
+            }
+            Core.TaskManager.CompleteTask(id, CurrentUser.ID);
+            return SuccessJsonResult();
         }
 
         public ActionResult Delete(int id)

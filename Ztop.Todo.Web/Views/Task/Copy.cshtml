@@ -1,0 +1,37 @@
+﻿@{
+    Task model = ViewBag.Model;
+    List<User> users = ViewBag.Users;
+    ViewBag.Title = "转发任务";
+}
+<h3 class="page-header">
+    转发任务：@(ViewBag.Title)
+</h3>
+<blockquote>
+    @Html.Raw(HtmlUtils.ToHtml(model.Content))
+</blockquote>
+
+<form id="form-copy" method="post" action="/task/SaveCopy?id=@(model.ID)">
+    <div class="form-group">
+        <label class="control-label col-lg-1">转发人员</label>
+        <div class="col-lg-4">
+            <select name="userIds" multiple="multiple" class="form-control" style="height:300px;">
+                @foreach (var user in users)
+                {
+                    <option value="@(user.ID)">@(user.DisplayName)</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-lg-2 col-lg-offset-1">
+            <button type="submit" id="btn-submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i> 提交</button>
+        </div>
+    </div>
+</form>
+<script>
+    $(function () {
+        $("form-copy").submit(function () {
+            $("#btn-submit").text("正在提交").disabled();
+        });
+    });
+</script>

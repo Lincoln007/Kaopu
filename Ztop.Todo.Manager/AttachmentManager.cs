@@ -50,7 +50,7 @@ namespace Ztop.Todo.Manager
                 db.SaveChanges();
             }
         }
-        
+
         public byte[] GetFileData(Attachment model)
         {
             var filePath = Path.Combine(_uploadDir, model.SavePath);
@@ -66,11 +66,12 @@ namespace Ztop.Todo.Manager
             using (var db = GetDbContext())
             {
                 var entity = db.Attachments.FirstOrDefault(e => e.ID == id);
-                if(entity != null)
+                if (entity != null)
                 {
                     try
                     {
-                        File.Delete(Path.Combine(_uploadDir, entity.SavePath));
+                        //因为有任务拷贝，所以不物理删除附件
+                        //File.Delete(Path.Combine(_uploadDir, entity.SavePath));
                         db.Attachments.Remove(entity);
                         db.SaveChanges();
                     }
@@ -84,6 +85,28 @@ namespace Ztop.Todo.Manager
             using (var db = GetDbContext())
             {
                 return db.Attachments.FirstOrDefault(e => e.ID == id);
+            }
+        }
+
+        /// <summary>
+        /// 复制附件
+        /// </summary>
+        public void Copy(int orignalId, int targetId)
+        {
+            using (var db = GetDbContext())
+            {
+                var list = db.Attachments.Where(e => e.TaskID == orignalId);
+                foreach (var item in list)
+                {
+                    db.Attachments.Add(new Attachment
+                    {
+                        FileName = item.FileName,
+                        FileSize = item.FileSize,
+                        SavePath = item.SavePath,
+                        TaskID = targetId
+                    });
+                }
+                db.SaveChanges();
             }
         }
     }
