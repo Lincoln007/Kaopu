@@ -1,6 +1,32 @@
 ﻿@{
     ViewBag.Title = "首页";
+    List<UserTaskView> newList = ViewBag.NewList;
+    List<UserTaskView> completeList = ViewBag.CompleteList;
 }
 <h3 class="page-header">
-    Dashboard
+    欢迎页
 </h3>
+<div class="col-lg-6">
+    <h4>最新任务</h4>
+    <ul>
+        @foreach (var item in newList)
+        {
+            <li>
+                <a href="/task/detail?id=@(item.ID)">@(item.Title)</a>
+                <span class="label label-default">@(item.Owner.DisplayName)</span>
+            </li>
+        }
+    </ul>
+</div>
+<div class="col-lg-6">
+    <h4>最近需要完成的任务</h4>
+    <ul>
+        @foreach (var item in completeList)
+        {
+            <li>
+                <a href="/task/detail?id=@(item.ID)">@(item.Title)</a>
+                <span>@(item.ScheduledTime.HasValue ? item.ScheduledTime.Value.ToShortDateString() : null)</span>
+            </li>
+        }
+    </ul>
+</div>

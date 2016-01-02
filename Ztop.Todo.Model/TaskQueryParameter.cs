@@ -16,6 +16,8 @@ namespace Ztop.Todo.Model
     {
         public int UserID { get; set; }
 
+        public string SearchKey { get; set; }
+
         public bool IsCompleted { get; set; }
 
         public UserTaskOrder Order { get; set; }

@@ -9,10 +9,12 @@ namespace Ztop.Todo.Web.Controllers
 {
     public class TaskController : ControllerBase
     {
-        public ActionResult Index(int page = 1, int rows = 20)
+        public ActionResult Index(string keyword, int completed = 0, int page = 1, int rows = 20)
         {
             var parameter = new UserTaskQueryParameter
             {
+                SearchKey = keyword,
+                IsCompleted = completed == 1,
                 UserID = CurrentUser.ID,
                 Page = new PageParameter(page, rows),
             };
@@ -86,7 +88,7 @@ namespace Ztop.Todo.Web.Controllers
                 ViewBag.UserTasks = userTasks;
                 ViewBag.UserTask = userTask;
                 ViewBag.Comments = Core.CommentManager.GetList(model.ID);
-                ViewBag.Attachments = Core.AttachmentManager.GetList(model.ParentID);
+                ViewBag.Attachments = Core.AttachmentManager.GetList(model.ID);
             }
             else
             {
@@ -106,7 +108,7 @@ namespace Ztop.Todo.Web.Controllers
             var selectedUsers = Core.TaskManager.GetUsers(model.ID);
             var allUsers = Core.UserManager.GetAllUsers();
             //转发会排除掉原任务已有的参与人员
-            ViewBag.Users = allUsers.Select(e => !selectedUsers.Any(e1 => e1.ID == e.ID)).ToList();
+            ViewBag.Users = allUsers.Where(e => !selectedUsers.Any(e1 => e1.ID == e.ID)).ToList();
             return View();
         }
 

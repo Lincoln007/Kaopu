@@ -11,9 +11,15 @@ namespace Ztop.Todo.Manager
     {
         public List<UserTaskView> GetUserTasks(UserTaskQueryParameter parameter)
         {
+            List<UserTaskView> list = null;
             using (var db = GetDbContext())
             {
                 var query = db.UserTaskViews.Where(e => e.UserID == parameter.UserID);
+                if(!string.IsNullOrEmpty(parameter.SearchKey))
+                {
+                    query = query.Where(e => e.Title.Contains(parameter.SearchKey.Trim()));
+                }
+
                 if (parameter.IsCompleted)
                 {
                     query = query.Where(e => e.CompletedTime.HasValue);
@@ -26,13 +32,18 @@ namespace Ztop.Todo.Manager
                 if (parameter.Order == UserTaskOrder.ScheduleTime)
                 {
                     query = query.Where(e => e.ScheduledTime.HasValue);
-                    return query.OrderBy(e => e.ScheduledTime).SetPage(parameter.Page).ToList();
+                    list = query.OrderBy(e => e.ScheduledTime).SetPage(parameter.Page).ToList();
                 }
                 else
                 {
-                    return query.OrderByDescending(e => e.ID).SetPage(parameter.Page).ToList();
+                    list = query.OrderByDescending(e => e.ID).SetPage(parameter.Page).ToList();
+                }
+                foreach(var item in list)
+                {
+                    item.Owner = Core.UserManager.GetUser(item.OwnerID);
                 }
             }
+            return list;
         }
 
         public bool HasRight(int taskId, int userId)

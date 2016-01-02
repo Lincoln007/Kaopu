@@ -3,34 +3,67 @@
 
     List<UserTaskView> list = ViewBag.List;
     User user = ViewBag.CurrentUser;
+
 }
 
 <h3 class="page-header">
     @(ViewBag.Title)
-    <a href="/task/edit" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i> 创建任务</a>
 </h3>
-
-<table class="table table-bordered">
+<form class="form-inline search-form" style="margin-bottom:5px;">
+    <div class="input-group">
+        <span class="input-group-addon">查询任务</span>
+        <input type="text" class="form-control" name="keyword" placeholder="任务名称" value="@(Request.QueryString["keyword"])">
+        <div class="input-group-btn">
+            <select class="form-control" name="completed">
+                <option value="0" @((Request.QueryString["completed"] == "0" || Request.QueryString["completed"] == null) ? "selected" : null)>未完成</option>
+                <option value="1" @(Request.QueryString["completed"] == "1" ? "selected" : null)>已完成</option>
+            </select>
+        </div>
+        <div class="input-group-btn">
+            <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i>查询</button>
+            <a href="/task/edit" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i> 创建任务</a>
+        </div>
+    </div>
+</form>
+<table class="table">
     <tr>
+        <th style="width:30px">ID</th>
         <th>任务标题</th>
         <th class="col-lg-2">计划完成时间</th>
+        <th class="col-lg-1">创建者</th>
         <th class="col-lg-2">创建时间</th>
-        <th class="col-lg-2">详情</th>
+        <th class="col-lg-2">操作</th>
     </tr>
     @foreach (var item in list)
     {
         <tr>
+            <td>@(item.ID)</td>
             <td><a href="/task/detail?id=@(item.TaskID)">@(item.Title)</a> </td>
             <td>@(item.ScheduledTime.HasValue ? item.ScheduledTime.Value.ToShortDateString() : null)</td>
+            <td>@(item.Owner.DisplayName)</td>
             <td>@(item.CreateTime.ToShortDateString())</td>
             <th>
-                <a href="/task/detail?id=@(item.TaskID)" class="btn btn-xs btn-default "><i class="glyphicon glyphicon-list"></i> 详情</a>
-                @*@if(item.OwnerID == user.ID)
+                @if (item.Completed)
                 {
-                    <a href="/task/delete?id=@(item.TaskID)" class="btn btn-xs btn-danger btn-delete"><i class="glyphicon glyphicon-remove"></i> 删除</a>
-                }*@
+                    <span class="label label-success"><i class="glyphicon glyphicon-check"></i>已完成</span>
+                }
+                else
+                {
+                    <a href="/task/complete?id=@(item.ID)" class="btn btn-completed btn-xs btn-default"><i class="glyphicon glyphicon-check"></i></a>
+                }
             </th>
         </tr>
     }
 </table>
-@Html.Partial("_pagination",ViewBag.Page as object)
+@Html.Partial("_pagination", ViewBag.Page as object)
+<script>
+    $(function () {
+        $(".btn-completed").click(function () {
+            var href = $(this).attr("href");
+            $.request(href, null, function () {
+                $(this).removeClass("btn-default").addClass("btn-success");
+            });
+            return false;
+        });
+    });
+</script>

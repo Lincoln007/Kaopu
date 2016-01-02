@@ -10,7 +10,7 @@
     @Html.Raw(HtmlUtils.ToHtml(model.Content))
 </blockquote>
 
-<form id="form-copy" method="post" action="/task/SaveCopy?id=@(model.ID)">
+<form id="form-copy" method="post" action="/task/SaveCopy?id=@(model.ID)" class="form-horizontal">
     <div class="form-group">
         <label class="control-label col-lg-1">转发人员</label>
         <div class="col-lg-4">

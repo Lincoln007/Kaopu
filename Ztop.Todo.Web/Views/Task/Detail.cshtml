@@ -15,30 +15,45 @@
 </blockquote>
 <hr />
 <h3>相关附件</h3>
+<table class="table">
+    <tr>
+        <th>名称</th>
+        <th>大小</th>
+        <th>下载</th>
+    </tr>
     @foreach (var item in attachments)
     {
-        <div>
-            <span>@(item.FileName)</span>
-            <span class="label label-default">@(item.FileSize / 1024)k</span>
-            <span><a href="/attachment/download?id=@(item.ID)" target="_blank" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-eye-open"></i> 查看/下载</a></span>
-        </div>
+        <tr>
+            <td><a href="/attachment/download?id=@(item.ID)" target="_blank"> @(item.FileName)</a></td>
+            <td>@(item.FileSize / 1024)k</td>
+            <td><a href="/attachment/download?id=@(item.ID)" target="_blank" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-eye-open"></i>下载</a></td>
+        </tr>
     }
+</table>
 <hr />
 <h3>任务进度</h3>
+<table class="table">
+    <tr>
+        <th>参与人员</th>
+        <th>是否完成</th>
+    </tr>
 @foreach (var ut in userTasks)
 {
-    <div>
-        <span>@(ut.User.DisplayName)</span>
-        @if (ut.IsCompleted)
-        {
-            <span class="label label-success">已完成</span>
-        }
-        else
-        {
-            <span class="label label-default">未完成</span>
-        }
-    </div>
+    <tr>
+        <td>@(ut.User.DisplayName)</td>
+        <td>
+            @if (ut.IsCompleted)
+            {
+                <span class="label label-success">已完成</span>
+            }
+            else
+            {
+                <span class="label label-default">未完成</span>
+            }
+        </td>
+    </tr>
 }
+</table>
 <hr />
 <h3>讨论</h3>
 <div id="div-comments">
@@ -102,7 +117,7 @@ else
             }
             var data = $(this).serialize();
             $.request(url, data, function () {
-                $("#div-comments").append("<div class=well><p>" + content + "</p><span>" +@(((User)ViewBag.CurrentUser).DisplayName) +"</span></div>");
+                $("#div-comments").append("<div class=well><p>" + content + "</p><span>@(((User)ViewBag.CurrentUser).DisplayName)</span></div>");
             });
             return false;
         });

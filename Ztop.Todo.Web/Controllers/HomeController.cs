@@ -11,10 +11,27 @@ namespace Ztop.Todo.Web.Controllers
     {
         public ActionResult Index()
         {
-            if(!Thread.CurrentPrincipal.Identity.IsAuthenticated)
+            if (!Thread.CurrentPrincipal.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Login", "User");
             }
+
+            ViewBag.NewList = Core.TaskManager.GetUserTasks(new Model.UserTaskQueryParameter
+            {
+                Order = Model.UserTaskOrder.CreateTime,
+                UserID = CurrentUser.ID,
+                IsCompleted = false,
+                Page = new Model.PageParameter(1, 10),
+            });
+
+            ViewBag.CompleteList = Core.TaskManager.GetUserTasks(new Model.UserTaskQueryParameter
+            {
+                Order = Model.UserTaskOrder.ScheduleTime,
+                UserID = CurrentUser.ID,
+                IsCompleted = false,
+                Page = new Model.PageParameter(1, 10),
+            });
+
             return View();
         }
     }
