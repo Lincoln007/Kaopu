@@ -11,9 +11,9 @@ namespace Ztop.Todo.Web.Controllers
     {
         public ActionResult Index()
         {
-            if (!Thread.CurrentPrincipal.Identity.IsAuthenticated)
+            if (string.IsNullOrEmpty(CurrentUser.RealName))
             {
-                return RedirectToAction("Login", "User");
+                return RedirectToAction("Register", "User");
             }
 
             ViewBag.NewList = Core.TaskManager.GetUserTasks(new Model.UserTaskQueryParameter
