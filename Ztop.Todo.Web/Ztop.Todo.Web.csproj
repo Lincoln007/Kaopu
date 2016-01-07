@@ -151,6 +151,8 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.custom.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\token-input.css" />
+    <Content Include="Scripts\jquery.autocomplete.js" />
     <Content Include="Content\jquery.datetimepicker.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />

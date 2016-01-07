@@ -9,20 +9,20 @@
     else
     {
         ViewBag.Title = "程序异常";
-        <div>
-            @(ex.Message)
+        <h1 class="page-header">@(ViewBag.Title)</h1>
+        <blockquote>
+            <p>@(ex.Message)</p>
+            <small>@Html.Raw(ex.StackTrace.Replace("\n", "<br />"))</small>
+        </blockquote>
+        <hr />
             @if (Request.UrlReferrer != null)
             {
                 <a href="@(Request.UrlReferrer.ToString())" class="btn btn-default">返回</a>
             }
-        </div>
-        <!--
-        @(ex.StackTrace)
-        -->
-        <script>
-            $(function () {
-                $("#main-panel").removeClass("panel-default").addClass("panel-danger");
-            });
-        </script>
+            <script>
+                $(function () {
+                    $("#main-panel").removeClass("panel-default").addClass("panel-danger");
+                });
+            </script>
     }
 }

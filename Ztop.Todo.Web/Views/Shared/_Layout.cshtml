@@ -13,7 +13,7 @@
     @Scripts.Render("~/bundles/bootstrap")
 </head>
 <body>
-    <div class="navbar navbar-default ">
+    <div id="header" class="navbar navbar-default navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -36,12 +36,17 @@
             </div>
         </div>
     </div>
-    <div class="container body-content">
-        @RenderBody()
-        <footer>
-            <hr />
-          <p>&copy; @DateTime.Now.Year - 智拓</p>
-        </footer>
+    <div id="body" style="overflow:auto;">
+        <div class="container">
+            @RenderBody()
+            <div style="height:20px;"></div>
+        </div>
     </div>
 </body>
 </html>
+<script>
+    $(function () {
+        var topHeight = $("#header").height();
+        $("#body").height(document.documentElement.clientHeight - topHeight);
+    });
+</script>

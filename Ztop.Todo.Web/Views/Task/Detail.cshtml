@@ -24,9 +24,9 @@
     @foreach (var item in attachments)
     {
         <tr>
-            <td><a href="/attachment/download?id=@(item.ID)" target="_blank"> @(item.FileName)</a></td>
+            <td><a href="/attachment/download?id=@(item.ID)"> @(item.FileName)</a></td>
             <td>@(item.FileSize / 1024)k</td>
-            <td><a href="/attachment/download?id=@(item.ID)" target="_blank" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-eye-open"></i>下载</a></td>
+            <td><a href="/attachment/download?id=@(item.ID)" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-download"></i>下载</a></td>
         </tr>
     }
 </table>

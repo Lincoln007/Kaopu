@@ -21,11 +21,7 @@ namespace Ztop.Todo.Web.Controllers
             var fileData = Core.AttachmentManager.GetFileData(model);
             var contentType = WebUtility.GetContentType(model.FileName);
 
-            if (contentType.Contains("octet-stream"))
-            {
-                return File(fileData, contentType, model.FileName);
-            }
-            return File(fileData, contentType);
+            return File(fileData, contentType, model.FileName);
         }
     }
 }
