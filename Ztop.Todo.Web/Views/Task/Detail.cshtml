@@ -8,11 +8,44 @@
     User currentUser = ViewBag.CurrentUser;
 }
 <h3 class="page-header">
-    @(model.Title) 
+    @(model.Title)
+    @if (userTask.CompletedTime.HasValue)
+    {
+        <button class="btn btn-success btn-sm disabled"><i class="glyphicon glyphicon-check"></i> 已完成</button>
+    }
+    else
+    {
+        <button id="btn-complete" class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-check"></i> 完成任务</button>
+    }
+
+    <button id="btn-copy" class="btn btn-sm btn-info"><i class="glyphicon glyphicon-export"></i> 转发任务</button>
+    <button type="button" class="btn btn-sm btn-default" onclick="history.back();"><i class="glyphicon glyphicon-arrow-left"></i> 返回</button>
+    @if (model.CreatorID == currentUser.ID && model.IsCompleted == false)
+    {
+        <button id="btn-task-delete" class="btn btn-sm btn-danger" style="float:right;"><i class="glyphicon glyphicon-remove"></i> 删除该任务</button>
+    }
 </h3>
-<blockquote>
-    @(Html.Raw(HtmlUtils.ToHtml(model.Content)))
-</blockquote>
+<div class="col-lg-10">
+    <blockquote>
+        @(Html.Raw(HtmlUtils.ToHtml(model.Content)))
+    </blockquote>
+</div>
+<div class="col-lg-2">
+        @foreach (var ut in userTasks)
+        {
+            <div>
+                @(ut.User.DisplayName)
+                @if (ut.IsCompleted)
+                {
+                    <span class="label label-success">√</span>
+                }
+                else
+                {
+                    <span class="label label-default">未完成</span>
+                }
+            </div>
+        }
+</div>
 <hr />
 <h3>相关附件</h3>
 <table class="table">
@@ -29,30 +62,6 @@
             <td><a href="/attachment/download?id=@(item.ID)" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-download"></i>下载</a></td>
         </tr>
     }
-</table>
-<hr />
-<h3>任务进度</h3>
-<table class="table">
-    <tr>
-        <th>参与人员</th>
-        <th>是否完成</th>
-    </tr>
-@foreach (var ut in userTasks)
-{
-    <tr>
-        <td>@(ut.User.DisplayName)</td>
-        <td>
-            @if (ut.IsCompleted)
-            {
-                <span class="label label-success">已完成</span>
-            }
-            else
-            {
-                <span class="label label-default">未完成</span>
-            }
-        </td>
-    </tr>
-}
 </table>
 <hr />
 <h3>讨论</h3>
@@ -84,23 +93,9 @@
         <textarea id="txt-content" name="Content" class="form-control"></textarea>
     </div>
     <div class="form-group">
-        <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-check"></i> 提交</button>
-        <button type="button" class="btn btn-default" onclick="history.back();"><i class="glyphicon glyphicon-backward"></i> 返回</button>
+        <button type="submit" class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-check"></i> 提交评论</button>
     </div>
 </form>
-@if (userTask.CompletedTime.HasValue)
-{
-    <button class="btn btn-default disabled"><i class="glyphicon glyphicon-check"></i> 已完成</button>
-}
-else
-{
-    <button id="btn-complete" class="btn btn-success"><i class="glyphicon glyphicon-check"></i> 完成任务</button>
-}
-<button id="btn-copy" class="btn btn-info"><i class="glyphicon glyphicon-export"></i> 转发任务</button>
-@if (model.OwnerID == currentUser.ID)
-{
-    <button id="btn-task-delete" class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i> 删除该任务</button>
-}
 <script>
     $(function () {
         $(".btn-reply").click(function () {
@@ -118,6 +113,7 @@ else
             var data = $(this).serialize();
             $.request(url, data, function () {
                 $("#div-comments").append("<div class=well><p>" + content + "</p><span>@(((User)ViewBag.CurrentUser).DisplayName)</span></div>");
+                $("#txt-content").val('');
             });
             return false;
         });
@@ -153,7 +149,7 @@ else
         });
 
         $("#btn-copy").click(function () {
-            window.location.href="/task/copy?id=@(model.ID)";
+            window.location.href = "/task/copy?id=@(model.ID)";
             return false;
         });
     });

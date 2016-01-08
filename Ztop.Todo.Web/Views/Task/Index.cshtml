@@ -40,7 +40,7 @@
             <td>@(item.ID)</td>
             <td><a href="/task/detail?id=@(item.TaskID)">@(item.Title)</a> </td>
             <td>@(item.ScheduledTime.HasValue ? item.ScheduledTime.Value.ToShortDateString() : null)</td>
-            <td>@(item.Owner.DisplayName)</td>
+            <td>@(item.CreatorName)</td>
             <td>@(item.CreateTime.ToShortDateString())</td>
             <th>
                 @if (item.Completed)

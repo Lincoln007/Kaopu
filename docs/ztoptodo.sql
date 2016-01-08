@@ -48,13 +48,13 @@ CREATE TABLE IF NOT EXISTS `task` (
   `Title` varchar(128) NOT NULL,
   `Content` varchar(1024) NOT NULL,
   `ScheduledTime` datetime DEFAULT NULL,
-  `OwnerID` int(11) NOT NULL,
+  `CreatorID` int(11) NOT NULL,
   `IsCompleted` bit(1) NOT NULL,
   `ParentID` int(11) NOT NULL,
   `CreateTime` datetime NOT NULL,
   `Deleted` bit(1) NOT NULL,
   PRIMARY KEY (`ID`),
-  KEY `OwnerID` (`OwnerID`),
+  KEY `OwnerID` (`CreatorID`),
   KEY `ScheduledTime` (`ScheduledTime`),
   KEY `ParentID` (`ParentID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -85,6 +85,7 @@ CREATE TABLE IF NOT EXISTS `user_task` (
   `TaskID` int(11) NOT NULL DEFAULT '0',
   `CreateTime` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `CompletedTime` datetime DEFAULT NULL,
+  `HasRead` bit(1) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `UserID` (`UserID`),
   KEY `TaskID` (`TaskID`),
@@ -105,7 +106,8 @@ CREATE TABLE `user_task_view` (
 	`CreateTime` DATETIME NOT NULL,
 	`Title` VARCHAR(128) NOT NULL COLLATE 'utf8_general_ci',
 	`ScheduledTime` DATETIME NULL,
-	`OwnerID` INT(11) NOT NULL
+	`CreatorID` INT(11) NOT NULL,
+	`HasRead` BIT(1) NOT NULL
 ) ENGINE=MyISAM;
 
 
@@ -121,7 +123,8 @@ user_task.CompletedTime,
 user_task.CreateTime,
 task.Title,
 task.ScheduledTime,
-task.OwnerID
+task.CreatorID,
+user_task.HasRead
 FROM
 task
 INNER JOIN user_task ON task.ID = user_task.TaskID 

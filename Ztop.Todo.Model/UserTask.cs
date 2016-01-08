@@ -33,5 +33,7 @@ namespace Ztop.Todo.Model
         public DateTime CreateTime { get; set; }
 
         public DateTime? CompletedTime { get; set; }
+
+        public bool HasRead { get; set; }
     }
 }

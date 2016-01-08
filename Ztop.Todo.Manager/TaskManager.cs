@@ -15,18 +15,26 @@ namespace Ztop.Todo.Manager
             using (var db = GetDbContext())
             {
                 var query = db.UserTaskViews.Where(e => e.UserID == parameter.UserID);
-                if(!string.IsNullOrEmpty(parameter.SearchKey))
+                if (!string.IsNullOrEmpty(parameter.SearchKey))
                 {
                     query = query.Where(e => e.Title.Contains(parameter.SearchKey.Trim()));
                 }
 
-                if (parameter.IsCompleted)
+                if (parameter.IsCompleted.HasValue)
                 {
-                    query = query.Where(e => e.CompletedTime.HasValue);
+                    if (parameter.IsCompleted.Value)
+                    {
+                        query = query.Where(e => e.CompletedTime.HasValue);
+                    }
+                    else
+                    {
+                        query = query.Where(e => e.CompletedTime == null);
+                    }
                 }
-                else
+
+                if (parameter.HasRead.HasValue)
                 {
-                    query = query.Where(e => e.CompletedTime == null);
+                    query = query.Where(e => e.HasRead == parameter.HasRead.Value);
                 }
 
                 if (parameter.Order == UserTaskOrder.ScheduleTime)
@@ -38,12 +46,31 @@ namespace Ztop.Todo.Manager
                 {
                     list = query.OrderByDescending(e => e.ID).SetPage(parameter.Page).ToList();
                 }
-                foreach(var item in list)
+                foreach (var item in list)
                 {
-                    item.Owner = Core.UserManager.GetUser(item.OwnerID);
+                    item.CreatorName = Core.UserManager.GetUser(item.CreatorID).DisplayName;
                 }
             }
             return list;
+        }
+
+        public Task GetNewTask(int userId, DateTime minTime)
+        {
+            using (var db = GetDbContext())
+            {
+                var userTask = db.UserTasks.Where(e => e.UserID == userId 
+                && e.CompletedTime == null 
+                && e.HasRead == false
+                && e.CreateTime > minTime)
+                .OrderByDescending(e => e.ID).FirstOrDefault();
+                if (userTask != null)
+                {
+                    var task = db.Tasks.FirstOrDefault(e => e.ID == userTask.TaskID);
+                    task.CreatorName = Core.UserManager.GetUser(task.CreatorID).DisplayName;
+                    return task;
+                }
+            }
+            return null;
         }
 
         public bool HasRight(int taskId, int userId)
@@ -88,6 +115,21 @@ namespace Ztop.Todo.Manager
             }
         }
 
+
+        public void ReadTask(int taskId, int userId)
+        {
+            using (var db = GetDbContext())
+            {
+                var entity = db.UserTasks.FirstOrDefault(e => e.ID == taskId && e.UserID == userId);
+                if (entity != null)
+                {
+                    if (entity.HasRead) return;
+                    entity.HasRead = true;
+                    db.SaveChanges();
+                }
+            }
+        }
+
         public void Delete(int id)
         {
             using (var db = GetDbContext())
@@ -95,6 +137,10 @@ namespace Ztop.Todo.Manager
                 var entity = db.Tasks.FirstOrDefault(e => e.ID == id);
                 if (entity != null)
                 {
+                    if (entity.IsCompleted)
+                    {
+                        throw new Exception("任务已完成，无法删除");
+                    }
                     entity.Deleted = true;
                     db.SaveChanges();
                 }
@@ -153,7 +199,7 @@ namespace Ztop.Todo.Manager
                     entity.CompletedTime = DateTime.Now;
                 }
 
-                var task = db.Tasks.FirstOrDefault(e => e.ID == taskId && e.OwnerID == userId);
+                var task = db.Tasks.FirstOrDefault(e => e.ID == taskId && e.CreatorID == userId);
                 if (task != null)
                 {
                     task.IsCompleted = true;

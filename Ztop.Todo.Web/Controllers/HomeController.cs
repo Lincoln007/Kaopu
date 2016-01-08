@@ -11,10 +11,10 @@ namespace Ztop.Todo.Web.Controllers
     {
         public ActionResult Index()
         {
-            if (string.IsNullOrEmpty(CurrentUser.RealName))
-            {
-                return RedirectToAction("Register", "User");
-            }
+            //if (string.IsNullOrEmpty(CurrentUser.RealName))
+            //{
+            //    return RedirectToAction("Register", "User");
+            //}
 
             ViewBag.NewList = Core.TaskManager.GetUserTasks(new Model.UserTaskQueryParameter
             {

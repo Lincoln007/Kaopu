@@ -15,7 +15,7 @@
             <small>@Html.Raw(ex.StackTrace.Replace("\n", "<br />"))</small>
         </blockquote>
         <hr />
-            @if (Request.UrlReferrer != null)
+            if (Request.UrlReferrer != null)
             {
                 <a href="@(Request.UrlReferrer.ToString())" class="btn btn-default">返回</a>
             }

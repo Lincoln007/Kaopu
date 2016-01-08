@@ -31,7 +31,10 @@ namespace Ztop.Todo.Model
         /// <summary>
         /// 创建者ID
         /// </summary>
-        public int OwnerID { get; set; }
+        public int CreatorID { get; set; }
+
+        [NotMapped]
+        public string CreatorName { get; set; }
 
         public bool IsCompleted { get; set; }
 

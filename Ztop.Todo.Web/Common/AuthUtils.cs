@@ -22,12 +22,21 @@ namespace Ztop.Todo.Web
 
         public static int GetUserID(this HttpContextBase context)
         {
-            var cookie = context.Request.Cookies.Get(_cookieName);
-            if (cookie != null)
+            var token = context.Request.Headers["token"];
+            if (string.IsNullOrEmpty(token))
+            {
+                var cookie = context.Request.Cookies.Get(_cookieName);
+                if (cookie != null)
+                {
+                    token = cookie.Value;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(token))
             {
                 try
                 {
-                    var ticket = FormsAuthentication.Decrypt(cookie.Value);
+                    var ticket = FormsAuthentication.Decrypt(token);
                     if (ticket != null && !string.IsNullOrEmpty(ticket.Name))
                     {
                         var userId = 0;

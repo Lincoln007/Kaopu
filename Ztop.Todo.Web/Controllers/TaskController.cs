@@ -9,12 +9,12 @@ namespace Ztop.Todo.Web.Controllers
 {
     public class TaskController : ControllerBase
     {
-        public ActionResult Index(string keyword, int completed = 0, int page = 1, int rows = 20)
+        public ActionResult Index(string keyword, int? completed, int page = 1, int rows = 20)
         {
             var parameter = new UserTaskQueryParameter
             {
                 SearchKey = keyword,
-                IsCompleted = completed == 1,
+                IsCompleted = completed == null ? default(bool?) : (completed.Value == 1),
                 UserID = CurrentUser.ID,
                 Page = new PageParameter(page, rows),
             };
@@ -34,6 +34,8 @@ namespace Ztop.Todo.Web.Controllers
             {
                 ViewBag.Users = Core.TaskManager.GetUsers(id);
                 ViewBag.Attachments = Core.AttachmentManager.GetList(model.ID);
+                //标记已读
+                Core.TaskManager.ReadTask(model.ID, CurrentUser.ID);
             }
             ViewBag.AllUsers = Core.UserManager.GetAllUsers();
             return View();
@@ -43,7 +45,7 @@ namespace Ztop.Todo.Web.Controllers
         {
             var model = Core.TaskManager.GetModel(data.ID) ?? new Task
             {
-                OwnerID = CurrentUser.ID,
+                CreatorID = CurrentUser.ID,
             };
             model.ScheduledTime = data.ScheduledTime;
             model.Title = data.Title;
@@ -123,7 +125,7 @@ namespace Ztop.Todo.Web.Controllers
                     Title = data.Title,
                     Content = data.Content,
                     ScheduledTime = data.ScheduledTime,
-                    OwnerID = CurrentUser.ID,
+                    CreatorID = CurrentUser.ID,
                     ParentID = data.ID,
                 };
             }
@@ -166,7 +168,7 @@ namespace Ztop.Todo.Web.Controllers
             var model = Core.TaskManager.GetModel(id);
             if (model != null)
             {
-                if (model.OwnerID != CurrentUser.ID)
+                if (model.CreatorID != CurrentUser.ID)
                 {
                     throw new HttpException(401, "你没有权限删除该任务");
                 }
@@ -203,6 +205,13 @@ namespace Ztop.Todo.Web.Controllers
                 return SuccessJsonResult();
             }
             throw new ArgumentException("参数错误，没找到该评论");
+        }
+
+        public ActionResult GetNewTask(DateTime lastGetTime)
+        {
+            var task = Core.TaskManager.GetNewTask(CurrentUser.ID, lastGetTime);
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(task);
+            return Content(json);
         }
     }
 }

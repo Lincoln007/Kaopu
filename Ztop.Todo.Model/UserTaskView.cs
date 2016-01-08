@@ -30,11 +30,13 @@ namespace Ztop.Todo.Model
 
         public DateTime? ScheduledTime { get; set; }
 
+        public bool HasRead { get; set; }
+
         public DateTime CreateTime { get; set; }
 
-        public int OwnerID { get; set; }
+        public int CreatorID { get; set; }
 
         [NotMapped]
-        public User Owner { get; set; }
+        public string CreatorName { get; set; }
     }
 }
