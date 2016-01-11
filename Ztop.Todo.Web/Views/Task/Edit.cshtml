@@ -2,8 +2,6 @@
     Task model = ViewBag.Model;
     ViewBag.Title = model.ID > 0 ? "修改任务" : "创建任务";
     List<Attachment> files = ViewBag.Attachments;
-    List<User> allUsers = ViewBag.AllUsers;
-    List<User> selectedUsers = ViewBag.Users ?? new List<User>();
 }
 <style>
     #panel-selected-users {
@@ -37,19 +35,7 @@
             <input type="text" id="datetimepicker1" class="form-control" name="ScheduledTime" value="@(model.ScheduledTime.HasValue?model.ScheduledTime.Value.ToShortDateString():null)" />
         </div>
     </div>
-    <div class="form-group">
-        <label class="control-label col-lg-2">参与人员</label>
-        <div class="col-lg-4">
-            <input type="hidden" name="userIds" id="txt-userIds" />
-            <div id="panel-selected-users">
-                @foreach (var user in selectedUsers)
-                {
-                    <span class="selected-user label label-default" data-userid="@(user.ID)">@(user.DisplayName) <a href="javascript:;" class="btn btn-remove-user"><i class="glyphicon glyphicon-remove"></i></a></span>
-                }
-            </div>
-            <input type="text" class="form-control" id="txt-user" style="width:200px;" placeholder="输入姓名查询" />
-        </div>
-    </div>
+    @Html.Action("SelectUser", new { taskId = model.ID })
     <div class="form-group">
         <label class="control-label col-lg-2">
             附件
@@ -131,33 +117,5 @@
             minDate: '@(DateTime.Today.ToShortDateString())'
         });
 
-        var users = @Html.Raw(allUsers.Select(e => new { value = e.DisplayName, data = e.ID }).ToJson());
-        $("#txt-user").autocomplete({
-            lookup: users,
-            minChars: 1,
-            onSelect: function (selected) {
-                $("#panel-selected-users").append('<span class="selected-user label label-default" data-userid="'+
-                    selected.data+'">'+selected.value +
-                    '<a href="javascript:;" class="btn btn-xs btn-remove-user"><i class="glyphicon glyphicon-remove"></i></a></label>');
-                $("#txt-user").val("");
-
-                $(".btn-remove-user").unbind("click").bind("click",function(){
-                    $(this).parent().remove();
-                });
-            },
-            autoSelectFirst:true,
-            //beforeRender: function (container) {
-            //    console.log(arguments);
-            //},
-            //onSearchComplete: function (query, suggestions) {
-            //    console.log(arguments);
-            //},
-            showNoSuggestionNotice: true,
-            noSuggestionNotice: '没有匹配的姓名',
-        });
-
-        $(".btn-remove-user").unbind("click").bind("click",function(){
-            $(this).parent().remove();
-        });
     });
 </script>

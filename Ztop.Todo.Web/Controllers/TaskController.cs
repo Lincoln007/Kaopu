@@ -32,11 +32,18 @@ namespace Ztop.Todo.Web.Controllers
             ViewBag.Model = model;
             if (model != null && model.ID > 0)
             {
-                ViewBag.Users = Core.TaskManager.GetUsers(id);
                 ViewBag.Attachments = Core.AttachmentManager.GetList(model.ID);
-                //标记已读
-                Core.TaskManager.ReadTask(model.ID, CurrentUser.ID);
             }
+            return View();
+        }
+
+        public ActionResult SelectUser(int taskId = 0)
+        {
+            if(taskId>0)
+            {
+                ViewBag.Users = Core.TaskManager.GetUsers(taskId);
+            }
+            ViewBag.Groups = Core.UserManager.GetUserGroups();
             ViewBag.AllUsers = Core.UserManager.GetAllUsers();
             return View();
         }
@@ -91,6 +98,8 @@ namespace Ztop.Todo.Web.Controllers
                 ViewBag.UserTask = userTask;
                 ViewBag.Comments = Core.CommentManager.GetList(model.ID);
                 ViewBag.Attachments = Core.AttachmentManager.GetList(model.ID);
+                //标记已读
+                Core.TaskManager.ReadTask(model.ID, CurrentUser.ID);
             }
             else
             {

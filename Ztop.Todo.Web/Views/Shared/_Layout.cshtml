@@ -1,5 +1,11 @@
 ﻿@{
     User user = ViewBag.CurrentUser;
+    if(user == null)
+    {
+        Response.Write("授权失败");
+        RenderBody();
+        return;
+    }
 }
 <!DOCTYPE html>
 <html>

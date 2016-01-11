@@ -17,6 +17,8 @@ namespace Ztop.Todo.Manager
 
         public DbSet<User> Users { get; set; }
 
+        public DbSet<UserGroup> UserGroups { get; set; }
+
         public DbSet<Model.Task> Tasks { get; set; }
 
         public DbSet<UserTask> UserTasks { get; set; }

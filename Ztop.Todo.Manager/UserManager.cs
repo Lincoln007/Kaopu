@@ -10,31 +10,32 @@ namespace Ztop.Todo.Manager
 {
     public class UserManager : ManagerBase
     {
-        private string _cacheKey = "users";
+        private string _userCacheKey = "users";
+        private string _groupCacheKey = "user_groups";
 
         public List<User> GetAllUsers()
         {
-            if (!Cache.Exists(_cacheKey))
+            if (!Cache.Exists(_userCacheKey))
             {
                 using (var db = GetDbContext())
                 {
                     var list = db.Users.ToList();
                     foreach (var user in list)
                     {
-                        Cache.HSet(_cacheKey, user.ID.ToString(), user);
+                        Cache.HSet(_userCacheKey, user.ID.ToString(), user);
                     }
                 }
             }
-            return Cache.HGetAll<User>(_cacheKey);
+            return Cache.HGetAll<User>(_userCacheKey);
         }
 
         public User GetUser(int id)
         {
-            if (!Cache.Exists(_cacheKey))
+            if (!Cache.Exists(_userCacheKey))
             {
                 GetAllUsers();
             }
-            return Cache.HGet<User>(_cacheKey, id.ToString());
+            return Cache.HGet<User>(_userCacheKey, id.ToString());
         }
 
         public User GetUser(string username)
@@ -73,18 +74,39 @@ namespace Ztop.Todo.Manager
                 }
                 db.SaveChanges();
             }
-            Cache.HSet(_cacheKey, user.ID.ToString(), user);
+            Cache.HSet(_userCacheKey, user.ID.ToString(), user);
+        }
+
+        public List<UserGroup> GetUserGroups()
+        {
+            return Cache.GetOrSet(_groupCacheKey, () =>
+            {
+                using (var db = GetDbContext())
+                {
+                    return db.UserGroups.ToList();
+                }
+            });
+        }
+
+        public UserGroup GetUserGroup(int id)
+        {
+            return GetUserGroups().FirstOrDefault(e => e.ID == id);
+        }
+
+        public UserGroup GetUserGroup(string name)
+        {
+            return GetUserGroups().FirstOrDefault(e => e.Name == name);
         }
 
         public void UpdateLogin(User user)
         {
-            using(var db = GetDbContext())
+            using (var db = GetDbContext())
             {
                 var entity = db.Users.FirstOrDefault(e => e.ID == user.ID);
                 entity.LoginTimes++;
                 entity.LastLoginTime = DateTime.Now;
                 db.SaveChanges();
-                Cache.HSet(_cacheKey, user.ID.ToString(), user);
+                Cache.HSet(_userCacheKey, user.ID.ToString(), user);
             }
         }
     }

@@ -15,6 +15,8 @@ namespace Ztop.Todo.Model
         [DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
 
+        public int GroupID { get; set; }
+
         public string Username { get; set; }
 
         [NotMapped]
