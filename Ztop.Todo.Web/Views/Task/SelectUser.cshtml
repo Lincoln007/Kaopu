@@ -9,11 +9,19 @@
     <div class="col-lg-8">
         @foreach(var group in groups)
         {
-            <h4>@(group.Name)</h4>
-            foreach (var user in allUsers.Where(e => e.GroupID == group.ID))
-            {
-                <label class="checkbox-inline col-lg-2"><input type="checkbox" name="userIds" value="@(user.ID)" />@(user.DisplayName)</label>
-            }
+            <table class="table">
+                <tr>
+                    <th>@(group.Name)</th>
+                </tr>
+               <tr>
+                    <td>
+                        @foreach (var user in allUsers.Where(e => e.GroupID == group.ID))
+                        {
+                            <label class="checkbox-inline"><input type="checkbox" name="userIds" value="@(user.ID)" />@(user.DisplayName)</label>
+                        }
+                    </td>
+                </tr>
+            </table>
         }
     </div>
 </div>
