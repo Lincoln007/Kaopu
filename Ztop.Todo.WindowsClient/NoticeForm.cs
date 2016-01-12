@@ -25,6 +25,8 @@ namespace Ztop.Todo.WindowsClient
             _duration--;
             if(_duration == 0)
             {
+                timer1.Stop();
+                timer1.Dispose();
                 this.Close();
             }
         }
@@ -44,6 +46,7 @@ namespace Ztop.Todo.WindowsClient
             {
                 if (form is MainForm)
                 {
+                    form.TopMost = true;
                     form.Show();
                     ((MainForm)form).OpenTask(Task);
                 }
@@ -59,6 +62,13 @@ namespace Ztop.Todo.WindowsClient
         private void labContent_Click(object sender, EventArgs e)
         {
             btnTitle_LinkClicked(null, null);
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            timer1.Stop();
+            timer1.Dispose();
+            base.OnClosed(e);
         }
     }
 }
