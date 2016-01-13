@@ -55,11 +55,13 @@ namespace Ztop.Todo.Manager
         {
             using (var db = GetDbContext())
             {
+                var group = GetOrSetUserGroup(user.GroupName);
                 if (user.ID > 0)
                 {
                     var entity = db.Users.FirstOrDefault(e => e.ID == user.ID);
                     if (entity != null)
                     {
+                        entity.GroupID = group.ID;
                         entity.RealName = user.RealName;
                     }
                 }
@@ -70,11 +72,28 @@ namespace Ztop.Todo.Manager
                     {
                         throw new ArgumentException("用户名已被使用");
                     }
+                    user.GroupID = group.ID;
                     db.Users.Add(user);
                 }
                 db.SaveChanges();
             }
             Cache.HSet(_userCacheKey, user.ID.ToString(), user);
+        }
+
+        private UserGroup GetOrSetUserGroup(string groupName)
+        {
+            if (string.IsNullOrEmpty(groupName)) return null;
+            var group = GetUserGroup(groupName);
+            if(group == null)
+            {
+                using (var db = GetDbContext())
+                {
+                    group = new UserGroup { Name = groupName };
+                    db.UserGroups.Add(group);
+                    db.SaveChanges();
+                }
+            }
+            return group;
         }
 
         public List<UserGroup> GetUserGroups()

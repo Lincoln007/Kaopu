@@ -20,6 +20,9 @@ namespace Ztop.Todo.Model
         public string Username { get; set; }
 
         [NotMapped]
+        public string GroupName { get; set; }
+
+        [NotMapped]
         public string DisplayName
         {
             get
