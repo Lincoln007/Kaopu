@@ -66,12 +66,25 @@ CREATE TABLE IF NOT EXISTS `task` (
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE IF NOT EXISTS `user` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `GroupID` int(11) NOT NULL DEFAULT '0',
   `Username` varchar(50) NOT NULL DEFAULT '0',
   `RealName` varchar(50) DEFAULT '0',
   `LoginTimes` int(11) DEFAULT '0',
   `LastLoginTime` datetime DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`ID`),
-  KEY `Username` (`Username`)
+  KEY `Username` (`Username`),
+  KEY `GroupID` (`GroupID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- 数据导出被取消选择。
+
+
+-- 导出  表 ztoptodo.user_group 结构
+DROP TABLE IF EXISTS `user_group`;
+CREATE TABLE IF NOT EXISTS `user_group` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `Name` varchar(128) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- 数据导出被取消选择。

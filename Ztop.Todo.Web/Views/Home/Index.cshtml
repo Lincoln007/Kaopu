@@ -12,7 +12,7 @@
         @foreach (var item in newList)
         {
             <li>
-                <a href="/task/detail?id=@(item.ID)">@(item.Title)</a>
+                <a href="/task/detail?id=@(item.TaskID)">@(item.Title)</a>
                 <span class="label label-default">@(item.CreatorName)</span>
             </li>
         }
@@ -24,7 +24,7 @@
         @foreach (var item in completeList)
         {
             <li>
-                <a href="/task/detail?id=@(item.ID)">@(item.Title)</a>
+                <a href="/task/detail?id=@(item.TaskID)">@(item.Title)</a>
                 <span>@(item.ScheduledTime.HasValue ? item.ScheduledTime.Value.ToShortDateString() : null)</span>
             </li>
         }

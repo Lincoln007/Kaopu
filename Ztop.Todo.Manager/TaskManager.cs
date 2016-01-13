@@ -120,7 +120,7 @@ namespace Ztop.Todo.Manager
         {
             using (var db = GetDbContext())
             {
-                var entity = db.UserTasks.FirstOrDefault(e => e.ID == taskId && e.UserID == userId);
+                var entity = db.UserTasks.FirstOrDefault(e => e.TaskID == taskId && e.UserID == userId);
                 if (entity != null)
                 {
                     if (entity.HasRead) return;

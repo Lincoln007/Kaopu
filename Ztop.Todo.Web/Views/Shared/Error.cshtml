@@ -12,7 +12,7 @@
         <h1 class="page-header">@(ViewBag.Title)</h1>
         <blockquote>
             <p>@(ex.Message)</p>
-            <small>@Html.Raw(ex.StackTrace.Replace("\n", "<br />"))</small>
+            @*<small>@Html.Raw(ex.StackTrace.Replace("\n", "<br />"))</small>*@
         </blockquote>
         <hr />
             if (Request.UrlReferrer != null)

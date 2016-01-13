@@ -46,7 +46,6 @@ namespace Ztop.Todo.WindowsClient
             {
                 if (form is MainForm)
                 {
-                    form.TopMost = true;
                     form.Show();
                     ((MainForm)form).OpenTask(Task);
                 }

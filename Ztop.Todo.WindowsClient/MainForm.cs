@@ -16,7 +16,7 @@ namespace Ztop.Todo.WindowsClient
         public MainForm()
         {
             InitializeComponent();
-
+            
             webControl1.Source = new Uri(ServerHelper.GetServerUrl());
             webControl1.DocumentReady += WebControl1_DocumentReady;
 
@@ -94,11 +94,13 @@ namespace Ztop.Todo.WindowsClient
 
         private void 退出ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            WebCore.DestroyUnwrappedViews();
             webControl1.Dispose();
+            WebCore.DestroyUnwrappedViews();
+
             timer1.Stop();
             timer1.Dispose();
             Application.Exit();
+            System.Environment.Exit(0);
         }
     }
 }
