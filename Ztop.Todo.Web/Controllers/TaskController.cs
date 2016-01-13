@@ -39,7 +39,7 @@ namespace Ztop.Todo.Web.Controllers
 
         public ActionResult SelectUser(int taskId = 0)
         {
-            if(taskId>0)
+            if (taskId > 0)
             {
                 ViewBag.Users = Core.TaskManager.GetUsers(taskId);
             }
