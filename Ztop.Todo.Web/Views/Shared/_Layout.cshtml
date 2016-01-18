@@ -1,11 +1,6 @@
 ﻿@{
     User user = ViewBag.CurrentUser;
-    if(user == null)
-    {
-        Response.Write("授权失败");
-        RenderBody();
-        return;
-    }
+   
 }
 <!DOCTYPE html>
 <html>
@@ -13,10 +8,13 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - 智拓TODO</title>
-    @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
+    <link href="~/Content/bootstrap.min.css" type="text/css" />
+    <link href="~/Content/bootstrap.custom.css" type="text/css" />
+    <link href="~/Content/jquery.datetimepicker.css" type="text/css" />
+    <script src="~/Scripts/jquery-1.9.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.js"></script>
+    <script src="~/Scripts/jquery.datetimepicker.js"></script>
+    <script src="~/Scripts/common.js"></script>
 </head>
 <body>
     <div id="header" class="navbar navbar-default navbar-fixed-top">

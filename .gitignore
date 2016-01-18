@@ -17,3 +17,14 @@
 /Ztop.Todo.WindowsClient/obj/Debug/TempPE
 /Ztop.Todo.WindowsClient/obj/Debug
 /.vs/config/applicationhost.config
+/packages
+/Ztop.Todo.Common/bin/Release
+/Ztop.Todo.Common/obj/Release
+/Ztop.Todo.Manager/bin/Release
+/Ztop.Todo.Manager/obj/Release
+/Ztop.Todo.Model/bin/Release
+/Ztop.Todo.Model/obj/Release
+/Ztop.Todo.Web/obj/Release
+/Ztop.Todo.WindowsClient/bin/Release
+/Ztop.Todo.WindowsClient/obj/Release/TempPE
+/Ztop.Todo.WindowsClient/obj/Release

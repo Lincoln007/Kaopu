@@ -15,7 +15,7 @@ namespace Ztop.Todo.WindowsClient
             return System.Configuration.ConfigurationManager.AppSettings["Server"];
         }
 
-        private static DateTime _lastGetTime = DateTime.MinValue;
+        private static DateTime _lastGetTime = DateTime.Today;
 
         public static string GetTaskUrl(Task task)
         {
