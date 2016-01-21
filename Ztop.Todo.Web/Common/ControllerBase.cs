@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using Ztop.Todo.Manager;
 using Ztop.Todo.Common;
 using Ztop.Todo.Model;
+using Ztop.Todo.Web.Common;
 
 namespace Ztop.Todo.Web.Controllers
 {
@@ -18,6 +19,13 @@ namespace Ztop.Todo.Web.Controllers
         protected ManagerCore Core = ManagerCore.Instance;
 
         protected User CurrentUser { get; private set; }
+        protected UserIdentity Identity
+        {
+            get
+            {
+                return (UserIdentity)HttpContext.User.Identity;
+            }
+        }
 
         protected ActionResult SuccessJsonResult(object data = null)
         {
@@ -43,10 +51,14 @@ namespace Ztop.Todo.Web.Controllers
             }
             else
             {
-                var user = Core.UserManager.GetUser(Thread.CurrentPrincipal.Identity.Name);
+                if (string.IsNullOrEmpty(Identity.UserName))
+                {
+                    return null;
+                }
+                var user = Core.UserManager.GetUser(Identity.UserName);
                 if (user == null)
                 {
-                    CurrentUser = new User { Username = Thread.CurrentPrincipal.Identity.Name };
+                    CurrentUser = new User { Username = Identity.UserName };
                     Core.UserManager.Save(CurrentUser);
                 }
                 else

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Security;
 using Ztop.Todo.Model;
+using Ztop.Todo.Web.Common;
 
 namespace Ztop.Todo.Web
 {
@@ -13,11 +14,34 @@ namespace Ztop.Todo.Web
 
         public static void SaveAuth(this HttpContextBase context, User user)
         {
-            var ticket = new FormsAuthenticationTicket(user.ID.ToString(), true, 60);
+            var ticket = new FormsAuthenticationTicket(user.ID.ToString()+"|"+user.Username, true, 60);
             var cookieValue = FormsAuthentication.Encrypt(ticket);
             var cookie = new HttpCookie(_cookieName, cookieValue);
             context.Response.Cookies.Remove(_cookieName);
             context.Response.Cookies.Add(cookie);
+        }
+        public static UserIdentity GetCurrentUser(this HttpContextBase context)
+        {
+            var cookie = context.Request.Cookies.Get(_cookieName);
+            if (cookie != null)
+            {
+                if (!string.IsNullOrEmpty(cookie.Value))
+                {
+                    var ticket = FormsAuthentication.Decrypt(cookie.Value);
+                    if (ticket != null && !string.IsNullOrEmpty(ticket.Name))
+                    {
+                        var values = ticket.Name.Split('|');
+                        if (values.Length == 2)
+                        {
+                            return new UserIdentity
+                            {
+                                UserName = values[1]
+                            };
+                        }
+                    }
+                }
+            }
+            return UserIdentity.Guest;
         }
 
         public static int GetUserID(this HttpContextBase context)
@@ -39,9 +63,14 @@ namespace Ztop.Todo.Web
                     var ticket = FormsAuthentication.Decrypt(token);
                     if (ticket != null && !string.IsNullOrEmpty(ticket.Name))
                     {
-                        var userId = 0;
-                        int.TryParse(ticket.Name, out userId);
-                        return userId;
+                        var values = ticket.Name.Split('|');
+                        if (values.Length == 2)
+                        {
+                            var userId = 0;
+                            int.TryParse(values[0], out userId);
+                            return userId;
+                        }
+                        
                     }
                 }
                 catch

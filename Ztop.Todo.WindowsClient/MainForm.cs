@@ -13,6 +13,9 @@ namespace Ztop.Todo.WindowsClient
 {
     public partial class MainForm : Form
     {
+        public string UserName { get; set; }
+        public string Password { get; set; }
+        public LoginForm login { get; set; }
         public MainForm()
         {
             InitializeComponent();
@@ -99,8 +102,17 @@ namespace Ztop.Todo.WindowsClient
 
             timer1.Stop();
             timer1.Dispose();
+            if (login != null)
+            {
+                login.Close();
+            }
             Application.Exit();
             System.Environment.Exit(0);
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            
         }
     }
 }
