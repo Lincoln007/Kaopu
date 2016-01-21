@@ -7,6 +7,7 @@ using Ztop.Todo.Model;
 
 namespace Ztop.Todo.Web.Controllers
 {
+    [UserAuthorize]
     public class TaskController : ControllerBase
     {
         public ActionResult Index(string keyword, int? completed, int page = 1, int rows = 20)

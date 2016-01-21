@@ -9,11 +9,15 @@ namespace Ztop.Todo.Web.Controllers
 {
     public class HomeController : ControllerBase
     {
-        public ActionResult Index()
+        public ActionResult Index(string Name=null,string Password=null)
         {
-            if (!Identity.IsAuthenticated)
+           if (!Identity.IsAuthenticated)
             {
-                return Redirect("/User/Login");
+                if (!ADLogin(Name, Password))
+                {
+                    return Redirect("/User/Login");
+                }
+                
             }
             if (string.IsNullOrEmpty(CurrentUser.RealName))
             {

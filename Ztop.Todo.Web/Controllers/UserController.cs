@@ -34,16 +34,8 @@ namespace Ztop.Todo.Web.Controllers
         [HttpPost]
         public ActionResult Login(string Username,string Password)
         {
-            if (Ztop.Todo.Common.ADController.Login(Username, Password))
+            if (ADLogin(Username, Password))
             {
-                var user = Core.UserManager.GetUser(Username);
-                if (user == null)
-                {
-                    user = new User { Username = Username };
-                    Core.UserManager.Save(user);
-                }
-                HttpContext.SaveAuth(user);
-                Core.UserManager.UpdateLogin(user);
                 return Redirect("/Home/Index");
             }
             return View();

@@ -22,10 +22,8 @@ namespace Ztop.Todo.WindowsClient
             {
                 if(Ztop.Todo.Common.ADController.Login(NameText.Text, PasswordText.Text))
                 {
-                    var form = new MainForm();
+                    var form = new MainForm(NameText.Text,PasswordText.Text);
                     form.login = this;
-                    form.Name = NameText.Text;
-                    form.Password = PasswordText.Text;
                     form.Show();
                     this.Hide();
                     //if (Form != null)

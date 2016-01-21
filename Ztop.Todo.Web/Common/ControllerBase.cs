@@ -13,7 +13,7 @@ using Ztop.Todo.Web.Common;
 
 namespace Ztop.Todo.Web.Controllers
 {
-    [UserAuthorize]
+    
     public class ControllerBase : AsyncController
     {
         protected ManagerCore Core = ManagerCore.Instance;
@@ -69,6 +69,26 @@ namespace Ztop.Todo.Web.Controllers
                 Core.UserManager.UpdateLogin(CurrentUser);
             }
             return CurrentUser;
+        }
+        protected bool ADLogin(string Name,string Password)
+        {
+            if (!string.IsNullOrEmpty(Name) && !string.IsNullOrEmpty(Password))
+            {
+                if (Ztop.Todo.Common.ADController.Login(Name, Password))
+                {
+                    var user = Core.UserManager.GetUser(Name);
+                    if (user == null)
+                    {
+                        user = new User { Username = Name };
+                        Core.UserManager.Save(user);
+                    }
+                    CurrentUser = user;
+                    ViewBag.CurrentUser = CurrentUser;
+                    HttpContext.SaveAuth(user);
+                    return true;
+                }
+            }
+            return false;
         }
 
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
