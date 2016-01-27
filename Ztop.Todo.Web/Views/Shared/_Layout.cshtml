@@ -1,6 +1,18 @@
 ﻿@{
     User user = ViewBag.CurrentUser;
-   
+    if (user == null)
+    {
+        RenderBody();
+        <div>
+            登录失败
+            <br />
+            当前windows用户：
+            @System.Threading.Thread.CurrentPrincipal.Identity.Name
+            获取的用户ID：
+            @AuthUtils.GetUserID(Context)
+        </div>
+        return;
+    }
 }
 <!DOCTYPE html>
 <html>
@@ -8,9 +20,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - 智拓TODO</title>
-    <link href="~/Content/bootstrap.min.css" type="text/css" />
-    <link href="~/Content/bootstrap.custom.css" type="text/css" />
-    <link href="~/Content/jquery.datetimepicker.css" type="text/css" />
+    <link href="~/Content/bootstrap.css" type="text/css" rel="stylesheet" />
+    <link href="~/Content/bootstrap.custom.css" type="text/css"  rel="stylesheet"/>
+    <link href="~/Content/jquery.datetimepicker.css" type="text/css"  rel="stylesheet"/>
     <script src="~/Scripts/jquery-1.9.1.min.js"></script>
     <script src="~/Scripts/bootstrap.js"></script>
     <script src="~/Scripts/jquery.datetimepicker.js"></script>

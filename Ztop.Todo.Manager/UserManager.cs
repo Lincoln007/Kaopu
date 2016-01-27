@@ -55,7 +55,7 @@ namespace Ztop.Todo.Manager
         {
             using (var db = GetDbContext())
             {
-                var group = GetOrSetUserGroup(user.GroupName);
+                var group = GetOrSetUserGroup(user.GroupName) ?? new UserGroup();
                 if (user.ID > 0)
                 {
                     var entity = db.Users.FirstOrDefault(e => e.ID == user.ID);
