@@ -7,26 +7,26 @@
     var users = allUsers.GroupBy(e => e.GroupID).ToDictionary(g => g.Key, g => g.ToList());
 }
 <div class="form-group">
-    <label class="control-label col-lg-2">选择人员</label>
-    <div class="col-lg-8">
-        @foreach (var g in users)
-        {
-            var groupId = g.Key;
-            var group = groups.FirstOrDefault(e => e.ID == groupId) ?? new UserGroup { ID = 0, Name = "未分组" };
-            <table class="table">
-                <tr>
-                    <th>@(group.Name)</th>
-                </tr>
-                <tr>
-                    <td>
-                        @foreach (var user in g.Value.Where(e => e.GroupID == group.ID))
-                        {
-                            <label class="checkbox-inline"><input type="checkbox" name="userIds" value="@(user.ID)" />@(user.DisplayName)</label>
-                        }
-                    </td>
-                </tr>
-            </table>
-
-        }
+    <div>
+        <label class="label-control">选择成员</label>
     </div>
+    @foreach (var g in users)
+    {
+        var groupId = g.Key;
+        var group = groups.FirstOrDefault(e => e.ID == groupId) ?? new UserGroup { ID = 0, Name = "未分组" };
+        <table class="table">
+            <tr>
+                <th>@(group.Name)</th>
+            </tr>
+            <tr>
+                <td>
+                    @foreach (var user in g.Value.Where(e => e.GroupID == group.ID))
+                    {
+                        <label class="checkbox-inline"><input type="checkbox" name="userIds" value="@(user.ID)" />@(user.DisplayName)</label>
+                    }
+                </td>
+            </tr>
+        </table>
+
+    }
 </div>

@@ -70,6 +70,7 @@ namespace Ztop.Todo.Web.Controllers
             }
             return CurrentUser;
         }
+
         protected bool ADLogin(string Name,string Password)
         {
             if (!string.IsNullOrEmpty(Name) && !string.IsNullOrEmpty(Password))

@@ -4,64 +4,72 @@
     List<Attachment> files = ViewBag.Attachments;
 }
 <style>
-    #panel-selected-users {
-        margin-bottom: 5px;
-    }
-
-    .selected-user {
-        margin: 2px;
-    }
+    #panel-selected-users { margin-bottom: 5px; }
+    .form-horizontal .form-group { margin-left: 0px; margin-right: 0px; }
+    .selected-user { margin: 2px; }
 </style>
-<h3 class="page-header">
+<h3>
     @(ViewBag.Title)
 </h3>
 <form id="form-task" method="post" action="/task/save" class="form-horizontal" enctype="multipart/form-data">
     <input type="hidden" name="ID" value="@(model.ID)" />
-    <div class="form-group">
-        <label class="control-label col-lg-2">标题</label>
-        <div class="col-lg-8">
-            <input type="text" class="form-control" name="Title" value="@(model.Title)" />
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="control-label col-lg-2">内容</label>
-        <div class="col-lg-8">
-            <textarea class="form-control" name="Content" rows="4">@(model.Content)</textarea>
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="control-label col-lg-2">完成时间</label>
-        <div class="col-lg-2">
-            <input type="text" id="datetimepicker1" class="form-control" name="ScheduledTime" value="@(model.ScheduledTime.HasValue?model.ScheduledTime.Value.ToShortDateString():null)" />
-        </div>
-    </div>
-    @Html.Action("SelectUser", new { taskId = model.ID })
-    <div class="form-group">
-        <label class="control-label col-lg-2">
-            附件
-        </label>
-        <div class="col-lg-8">
-            <a href="javascript:;" id="btn-add" class="btn btn-success btn-sm" style="margin-bottom:5px;"><i class="glyphicon glyphicon-open-file"></i> 添加附件</a>
-            @if (files != null)
+    <table class="table">
+        <tr>
+            <td>
+                <div class="form-group">
+                    <label class="control-label col-lg-2">标题</label>
+                    <div class="col-lg-8">
+                        <input type="text" class="form-control" name="Title" value="@(model.Title)" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-lg-2">内容</label>
+                    <div class="col-lg-8">
+                        <textarea class="form-control" name="Content" rows="4">@(model.Content)</textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-lg-2">完成时间</label>
+                    <div class="col-lg-8">
+                        <input type="text" id="datetimepicker1" class="form-control" style="width:30%;margin-right:20px; float:left;" name="ScheduledTime" value="@(model.ScheduledTime.HasValue?model.ScheduledTime.Value.ToShortDateString():null)" />
+                        <a href="javascript:;" data="1" class="btn btn-default btn-schedule">一天</a>
+                        <a href="javascript:;" data="3" class="btn btn-default btn-schedule">三天</a>
+                        <a href="javascript:;" data="7" class="btn btn-default btn-schedule">一周</a>
+                        <a href="javascript:;" data="30" class="btn btn-default btn-schedule">一月</a>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-lg-2">
+                        附件
+                    </label>
+                    <div class="col-lg-8">
+                        <a href="javascript:;" id="btn-add" class="btn btn-success btn-sm" style="margin-bottom:5px;"><i class="glyphicon glyphicon-open-file"></i> 添加附件</a>
+                        @if (files != null)
             {
-                <table class="table">
-                    @foreach (var file in files)
-                    {
-                        <tr>
-                            <td>
-                                @(file.FileName)
-                            </td>
-                            <td>@(file.FileSize / 1024)k</td>
-                            <td><a href="/attachment/delete?id=@(file.ID)" class="btn btn-xs btn-delete"><i class="glyphicon glyphicon-remove"></i></a></td>
-                        </tr>
-                    }
-                </table>
-            }
-            <div id="list-file">
+                            <table class="table">
+                                @foreach (var file in files)
+                {
+                                    <tr>
+                                        <td>
+                                            @(file.FileName)
+                                        </td>
+                                        <td>@(file.FileSize / 1024)k</td>
+                                        <td><a href="/attachment/delete?id=@(file.ID)" class="btn btn-xs btn-delete"><i class="glyphicon glyphicon-remove"></i></a></td>
+                                    </tr>
+                                }
+                            </table>
+                        }
+                        <div id="list-file">
 
-            </div>
-        </div>
-    </div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td>
+                @Html.Action("SelectUser", new { taskId = model.ID })
+            </td>
+        </tr>
+    </table>
     <div class="form-group">
         <div class="col-lg-4 col-lg-offset-2">
             <button type="submit" id="btn-submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i> 提交</button>
@@ -71,12 +79,8 @@
 
 <template id="template" style="display:none;">
     <div class="form-group">
-        <div class="col-lg-8">
-            <input type="file" class="file form-control" name="file{index}" />
-        </div>
-        <div class="col-lg-4">
-            <button type="button" class="btn btn-xs btn-remove"><i class="glyphicon glyphicon-remove"></i></button>
-        </div>
+        <input type="file" class="file form-control" name="file{index}" style="width:60%;float:left;margin-right:10px;" />
+        <button type="button" class="btn btn-danger btn-remove"><i class="glyphicon glyphicon-remove"></i></button>
     </div>
 </template>
 
@@ -88,19 +92,28 @@
             var html = template.replace("{index}", count + 1);
             $("#list-file").append(html);
             $(".btn-remove").unbind("click").bind("click", function () {
-                $(this).parent().parent().remove();
+                $(this).parent().remove();
             });
             return false;
         });
 
         $("#form-task").submit(function () {
-            var selectedUserIds =[];
-            $(".selected-user").each(function(){
+            var selectedUserIds = [];
+            $(".selected-user").each(function () {
                 selectedUserIds.push($(this).attr("data-userid"));
             });
             $("#txt-userIds").val(selectedUserIds.join());
             $("#btn-submit").text("正在提交").disabled();
 
+        });
+
+        $(".btn-schedule").click(function () {
+            var days = parseInt($(this).attr("data"));
+            var now = new Date();
+            var date = now.getDate() + days;
+            console.log(date);
+            now.setDate(date);
+            $("#datetimepicker1").val((1900 + now.getYear()) + "/" + (now.getMonth() + 1) + "/" + (now.getDate()));
         });
 
         $(".btn-delete").click(function () {
