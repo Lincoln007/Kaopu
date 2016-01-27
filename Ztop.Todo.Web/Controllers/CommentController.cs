@@ -6,6 +6,7 @@ using System.Web.Mvc;
 
 namespace Ztop.Todo.Web.Controllers
 {
+    [UserAuthorize]
     public class CommentController : ControllerBase
     {
         public ActionResult Save(int taskId, string content)

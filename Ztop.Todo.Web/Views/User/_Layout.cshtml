@@ -1,0 +1,41 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - 智拓TODO</title>
+    <link href="~/Content/bootstrap.min.css" type="text/css" rel="stylesheet" />
+    <link href="~/Content/bootstrap.custom.css" type="text/css" rel="stylesheet" />
+    <link href="~/Content/jquery.datetimepicker.css" type="text/css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-1.9.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.js"></script>
+    <script src="~/Scripts/jquery.datetimepicker.js"></script>
+    <script src="~/Scripts/common.js"></script>
+</head>
+<body>
+    <div id="header" class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a href="/" class="navbar-brand">智拓TODO</a>
+            </div>
+        </div> 
+    </div>
+    <div id="body" style="overflow:auto">
+        <div class="container">
+            @RenderBody()
+            <div style="height:20px;"></div>
+        </div>
+    </div>
+</body>
+</html>

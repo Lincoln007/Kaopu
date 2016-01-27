@@ -1,8 +1,9 @@
 ﻿@{
     ViewBag.Title = "用户登录";
+    Layout = "~/Views/User/_Layout.cshtml";
 }
 <h3 class="page-header">用户登录</h3>
-<form id="form-login" method="post" class="form-horizontal">
+<form id="form-login" method="post" class="form-horizontal" action="">
     <div class="form-group">
         <label class="control-label col-lg-1">用户名</label>
         <div class="col-lg-3">
@@ -21,7 +22,7 @@
         </div>
     </div>
 </form>
-<script>
+@*<script>
     $(function () {
         $("#form-login").submit(function () {
             var data = $(this).serialize();
@@ -31,4 +32,4 @@
             return false;
         });
     });
-</script>
+</script>*@

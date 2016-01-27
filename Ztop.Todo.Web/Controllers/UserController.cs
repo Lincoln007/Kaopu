@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Ztop.Todo.Model;
 
 namespace Ztop.Todo.Web.Controllers
 {
     public class UserController : ControllerBase
     {
+        public bool ADController { get; private set; }
+
         public ActionResult Register()
         {
             return View();
@@ -23,6 +26,24 @@ namespace Ztop.Todo.Web.Controllers
             CurrentUser.RealName = realname;
             Core.UserManager.Save(CurrentUser);
             return Redirect("/");
+        }
+        public ActionResult Login()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult Login(string Username,string Password)
+        {
+            if (ADLogin(Username, Password))
+            {
+                return Redirect("/Home/Index");
+            }
+            return View();
+        }
+        public ActionResult LoginOut()
+        {
+            HttpContext.ClearAuth();
+            return RedirectToAction("Login");
         }
     }
 }

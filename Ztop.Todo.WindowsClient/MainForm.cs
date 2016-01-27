@@ -13,11 +13,26 @@ namespace Ztop.Todo.WindowsClient
 {
     public partial class MainForm : Form
     {
+        public string UserName { get; set; }
+        public string Password { get; set; }
+        public LoginForm login { get; set; }
+        public MainForm(string Name,string Password)
+        {
+            InitializeComponent();
+            this.UserName = Name;
+            this.Password = Password;
+            webControl1.Source = new Uri(ServerHelper.GetServerUrl() + "/Home/Index?Name=" + UserName + "&&Password=" + Password);
+            webControl1.DocumentReady += WebControl1_DocumentReady;
+
+            timer1.Tick += Timer1_Tick;
+            timer1.Interval = 1000 * 10;
+            timer1.Start();
+        }
         public MainForm()
         {
             InitializeComponent();
             
-            webControl1.Source = new Uri(ServerHelper.GetServerUrl());
+            webControl1.Source = new Uri(ServerHelper.GetServerUrl()+"/Home/Index?Name="+UserName+"&&Password="+Password);
             webControl1.DocumentReady += WebControl1_DocumentReady;
 
             timer1.Tick += Timer1_Tick;
@@ -99,8 +114,17 @@ namespace Ztop.Todo.WindowsClient
 
             timer1.Stop();
             timer1.Dispose();
+            if (login != null)
+            {
+                login.Close();
+            }
             Application.Exit();
             System.Environment.Exit(0);
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            
         }
     }
 }

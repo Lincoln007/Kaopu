@@ -15,7 +15,8 @@ namespace Ztop.Todo.WindowsClient
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm());
+            var login = new LoginForm();     
+            Application.Run(login);
         }
     }
 }

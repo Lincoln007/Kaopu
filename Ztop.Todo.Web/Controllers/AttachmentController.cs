@@ -7,6 +7,7 @@ using System.Web.Mvc;
 
 namespace Ztop.Todo.Web.Controllers
 {
+    [UserAuthorize]
     public class AttachmentController : ControllerBase
     {
         // GET: Attachment

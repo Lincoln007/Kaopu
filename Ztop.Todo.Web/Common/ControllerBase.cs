@@ -9,15 +9,23 @@ using System.Web.Mvc;
 using Ztop.Todo.Manager;
 using Ztop.Todo.Common;
 using Ztop.Todo.Model;
+using Ztop.Todo.Web.Common;
 
 namespace Ztop.Todo.Web.Controllers
 {
-    [UserAuthorize]
+    
     public class ControllerBase : AsyncController
     {
         protected ManagerCore Core = ManagerCore.Instance;
 
         protected User CurrentUser { get; private set; }
+        protected UserIdentity Identity
+        {
+            get
+            {
+                return (UserIdentity)HttpContext.User.Identity;
+            }
+        }
 
         protected ActionResult SuccessJsonResult(object data = null)
         {
@@ -43,10 +51,14 @@ namespace Ztop.Todo.Web.Controllers
             }
             else
             {
-                var user = Core.UserManager.GetUser(Thread.CurrentPrincipal.Identity.Name);
+                if (string.IsNullOrEmpty(Identity.UserName))
+                {
+                    return null;
+                }
+                var user = Core.UserManager.GetUser(Identity.UserName);
                 if (user == null)
                 {
-                    CurrentUser = new User { Username = Thread.CurrentPrincipal.Identity.Name };
+                    CurrentUser = new User { Username = Identity.UserName };
                     Core.UserManager.Save(CurrentUser);
                 }
                 else
@@ -57,6 +69,26 @@ namespace Ztop.Todo.Web.Controllers
                 Core.UserManager.UpdateLogin(CurrentUser);
             }
             return CurrentUser;
+        }
+        protected bool ADLogin(string Name,string Password)
+        {
+            if (!string.IsNullOrEmpty(Name) && !string.IsNullOrEmpty(Password))
+            {
+                if (Ztop.Todo.Common.ADController.Login(Name, Password))
+                {
+                    var user = Core.UserManager.GetUser(Name);
+                    if (user == null)
+                    {
+                        user = new User { Username = Name };
+                        Core.UserManager.Save(user);
+                    }
+                    CurrentUser = user;
+                    ViewBag.CurrentUser = CurrentUser;
+                    HttpContext.SaveAuth(user);
+                    return true;
+                }
+            }
+            return false;
         }
 
         protected override void OnActionExecuting(ActionExecutingContext filterContext)

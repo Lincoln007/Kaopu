@@ -1,18 +1,6 @@
 ﻿@{
     User user = ViewBag.CurrentUser;
-    if (user == null)
-    {
-        RenderBody();
-        <div>
-            登录失败
-            <br />
-            当前windows用户：
-            @System.Threading.Thread.CurrentPrincipal.Identity.Name
-            获取的用户ID：
-            @AuthUtils.GetUserID(Context)
-        </div>
-        return;
-    }
+
 }
 <!DOCTYPE html>
 <html>
@@ -20,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - 智拓TODO</title>
-    <link href="~/Content/bootstrap.css" type="text/css" rel="stylesheet" />
+    <link href="~/Content/bootstrap.min.css" type="text/css" rel="stylesheet" />
     <link href="~/Content/bootstrap.custom.css" type="text/css"  rel="stylesheet"/>
     <link href="~/Content/jquery.datetimepicker.css" type="text/css"  rel="stylesheet"/>
     <script src="~/Scripts/jquery-1.9.1.min.js"></script>
@@ -46,9 +34,15 @@
                     <li><a href="/task/edit">创建任务</a></li>
                 </ul>
                 <ul class="navbar-right nav navbar-nav">
-                    <li>
-                        <a>@(user.DisplayName)</a>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">@(user.DisplayName)<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/User/LoginOut">退出</a></li>
+                        </ul>
                     </li>
+                    @*<li>
+                        <a>@(user.DisplayName)</a>
+                    </li>*@
                 </ul>
             </div>
         </div>
