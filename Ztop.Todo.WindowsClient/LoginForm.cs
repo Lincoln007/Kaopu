@@ -50,5 +50,13 @@ namespace Ztop.Todo.WindowsClient
         {
             Application.Exit();
         }
+
+        private void PasswordText_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                this.LoginButton_Click(sender, e);
+            }
+        }
     }
 }

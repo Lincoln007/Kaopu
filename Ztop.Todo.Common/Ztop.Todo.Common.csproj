@@ -48,6 +48,7 @@
     <Compile Include="ADController.cs" />
     <Compile Include="EncryptExtensions.cs" />
     <Compile Include="HtmlUtils.cs" />
+    <Compile Include="IPHelper.cs" />
     <Compile Include="JsonExtension.cs" />
     <Compile Include="LocalCacheService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

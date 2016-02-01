@@ -8,6 +8,11 @@ using System.Text;
 using System.Windows.Forms;
 using Awesomium;
 using Awesomium.Core;
+using System.Threading;
+using System.Net;
+using System.Net.Sockets;
+using System.IO;
+using Ztop.Todo.Common;
 
 namespace Ztop.Todo.WindowsClient
 {
@@ -15,6 +20,8 @@ namespace Ztop.Todo.WindowsClient
     {
         public string UserName { get; set; }
         public string Password { get; set; }
+        private Thread thread { get; set; }
+        private bool IsLive { get; set; }
         public LoginForm login { get; set; }
         public MainForm(string Name,string Password)
         {
@@ -27,6 +34,10 @@ namespace Ztop.Todo.WindowsClient
             timer1.Tick += Timer1_Tick;
             timer1.Interval = 1000 * 10;
             timer1.Start();
+            IsLive = true;
+            this.Invoke(new TCPLISTEN(Listen));
+            //this.thread = new Thread(Listen);
+            //this.thread.Start();
         }
         public MainForm()
         {
@@ -65,6 +76,28 @@ namespace Ztop.Todo.WindowsClient
             }
         }
 
+        delegate void TCPLISTEN();
+
+        private void Listen()
+        {
+            TcpListener tcpListener = new TcpListener(IPHelper.GetIPAddress(), Int32.Parse(System.Configuration.ConfigurationManager.AppSettings["Port"]));
+            tcpListener.Start();
+            while (IsLive)
+            {
+                using (TcpClient tcpclient = tcpListener.AcceptTcpClient())
+                {
+                    NetworkStream ns = tcpclient.GetStream();
+                    byte[] buffer = new byte[tcpclient.Available];
+                    ns.Read(buffer, 0, buffer.Length);
+                    string str = System.Text.Encoding.Unicode.GetString(buffer).Trim();
+                    if (System.IO.File.Exists(str))
+                    {
+                        webControl1.Source = new Uri(ServerHelper.GetServerUrl() + "/Task/Edit");
+                    }
+                }
+            }
+        }
+
         public static string AccessToken { get; private set; }
 
         private void WebControl1_DocumentReady(object sender, DocumentReadyEventArgs e)
@@ -93,8 +126,15 @@ namespace Ztop.Todo.WindowsClient
             if (e.CloseReason == CloseReason.UserClosing)
             {
                 this.WindowState = FormWindowState.Minimized;
-                this.Hide();
+                //this.Hide();
+                this.Close();
                 e.Cancel = true;
+            }
+            if (this.thread != null && this.thread.IsAlive)
+            {
+                this.IsLive = false;
+                this.thread.Abort();
+                this.thread.Join();
             }
         }
 
