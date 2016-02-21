@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="ADController.cs" />
     <Compile Include="EncryptExtensions.cs" />
+    <Compile Include="FTPHelper.cs" />
     <Compile Include="HtmlUtils.cs" />
     <Compile Include="IPHelper.cs" />
     <Compile Include="JsonExtension.cs" />

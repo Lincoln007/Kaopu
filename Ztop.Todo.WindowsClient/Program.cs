@@ -21,7 +21,20 @@ namespace Ztop.Todo.WindowsClient
             string filePath = string.Empty;
             if (args != null && args.Length > 0)
             {
-                filePath = args[0].ToString();
+                int count = args.Length;
+                for(var i = 0; i < count; i++)
+                {
+                    if (string.IsNullOrEmpty(filePath))
+                    {
+                        filePath += args[i].ToString();
+                    }
+                    else
+                    {
+                        filePath += " " + args[i].ToString();
+                    }
+                    
+                }
+                //filePath = args[0].ToString();
             }   
             MessageBox.Show(filePath);
             bool canCreateNew = false;

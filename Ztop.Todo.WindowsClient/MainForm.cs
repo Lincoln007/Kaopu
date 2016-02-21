@@ -35,9 +35,9 @@ namespace Ztop.Todo.WindowsClient
             timer1.Interval = 1000 * 10;
             timer1.Start();
             IsLive = true;
-            this.Invoke(new TCPLISTEN(Listen));
-            //this.thread = new Thread(Listen);
-            //this.thread.Start();
+            //this.Invoke(new TCPLISTEN(Listen));
+            this.thread = new Thread(Listen);
+            this.thread.Start();
         }
         public MainForm()
         {
@@ -92,7 +92,17 @@ namespace Ztop.Todo.WindowsClient
                     string str = System.Text.Encoding.Unicode.GetString(buffer).Trim();
                     if (System.IO.File.Exists(str))
                     {
-                        webControl1.Source = new Uri(ServerHelper.GetServerUrl() + "/Task/Edit");
+                        try
+                        {
+                            string uploadPath=FTPHelper.UploadFile(str);
+                        }catch(Exception ex)
+                        {
+                            MessageBox.Show("上传失败，错误信息："+ex.ToString());
+                            continue;
+                            //Console.WriteLine(ex.ToString());
+                        }
+                        MessageBox.Show("成功上传文件到服务器"+str);
+                        //webControl1.Source = new Uri(ServerHelper.GetServerUrl() + "/Task/Edit");
                     }
                 }
             }
