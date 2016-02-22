@@ -34,9 +34,7 @@ namespace Ztop.Todo.WindowsClient
                     }
                     
                 }
-                //filePath = args[0].ToString();
             }   
-            MessageBox.Show(filePath);
             bool canCreateNew = false;
             Mutex m = new Mutex(true, "ZTOPTODO", out canCreateNew);
             if (canCreateNew)
@@ -51,7 +49,6 @@ namespace Ztop.Todo.WindowsClient
             {
                 TcpClient tcpClient = new TcpClient(IPHelper.GetIPAddress().ToString(), Int32.Parse(System.Configuration.ConfigurationManager.AppSettings["Port"]));
                 NetworkStream ns = tcpClient.GetStream();
-                //byte[] buffer = System.Text.Encoding.ASCII.GetBytes(filePath);
                 byte[] buffer = System.Text.Encoding.Unicode.GetBytes(filePath);
                 try
                 {

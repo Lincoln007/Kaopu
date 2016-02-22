@@ -38,6 +38,15 @@
                         <a href="javascript:;" data="30" class="btn btn-default btn-schedule">一月</a>
                     </div>
                 </div>
+                @if (ViewBag.FileOne != null)
+                {
+                    <div class="form-group">
+                        <label class="control-label col-lg-2">已添加附件</label>
+                        <div class="col-lg-8">
+                            <input type="text" class="form-control" name="" value="@(ViewBag.FileOne)" />
+                        </div> 
+                    </div>
+                }
                 <div class="form-group">
                     <label class="control-label col-lg-2">
                         附件

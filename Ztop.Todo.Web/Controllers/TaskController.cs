@@ -26,15 +26,25 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
 
-        public ActionResult Edit(int id = 0)
+        public ActionResult Edit(int id = 0,string fileOne=null,string Name=null,string Password=null)
         {
-
+            if (!Identity.IsAuthenticated)
+            {
+                if (!string.IsNullOrEmpty(Name) && !string.IsNullOrEmpty(Password))
+                {
+                    if (!ADLogin(Name, Password))
+                    {
+                        return Redirect("/User/Login");
+                    }
+                }
+            }
             var model = Core.TaskManager.GetModel(id) ?? new Task();
             ViewBag.Model = model;
             if (model != null && model.ID > 0)
             {
                 ViewBag.Attachments = Core.AttachmentManager.GetList(model.ID);
             }
+            ViewBag.FileOne = fileOne; 
             return View();
         }
 

@@ -123,7 +123,7 @@
         #endregion
 
         private System.Windows.Forms.Panel panel1;
-        private Awesomium.Windows.Forms.WebControl webControl1;
+        public Awesomium.Windows.Forms.WebControl webControl1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.NotifyIcon notifyIcon1;

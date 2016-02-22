@@ -26,6 +26,7 @@ namespace Ztop.Todo.WindowsClient
         public MainForm(string Name,string Password)
         {
             InitializeComponent();
+            Control.CheckForIllegalCrossThreadCalls = false;
             this.UserName = Name;
             this.Password = Password;
             webControl1.Source = new Uri(ServerHelper.GetServerUrl() + "/Home/Index?Name=" + UserName + "&&Password=" + Password);
@@ -35,9 +36,6 @@ namespace Ztop.Todo.WindowsClient
             timer1.Interval = 1000 * 10;
             timer1.Start();
             IsLive = true;
-            //this.Invoke(new TCPLISTEN(Listen));
-            this.thread = new Thread(Listen);
-            this.thread.Start();
         }
         public MainForm()
         {
@@ -76,36 +74,12 @@ namespace Ztop.Todo.WindowsClient
             }
         }
 
-        delegate void TCPLISTEN();
+        private delegate void TCPLISTEN();
 
-        private void Listen()
+        
+        public void OpenTask(string UriPath)
         {
-            TcpListener tcpListener = new TcpListener(IPHelper.GetIPAddress(), Int32.Parse(System.Configuration.ConfigurationManager.AppSettings["Port"]));
-            tcpListener.Start();
-            while (IsLive)
-            {
-                using (TcpClient tcpclient = tcpListener.AcceptTcpClient())
-                {
-                    NetworkStream ns = tcpclient.GetStream();
-                    byte[] buffer = new byte[tcpclient.Available];
-                    ns.Read(buffer, 0, buffer.Length);
-                    string str = System.Text.Encoding.Unicode.GetString(buffer).Trim();
-                    if (System.IO.File.Exists(str))
-                    {
-                        try
-                        {
-                            string uploadPath=FTPHelper.UploadFile(str);
-                        }catch(Exception ex)
-                        {
-                            MessageBox.Show("上传失败，错误信息："+ex.ToString());
-                            continue;
-                            //Console.WriteLine(ex.ToString());
-                        }
-                        MessageBox.Show("成功上传文件到服务器"+str);
-                        //webControl1.Source = new Uri(ServerHelper.GetServerUrl() + "/Task/Edit");
-                    }
-                }
-            }
+            webControl1.Source = new Uri(ServerHelper.GetServerUrl() + UriPath);
         }
 
         public static string AccessToken { get; private set; }
@@ -174,7 +148,24 @@ namespace Ztop.Todo.WindowsClient
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            
+            var listener = new TODOListener(this);
+            this.thread = new Thread(listener.Listen);
+            this.thread.IsBackground = false;
+            this.thread.Start();
+        }
+
+        private delegate void FlushClient(string FileOne);
+        public void ThreadFunction(string FileOne)
+        {
+            if (this.webControl1.InvokeRequired)
+            {
+                FlushClient fs = new FlushClient(ThreadFunction);
+                this.Invoke(fs, new[] { FileOne });
+            }
+            else
+            {
+                OpenTask("/task/edit?FileOne=" + FileOne + "&&Name=" + UserName + "&&Password=" + Password);
+            }
         }
     }
 }
