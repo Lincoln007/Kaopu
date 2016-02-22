@@ -42,7 +42,7 @@ namespace Ztop.Todo.Common
                 return null;
             }
             //string Target = System.IO.Path.GetFileNameWithoutExtension(FilePath) +Guid.NewGuid().ToString() + System.IO.Path.GetExtension(FilePath);
-            string Target = System.IO.Path.GetFileNameWithoutExtension(FilePath) + DateTime.Now.Ticks.ToString() + System.IO.Path.GetExtension(FilePath);
+            string Target = System.IO.Path.GetFileNameWithoutExtension(FilePath) +"-"+ DateTime.Now.Ticks.ToString() + System.IO.Path.GetExtension(FilePath);
             string URL = "FTP://" + FTPIP + "/" + Target;
             var ftp = GetRequest(URL);
             ftp.Method = System.Net.WebRequestMethods.Ftp.UploadFile;

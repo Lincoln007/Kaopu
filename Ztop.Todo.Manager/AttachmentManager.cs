@@ -50,6 +50,24 @@ namespace Ztop.Todo.Manager
                 db.SaveChanges();
             }
         }
+        public void Upload(string AddedFile,int taskId)
+        {
+            System.IO.FileInfo file = new FileInfo(AddedFile);
+            if (file.Exists)
+            {
+                using (var db = GetDbContext())
+                {
+                    db.Attachments.Add(new Attachment
+                    {
+                        FileName = System.IO.Path.GetFileName(AddedFile),
+                        FileSize = (int)file.Length,
+                        SavePath = AddedFile,
+                        TaskID = taskId
+                    });
+            }
+            }
+            
+        }
 
         public byte[] GetFileData(Attachment model)
         {

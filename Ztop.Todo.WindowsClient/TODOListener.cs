@@ -13,14 +13,10 @@ namespace Ztop.Todo.WindowsClient
     public class TODOListener
     {
         public bool IsLive { get; set; }
-        private string Name { get; set; }
-        private string Password { get; set; }
         private MainForm mainForm { get; set; }
-        public TODOListener(string Name,string Password,MainForm form)
+        public TODOListener(MainForm form)
         {
             this.mainForm = form;
-            this.Name = Name;
-            this.Password = Password;
             IsLive = true;
         }
 
@@ -52,18 +48,10 @@ namespace Ztop.Todo.WindowsClient
                         if (!string.IsNullOrEmpty(uploadPath)&&this.mainForm!=null)
                         {
                             mainForm.ThreadFunction(uploadPath);
-                            //MainListener("/task/edit?fileOne="+uploadPath+"&&Name="+Name+"&&Password="+Password);
                         }
                     }
                 }
             }
-        }
-
-
-        [STAThread]
-        public void MainListener(string UriPath)
-        {
-            Application.Run(new MainForm2(UriPath));
         }
     }
 }

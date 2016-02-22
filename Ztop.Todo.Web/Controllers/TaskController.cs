@@ -37,6 +37,10 @@ namespace Ztop.Todo.Web.Controllers
                         return Redirect("/User/Login");
                     }
                 }
+                else
+                {
+                    return Redirect("/User/Login");
+                }
             }
             var model = Core.TaskManager.GetModel(id) ?? new Task();
             ViewBag.Model = model;
@@ -59,7 +63,7 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
 
-        public ActionResult Save(Task data, int[] userIds)
+        public ActionResult Save(Task data, int[] userIds,string AddedFile)
         {
             var model = Core.TaskManager.GetModel(data.ID) ?? new Task
             {
@@ -88,6 +92,10 @@ namespace Ztop.Todo.Web.Controllers
             {
                 var file = Request.Files[i];
                 Core.AttachmentManager.Upload(file, model.ID);
+            }
+            if (!string.IsNullOrEmpty(AddedFile))
+            {
+                Core.AttachmentManager.Upload(AddedFile, model.ID);
             }
 
             return RedirectToAction("Index");
