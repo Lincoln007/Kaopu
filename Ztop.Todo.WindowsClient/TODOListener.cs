@@ -26,29 +26,28 @@ namespace Ztop.Todo.WindowsClient
             tcpListener.Start();
             while (IsLive)
             {
-                using (TcpClient tcpclient = tcpListener.AcceptTcpClient())
+                string str = TCPHelper.TCPRecevier(tcpListener);
+                if (str == System.Configuration.ConfigurationManager.AppSettings["TCPSTOP"])
                 {
-                    NetworkStream ns = tcpclient.GetStream();
-                    byte[] buffer = new byte[tcpclient.Available];
-                    ns.Read(buffer, 0, buffer.Length);
-                    string str = System.Text.Encoding.Unicode.GetString(buffer).Trim();
-                    if (System.IO.File.Exists(str))
+                    IsLive = false;
+                    continue;
+                }
+                if (!string.IsNullOrEmpty(str) && System.IO.File.Exists(str))
+                {
+                    string uploadPath = string.Empty;
+                    try
                     {
-                        string uploadPath = string.Empty;
-                        try
-                        {
-                            uploadPath = FTPHelper.UploadFile(str);
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show("上传失败，错误信息：" + ex.ToString());
-                            continue;
-                        }
-                        MessageBox.Show("成功上传文件到服务器" + str);
-                        if (!string.IsNullOrEmpty(uploadPath)&&this.mainForm!=null)
-                        {
-                            mainForm.ThreadFunction(uploadPath);
-                        }
+                        uploadPath = FTPHelper.UploadFile(str);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("上传失败，错误信息：" + ex.ToString());
+                        continue;
+                    }
+                    MessageBox.Show("成功上传文件到服务器" + str);
+                    if (!string.IsNullOrEmpty(uploadPath) && this.mainForm != null)
+                    {
+                        mainForm.ThreadFunction(uploadPath);
                     }
                 }
             }

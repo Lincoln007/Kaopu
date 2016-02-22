@@ -42,24 +42,12 @@ namespace Ztop.Todo.WindowsClient
 
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
-                var login = new LoginForm();
+                var login = new LoginForm(filePath);
                 Application.Run(login);
             }
             else
             {
-                TcpClient tcpClient = new TcpClient(IPHelper.GetIPAddress().ToString(), Int32.Parse(System.Configuration.ConfigurationManager.AppSettings["Port"]));
-                NetworkStream ns = tcpClient.GetStream();
-                byte[] buffer = System.Text.Encoding.Unicode.GetBytes(filePath);
-                try
-                {
-                    lock (ns)
-                    {
-                        ns.Write(buffer, 0, buffer.Length);
-                    }
-                }catch(Exception ex)
-                {
-                    MessageBox.Show("发送文件路径失败："+ex.ToString());
-                }
+                TCPHelper.TCPSend(filePath);
             }
             
         }

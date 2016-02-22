@@ -23,18 +23,24 @@ namespace Ztop.Todo.WindowsClient
         private Thread thread { get; set; }
         private bool IsLive { get; set; }
         public LoginForm login { get; set; }
-        public MainForm(string Name,string Password)
+        public MainForm(string Name,string Password,string FileOne)
         {
             InitializeComponent();
             Control.CheckForIllegalCrossThreadCalls = false;
             this.UserName = Name;
             this.Password = Password;
-            webControl1.Source = new Uri(ServerHelper.GetServerUrl() + "/Home/Index?Name=" + UserName + "&&Password=" + Password);
+            if (!string.IsNullOrEmpty(FileOne))
+            {
+                webControl1.Source = new Uri(ServerHelper.GetServerUrl() + "/task/edit?fileOne=" + FileOne + "&&Name=" + UserName + "&&Password=" + Password);
+            }
+            else
+            {
+                webControl1.Source = new Uri(ServerHelper.GetServerUrl() + "/Home/Index?Name=" + UserName + "&&Password=" + Password);
+            }
+            
             webControl1.DocumentReady += WebControl1_DocumentReady;
 
-            timer1.Tick += Timer1_Tick;
-            timer1.Interval = 1000 * 10;
-            timer1.Start();
+           
             IsLive = true;
         }
         public MainForm()
@@ -73,9 +79,6 @@ namespace Ztop.Todo.WindowsClient
                 form.Show();
             }
         }
-
-        private delegate void TCPLISTEN();
-
         
         public void OpenTask(string UriPath)
         {
@@ -110,13 +113,14 @@ namespace Ztop.Todo.WindowsClient
             if (e.CloseReason == CloseReason.UserClosing)
             {
                 this.WindowState = FormWindowState.Minimized;
-                //this.Hide();
-                this.Close();
+                //this.Close();
                 e.Cancel = true;
             }
+            timer1.Stop();
+            timer1.Dispose();
             if (this.thread != null && this.thread.IsAlive)
             {
-                this.IsLive = false;
+                TCPHelper.TCPSend(System.Configuration.ConfigurationManager.AppSettings["TCPSTOP"]);
                 this.thread.Abort();
                 this.thread.Join();
             }
@@ -152,6 +156,10 @@ namespace Ztop.Todo.WindowsClient
             this.thread = new Thread(listener.Listen);
             this.thread.IsBackground = false;
             this.thread.Start();
+
+            timer1.Tick += Timer1_Tick;
+            timer1.Interval = 1000 * 10;
+            timer1.Start();
         }
 
         private delegate void FlushClient(string FileOne);

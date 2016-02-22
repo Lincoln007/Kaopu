@@ -11,6 +11,12 @@ namespace Ztop.Todo.WindowsClient
 {
     public partial class LoginForm : Form
     {
+        private string FileOne { get; set; }
+        public LoginForm(string FilePath)
+        {
+            InitializeComponent();
+            this.FileOne = FilePath;
+        }
         public LoginForm()
         {
             InitializeComponent();
@@ -22,18 +28,10 @@ namespace Ztop.Todo.WindowsClient
             {
                 if(Ztop.Todo.Common.ADController.Login(NameText.Text, PasswordText.Text))
                 {
-                    var form = new MainForm(NameText.Text,PasswordText.Text);
+                    var form = new MainForm(NameText.Text,PasswordText.Text,this.FileOne);
                     form.login = this;
                     form.Show();
                     this.Hide();
-                    //if (Form != null)
-                    //{
-                    //    Form.Enabled = true;
-                    //    Form.Name = NameText.Text;
-                    //    Form.Password = PasswordText.Text;
-                    //    MessageBox.Show("成功登录");
-                    //    this.Close();
-                    //}
                 }
                 else
                 {
