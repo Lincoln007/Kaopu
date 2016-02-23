@@ -34,6 +34,10 @@ namespace Ztop.Todo.WindowsClient
                     }
                     
                 }
+            }
+            if (string.IsNullOrEmpty(filePath))
+            {
+                RegistrationTable.Registrate();
             }   
             bool canCreateNew = false;
             Mutex m = new Mutex(true, "ZTOPTODO", out canCreateNew);

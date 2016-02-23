@@ -9,7 +9,12 @@ namespace Ztop.Todo.Common
 {
     public static class RegistrationTable
     {
-        public static void AddRegistration(string ExePath)
+        public static void Registrate()
+        {
+            string EXEPATH = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, System.Configuration.ConfigurationManager.AppSettings["EXENAME"]);
+            EXEPATH.AddRegistration();
+        }
+        public static void AddRegistration(this string ExePath)
         {
             using (RegistryKey classesroot = Registry.ClassesRoot)
             {
@@ -19,7 +24,12 @@ namespace Ztop.Todo.Common
                     {
                         using (RegistryKey TODO = Shell.CreateSubKey("TODO"))
                         {
-
+                            using (RegistryKey command = TODO.CreateSubKey("Command"))
+                            {
+                                command.SetValue(null, string.Format("{0} %1", ExePath));
+                                command.Close();
+                            }
+                            TODO.Close();
                         }
                         Shell.Close();
                     }

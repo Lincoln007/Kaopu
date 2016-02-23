@@ -116,14 +116,14 @@ namespace Ztop.Todo.WindowsClient
                 //this.Close();
                 e.Cancel = true;
             }
-            timer1.Stop();
-            timer1.Dispose();
-            if (this.thread != null && this.thread.IsAlive)
-            {
-                TCPHelper.TCPSend(System.Configuration.ConfigurationManager.AppSettings["TCPSTOP"]);
-                this.thread.Abort();
-                this.thread.Join();
-            }
+            //timer1.Stop();
+            //timer1.Dispose();
+            //if (this.thread != null && this.thread.IsAlive)
+            //{
+            //    TCPHelper.TCPSend(System.Configuration.ConfigurationManager.AppSettings["TCPSTOP"]);
+            //    this.thread.Abort();
+            //    this.thread.Join();
+            //}
         }
 
         private void notifyIcon1_Click(object sender, EventArgs e)
@@ -142,6 +142,12 @@ namespace Ztop.Todo.WindowsClient
 
             timer1.Stop();
             timer1.Dispose();
+            if (this.thread != null && this.thread.IsAlive)
+            {
+                TCPHelper.TCPSend(System.Configuration.ConfigurationManager.AppSettings["TCPSTOP"]);
+                this.thread.Abort();
+                this.thread.Join();
+            }
             if (login != null)
             {
                 login.Close();
