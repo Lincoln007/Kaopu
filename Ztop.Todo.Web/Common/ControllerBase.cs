@@ -102,7 +102,7 @@ namespace Ztop.Todo.Web.Controllers
             ViewBag.Controller = filterContext.RequestContext.RouteData.Values["controller"];
             ViewBag.Action = filterContext.RequestContext.RouteData.Values["action"];
             ViewBag.CurrentUser = GetCurrentUser();
-            ViewBag.GroupType = AUser.Type;
+            ViewBag.GroupType = AUser == null ? GroupType.Guest : AUser.Type;
             base.OnActionExecuting(filterContext);
         }
 

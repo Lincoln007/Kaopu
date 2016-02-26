@@ -22,9 +22,9 @@ namespace Ztop.Todo.WindowsClient
             return GetServerUrl() + "/Task/Detail?id=" + task.ID;
         }
 
-        public static Task GetNewTask()
+        public static Task GetNewTask(string UserName,string Password)
         {
-            var request = WebRequest.Create(GetServerUrl() + "/Task/GetNewTask?lastGetTime=" + _lastGetTime.ToString());
+            var request = WebRequest.Create(GetServerUrl() + "/Task/GetNewTask?lastGetTime=" + _lastGetTime.ToString()+"&&UserName="+UserName+"&&Password="+Password);
             request.Headers.Add("token", MainForm.AccessToken);
             var cred = new CredentialCache();
             cred.Add(new Uri(GetServerUrl()), "NTLM", CredentialCache.DefaultNetworkCredentials);

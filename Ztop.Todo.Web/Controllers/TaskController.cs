@@ -235,8 +235,12 @@ namespace Ztop.Todo.Web.Controllers
             throw new ArgumentException("参数错误，没找到该评论");
         }
 
-        public ActionResult GetNewTask(DateTime lastGetTime)
+        public ActionResult GetNewTask(DateTime lastGetTime,string UserName=null,string Password=null)
         {
+            if (!Identity.IsAuthenticated&&!string.IsNullOrEmpty(UserName)&&!string.IsNullOrEmpty(Password))
+            {
+                ADLogin(UserName, Password);
+            }
             var task = Core.TaskManager.GetNewTask(CurrentUser.ID, lastGetTime);
             var json = Newtonsoft.Json.JsonConvert.SerializeObject(task);
             return Content(json);

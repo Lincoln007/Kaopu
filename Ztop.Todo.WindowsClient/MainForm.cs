@@ -65,9 +65,12 @@ namespace Ztop.Todo.WindowsClient
 
         private void Timer1_Tick(object sender, EventArgs e)
         {
+           
+            FileStream fs = new FileStream("error.txt", FileMode.Append, FileAccess.Write);
+            StreamWriter sw = new StreamWriter(fs);
             try
             {
-                var task = ServerHelper.GetNewTask();
+                var task = ServerHelper.GetNewTask(UserName, Password);
                 if (task != null)
                 {
                     foreach (Form nf in Application.OpenForms)
@@ -89,11 +92,12 @@ namespace Ztop.Todo.WindowsClient
                     form.Show();
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                MessageBox.Show(string.Format("Timer 事件发生错误：{0}",ex.ToString()));
+                sw.WriteLine(ex.ToString());
             }
-            
+
+            sw.Close(); 
         }
         
         public void OpenTask(string UriPath)

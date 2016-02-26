@@ -24,6 +24,7 @@ namespace Ztop.Todo.Common
             ADServer = System.Configuration.ConfigurationManager.AppSettings["AServer"];
             ADName = System.Configuration.ConfigurationManager.AppSettings["Name"];
             ADPassword = System.Configuration.ConfigurationManager.AppSettings["Password"];
+            Init();
         }
         private static void Init()
         {
@@ -32,7 +33,7 @@ namespace Ztop.Todo.Common
 
             IgnoresList = InitConfig("/Composes/Compose");
 
-            ManagerList = InitConfig("/Composes/Administrators/Administrator");
+            AdminList = InitConfig("/Composes/Administrators/Administrator");
 
             ManagerList = InitConfig("/Composes/Organizations/Organization");
             

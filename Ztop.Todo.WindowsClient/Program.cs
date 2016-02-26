@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -12,6 +13,7 @@ namespace Ztop.Todo.WindowsClient
 {
     static class Program
     {
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -22,7 +24,7 @@ namespace Ztop.Todo.WindowsClient
             if (args != null && args.Length > 0)
             {
                 int count = args.Length;
-                for(var i = 0; i < count; i++)
+                for (var i = 0; i < count; i++)
                 {
                     if (string.IsNullOrEmpty(filePath))
                     {
@@ -32,13 +34,13 @@ namespace Ztop.Todo.WindowsClient
                     {
                         filePath += " " + args[i].ToString();
                     }
-                    
+
                 }
             }
             if (string.IsNullOrEmpty(filePath))
             {
                 RegistrationTable.Registrate();
-            }   
+            }
             bool canCreateNew = false;
             Mutex m = new Mutex(true, "ZTOPTODO", out canCreateNew);
             if (canCreateNew)
@@ -46,7 +48,7 @@ namespace Ztop.Todo.WindowsClient
 
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
-                
+
                 var login = new LoginForm(filePath);
                 Application.Run(login);
             }
@@ -54,7 +56,7 @@ namespace Ztop.Todo.WindowsClient
             {
                 TCPHelper.TCPSend(filePath);
             }
-            
+           
         }
     }
 }
