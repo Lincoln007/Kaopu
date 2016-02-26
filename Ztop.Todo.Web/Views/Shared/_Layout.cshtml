@@ -1,6 +1,6 @@
 ﻿@{
     User user = ViewBag.CurrentUser;
-
+    GroupType groupType = ViewBag.GroupType;
 }
 <!DOCTYPE html>
 <html>
@@ -32,6 +32,14 @@
                     <li><a href="/">首页</a></li>
                     <li><a href="/task">任务列表</a></li>
                     <li><a href="/task/edit">创建任务</a></li>
+                    @if (groupType == GroupType.Administrator)
+                    {
+
+                    }else if (groupType == GroupType.Manager)
+                    {
+
+                    }
+                    <li><a href="#">域权限</a></li>
                 </ul>
                 <ul class="navbar-right nav navbar-nav">
                     <li class="dropdown">

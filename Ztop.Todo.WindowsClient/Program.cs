@@ -46,6 +46,7 @@ namespace Ztop.Todo.WindowsClient
 
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
+                
                 var login = new LoginForm(filePath);
                 Application.Run(login);
             }

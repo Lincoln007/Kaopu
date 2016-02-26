@@ -128,5 +128,39 @@ namespace Ztop.Todo.Manager
                 Cache.HSet(_userCacheKey, user.ID.ToString(), user);
             }
         }
+
+        public AUser GetZTOPAccount(string SAMAccountName)
+        {
+            if (string.IsNullOrEmpty(SAMAccountName))
+            {
+                return null;
+            }
+            var user = Ztop.Todo.Common.ADController.GetUser(SAMAccountName);
+            if (user.Type == GroupType.Guest)
+            {
+                return user;
+            }
+            user.Managers = Core.AuthorizeManager.GetList(user.Name);
+            user.MGroup = Ztop.Todo.Common.ADController.GetGroupList(SAMAccountName);
+            if (Ztop.Todo.Common.ADController.IsAdministrator(user))
+            {
+                user.Type = GroupType.Administrator;
+            }else if (Ztop.Todo.Common.ADController.IsManager(user))
+            {
+                user.Type = GroupType.Manager;
+            }
+            else
+            {
+                if (user.Managers.Count != 0)
+                {
+                    user.Type = GroupType.Manager;
+                }
+                else
+                {
+                    user.Type = GroupType.Member;
+                }
+            }
+            return user;
+        }
     }
 }

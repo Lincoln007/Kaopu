@@ -31,6 +31,14 @@ namespace Ztop.Todo.WindowsClient
             this.Password = Password;
             if (!string.IsNullOrEmpty(FileOne))
             {
+                try
+                {
+                    FileOne = FTPHelper.UploadFile(FileOne);
+                }catch(Exception ex)
+                {
+                    MessageBox.Show("上传文件到服务器失败，错误信息："+ex.ToString());
+                    FileOne = string.Empty;
+                } 
                 webControl1.Source = new Uri(ServerHelper.GetServerUrl() + "/task/edit?fileOne=" + FileOne + "&&Name=" + UserName + "&&Password=" + Password);
             }
             else
@@ -57,27 +65,35 @@ namespace Ztop.Todo.WindowsClient
 
         private void Timer1_Tick(object sender, EventArgs e)
         {
-            var task = ServerHelper.GetNewTask();
-            if (task != null)
+            try
             {
-                foreach (Form nf in Application.OpenForms)
+                var task = ServerHelper.GetNewTask();
+                if (task != null)
                 {
-                    //如果已经有一个提醒和当前查询的新任务同一个任务，就不再提醒了
-                    if (nf is NoticeForm)
+                    foreach (Form nf in Application.OpenForms)
                     {
-                        if (((NoticeForm)nf).Task.ID == task.ID)
+                        //如果已经有一个提醒和当前查询的新任务同一个任务，就不再提醒了
+                        if (nf is NoticeForm)
                         {
-                            return;
+                            if (((NoticeForm)nf).Task.ID == task.ID)
+                            {
+                                return;
+                            }
                         }
                     }
-                }
 
-                var form = new NoticeForm(task);
-                form.StartPosition = FormStartPosition.Manual;
-                form.WindowState = FormWindowState.Normal;
-                form.Location = new Point(Screen.PrimaryScreen.WorkingArea.Width - form.Width - 5 , Screen.PrimaryScreen.WorkingArea.Height - form.Height - 5);
-                form.Show();
+                    var form = new NoticeForm(task);
+                    form.StartPosition = FormStartPosition.Manual;
+                    form.WindowState = FormWindowState.Normal;
+                    form.Location = new Point(Screen.PrimaryScreen.WorkingArea.Width - form.Width - 5, Screen.PrimaryScreen.WorkingArea.Height - form.Height - 5);
+                    form.Show();
+                }
             }
+            catch(Exception ex)
+            {
+                MessageBox.Show(string.Format("Timer 事件发生错误：{0}",ex.ToString()));
+            }
+            
         }
         
         public void OpenTask(string UriPath)

@@ -64,7 +64,12 @@ namespace Ztop.Todo.Manager
                         SavePath = AddedFile,
                         TaskID = taskId
                     });
+                    db.SaveChanges();
+                }
             }
+            else
+            {
+                throw new ArgumentException("该目录下的文件不存在："+AddedFile);
             }
             
         }

@@ -57,7 +57,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attachment.cs" />
+    <Compile Include="AUser.cs" />
+    <Compile Include="Authorize.cs" />
     <Compile Include="Comment.cs" />
+    <Compile Include="Group.cs" />
     <Compile Include="PageParameter.cs" />
     <Compile Include="Task.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

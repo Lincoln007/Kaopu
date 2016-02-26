@@ -19,6 +19,11 @@ namespace Ztop.Todo.Web.Controllers
         protected ManagerCore Core = ManagerCore.Instance;
 
         protected User CurrentUser { get; private set; }
+        private AUser _auser { get; set; }
+        protected AUser AUser
+        {
+            get { return _auser == null ? _auser = Core.UserManager.GetZTOPAccount(Identity.Name) : _auser; }
+        }
         protected UserIdentity Identity
         {
             get
@@ -97,6 +102,7 @@ namespace Ztop.Todo.Web.Controllers
             ViewBag.Controller = filterContext.RequestContext.RouteData.Values["controller"];
             ViewBag.Action = filterContext.RequestContext.RouteData.Values["action"];
             ViewBag.CurrentUser = GetCurrentUser();
+            ViewBag.GroupType = AUser.Type;
             base.OnActionExecuting(filterContext);
         }
 

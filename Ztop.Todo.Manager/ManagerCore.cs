@@ -33,5 +33,6 @@ namespace Ztop.Todo.Manager
         public CommentManager CommentManager { get; private set; }
 
         public AttachmentManager AttachmentManager { get; private set; }
+        public AuthorizeManager AuthorizeManager { get; private set; }
     }
 }
