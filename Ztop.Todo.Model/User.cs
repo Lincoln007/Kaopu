@@ -37,4 +37,11 @@ namespace Ztop.Todo.Model
 
         public DateTime? LastLoginTime { get; set; }
     }
+
+    [Serializable]
+    public class UserInfo
+    {
+        public string Name { get; set; }
+        public string Password { get; set; }
+    }
 }
