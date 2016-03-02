@@ -144,6 +144,7 @@
     <Content Include="Content\bootstrap.custom.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\token-input.css" />
+    <Content Include="error.txt" />
     <Content Include="Scripts\jquery.autocomplete.js" />
     <Content Include="Content\jquery.datetimepicker.css" />
     <Content Include="favicon.ico" />
@@ -194,6 +195,7 @@
     <Content Include="Views\Task\SelectUser.cshtml" />
     <Content Include="Views\Home\Login.cshtml" />
     <Content Include="Views\User\_Layout.cshtml" />
+    <Content Include="Views\Shared\_Authority.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

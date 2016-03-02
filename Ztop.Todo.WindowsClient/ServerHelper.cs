@@ -24,7 +24,16 @@ namespace Ztop.Todo.WindowsClient
 
         public static Task GetNewTask(string UserName,string Password)
         {
-            var request = WebRequest.Create(GetServerUrl() + "/Task/GetNewTask?lastGetTime=" + _lastGetTime.ToString()+"&&UserName="+UserName+"&&Password="+Password);
+            string url = GetServerUrl() + "/Task/GetNewTask?lastGetTime=" + _lastGetTime.GetDateTimeFormats('s')[0].ToString() + "&&UserName=" + UserName + "&&Password=" + Password;
+            var request = WebRequest.Create(url);
+            using (var fs=new FileStream("url.txt", FileMode.Append, FileAccess.Write))
+            {
+                using (var sw=new StreamWriter(fs))
+                {
+                    sw.WriteLine(string.Format("时间：{0}  URL：{1}", DateTime.Now, url));
+                }
+            }
+
             request.Headers.Add("token", MainForm.AccessToken);
             var cred = new CredentialCache();
             cred.Add(new Uri(GetServerUrl()), "NTLM", CredentialCache.DefaultNetworkCredentials);

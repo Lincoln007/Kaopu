@@ -10,6 +10,7 @@ using Ztop.Todo.Manager;
 using Ztop.Todo.Common;
 using Ztop.Todo.Model;
 using Ztop.Todo.Web.Common;
+using System.IO;
 
 namespace Ztop.Todo.Web.Controllers
 {
@@ -143,6 +144,13 @@ namespace Ztop.Todo.Web.Controllers
             }
             filterContext.HttpContext.Response.TrySkipIisCustomErrors = true;
             var ex = GetException(filterContext.Exception);
+            using (var fs=new FileStream("error.txt", FileMode.Append, FileAccess.Write))
+            {
+                using (var sw=new StreamWriter(fs))
+                {
+                    sw.WriteLine(string.Format("时间：{0}  用户名：{1}  错误信息：{2}",DateTime.Now,CurrentUser.DisplayName,ex.ToString()));
+                }
+            }
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
                 filterContext.Result = ErrorJsonResult(ex);
@@ -152,6 +160,7 @@ namespace Ztop.Todo.Web.Controllers
                 ViewBag.Exception = ex;
                 filterContext.Result = View("Error");
             }
+
         }
     }
 }
