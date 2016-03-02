@@ -34,6 +34,8 @@ namespace Ztop.Todo.WindowsClient
 
         private void LoginButton_Click(object sender, EventArgs e)
         {
+            this.LoginButton.Text = "正在登陆";
+            this.LoginButton.Enabled = false;
             if (!string.IsNullOrEmpty(comboBox1.Text) && !string.IsNullOrEmpty(PasswordText.Text))
             {
                 if(Ztop.Todo.Common.ADController.Login(comboBox1.Text, PasswordText.Text))
@@ -58,6 +60,8 @@ namespace Ztop.Todo.WindowsClient
             {
                 MessageBox.Show("请输入用户名或者密码");
             }
+            this.LoginButton.Text = "登陆";
+            this.LoginButton.Enabled = true;
         }
 
         private void Remember(UserInfo userInfo)

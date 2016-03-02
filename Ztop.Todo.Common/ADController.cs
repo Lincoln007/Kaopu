@@ -90,13 +90,21 @@ namespace Ztop.Todo.Common
         }
         public static bool Login(string Name, string Password)
         {
-            if (!string.IsNullOrEmpty(Name) && !string.IsNullOrEmpty(Password))
+            try
             {
-                var user = GetDirectoryObjects(Name, Password);
-                var result = SearchOne("(&(objectCategory=person)(objectClass=user)(sAMAccountName=" + Name + "))", user);
-                return result == null ? false : true;
+                if (!string.IsNullOrEmpty(Name) && !string.IsNullOrEmpty(Password))
+                {
+                    var user = GetDirectoryObjects(Name, Password);
+                    var result = SearchOne("(&(objectCategory=person)(objectClass=user)(sAMAccountName=" + Name + "))", user);
+                    return result == null ? false : true;
+                }
+                return false;
             }
-            return false;
+            catch
+            {
+                return false;
+            }
+           
         }
         //通过筛选器获取DirectoryEntry
         private static DirectoryEntry Get(string Filter)

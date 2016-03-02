@@ -134,6 +134,7 @@ namespace Ztop.Todo.WindowsClient
             {
                 this.WindowState = FormWindowState.Minimized;
                 //this.Close();
+                this.Hide();
                 e.Cancel = true;
             }
             //timer1.Stop();
@@ -148,6 +149,9 @@ namespace Ztop.Todo.WindowsClient
 
         private void notifyIcon1_Click(object sender, EventArgs e)
         {
+            this.Show();
+            this.WindowState = FormWindowState.Normal;
+            
         }
 
         private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
