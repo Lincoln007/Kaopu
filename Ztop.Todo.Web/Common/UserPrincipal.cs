@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Security.Principal;
+using Ztop.Todo.Model;
+
 namespace Ztop.Todo.Web.Common
 {
     public class UserPrincipal:System.Security.Principal.IPrincipal
@@ -23,6 +25,7 @@ namespace Ztop.Todo.Web.Common
         public static UserIdentity Guest = new UserIdentity();
         public string UserName { get; set; }
         public string Password { get; set; }
+        public GroupType GroupType { get; set; }
         public string AuthenticationType { get { return "Web.Session"; } }
         public string Name { get { return UserName; } }
         public bool IsAuthenticated

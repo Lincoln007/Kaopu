@@ -11,8 +11,8 @@ namespace Ztop.Todo.Web
     {
         protected override bool AuthorizeCore(HttpContextBase httpContext)
         {
-            //return httpContext.User.Identity.IsAuthenticated;
-            return true;
+            return httpContext.User.Identity.IsAuthenticated;
+            //return true;
             //return !string.IsNullOrEmpty(httpContext.User.Identity.Name);
         }
     }

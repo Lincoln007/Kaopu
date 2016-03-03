@@ -9,7 +9,7 @@ using Ztop.Todo.Model;
 
 namespace Ztop.Todo.Common
 {
-    public static class ADController
+    public static partial class ADController
     {
         private static string ADServer { get; set; }
         private static string ADName { get; set; }
@@ -53,14 +53,9 @@ namespace Ztop.Todo.Common
             return list;
         }
 
-
-
-
-
-
         #region 通用
 
-        private static DirectoryEntry GetDirectoryObjects(string Name, string Password)
+        private static DirectoryEntry GetDirectoryObject(string Name, string Password)
         {
             try
             {
@@ -71,15 +66,15 @@ namespace Ztop.Todo.Common
                 return null;
             }
         }
-        private static DirectoryEntry GetDirectoryObjects()
+        private static DirectoryEntry GetDirectoryObject()
         {
-            return GetDirectoryObjects(ADName, ADPassword);
+            return GetDirectoryObject(ADName, ADPassword);
         }
         private static SearchResult SearchOne(string Filter, DirectoryEntry Entry = null)
         {
             if (Entry == null)
             {
-                Entry = GetDirectoryObjects();
+                Entry = GetDirectoryObject();
             }
             using (var searcher = new DirectorySearcher(Entry))
             {
@@ -88,13 +83,26 @@ namespace Ztop.Todo.Common
                 return searcher.FindOne();
             }
         }
+        public static SearchResultCollection SearchAll(this string Filter,DirectoryEntry Entry = null)
+        {
+            if (Entry == null)
+            {
+                Entry = GetDirectoryObject();
+            }
+            using (var searcher=new DirectorySearcher(Entry))
+            {
+                searcher.Filter = Filter;
+                searcher.SearchScope = SearchScope.Subtree;
+                return searcher.FindAll();
+            }
+        }
         public static bool Login(string Name, string Password)
         {
             try
             {
                 if (!string.IsNullOrEmpty(Name) && !string.IsNullOrEmpty(Password))
                 {
-                    var user = GetDirectoryObjects(Name, Password);
+                    var user = GetDirectoryObject(Name, Password);
                     var result = SearchOne("(&(objectCategory=person)(objectClass=user)(sAMAccountName=" + Name + "))", user);
                     return result == null ? false : true;
                 }
@@ -117,7 +125,7 @@ namespace Ztop.Todo.Common
             return null;
         }
         //获取DirectoryEntry中属性propertyName的值【0】
-        private static string GetProperty(DirectoryEntry Entry, string PropertyName)
+        private static string GetProperty(this DirectoryEntry Entry, string PropertyName)
         {
             if (Entry.Properties.Contains(PropertyName))
             {
@@ -127,6 +135,34 @@ namespace Ztop.Todo.Common
             {
                 return string.Empty;
             }
+        }
+        public static string GetProperty(this SearchResult result,string PropertyName)
+        {
+            if (result.Properties.Contains(PropertyName))
+            {
+                return result.Properties[PropertyName][0].ToString();
+            }
+            else
+            {
+                return string.Empty;
+            }
+
+        }
+        private static string GetDistinguishedName(this SearchResult result)
+        {
+            return result.GetProperty("distinguishedName");
+        }
+        private static bool IsIgnore(this string DistinguishedName)
+        {
+            var str = DistinguishedName.Split(',');
+            for(var i = 1; i < str.Count(); i++)
+            {
+                if (IgnoresList.Contains(str[i].Replace("OU=", "").Replace("CN=", "")))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
         //属性值中提取group或者用户
         private static List<string> Extract(List<string> Origin, string Category)
@@ -158,110 +194,66 @@ namespace Ztop.Todo.Common
             }
             return list;
         }
-
-        #endregion
-
-        #region  用户
-        private static DirectoryEntry GetUserObject(string sAMAccountName)
+        private static DirectoryEntries GetChildren(this string OU)
         {
-            return Get("(&(objectCategory=person)(objectClass=user)(sAMAccountName=" + sAMAccountName + "))");
-        }
-        public static AUser GetUser(string sAMAccountName)
-        {
-            var user = GetUserObject(sAMAccountName);
-            if (user == null)
+            var directoryEntry = GetOrganizationObject(OU);
+            if (directoryEntry == null)
             {
-                return new AUser()
-                {
-                    Name = sAMAccountName,
-                    Type = GroupType.Guest
-                };
+                throw new ArgumentException("无法获取DirectoryEntry对象");
             }
-            return new AUser()
-            {
-                Name = GetProperty(user, "name"),
-                Account = GetProperty(user, "sAMAccountName"),
-                Group = Extract(GetAllProperty(user, "memberOf"), "group").OrderBy(e => e).ToList()
-            };
+            return directoryEntry.Children;
         }
-        public static bool IsAdministrator(AUser auser)
+        private static List<string> GetList(this string Filter)
         {
-            if (auser.Group == null || auser.Group.Count == 0)
+            var list = new List<string>();
+            var collection = Filter.SearchAll();
+            foreach(SearchResult result in collection)
             {
-                return false;
-            }
-            foreach(var item in AdminList)
-            {
-                if (auser.Group.Contains(item))
+                if (!result.GetDistinguishedName().IsIgnore())
                 {
-                    return true;
+                    list.Add(result.GetProperty("name"));
                 }
             }
-            return false;
+            return list;
         }
-        public static bool IsManager(AUser auser)
-        {
-            if (auser.Group == null || auser.Group.Count == 0)
-            {
-                return false;
-            }
-            foreach(var item in ManagerList)
-            {
-                if (auser.Group.Contains(item))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-        #endregion
-
-        #region 组
-        private static List<string> GetGroupListBysAMAccountName(string sAMAccountName)
-        {
-            var userEntry = GetUserObject(sAMAccountName);
-            if (userEntry == null)
-            {
-                return null;
-            }
-            return Extract(GetAllProperty(userEntry, "memberOf"), "group");
-        }
-        private static DirectoryEntry GetGroupObject(string GroupName)
-        {
-            return Get("(&(objectCategory=group)(objectClass=group)(cn=" + GroupName + "))");
-        }
-
-        public static Group GetGroup(string GroupName)
-        {
-            var Group = GetGroupObject(GroupName);
-            return new Group()
-            {
-                Name = GetProperty(Group, "name"),
-                Descriptions = GetProperty(Group, "description")
-            };
-        }
-        public static List<Group> GetGroupList(string sAMAccountName)
-        {
-            var GroupsNames = GetGroupListBysAMAccountName(sAMAccountName);
-            var list = new List<Group>();
-            if (GroupsNames != null)
-            {
-                foreach (var item in GroupsNames)
-                {
-                    list.Add(GetGroup(item));
-                }
-            }
-            return list.OrderBy(e => e.Name).ToList();
-        }
-        #endregion
-
-        #region 组织单元
 
         #endregion
 
         #region  组和用户之间操作
+        public static bool MoveUserToGroup(this string sAMAccountName,string NewOrganization)
+        {
+            var userEntry = sAMAccountName.GetUserObject();
+            var orgEntry = NewOrganization.GetOrganizationObject();
+            if (userEntry == null || orgEntry == null)
+            {
+                return false;
+            }
+            orgEntry = new DirectoryEntry(orgEntry.Path, ADName, ADPassword, AuthenticationTypes.Secure);
+            userEntry.MoveTo(orgEntry);
+            userEntry.CommitChanges();
+            return true;
+        }
 
         #endregion
 
+    }
+
+    public enum ADAccountOptions
+    {
+        UF_TEMP_DUPLICATE_ACCOUNT = 0x0100,
+        UF_NORMAL_ACCOUNT = 0x0200,
+        UF_INTERDOMAIN_TRUST_ACCOUNT = 0x0800,
+        UF_WORKSTATION_TRUST_ACCOUNT = 0x1000,
+        UF_SERVER_TRUST_ACCOUNT = 0x2000,
+        UF_DONT_EXPIRE_PASSWD = 0x10000,
+        UF_SCRIPT = 0x0001,
+        UF_ACCOUNTDISABLE = 0x0002,
+        UF_HOMEDIR_REQUIRED = 0x0008,
+        UF_LOCKOUT = 0x0010,
+        UF_PASSWD_NOTREQD = 0x0020,
+        UF_PASSWD_CANT_CHANGE = 0x0040,
+        UF_ACCOUNT_LOCKOUT = 0X0010,
+        UF_ENCRYPTED_TEXT_PASSWORD_ALLOWED = 0X0080,
+        UF_EXPIRE_USER_PASSWORD = 0x800000,
     }
 }

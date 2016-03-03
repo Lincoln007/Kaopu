@@ -35,4 +35,14 @@ namespace Ztop.Todo.Model
             return value;
         }
     }
+
+    public class TreeObject
+    {
+        public TreeObject()
+        {
+            children = new List<TreeObject>();
+        }
+        public string label { get; set; }
+        public List<TreeObject> children { get; set; }
+    }
 }

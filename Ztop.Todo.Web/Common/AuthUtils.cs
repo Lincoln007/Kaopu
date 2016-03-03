@@ -14,7 +14,7 @@ namespace Ztop.Todo.Web
 
         public static void SaveAuth(this HttpContextBase context, User user)
         {
-            var ticket = new FormsAuthenticationTicket(user.ID.ToString()+"|"+user.Username, true, 60);
+            var ticket = new FormsAuthenticationTicket(user.ID.ToString()+"|"+user.Username+"|"+user.Type.ToString(), true, 60);
             var cookieValue = FormsAuthentication.Encrypt(ticket);
             var cookie = new HttpCookie(_cookieName, cookieValue);
             context.Response.Cookies.Remove(_cookieName);
@@ -31,11 +31,13 @@ namespace Ztop.Todo.Web
                     if (ticket != null && !string.IsNullOrEmpty(ticket.Name))
                     {
                         var values = ticket.Name.Split('|');
-                        if (values.Length == 2)
+                        if (values.Length == 3)
                         {
+                            var type = GroupType.Guest;
                             return new UserIdentity
                             {
-                                UserName = values[1]
+                                UserName = values[1],
+                                GroupType = Enum.TryParse(values[2], out type) ? type : GroupType.Guest
                             };
                         }
                     }

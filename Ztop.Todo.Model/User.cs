@@ -18,6 +18,8 @@ namespace Ztop.Todo.Model
         public int GroupID { get; set; }
 
         public string Username { get; set; }
+        [NotMapped]
+        public GroupType Type { get; set; }
 
         [NotMapped]
         public string GroupName { get; set; }

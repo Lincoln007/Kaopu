@@ -1,9 +1,5 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Net;
-using System.Threading;
 using System.Web;
 using System.Web.Mvc;
 using Ztop.Todo.Manager;
@@ -14,17 +10,17 @@ using System.IO;
 
 namespace Ztop.Todo.Web.Controllers
 {
-    
+
     public class ControllerBase : AsyncController
     {
         protected ManagerCore Core = ManagerCore.Instance;
 
         protected User CurrentUser { get; private set; }
-        private AUser _auser { get; set; }
-        protected AUser AUser
-        {
-            get { return _auser == null ? _auser = Core.UserManager.GetZTOPAccount(Identity.Name) : _auser; }
-        }
+        //private AUser _auser { get; set; }
+        //protected AUser AUser
+        //{
+        //    get { return _auser == null ? _auser = Core.UserManager.GetZTOPAccount(Identity.Name) : _auser; }
+        //}
         protected UserIdentity Identity
         {
             get
@@ -103,7 +99,7 @@ namespace Ztop.Todo.Web.Controllers
             ViewBag.Controller = filterContext.RequestContext.RouteData.Values["controller"];
             ViewBag.Action = filterContext.RequestContext.RouteData.Values["action"];
             ViewBag.CurrentUser = GetCurrentUser();
-            ViewBag.GroupType = AUser == null ? GroupType.Guest : AUser.Type;
+            ViewBag.GroupType = CurrentUser == null ? GroupType.Guest : CurrentUser.Type;
             base.OnActionExecuting(filterContext);
         }
 

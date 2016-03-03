@@ -44,7 +44,9 @@ namespace Ztop.Todo.Manager
             {
                 return null;
             }
-            return GetAllUsers().FirstOrDefault(e => e.Username == username);
+            var user= GetAllUsers().FirstOrDefault(e => e.Username == username);
+            user.Type = GetGroupType(username);
+            return user;
         }
 
         /// <summary>
@@ -127,6 +129,10 @@ namespace Ztop.Todo.Manager
                 db.SaveChanges();
                 Cache.HSet(_userCacheKey, user.ID.ToString(), user);
             }
+        }
+        public GroupType GetGroupType(string sAMAccountName)
+        {
+            return GetZTOPAccount(sAMAccountName).Type;
         }
 
         public AUser GetZTOPAccount(string SAMAccountName)

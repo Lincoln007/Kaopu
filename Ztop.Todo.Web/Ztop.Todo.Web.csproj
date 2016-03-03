@@ -117,6 +117,9 @@
   <ItemGroup>
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Areas\Jurisdiction\Controllers\AdminController.cs" />
+    <Compile Include="Areas\Jurisdiction\JurisdictionAreaRegistration.cs" />
+    <Compile Include="Areas\Jurisdiction\JurisdictionControllerBase.cs" />
     <Compile Include="Common\AuthenticateModule.cs" />
     <Compile Include="Common\AuthUtils.cs">
       <SubType>Code</SubType>
@@ -126,6 +129,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Common\UserPrincipal.cs" />
+    <Compile Include="Common\UserRoleAttribute.cs" />
     <Compile Include="Common\WebUtility.cs" />
     <Compile Include="Controllers\AttachmentController.cs" />
     <Compile Include="Controllers\CommentController.cs" />
@@ -143,6 +147,8 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.custom.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\jqtree.css" />
+    <Content Include="Content\jquery.autocomplete.css" />
     <Content Include="Content\token-input.css" />
     <Content Include="error.txt" />
     <Content Include="Scripts\jquery.autocomplete.js" />
@@ -159,6 +165,15 @@
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="Content\bootstrap.min.css.map" />
     <Content Include="Content\bootstrap.css.map" />
+    <Content Include="Areas\Jurisdiction\Views\web.config" />
+    <Content Include="Areas\Jurisdiction\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\Jurisdiction\Views\Admin\_Layout.cshtml" />
+    <Content Include="Areas\Jurisdiction\Views\Admin\AddUser.cshtml" />
+    <Content Include="Areas\Jurisdiction\Views\Admin\UserList.cshtml" />
+    <Content Include="Areas\Jurisdiction\Views\Admin\Group.cshtml" />
+    <Content Include="Areas\Jurisdiction\Views\Admin\Impower.cshtml" />
+    <Content Include="Areas\Jurisdiction\Views\Admin\Accredit.cshtml" />
+    <Content Include="Areas\Jurisdiction\Views\Admin\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\TODO.pubxml" />
     <None Include="Scripts\jquery-1.9.1.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -169,6 +184,7 @@
     <Content Include="Scripts\jquery.datetimepicker.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\tree.jquery.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="SystemInfo.xml" />
     <Content Include="Web.config">
@@ -199,6 +215,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Areas\Jurisdiction\Models\" />
+    <Folder Include="Areas\Jurisdiction\Views\JurisdictionControllerBase\" />
     <Folder Include="Models\" />
     <Folder Include="Views\Attachment\" />
     <Folder Include="Views\Comment\" />

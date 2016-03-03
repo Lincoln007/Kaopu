@@ -11,10 +11,14 @@
     <link href="~/Content/bootstrap.min.css" type="text/css" rel="stylesheet" />
     <link href="~/Content/bootstrap.custom.css" type="text/css"  rel="stylesheet"/>
     <link href="~/Content/jquery.datetimepicker.css" type="text/css"  rel="stylesheet"/>
+    <link href="~/Content/jqtree.css" type="text/css" rel="stylesheet" />
+    <link href="~/Content/jquery.autocomplete.css" type="text/css" rel="stylesheet" />
     <script src="~/Scripts/jquery-1.9.1.min.js"></script>
     <script src="~/Scripts/bootstrap.js"></script>
     <script src="~/Scripts/jquery.datetimepicker.js"></script>
     <script src="~/Scripts/common.js"></script>
+    <script src="~/Scripts/tree.jquery.js"></script>
+    <script src="~/Scripts/jquery.autocomplete.js"></script>
 </head>
 <body>
     <div id="header" class="navbar navbar-default navbar-fixed-top">
@@ -32,7 +36,11 @@
                     <li><a href="/">首页</a></li>
                     <li><a href="/task">任务列表</a></li>
                     <li><a href="/task/edit">创建任务</a></li>
-                    @Html.Partial("_Authority")
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">权限管理<span class="caret"></span></a>
+                        @Html.Partial("_Authority")
+                    </li>
+                    
                 </ul>
                 <ul class="navbar-right nav navbar-nav">
                     <li class="dropdown">
