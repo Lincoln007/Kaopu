@@ -29,5 +29,6 @@ namespace Ztop.Todo.Manager
 
         public DbSet<Attachment> Attachments { get; set; }
         public DbSet<Authorize> Authorizes { get; set; }
+        public DbSet<DataBook> DataBooks { get; set; }
     }
 }

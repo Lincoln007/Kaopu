@@ -159,6 +159,10 @@ namespace Ztop.Todo.Common
             }
             return dict;
         }
+        public static List<string> GetGroupList()
+        {
+            return "(&(objectCategory=group)(objectClass=group))".GetList();
+        }
 
         public static Group GetTree()
         {

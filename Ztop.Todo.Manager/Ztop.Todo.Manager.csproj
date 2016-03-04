@@ -61,6 +61,7 @@
     <Compile Include="AttachmentManager.cs" />
     <Compile Include="AuthorizeManager.cs" />
     <Compile Include="CommentManager.cs" />
+    <Compile Include="DataBookManager.cs" />
     <Compile Include="DataContext.cs" />
     <Compile Include="ManagerBase.cs" />
     <Compile Include="ManagerCore.cs" />

@@ -103,5 +103,12 @@ namespace Ztop.Todo.Web.Areas.Jurisdiction.Controllers
             var list = ADController.GetUserList();
             return Json(list, JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult Manager()
+        {
+            var groups = ADController.GetGroupList();
+            ViewBag.Wait = Core.DataBookManager.Get(groups, Model.CheckStatus.Wait);
+            return View();
+        }
     }
 }

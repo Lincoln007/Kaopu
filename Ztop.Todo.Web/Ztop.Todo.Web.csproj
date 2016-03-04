@@ -151,7 +151,6 @@
     <Content Include="Content\jquery.autocomplete.css" />
     <Content Include="Content\token-input.css" />
     <Content Include="error.txt" />
-    <Content Include="Scripts\jquery.autocomplete.js" />
     <Content Include="Content\jquery.datetimepicker.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -181,6 +180,7 @@
     <Content Include="Scripts\common.js" />
     <Content Include="Scripts\jquery-1.9.1.js" />
     <Content Include="Scripts\jquery-1.9.1.min.js" />
+    <Content Include="Scripts\jquery.autocomplete.js" />
     <Content Include="Scripts\jquery.datetimepicker.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
