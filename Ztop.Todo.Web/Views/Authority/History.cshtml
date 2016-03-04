@@ -1,11 +1,10 @@
 ﻿@using Ztop.Todo.Model
 @{
     ViewBag.Title = "申请历史";
-    Layout = "~/Areas/Jurisdiction/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
     List<Ztop.Todo.Model.DataBook> List = ViewBag.List;
     int SerialNumber = 1;
 }
-
 <div style="overflow:hidden;margin-bottom:10px;float:right;">
     <form class="form-inline" style="float:right;">
         <div class="input-group">
@@ -75,8 +74,5 @@
         </td>
     </tr>
 </table>
-
-
-
 
 

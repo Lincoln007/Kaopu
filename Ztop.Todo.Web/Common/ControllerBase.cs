@@ -7,6 +7,7 @@ using Ztop.Todo.Common;
 using Ztop.Todo.Model;
 using Ztop.Todo.Web.Common;
 using System.IO;
+using System.Collections.Generic;
 
 namespace Ztop.Todo.Web.Controllers
 {
@@ -157,6 +158,28 @@ namespace Ztop.Todo.Web.Controllers
                 filterContext.Result = View("Error");
             }
 
+        }
+
+        protected ActionResult HtmlResult(List<string> html)
+        {
+            var values = html.ListToTable();
+            var str = string.Empty;
+            foreach (var item in values)
+            {
+                var st = string.Empty;
+                st += "<tr>";
+                foreach (var entry in item)
+                {
+                    if (string.IsNullOrEmpty(entry))
+                    {
+                        continue;
+                    }
+                    st += "<td><label class='checkbox-inline'><input type='checkbox' name='Group' value='" + entry + "' />" + entry + "</label></td>";
+                }
+                st += "</tr>";
+                str += st;
+            }
+            return Content(str);
         }
     }
 }

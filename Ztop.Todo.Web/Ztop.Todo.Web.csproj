@@ -119,7 +119,6 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Areas\Jurisdiction\Common\UploadHelper.cs" />
     <Compile Include="Areas\Jurisdiction\Controllers\AdminController.cs" />
-    <Compile Include="Areas\Jurisdiction\Controllers\MemberController.cs" />
     <Compile Include="Areas\Jurisdiction\JurisdictionAreaRegistration.cs" />
     <Compile Include="Areas\Jurisdiction\JurisdictionControllerBase.cs" />
     <Compile Include="Common\AuthenticateModule.cs" />
@@ -136,6 +135,7 @@
     <Compile Include="Controllers\AttachmentController.cs" />
     <Compile Include="Controllers\CommentController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\AuthorityController.cs" />
     <Compile Include="Controllers\TaskController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
@@ -177,9 +177,6 @@
     <Content Include="Areas\Jurisdiction\Views\Admin\Edit.cshtml" />
     <Content Include="Areas\Jurisdiction\Views\Admin\Manager.cshtml" />
     <Content Include="Areas\Jurisdiction\Views\Admin\History.cshtml" />
-    <Content Include="Areas\Jurisdiction\Views\Member\Apply.cshtml" />
-    <Content Include="Areas\Jurisdiction\Views\Member\ASuccess.cshtml" />
-    <Content Include="Areas\Jurisdiction\Views\Member\History.cshtml" />
     <None Include="Properties\PublishProfiles\TODO.pubxml" />
     <None Include="Scripts\jquery-1.9.1.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -219,6 +216,11 @@
     <Content Include="Views\Home\Login.cshtml" />
     <Content Include="Views\User\_Layout.cshtml" />
     <Content Include="Views\Shared\_Authority.cshtml" />
+    <Content Include="Views\Authority\Manager.cshtml" />
+    <Content Include="Views\Authority\Apply.cshtml" />
+    <Content Include="Views\Authority\ASuccess.cshtml" />
+    <Content Include="Views\Authority\History.cshtml" />
+    <Content Include="Views\Authority\CHistory.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

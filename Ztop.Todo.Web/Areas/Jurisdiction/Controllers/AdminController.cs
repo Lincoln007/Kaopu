@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using Ztop.Todo.Common;
 using Ztop.Todo.Model;
+using Ztop.Todo.Web.Common;
 
 namespace Ztop.Todo.Web.Areas.Jurisdiction.Controllers
 {
@@ -24,11 +25,6 @@ namespace Ztop.Todo.Web.Areas.Jurisdiction.Controllers
         }
         public ActionResult Group()
         {
-            //ViewBag.DICT = ADController.Gain();
-            //var list = ADController.GetAllOrganization();
-            //list.Remove(System.Configuration.ConfigurationManager.AppSettings["PEOPLE"]);
-            //ViewBag.List = list;
-            //ViewBag.Tree = ADController.GetTree();
             return View();
         }
 
@@ -46,7 +42,7 @@ namespace Ztop.Todo.Web.Areas.Jurisdiction.Controllers
             {
                 throw new ArgumentException(ex.Message);
             }
-            return RedirectToAction("UserList", new { IsActive = true });
+            return Redirect("/Jurisdiction/Admin/UserList?IsActive=true");
         }
 
         public ActionResult DisableUser(string sAMAccountName)
@@ -58,7 +54,7 @@ namespace Ztop.Todo.Web.Areas.Jurisdiction.Controllers
             {
                 throw new ArgumentException(ex.Message);
             }
-            return RedirectToAction("UserList", new { IsActive = true });
+            return Redirect("/Jurisdiction/Admin/UserList?IsActive=true");
         }
         public ActionResult ActiveUser(string sAMAccountName)
         {
@@ -69,7 +65,7 @@ namespace Ztop.Todo.Web.Areas.Jurisdiction.Controllers
             {
                 throw new ArgumentException(ex.Message);
             }
-            return RedirectToAction("UserList", new { IsActive = true });
+            return Redirect("/Jurisdiction/Admin/UserList?IsActive=true");
         }
         [HttpPost]
         public ActionResult Move(string sAMAccountName,string NewOrganization)
@@ -84,7 +80,7 @@ namespace Ztop.Todo.Web.Areas.Jurisdiction.Controllers
             {
                 throw new ArgumentException("移动用户到新组失败，错误信息：" + ex.Message);
             }
-            return RedirectToAction("UserList", new { IsActive = true });
+            return Redirect("/Jurisdiction/Admin/UserList?IsActive=true");
         }
 
         public ActionResult GJson()
@@ -98,34 +94,26 @@ namespace Ztop.Todo.Web.Areas.Jurisdiction.Controllers
             ViewBag.Groups = ADController.GetGroupDict().Sort().DictToTable();
             return View();
         }
+        [HttpPost]
+        public ActionResult Impower(Authorize authorize)
+        {
+            Core.AuthorizeManager.Add(Core.AuthorizeManager.Get(HttpContext));
+            ViewBag.List = Core.AuthorizeManager.GetList();
+            ViewBag.Groups = ADController.GetGroupDict().Sort().DictToTable();
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult ImpowerEdit(int ID)
+        {
+            Core.AuthorizeManager.Edit(Core.AuthorizeManager.Get(HttpContext, ID));
+            return Redirect("/Jurisdiction/Admin/Impower");
+        }
 
         public ActionResult Gain()
         {
             var list = ADController.GetUserList();
             return Json(list, JsonRequestBehavior.AllowGet);
-        }
-
-        public ActionResult Manager()
-        {
-            var groups = ADController.GetGroupList();
-            ViewBag.Wait = Core.DataBookManager.Get(groups, Model.CheckStatus.Wait);
-            return View();
-        }
-
-        [HttpPost]
-        public ActionResult Manager(int ID,string Reason,int? Day,bool? Check,CheckStatus status = CheckStatus.Wait)
-        {
-            var book= Core.DataBookManager.Check(ID, Reason, Identity.Name, Day, Check, status);
-            Core.MessageManager.Add(new Message
-            {
-                Sender = Identity.Name,
-                Info = string.Format("申请{0}的权限已经确认！", book.GroupName),
-                Receiver = book.Name
-            });
-            var groups = ADController.GetGroupList();
-            ViewBag.Wait = Core.DataBookManager.Get(groups, CheckStatus.Wait);
-            ViewBag.DGroups = ADController.GetUserDict(groups);
-            return View();
         }
 
         public ActionResult History(bool?Label,CheckStatus status=CheckStatus.All,string Checker=null,string Name=null,string GroupName=null,int page=1)
