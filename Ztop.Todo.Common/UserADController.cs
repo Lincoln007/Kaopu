@@ -14,7 +14,7 @@ namespace Ztop.Todo.Common
         {
             return Get("(&(objectCategory=person)(objectClass=user)(sAMAccountName=" + sAMAccountName + "))");
         }
-        public static AUser GetUser(string sAMAccountName)
+        public static AUser GetUser(this string sAMAccountName)
         {
             var user = GetUserObject(sAMAccountName);
             if (user == null)
@@ -69,6 +69,7 @@ namespace Ztop.Todo.Common
             int iFlagExists = iUserAccountControl & iUserAccountControl_Disabled;
             return iFlagExists > 0 ? false : true;
         }
+        
         public static void ActiveAccount(this string sAMAccountName)
         {
             if (string.IsNullOrEmpty(sAMAccountName))
@@ -79,6 +80,10 @@ namespace Ztop.Todo.Common
             user.Properties["userAccountControl"][0] = ADAccountOptions.UF_NORMAL_ACCOUNT;
             user.CommitChanges();
             user.Close();
+        }
+        private static string GetsAMAccountByName(this string Name)
+        {
+            return Get("(&(objectCategory=person)(objectClass=user)(name=" + Name + "))").GetProperty("sAMAccountName");
         }
 
         public static void DisableAccount(this string sAMAccountName)
@@ -129,7 +134,28 @@ namespace Ztop.Todo.Common
         public static List<AUser> GetUserList(this string GroupName)
         {
             var list = new List<AUser>();
+            var groupEntry = GroupName.GetGroupObject();
+            var userlist = groupEntry.GetAllProperty("member").Extract("person");
+            foreach(var item in userlist)
+            {
+                list.Add(item.GetsAMAccountByName().GetUser());
+            }
             return list;
+        }
+
+        public static Dictionary<string, List<AUser>> GetUserDict(List<string> Groups)
+        {
+            var dict = new Dictionary<string, List<AUser>>();
+            foreach (var item in Groups)
+            {
+                if (dict.ContainsKey(item))
+                {
+                    continue;
+                }
+                dict.Add(item, GetUserList(item));
+            }
+
+            return dict;
         }
         public static List<string> GetUserList()
         {

@@ -124,7 +124,27 @@ namespace Ztop.Todo.Web.Areas.Jurisdiction.Controllers
             });
             var groups = ADController.GetGroupList();
             ViewBag.Wait = Core.DataBookManager.Get(groups, CheckStatus.Wait);
-            //ViewBag.DGroups=ADController.GetUserDict
+            ViewBag.DGroups = ADController.GetUserDict(groups);
+            return View();
+        }
+
+        public ActionResult History(bool?Label,CheckStatus status=CheckStatus.All,string Checker=null,string Name=null,string GroupName=null,int page=1)
+        {
+            var filter = new DataBookFilter
+            {
+                Status = status,
+                Checker = Checker,
+                Name = Name,
+                GroupName = GroupName,
+                Label = Label,
+                Page = new PageParameter(page,20)
+            };
+            ViewBag.List = Core.DataBookManager.Get(filter);
+            ViewBag.Page = filter.Page;
+            var list = Core.DataBookManager.GetList();
+            ViewBag.NList = list.GroupBy(e => e.Name).Select(e => e.Key).ToList();
+            ViewBag.GList = list.GroupBy(e => e.GroupName).Select(e => e.Key).ToList();
+            ViewBag.CList = list.GroupBy(e => e.Checker).Select(e => e.Key).ToList();
             return View();
         }
     }

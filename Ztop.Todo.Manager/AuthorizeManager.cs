@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Ztop.Todo.Model;
+using Ztop.Todo.Common;
 
 namespace Ztop.Todo.Manager
 {
@@ -30,6 +31,26 @@ namespace Ztop.Todo.Manager
                 list.Add(item);
             }
             return list.OrderBy(e => e).ToList();
+        }
+        public List<string> GetAllManager()
+        {
+            return GetList().Select(e => e.Manager).ToList();
+        }
+        public void Screen(string[] Origin,string sAMAccountName,out List<string> None,out List<string> Have)
+        {
+            None = new List<string>();
+            Have = new List<string>();
+            foreach(var item in Origin)
+            {
+                if (ADController.IsMember(item, sAMAccountName))
+                {
+                    Have.Add(item);
+                }
+                else
+                {
+                    None.Add(item);
+                }
+            }
         }
     }
 }
