@@ -13,6 +13,7 @@ namespace Ztop.Todo.Web.Controllers
     public class AuthorityController : ControllerBase
     {
         
+        [UserRole(groupType =GroupType.Member)]
         /// <summary>
         /// 授权审批
         /// </summary>
@@ -50,8 +51,9 @@ namespace Ztop.Todo.Web.Controllers
         }
 
 
+        [UserRole(groupType =GroupType.Administrator)]
         /// <summary>
-        /// 申请权限
+        /// 申请权限  管理者和普通用户
         /// </summary>
         /// <returns></returns>
         public ActionResult Apply()
@@ -97,6 +99,7 @@ namespace Ztop.Todo.Web.Controllers
             return HtmlResult(html);
         }
 
+        [UserRole(groupType =GroupType.Administrator)]
         /// <summary>
         /// 申请权限历史 管理者和普通用户
         /// </summary>

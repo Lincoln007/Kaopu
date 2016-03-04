@@ -38,6 +38,10 @@ namespace Ztop.Todo.Web.Controllers
             {
                 return Redirect("/Home/Index");
             }
+            else
+            {
+                throw new ArgumentException("用户名或者密码错误");
+            }
             return View();
         }
         public ActionResult LoginOut()

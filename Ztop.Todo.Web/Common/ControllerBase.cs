@@ -145,7 +145,7 @@ namespace Ztop.Todo.Web.Controllers
             {
                 using (var sw=new StreamWriter(fs))
                 {
-                    sw.WriteLine(string.Format("时间：{0}  用户名：{1}  错误信息：{2}",DateTime.Now,CurrentUser.DisplayName,ex.ToString()));
+                    sw.WriteLine(string.Format("时间：{0} 用户名：{1} 错误信息：{2}",DateTime.Now,CurrentUser!=null?CurrentUser.DisplayName:"未登陆",ex.ToString()));
                 }
             }
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
