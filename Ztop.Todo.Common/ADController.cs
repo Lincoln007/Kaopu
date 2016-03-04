@@ -152,6 +152,10 @@ namespace Ztop.Todo.Common
         {
             return result.GetProperty("distinguishedName");
         }
+        private static string GetDistinguishedName(this DirectoryEntry Entry)
+        {
+            return Entry.GetProperty("distinguishedName");
+        }
         private static bool IsIgnore(this string DistinguishedName)
         {
             var str = DistinguishedName.Split(',');
@@ -232,6 +236,22 @@ namespace Ztop.Todo.Common
             userEntry.MoveTo(orgEntry);
             userEntry.CommitChanges();
             return true;
+        }
+        public static void AddUserToGroup(this string sAMAccountName,string GroupName)
+        {
+            var distinguishedName = sAMAccountName.GetUserObject().GetDistinguishedName();
+            if (string.IsNullOrEmpty(distinguishedName))
+            {
+                throw new ArgumentException("未找到申请用户信息");
+            }
+            var group = GroupName.GetGroupObject();
+            if (group == null)
+            {
+                throw new ArgumentException("未找到当前组");
+            }
+            group.Properties["member"].Add(distinguishedName);
+            group.CommitChanges();
+            group.Close();
         }
 
         #endregion

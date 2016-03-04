@@ -35,5 +35,6 @@ namespace Ztop.Todo.Manager
         public AttachmentManager AttachmentManager { get; private set; }
         public AuthorizeManager AuthorizeManager { get; private set; }
         public DataBookManager DataBookManager { get; private set; }
+        public MessageManager MessageManager { get; private set; }
     }
 }

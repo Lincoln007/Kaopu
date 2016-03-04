@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Ztop.Todo.Common;
+using Ztop.Todo.Model;
 
 namespace Ztop.Todo.Web.Areas.Jurisdiction.Controllers
 {
@@ -109,6 +110,12 @@ namespace Ztop.Todo.Web.Areas.Jurisdiction.Controllers
             var groups = ADController.GetGroupList();
             ViewBag.Wait = Core.DataBookManager.Get(groups, Model.CheckStatus.Wait);
             return View();
+        }
+
+        [HttpPost]
+        public ActionResult Manager(int ID,string Reason,int? Day,bool? Check,CheckStatus status = CheckStatus.Wait)
+        {
+            Core.DataBookManager.Check(ID, Reason, Identity.Name, Day, Check, status);
         }
     }
 }

@@ -19,7 +19,7 @@ namespace Ztop.Todo.Common
             }
             return Extract(GetAllProperty(userEntry, "memberOf"), "group");
         }
-        private static DirectoryEntry GetGroupObject(string GroupName)
+        private static DirectoryEntry GetGroupObject(this string GroupName)
         {
             return Get("(&(objectCategory=group)(objectClass=group)(cn=" + GroupName + "))");
         }
