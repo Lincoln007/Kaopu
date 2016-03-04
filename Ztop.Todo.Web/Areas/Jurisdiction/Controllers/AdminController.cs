@@ -115,7 +115,17 @@ namespace Ztop.Todo.Web.Areas.Jurisdiction.Controllers
         [HttpPost]
         public ActionResult Manager(int ID,string Reason,int? Day,bool? Check,CheckStatus status = CheckStatus.Wait)
         {
-            Core.DataBookManager.Check(ID, Reason, Identity.Name, Day, Check, status);
+            var book= Core.DataBookManager.Check(ID, Reason, Identity.Name, Day, Check, status);
+            Core.MessageManager.Add(new Message
+            {
+                Sender = Identity.Name,
+                Info = string.Format("申请{0}的权限已经确认！", book.GroupName),
+                Receiver = book.Name
+            });
+            var groups = ADController.GetGroupList();
+            ViewBag.Wait = Core.DataBookManager.Get(groups, CheckStatus.Wait);
+            //ViewBag.DGroups=ADController.GetUserDict
+            return View();
         }
     }
 }

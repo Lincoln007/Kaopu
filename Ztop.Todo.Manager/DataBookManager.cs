@@ -55,11 +55,11 @@ namespace Ztop.Todo.Manager
             return list;
         }
 
-        public void Check(int ID,string Reason,string Checker,int? Day,bool?Check,CheckStatus status)
+        public DataBook Check(int ID,string Reason,string Checker,int? Day,bool?Check,CheckStatus status)
         {
             if (string.IsNullOrEmpty(Checker))
             {
-                return;
+                return null;
             }
             var book = Get(ID);
             if (book == null)
@@ -107,6 +107,7 @@ namespace Ztop.Todo.Manager
                     throw new ArgumentException(ex.Message);
                 }
             }
+            return book;
 
         }
     }

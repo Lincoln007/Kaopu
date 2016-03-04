@@ -126,6 +126,11 @@ namespace Ztop.Todo.Common
             }
             return list;
         }
+        public static List<AUser> GetUserList(this string GroupName)
+        {
+            var list = new List<AUser>();
+            return list;
+        }
         public static List<string> GetUserList()
         {
             return "(&(objectCategory=person)(objectClass=user))".GetList();

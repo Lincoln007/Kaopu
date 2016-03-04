@@ -23,6 +23,20 @@ namespace Ztop.Todo.Common
         {
             return Get("(&(objectCategory=group)(objectClass=group)(cn=" + GroupName + "))");
         }
+        public static Dictionary<string,List<AUser>> GetUserDict(List<string> Groups)
+        {
+            var dict = new Dictionary<string, List<AUser>>();
+            foreach(var item in Groups)
+            {
+                if (dict.ContainsKey(item))
+                {
+                    continue;
+                }
+                //dict.Add(item,getuser)
+            }
+
+            return dict;
+        }
 
         private static Group GetGroup(this DirectoryEntry Entry)
         {
