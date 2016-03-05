@@ -25,11 +25,6 @@ namespace Ztop.Todo.Web.Areas.Jurisdiction.Controllers
         }
         public ActionResult Group()
         {
-            //ViewBag.DICT = ADController.Gain();
-            //var list = ADController.GetAllOrganization();
-            //list.Remove(System.Configuration.ConfigurationManager.AppSettings["PEOPLE"]);
-            //ViewBag.List = list;
-            //ViewBag.Tree = ADController.GetTree();
             return View();
         }
 
@@ -48,18 +43,18 @@ namespace Ztop.Todo.Web.Areas.Jurisdiction.Controllers
             {
                 throw new ArgumentException(ex.Message);
             }
-            return RedirectToAction("UserList", new { IsActive = true });
+            return Redirect("/Jurisdiction/Admin/UserList?IsActive=true");
         }
 
         public ActionResult DisableUser(string sAMAccountName)
         {
             ADController.DisableAccount(sAMAccountName);
-            return RedirectToAction("UserList", new { IsActive = true });
+            return Redirect("/Jurisdiction/Admin/UserList?IsActive=true");
         }
         public ActionResult ActiveUser(string sAMAccountName)
         {
             ADController.ActiveAccount(sAMAccountName);
-            return RedirectToAction("UserList", new { IsActive = true });
+            return Redirect("/Jurisdiction/Admin/UserList?IsActive=true");
         }
         [HttpPost]
         public ActionResult Move(string sAMAccountName, string NewOrganization)
@@ -75,7 +70,7 @@ namespace Ztop.Todo.Web.Areas.Jurisdiction.Controllers
             {
                 throw new ArgumentException("移动用户到新组失败，错误信息：" + ex.Message);
             }
-            return RedirectToAction("UserList", new { IsActive = true });
+            return Redirect("/Jurisdiction/Admin/UserList?IsActive=true");
         }
 
         public ActionResult GJson()

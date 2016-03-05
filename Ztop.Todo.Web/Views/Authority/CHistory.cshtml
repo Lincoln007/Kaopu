@@ -1,4 +1,5 @@
 ﻿@using Ztop.Todo.Model
+@using Ztop.Todo.ActiveDirectory
 @{
     ViewBag.Title = "授权历史";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -9,6 +10,7 @@
     int Serial = 1;
     GroupType groupType = ViewBag.GroupType;
 }
+
 
 <div style="overflow:hidden;margin-bottom:10px;float:right">
     <form class="form-inline" style="float:right;">

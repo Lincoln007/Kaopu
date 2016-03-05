@@ -42,7 +42,8 @@ namespace Ztop.Todo.Web.Controllers
             else
             {
                 HttpContext.SaveAuth(user);
-                return SuccessJsonResult(user);  
+                return Redirect("/Home/Index");
+                //return SuccessJsonResult(user);  
             }
         }
         public ActionResult LoginOut()

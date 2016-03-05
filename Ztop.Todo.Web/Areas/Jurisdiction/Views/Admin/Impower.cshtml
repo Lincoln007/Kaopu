@@ -1,9 +1,9 @@
-﻿@using Ztop.Todo.Common;
+﻿@using Ztop.Todo.ActiveDirectory
 @{
     ViewBag.Title = "管理";
     Layout = "~/Areas/Jurisdiction/Views/Admin/_Layout.cshtml";
     List<Ztop.Todo.Model.Authorize> list = ViewBag.List;
-    Dictionary<string, List<Ztop.Todo.Model.Group[]>> Reborn = ViewBag.Groups;
+    Dictionary<string, List<Ztop.Todo.ActiveDirectory.Group[]>> Reborn = ViewBag.Groups;
     int SerialNumber = 1;
 }
 

@@ -28,7 +28,8 @@ namespace Ztop.Todo.ActiveDirectory
             {
                 Name = GetProperty(user, "name"),
                 Account = GetProperty(user, "sAMAccountName"),
-                Group = Extract(GetAllProperty(user, "memberOf"), "group").OrderBy(e => e).ToList()
+                Group = Extract(GetAllProperty(user, "memberOf"), "group").OrderBy(e => e).ToList(),
+                Type=GroupType.Member
             };
         }
         public static bool IsAdministrator(AUser auser)

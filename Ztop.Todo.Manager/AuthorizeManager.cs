@@ -39,6 +39,10 @@ namespace Ztop.Todo.Manager
         }
         public void Add(Authorize authorize)
         {
+            if (string.IsNullOrEmpty(authorize.GroupName) || string.IsNullOrEmpty(authorize.Manager))
+            {
+                return;
+            }
             using (var db = GetDbContext())
             {
                 var entry = db.Authorizes.Where(e => e.Manager == authorize.Manager).FirstOrDefault();

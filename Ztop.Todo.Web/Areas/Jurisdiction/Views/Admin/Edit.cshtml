@@ -1,9 +1,9 @@
-﻿@using Ztop.Todo.Common;
+﻿@using Ztop.Todo.ActiveDirectory
 @model Ztop.Todo.Model.Authorize
 
 @{ 
     var MyList = Model.GroupName.StrToList(',');
-    Dictionary<string, List<Ztop.Todo.Model.Group[]>> Dict = ViewBag.Groups;
+    Dictionary<string, List<Ztop.Todo.ActiveDirectory.Group[]>> Dict = ViewBag.Groups;
 }
 <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#@(Model.ID)"><i class="glyphicon glyphicon-edit"></i>&nbsp; 编辑权限</button>
 <div class="modal fade" id="@(Model.ID)" tabindex="-1" role="dialog">

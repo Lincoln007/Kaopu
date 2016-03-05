@@ -8,10 +8,10 @@ using Ztop.Todo.Model;
 using Ztop.Todo.Web.Common;
 using System.IO;
 using System.Text;
+using Ztop.Todo.ActiveDirectory;
 
 namespace Ztop.Todo.Web.Controllers
 {
-    [UserAuthorize]
     public class ControllerBase : AsyncController
     {
         protected ManagerCore Core = ManagerCore.Instance;
@@ -43,6 +43,7 @@ namespace Ztop.Todo.Web.Controllers
         {
             ViewBag.Controller = filterContext.RequestContext.RouteData.Values["controller"];
             ViewBag.Action = filterContext.RequestContext.RouteData.Values["action"];
+            ViewBag.GroupType = Identity != null ? Identity.GroupType : GroupType.Guest;
             base.OnActionExecuting(filterContext);
         }
 

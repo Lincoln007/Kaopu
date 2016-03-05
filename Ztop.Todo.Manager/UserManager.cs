@@ -46,7 +46,11 @@ namespace Ztop.Todo.Manager
                 return null;
             }
             var user = GetAllUsers().FirstOrDefault(e => e.Username.ToLower() == username.ToLower());
-            user.Type = GetGroupType(username);
+            if (user != null)
+            {
+                user.Type = GetGroupType(username);
+            }
+            
             return user;
         }
 

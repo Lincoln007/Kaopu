@@ -176,8 +176,6 @@
     <Content Include="Areas\Jurisdiction\Views\Admin\Impower.cshtml" />
     <Content Include="Areas\Jurisdiction\Views\Admin\Accredit.cshtml" />
     <Content Include="Areas\Jurisdiction\Views\Admin\Edit.cshtml" />
-    <Content Include="Areas\Jurisdiction\Views\Admin\Manager.cshtml" />
-    <Content Include="Areas\Jurisdiction\Views\Admin\History.cshtml" />
     <None Include="Properties\PublishProfiles\TODO.pubxml" />
     <None Include="Scripts\jquery-1.9.1.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
