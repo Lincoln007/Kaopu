@@ -20,39 +20,37 @@ namespace Ztop.Todo.WindowsClient
     {
         private Thread thread { get; set; }
         private bool IsLive { get; set; }
-        public MainForm(string FileOne)
+        public MainForm(string uploadFile) : this()
         {
-            InitializeComponent();
             Control.CheckForIllegalCrossThreadCalls = false;
 
-            if (!string.IsNullOrEmpty(FileOne))
+            if (!string.IsNullOrEmpty(uploadFile))
             {
+                var savePath = string.Empty;
                 try
                 {
-                    FileOne = FTPHelper.UploadFile(FileOne);
-                }catch(Exception ex)
+                    savePath = FTPHelper.UploadFile(uploadFile);
+                }
+                catch (Exception ex)
                 {
-                    MessageBox.Show("上传文件到服务器失败，错误信息："+ex.ToString());
-                    FileOne = string.Empty;
-                } 
-                webControl1.Source = new Uri(ServerHelper.GetServerUrl() + "/task/edit?fileOne=" + FileOne);
+                    MessageBox.Show("上传文件到服务器失败，错误信息：" + ex.ToString());
+                }
+                webControl1.Source = new Uri(ServerHelper.GetServerUrl() + "/task/edit?file=" + savePath);
             }
             else
             {
                 webControl1.Source = new Uri(ServerHelper.GetServerUrl());
             }
-            
-            webControl1.DocumentReady += WebControl1_DocumentReady;
 
-           
+
             IsLive = true;
         }
         public MainForm()
         {
             InitializeComponent();
-            
-            webControl1.Source = new Uri(ServerHelper.GetServerUrl());
-            webControl1.DocumentReady += WebControl1_DocumentReady;
+
+            WebCore.Initialize(WebConfig.Default, true);
+            WebCore.ResourceInterceptor = new ResourceInterceptor();
 
             timer1.Tick += Timer1_Tick;
             timer1.Interval = 1000 * 10;
@@ -89,23 +87,6 @@ namespace Ztop.Todo.WindowsClient
             webControl1.Source = new Uri(ServerHelper.GetServerUrl() + UriPath);
         }
 
-        public static string AccessToken { get; private set; }
-
-        private void WebControl1_DocumentReady(object sender, DocumentReadyEventArgs e)
-        {
-            if (string.IsNullOrEmpty(AccessToken))
-            {
-                var cookie = webControl1.ExecuteJavascriptWithResult("document.cookie;");
-                if (cookie != null && cookie.IsString)
-                {
-                    var cookieStr = cookie.ToString();
-                    if (!string.IsNullOrEmpty(cookieStr))
-                    {
-                        AccessToken = cookieStr.Substring(".user=".Length);
-                    }
-                }
-            }
-        }
 
         public void OpenTask(Task model)
         {
@@ -135,7 +116,7 @@ namespace Ztop.Todo.WindowsClient
         {
             this.Show();
             this.WindowState = FormWindowState.Normal;
-            
+
         }
 
         private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)

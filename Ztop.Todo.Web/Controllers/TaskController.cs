@@ -25,7 +25,7 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
 
-        public ActionResult Edit(int id = 0,string fileOne=null)
+        public ActionResult Edit(int id = 0, string file = null)
         {
             var model = Core.TaskManager.GetModel(id) ?? new Task();
             ViewBag.Model = model;
@@ -33,7 +33,7 @@ namespace Ztop.Todo.Web.Controllers
             {
                 ViewBag.Attachments = Core.AttachmentManager.GetList(model.ID);
             }
-            ViewBag.FileOne = fileOne; 
+            ViewBag.File = file;
             return View();
         }
 
@@ -48,7 +48,7 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
 
-        public ActionResult Save(Task data, int[] userIds,string AddedFile)
+        public ActionResult Save(Task data, int[] userIds, string AddedFile)
         {
             var model = Core.TaskManager.GetModel(data.ID) ?? new Task
             {

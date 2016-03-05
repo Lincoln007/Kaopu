@@ -22,11 +22,11 @@ namespace Ztop.Todo.WindowsClient
         [STAThread]
         static void Main(string[] args)
         {
+            var filePath = string.Join(" ", args ?? new string[] { });
             if (HasInstance())
             {
-                if(args!=null && args.Length>0)
+                if (!string.IsNullOrEmpty(filePath))
                 {
-                    var filePath = string.Join(" ", args ?? new string[] { });
                     TCPHelper.TCPSend(filePath);
                 }
             }
@@ -43,11 +43,11 @@ namespace Ztop.Todo.WindowsClient
                 var token = LoginHelper.GetToken();
                 if (!string.IsNullOrEmpty(token))
                 {
-                    Application.Run(new MainForm());
+                    Application.Run(new MainForm(filePath));
                 }
                 else
                 {
-                    Application.Run(new LoginForm());
+                    Application.Run(new LoginForm(filePath));
                 }
             }
         }

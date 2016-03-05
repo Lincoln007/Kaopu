@@ -31,7 +31,7 @@
                 <div class="form-group">
                     <label class="control-label col-lg-2">完成时间</label>
                     <div class="col-lg-8">
-                        <input type="text" id="datetimepicker1" class="form-control" style="width:30%;margin-right:20px; float:left;" name="ScheduledTime" value="@(model.ScheduledTime.HasValue?model.ScheduledTime.Value.ToShortDateString():null)" />
+                        <input type="text" id="datetimepicker1" class="form-control" name="ScheduledTime" value="@(model.ScheduledTime.HasValue?model.ScheduledTime.Value.ToShortDateString():null)" />
                         <a href="javascript:;" data="1" class="btn btn-default btn-schedule">一天</a>
                         <a href="javascript:;" data="3" class="btn btn-default btn-schedule">三天</a>
                         <a href="javascript:;" data="7" class="btn btn-default btn-schedule">一周</a>
@@ -44,8 +44,8 @@
                     <div class="form-group">
                         <label class="control-label col-lg-2">已添加附件</label>
                         <div class="col-lg-8">
-                            <input type="text" class="form-control" name="AddedFile" value="@(ViewBag.FileOne)" />
-                        </div> 
+                            <input type="text" class="form-control" name="AddedFile" value="@(ViewBag.File)" />
+                        </div>
                     </div>
                 }
                 <div class="form-group">

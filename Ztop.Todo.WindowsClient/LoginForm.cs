@@ -16,14 +16,14 @@ namespace Ztop.Todo.WindowsClient
 {
     public partial class LoginForm : Form
     {
-        private string FileOne { get; set; }
+        private string _uploadFile { get; set; }
         private Dictionary<string, UserInfo> Users { get; set; }
         private List<UserInfo> List { get; set; }
         private string RememberFile { get; set; }
-        public LoginForm(string FilePath)
+        public LoginForm(string uploadFile)
         {
             InitializeComponent();
-            this.FileOne = FilePath;
+            _uploadFile = uploadFile;
             this.RememberFile = System.Configuration.ConfigurationManager.AppSettings["REME"];
             this.Users = new Dictionary<string, UserInfo>();
             this.List = new List<UserInfo>();
@@ -67,7 +67,7 @@ namespace Ztop.Todo.WindowsClient
                         LoginHelper.Remeber(token);
                     }
 
-                    new MainForm(FileOne).Show();
+                    new MainForm(_uploadFile).Show();
 
                     this.Hide();
 

@@ -54,22 +54,21 @@ namespace Ztop.Todo.WindowsClient
 
         public static string GetToken()
         {
-            try
+            if (string.IsNullOrEmpty(_accessToken))
             {
-                if (string.IsNullOrEmpty(_accessToken))
+                if(File.Exists(TokenPath))
                 {
                     _accessToken = File.ReadAllText(TokenPath);
                 }
             }
-            catch { }
             return _accessToken;
         }
 
         public static void Logout()
         {
+            _accessToken = null;
             try
             {
-                _accessToken = null;
                 File.Delete(TokenPath);
             }
             catch { }
