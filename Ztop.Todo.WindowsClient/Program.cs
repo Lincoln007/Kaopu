@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -20,43 +22,75 @@ namespace Ztop.Todo.WindowsClient
         [STAThread]
         static void Main(string[] args)
         {
-            string filePath = string.Empty;
-            if (args != null && args.Length > 0)
+            if (HasInstance())
             {
-                int count = args.Length;
-                for (var i = 0; i < count; i++)
+                if(args!=null && args.Length>0)
                 {
-                    if (string.IsNullOrEmpty(filePath))
-                    {
-                        filePath += args[i].ToString();
-                    }
-                    else
-                    {
-                        filePath += " " + args[i].ToString();
-                    }
-
+                    var filePath = string.Join(" ", args ?? new string[] { });
+                    TCPHelper.TCPSend(filePath);
                 }
-            }
-            if (string.IsNullOrEmpty(filePath))
-            {
-                RegistrationTable.Registrate();
-            }
-            bool canCreateNew = false;
-            Mutex m = new Mutex(true, "ZTOPTODO", out canCreateNew);
-            if (canCreateNew)
-            {
-
-                Application.EnableVisualStyles();
-                Application.SetCompatibleTextRenderingDefault(false);
-
-                var login = new LoginForm(filePath);
-                Application.Run(login);
             }
             else
             {
-                TCPHelper.TCPSend(filePath);
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                try
+                {
+                    RegisterApplication();
+                }
+                catch { }
+
+                var token = LoginHelper.GetToken();
+                if (!string.IsNullOrEmpty(token))
+                {
+                    Application.Run(new MainForm());
+                }
+                else
+                {
+                    Application.Run(new LoginForm());
+                }
             }
-           
+        }
+
+        private static bool HasInstance()
+        {
+            var hasStarted = 0;
+            Process proc = Process.GetCurrentProcess();
+            foreach (var p in Process.GetProcesses())
+            {
+                if (p.ProcessName == proc.ProcessName)
+                {
+                    hasStarted++;
+                }
+            }
+            return hasStarted > 1;
+        }
+
+        private static void RegisterApplication()
+        {
+            using (RegistryKey classesroot = Registry.ClassesRoot)
+            {
+                using (RegistryKey star = classesroot.OpenSubKey("*"))
+                {
+                    using (RegistryKey Shell = star.OpenSubKey("Shell", true))
+                    {
+                        using (RegistryKey TODO = Shell.CreateSubKey("TODO"))
+                        {
+                            using (RegistryKey command = TODO.CreateSubKey("Command"))
+                            {
+
+                                var exePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, AppDomain.CurrentDomain.FriendlyName);
+                                command.SetValue(null, string.Format("{0} %1", exePath));
+                                command.Close();
+                            }
+                            TODO.Close();
+                        }
+                        Shell.Close();
+                    }
+                    star.Close();
+                }
+                classesroot.Close();
+            }
         }
     }
 }

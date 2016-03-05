@@ -153,10 +153,6 @@ namespace Ztop.Todo.Manager
 
         public AUser GetZTOPAccount(string SAMAccountName)
         {
-            if (string.IsNullOrEmpty(SAMAccountName))
-            {
-                return null;
-            }
             var user = ADController.GetUser(SAMAccountName);
             if (user.Type == GroupType.Guest)
             {

@@ -30,95 +30,138 @@
         {
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.PasswordText = new System.Windows.Forms.TextBox();
-            this.LoginButton = new System.Windows.Forms.Button();
-            this.MCancelButton = new System.Windows.Forms.Button();
-            this.RememberChecked = new System.Windows.Forms.CheckBox();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.txtPassword = new System.Windows.Forms.TextBox();
+            this.btnLogin = new System.Windows.Forms.Button();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.label3 = new System.Windows.Forms.Label();
+            this.cbxAutoLogin = new System.Windows.Forms.CheckBox();
+            this.txtUsername = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(32, 58);
+            this.label1.Location = new System.Drawing.Point(52, 115);
+            this.label1.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(53, 12);
+            this.label1.Size = new System.Drawing.Size(74, 21);
             this.label1.TabIndex = 0;
             this.label1.Text = "用户名：";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(34, 100);
+            this.label2.Location = new System.Drawing.Point(52, 154);
+            this.label2.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(41, 12);
+            this.label2.Size = new System.Drawing.Size(58, 21);
             this.label2.TabIndex = 1;
             this.label2.Text = "密码：";
             // 
-            // PasswordText
+            // txtPassword
             // 
-            this.PasswordText.Location = new System.Drawing.Point(110, 100);
-            this.PasswordText.Name = "PasswordText";
-            this.PasswordText.PasswordChar = '*';
-            this.PasswordText.Size = new System.Drawing.Size(194, 21);
-            this.PasswordText.TabIndex = 3;
-            this.PasswordText.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PasswordText_KeyDown);
+            this.txtPassword.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtPassword.ForeColor = System.Drawing.Color.DarkRed;
+            this.txtPassword.Location = new System.Drawing.Point(136, 154);
+            this.txtPassword.Margin = new System.Windows.Forms.Padding(5);
+            this.txtPassword.Name = "txtPassword";
+            this.txtPassword.PasswordChar = '*';
+            this.txtPassword.Size = new System.Drawing.Size(197, 29);
+            this.txtPassword.TabIndex = 1;
+            this.txtPassword.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PasswordText_KeyDown);
             // 
-            // LoginButton
+            // btnLogin
             // 
-            this.LoginButton.Location = new System.Drawing.Point(107, 166);
-            this.LoginButton.Name = "LoginButton";
-            this.LoginButton.Size = new System.Drawing.Size(75, 23);
-            this.LoginButton.TabIndex = 4;
-            this.LoginButton.Text = "登录";
-            this.LoginButton.UseVisualStyleBackColor = true;
-            this.LoginButton.Click += new System.EventHandler(this.LoginButton_Click);
+            this.btnLogin.BackColor = System.Drawing.Color.DarkOrange;
+            this.btnLogin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnLogin.ForeColor = System.Drawing.Color.White;
+            this.btnLogin.Location = new System.Drawing.Point(136, 228);
+            this.btnLogin.Margin = new System.Windows.Forms.Padding(5);
+            this.btnLogin.Name = "btnLogin";
+            this.btnLogin.Size = new System.Drawing.Size(197, 34);
+            this.btnLogin.TabIndex = 3;
+            this.btnLogin.Text = "登录";
+            this.btnLogin.UseVisualStyleBackColor = false;
+            this.btnLogin.Click += new System.EventHandler(this.LoginButton_Click);
             // 
-            // MCancelButton
+            // panel1
             // 
-            this.MCancelButton.Location = new System.Drawing.Point(218, 166);
-            this.MCancelButton.Name = "MCancelButton";
-            this.MCancelButton.Size = new System.Drawing.Size(75, 23);
-            this.MCancelButton.TabIndex = 5;
-            this.MCancelButton.Text = "取消";
-            this.MCancelButton.UseVisualStyleBackColor = true;
-            this.MCancelButton.Click += new System.EventHandler(this.MCancelButton_Click);
+            this.panel1.BackColor = System.Drawing.Color.DarkOrange;
+            this.panel1.Controls.Add(this.label4);
+            this.panel1.Controls.Add(this.label3);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(398, 96);
+            this.panel1.TabIndex = 8;
             // 
-            // RememberChecked
+            // label3
             // 
-            this.RememberChecked.AutoSize = true;
-            this.RememberChecked.Location = new System.Drawing.Point(110, 137);
-            this.RememberChecked.Name = "RememberChecked";
-            this.RememberChecked.Size = new System.Drawing.Size(72, 16);
-            this.RememberChecked.TabIndex = 6;
-            this.RememberChecked.Text = "记住密码";
-            this.RememberChecked.UseVisualStyleBackColor = true;
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft YaHei", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label3.ForeColor = System.Drawing.Color.White;
+            this.label3.Location = new System.Drawing.Point(21, 27);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(249, 38);
+            this.label3.TabIndex = 0;
+            this.label3.Text = "智拓任务管理系统";
             // 
-            // comboBox1
+            // cbxAutoLogin
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(110, 50);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(194, 20);
-            this.comboBox1.TabIndex = 7;
-            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
-            this.comboBox1.TextChanged += new System.EventHandler(this.comboBox1_TextChanged);
+            this.cbxAutoLogin.AutoSize = true;
+            this.cbxAutoLogin.Checked = true;
+            this.cbxAutoLogin.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbxAutoLogin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cbxAutoLogin.Location = new System.Drawing.Point(136, 193);
+            this.cbxAutoLogin.Margin = new System.Windows.Forms.Padding(5);
+            this.cbxAutoLogin.Name = "cbxAutoLogin";
+            this.cbxAutoLogin.Size = new System.Drawing.Size(122, 25);
+            this.cbxAutoLogin.TabIndex = 2;
+            this.cbxAutoLogin.Text = "下次自动登录";
+            this.cbxAutoLogin.UseVisualStyleBackColor = true;
+            // 
+            // txtUsername
+            // 
+            this.txtUsername.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtUsername.ForeColor = System.Drawing.Color.DarkRed;
+            this.txtUsername.Location = new System.Drawing.Point(136, 114);
+            this.txtUsername.Name = "txtUsername";
+            this.txtUsername.Size = new System.Drawing.Size(197, 29);
+            this.txtUsername.TabIndex = 0;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label4.Location = new System.Drawing.Point(276, 44);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(31, 17);
+            this.label4.TabIndex = 1;
+            this.label4.Text = "v0.3";
             // 
             // LoginForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(322, 205);
-            this.Controls.Add(this.comboBox1);
-            this.Controls.Add(this.RememberChecked);
-            this.Controls.Add(this.MCancelButton);
-            this.Controls.Add(this.LoginButton);
-            this.Controls.Add(this.PasswordText);
+            this.BackColor = System.Drawing.Color.White;
+            this.ClientSize = new System.Drawing.Size(398, 279);
+            this.Controls.Add(this.txtUsername);
+            this.Controls.Add(this.cbxAutoLogin);
+            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.btnLogin);
+            this.Controls.Add(this.txtPassword);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
+            this.Font = new System.Drawing.Font("Microsoft YaHei", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Margin = new System.Windows.Forms.Padding(5);
+            this.MaximizeBox = false;
             this.Name = "LoginForm";
             this.Text = "智拓TODO";
-            this.Load += new System.EventHandler(this.LoginForm_Load);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -128,10 +171,12 @@
 
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox PasswordText;
-        private System.Windows.Forms.Button LoginButton;
-        private System.Windows.Forms.Button MCancelButton;
-        private System.Windows.Forms.CheckBox RememberChecked;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.TextBox txtPassword;
+        private System.Windows.Forms.Button btnLogin;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.CheckBox cbxAutoLogin;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox txtUsername;
+        private System.Windows.Forms.Label label4;
     }
 }

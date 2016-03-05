@@ -32,7 +32,7 @@ namespace Ztop.Todo.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult Login(string username,string password)
+        public ActionResult LoginResult(string username, string password)
         {
             var user = LoginActiveDirectory(username, password);
             if (user == null)
@@ -42,8 +42,7 @@ namespace Ztop.Todo.Web.Controllers
             else
             {
                 HttpContext.SaveAuth(user);
-                return Redirect("/Home/Index");
-                //return SuccessJsonResult(user);  
+                return SuccessJsonResult(user);  
             }
         }
         public ActionResult LoginOut()

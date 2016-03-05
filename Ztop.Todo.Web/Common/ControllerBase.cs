@@ -12,6 +12,7 @@ using Ztop.Todo.ActiveDirectory;
 
 namespace Ztop.Todo.Web.Controllers
 {
+    [UserAuthorize]
     public class ControllerBase : AsyncController
     {
         protected ManagerCore Core = ManagerCore.Instance;
@@ -77,7 +78,6 @@ namespace Ztop.Todo.Web.Controllers
                 return;
 
             filterContext.ExceptionHandled = true;
-            filterContext.HttpContext.Response.Clear();
             if (filterContext.HttpContext.Response.StatusCode == 200)
             {
                 filterContext.HttpContext.Response.StatusCode = GetStatusCode(filterContext.Exception);

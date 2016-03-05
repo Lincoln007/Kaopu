@@ -10,7 +10,6 @@ using Ztop.Todo.Web.Common;
 
 namespace Ztop.Todo.Web.Controllers
 {
-    [UserAuthorize]
     public class AuthorityController : ControllerBase
     {
 

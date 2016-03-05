@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 using Ztop.Todo.ActiveDirectory;
 using Ztop.Todo.Model;
@@ -16,7 +17,7 @@ namespace Ztop.Todo.WindowsClient
     public partial class LoginForm : Form
     {
         private string FileOne { get; set; }
-        private Dictionary<string,UserInfo> Users { get; set; }
+        private Dictionary<string, UserInfo> Users { get; set; }
         private List<UserInfo> List { get; set; }
         private string RememberFile { get; set; }
         public LoginForm(string FilePath)
@@ -30,44 +31,55 @@ namespace Ztop.Todo.WindowsClient
         public LoginForm()
         {
             InitializeComponent();
-            
         }
 
         private void LoginButton_Click(object sender, EventArgs e)
         {
-            this.LoginButton.Text = "正在登陆";
-            this.LoginButton.Enabled = false;
-            if (!string.IsNullOrEmpty(comboBox1.Text) && !string.IsNullOrEmpty(PasswordText.Text))
+            if (string.IsNullOrEmpty(txtUsername.Text))
             {
-                if(ADController.TryLogin(comboBox1.Text, PasswordText.Text))
+                txtUsername.Focus();
+                return;
+            }
+            if (string.IsNullOrEmpty(txtPassword.Text))
+            {
+                txtPassword.Focus();
+                return;
+            }
+
+            this.btnLogin.Text = "正在登陆";
+            this.btnLogin.Enabled = false;
+
+            new Thread(() =>
+            {
+                var token = LoginHelper.Login(txtUsername.Text, txtPassword.Text);
+                btnLogin.BeginInvoke(new Action(() =>
                 {
-                    var userinfo = new UserInfo { Name = comboBox1.Text, Password = PasswordText.Text };
-                    if (!RememberChecked.Checked)
+                    if (string.IsNullOrEmpty(token))
                     {
-                        userinfo.Password = "";
+                        btnLogin.Enabled = true;
+                        btnLogin.Text = "登录";
+                        MessageBox.Show("用户名或者密码不正确");
+                        return;
                     }
-                    Remember(userinfo);
-                    var form = new MainForm(comboBox1.Text,PasswordText.Text,this.FileOne);
-                    form.login = this;
-                    form.Show();
+
+                    if (cbxAutoLogin.Checked)
+                    {
+                        LoginHelper.Remeber(token);
+                    }
+
+                    new MainForm(FileOne).Show();
+
                     this.Hide();
-                }
-                else
-                {
-                    MessageBox.Show("用户名或者密码不正确");
-                }
-            }
-            else
-            {
-                MessageBox.Show("请输入用户名或者密码");
-            }
-            this.LoginButton.Text = "登陆";
-            this.LoginButton.Enabled = true;
+
+                    btnLogin.Text = "登陆";
+                    btnLogin.Enabled = true;
+                }));
+            }).Start();
         }
 
         private void Remember(UserInfo userInfo)
         {
-            if (Users != null )
+            if (Users != null)
             {
                 if (Users.ContainsKey(userInfo.Name))
                 {
@@ -77,7 +89,7 @@ namespace Ztop.Todo.WindowsClient
                 {
                     Users.Add(userInfo.Name, userInfo);
                 }
-                using (var fs=new FileStream(this.RememberFile, FileMode.OpenOrCreate))
+                using (var fs = new FileStream(this.RememberFile, FileMode.OpenOrCreate))
                 {
                     var bf = new BinaryFormatter();
                     bf.Serialize(fs, Users);
@@ -96,60 +108,6 @@ namespace Ztop.Todo.WindowsClient
             {
                 this.LoginButton_Click(sender, e);
             }
-        }
-
-        private void LoginForm_Load(object sender, EventArgs e)
-        {
-            var fs = new FileStream(this.RememberFile, FileMode.OpenOrCreate);
-            if (fs.Length > 0)
-            {
-                var bf = new BinaryFormatter();
-                Users = bf.Deserialize(fs) as Dictionary<string, UserInfo>;
-                foreach(var user in Users.Values)
-                {
-                    comboBox1.Items.Add(user.Name);
-                    List.Add(user);
-                }
-                if (comboBox1.Text != "")
-                {
-                    if (Users.ContainsKey(comboBox1.Text))
-                    {
-                        PasswordText.Text = Users[comboBox1.Text].Password;
-                        RememberChecked.Checked = true;
-                    }
-                }
-            }
-            fs.Close();
-            comboBox1.DataSource = List;
-            comboBox1.DisplayMember = "Name";
-        }
-
-        private void Changed()
-        {
-            if (Users != null)
-            {
-                string Name = comboBox1.Text;
-                if (Users.ContainsKey(Name))
-                {
-                    PasswordText.Text = Users[Name].Password;
-                    RememberChecked.Checked = string.IsNullOrEmpty(PasswordText.Text) ? false : true;
-                }
-                else
-                {
-                    PasswordText.Text = "";
-                    RememberChecked.Checked = false;
-                }
-            }
-        }
-
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            Changed();
-        }
-
-        private void comboBox1_TextChanged(object sender, EventArgs e)
-        {
-            Changed();
         }
     }
 }

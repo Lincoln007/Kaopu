@@ -22,22 +22,14 @@ namespace Ztop.Todo.WindowsClient
             return GetServerUrl() + "/Task/Detail?id=" + task.ID;
         }
 
-        public static Task GetNewTask(string UserName,string Password)
-        {
-            string url = GetServerUrl() + "/Task/GetNewTask?lastGetTime=" + _lastGetTime.GetDateTimeFormats('s')[0].ToString() + "&&UserName=" + UserName + "&&Password=" + Password;
-            var request = WebRequest.Create(url);
-            using (var fs=new FileStream("url.txt", FileMode.Append, FileAccess.Write))
-            {
-                using (var sw=new StreamWriter(fs))
-                {
-                    sw.WriteLine(string.Format("时间：{0}  URL：{1}", DateTime.Now, url));
-                }
-            }
 
-            request.Headers.Add("token", MainForm.AccessToken);
-            var cred = new CredentialCache();
-            cred.Add(new Uri(GetServerUrl()), "NTLM", CredentialCache.DefaultNetworkCredentials);
-            request.Credentials = cred;
+        public static Task GetNewTask()
+        {
+            var url = GetServerUrl() + "/Task/GetNewTask?lastGetTime=" + _lastGetTime.ToString("yyyy-MM-ddTHH:mm:ss");
+
+            var request = WebRequest.Create(url);
+
+            request.Headers.Add("token", LoginHelper.GetToken());
 
             using (var response = request.GetResponse())
             {

@@ -24,7 +24,8 @@ namespace Ztop.Todo.Web
         {
             if (_enable)
             {
-                throw new HttpException(401, "你没有登录系统");
+                var returnUrl = filterContext.HttpContext.Request.Url.AbsoluteUri;
+                filterContext.HttpContext.Response.Redirect("/user/login?returnUrl=" + HttpUtility.UrlEncode(returnUrl));
             }
         }
     }

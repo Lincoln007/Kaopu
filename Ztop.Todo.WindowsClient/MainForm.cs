@@ -18,17 +18,13 @@ namespace Ztop.Todo.WindowsClient
 {
     public partial class MainForm : Form
     {
-        public string UserName { get; set; }
-        public string Password { get; set; }
         private Thread thread { get; set; }
         private bool IsLive { get; set; }
-        public LoginForm login { get; set; }
-        public MainForm(string Name,string Password,string FileOne)
+        public MainForm(string FileOne)
         {
             InitializeComponent();
             Control.CheckForIllegalCrossThreadCalls = false;
-            this.UserName = Name;
-            this.Password = Password;
+
             if (!string.IsNullOrEmpty(FileOne))
             {
                 try
@@ -39,11 +35,11 @@ namespace Ztop.Todo.WindowsClient
                     MessageBox.Show("上传文件到服务器失败，错误信息："+ex.ToString());
                     FileOne = string.Empty;
                 } 
-                webControl1.Source = new Uri(ServerHelper.GetServerUrl() + "/task/edit?fileOne=" + FileOne + "&&Name=" + UserName + "&&Password=" + Password);
+                webControl1.Source = new Uri(ServerHelper.GetServerUrl() + "/task/edit?fileOne=" + FileOne);
             }
             else
             {
-                webControl1.Source = new Uri(ServerHelper.GetServerUrl() + "/Home/Index?Name=" + UserName + "&&Password=" + Password);
+                webControl1.Source = new Uri(ServerHelper.GetServerUrl());
             }
             
             webControl1.DocumentReady += WebControl1_DocumentReady;
@@ -55,7 +51,7 @@ namespace Ztop.Todo.WindowsClient
         {
             InitializeComponent();
             
-            webControl1.Source = new Uri(ServerHelper.GetServerUrl()+"/Home/Index?Name="+UserName+"&&Password="+Password);
+            webControl1.Source = new Uri(ServerHelper.GetServerUrl());
             webControl1.DocumentReady += WebControl1_DocumentReady;
 
             timer1.Tick += Timer1_Tick;
@@ -65,41 +61,29 @@ namespace Ztop.Todo.WindowsClient
 
         private void Timer1_Tick(object sender, EventArgs e)
         {
-           
-            FileStream fs = new FileStream("error.txt", FileMode.Append, FileAccess.Write);
-            StreamWriter sw = new StreamWriter(fs);
-            try
+            var task = ServerHelper.GetNewTask();
+            if (task != null)
             {
-                var task = ServerHelper.GetNewTask(UserName, Password);
-                if (task != null)
+                foreach (Form nf in Application.OpenForms)
                 {
-                    foreach (Form nf in Application.OpenForms)
+                    //如果已经有一个提醒和当前查询的新任务同一个任务，就不再提醒了
+                    if (nf is NoticeForm)
                     {
-                        //如果已经有一个提醒和当前查询的新任务同一个任务，就不再提醒了
-                        if (nf is NoticeForm)
+                        if (((NoticeForm)nf).Task.ID == task.ID)
                         {
-                            if (((NoticeForm)nf).Task.ID == task.ID)
-                            {
-                                return;
-                            }
+                            return;
                         }
                     }
-
-                    var form = new NoticeForm(task);
-                    form.StartPosition = FormStartPosition.Manual;
-                    form.WindowState = FormWindowState.Normal;
-                    form.Location = new Point(Screen.PrimaryScreen.WorkingArea.Width - form.Width - 5, Screen.PrimaryScreen.WorkingArea.Height - form.Height - 5);
-                    form.Show();
                 }
-            }
-            catch (Exception ex)
-            {
-                sw.WriteLine(ex.ToString());
-            }
 
-            sw.Close(); 
+                var form = new NoticeForm(task);
+                form.StartPosition = FormStartPosition.Manual;
+                form.WindowState = FormWindowState.Normal;
+                form.Location = new Point(Screen.PrimaryScreen.WorkingArea.Width - form.Width - 5, Screen.PrimaryScreen.WorkingArea.Height - form.Height - 5);
+                form.Show();
+            }
         }
-        
+
         public void OpenTask(string UriPath)
         {
             webControl1.Source = new Uri(ServerHelper.GetServerUrl() + UriPath);
@@ -172,10 +156,6 @@ namespace Ztop.Todo.WindowsClient
                 this.thread.Abort();
                 this.thread.Join();
             }
-            if (login != null)
-            {
-                login.Close();
-            }
             Application.Exit();
             System.Environment.Exit(0);
         }
@@ -202,7 +182,7 @@ namespace Ztop.Todo.WindowsClient
             }
             else
             {
-                OpenTask("/task/edit?FileOne=" + FileOne + "&&Name=" + UserName + "&&Password=" + Password);
+                OpenTask("/task/edit?FileOne=" + FileOne);
             }
         }
     }

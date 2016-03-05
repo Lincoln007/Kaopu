@@ -9,7 +9,7 @@ using Ztop.Todo.Model;
 
 namespace Ztop.Todo.Web.Common
 {
-    public class UserRoleAttribute:System.Web.Mvc.ActionFilterAttribute
+    public class UserRoleAttribute : System.Web.Mvc.ActionFilterAttribute
     {
         public UserRoleAttribute()
         {
@@ -41,9 +41,9 @@ namespace Ztop.Todo.Web.Common
                     throw new HttpException(401, "您没有权限查看此页面");
                 }
             }
-            
+
             return;
-            
+
         }
     }
 }
