@@ -6,9 +6,11 @@ using System.Web.Mvc;
 using Ztop.Todo.ActiveDirectory;
 using Ztop.Todo.Common;
 using Ztop.Todo.Model;
+using Ztop.Todo.Web.Common;
 
 namespace Ztop.Todo.Web.Areas.Jurisdiction.Controllers
 {
+    [UserRole(groupType =GroupType.Administrator,Mode =true)]
     public class AdminController : JurisdictionControllerBase
     {
         // GET: Jurisdiction/Admin

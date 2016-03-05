@@ -29,12 +29,19 @@ namespace Ztop.Todo.Web.Common
             var currentUser = (UserIdentity)Thread.CurrentPrincipal.Identity;
             if (Mode)
             {
-
+                if (currentUser.GroupType != groupType)
+                {
+                    throw new HttpException(401, "您没有权限查看此页面");
+                }
             }
-            if (currentUser.GroupType == groupType)
+            else
             {
-                throw new HttpException(401, "您没有权限查看此页面");
+                if (currentUser.GroupType == groupType)
+                {
+                    throw new HttpException(401, "您没有权限查看此页面");
+                }
             }
+            
             return;
             
         }
