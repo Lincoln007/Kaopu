@@ -1,4 +1,9 @@
-﻿@{ 
+﻿@using Ztop.Todo.ActiveDirectory
+@{ 
+    if (ViewBag.GroupType == null)
+    {
+        return;
+    }
     GroupType groupType = ViewBag.GroupType;
 }
 

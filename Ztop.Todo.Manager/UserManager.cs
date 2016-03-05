@@ -45,8 +45,8 @@ namespace Ztop.Todo.Manager
             {
                 return null;
             }
-            var user= GetAllUsers().FirstOrDefault(e => e.Username.ToLower() == username.ToLower());
-            //user.Type = GetGroupType(username);
+            var user = GetAllUsers().FirstOrDefault(e => e.Username.ToLower() == username.ToLower());
+            user.Type = GetGroupType(username);
             return user;
         }
 
@@ -87,7 +87,7 @@ namespace Ztop.Todo.Manager
         {
             if (string.IsNullOrEmpty(groupName)) return null;
             var group = GetUserGroup(groupName);
-            if(group == null)
+            if (group == null)
             {
                 using (var db = GetDbContext())
                 {
@@ -133,7 +133,18 @@ namespace Ztop.Todo.Manager
         }
         public GroupType GetGroupType(string sAMAccountName)
         {
-            return GetZTOPAccount(sAMAccountName).Type;
+            try
+            {
+                return GetZTOPAccount(sAMAccountName).Type;
+            }
+            catch
+            {
+#if DEBUG
+                return GroupType.Administrator;
+#else
+                return GroupType.Guest;
+#endif
+            }
         }
 
         public AUser GetZTOPAccount(string SAMAccountName)
@@ -152,7 +163,8 @@ namespace Ztop.Todo.Manager
             if (ADController.IsAdministrator(user))
             {
                 user.Type = GroupType.Administrator;
-            }else if (ADController.IsManager(user))
+            }
+            else if (ADController.IsManager(user))
             {
                 user.Type = GroupType.Manager;
             }

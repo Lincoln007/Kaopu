@@ -30,7 +30,7 @@ namespace Ztop.Todo.ActiveDirectory
             {
                 throw new ArgumentException("未找到相关的组信息");
             }
-            var UserDistinguishedName = sAMAccountName.GetUserObject().GetDistinguishedName();
+            var UserDistinguishedName = ADController.GetUserObject(sAMAccountName).GetDistinguishedName();
             return GEntry.GetAllProperty("member").Contains(UserDistinguishedName) ? true : false;
         }
 
