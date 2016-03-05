@@ -28,3 +28,6 @@
 /Ztop.Todo.WindowsClient/bin/Release
 /Ztop.Todo.WindowsClient/obj/Release/TempPE
 /Ztop.Todo.WindowsClient/obj/Release
+/Ztop.Todo.Web/logs
+/Ztop.Todo.ActiveDirectory/bin/Debug
+/Ztop.Todo.ActiveDirectory/obj/Debug

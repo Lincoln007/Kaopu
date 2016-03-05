@@ -57,15 +57,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attachment.cs" />
-    <Compile Include="AUser.cs" />
     <Compile Include="Authorize.cs" />
     <Compile Include="Comment.cs" />
     <Compile Include="DataBook.cs" />
-    <Compile Include="Group.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="PageParameter.cs" />
     <Compile Include="Task.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TaskQuery.cs" />
     <Compile Include="TaskQueryParameter.cs" />
     <Compile Include="User.cs" />
     <Compile Include="UserGroup.cs" />
@@ -75,6 +74,16 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Ztop.Todo.ActiveDirectory\Ztop.Todo.ActiveDirectory.csproj">
+      <Project>{1c595662-fe88-4117-afb3-5ffdb3c5a178}</Project>
+      <Name>Ztop.Todo.ActiveDirectory</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ztop.Todo.Common\Ztop.Todo.Common.csproj">
+      <Project>{81bb1b7c-c8b3-4c00-bdf4-d35a7055ef3c}</Project>
+      <Name>Ztop.Todo.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

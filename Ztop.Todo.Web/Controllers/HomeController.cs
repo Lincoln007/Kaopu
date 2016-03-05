@@ -9,33 +9,30 @@ namespace Ztop.Todo.Web.Controllers
 {
     public class HomeController : ControllerBase
     {
-        public ActionResult Index(string Name=null,string Password=null)
+        public ActionResult Index()
         {
-           if (!Identity.IsAuthenticated)
+            if (!Identity.IsAuthenticated)
             {
-                if (!ADLogin(Name, Password))
-                {
-                    return Redirect("/User/Login");
-                }
-                
+                return Redirect("/User/Login");
             }
-            if (string.IsNullOrEmpty(CurrentUser.RealName))
+
+            if (string.IsNullOrEmpty(Identity.Name))
             {
                 return RedirectToAction("Register", "User");
             }
 
-            ViewBag.NewList = Core.TaskManager.GetUserTasks(new Model.UserTaskQueryParameter
+            ViewBag.NewList = Core.TaskManager.GetUserTasks(new Model.TaskQueryParameter
             {
                 Order = Model.UserTaskOrder.CreateTime,
-                UserID = CurrentUser.ID,
+                CreatorID = Identity.UserID,
                 IsCompleted = false,
                 Page = new Model.PageParameter(1, 10),
             });
 
-            ViewBag.CompleteList = Core.TaskManager.GetUserTasks(new Model.UserTaskQueryParameter
+            ViewBag.CompleteList = Core.TaskManager.GetUserTasks(new Model.TaskQueryParameter
             {
                 Order = Model.UserTaskOrder.ScheduleTime,
-                UserID = CurrentUser.ID,
+                CreatorID = Identity.UserID,
                 IsCompleted = false,
                 Page = new Model.PageParameter(1, 10),
             });

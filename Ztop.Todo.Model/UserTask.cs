@@ -23,9 +23,11 @@ namespace Ztop.Todo.Model
         public int TaskID { get; set; }
 
         public int UserID { get; set; }
-
         [NotMapped]
         public User User { get; set; }
+
+        [NotMapped]
+        public Task Task { get; set; }
 
         [NotMapped]
         public bool IsCompleted { get { return CompletedTime.HasValue; } }
@@ -35,5 +37,7 @@ namespace Ztop.Todo.Model
         public DateTime? CompletedTime { get; set; }
 
         public bool HasRead { get; set; }
+
+        public bool Deleted { get; set; }
     }
 }

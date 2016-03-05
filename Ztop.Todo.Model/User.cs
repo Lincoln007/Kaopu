@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Ztop.Todo.ActiveDirectory;
 
 namespace Ztop.Todo.Model
 {
@@ -18,6 +19,10 @@ namespace Ztop.Todo.Model
         public int GroupID { get; set; }
 
         public string Username { get; set; }
+
+        [NotMapped]
+        public string AccessToken { get; set; }
+
         [NotMapped]
         public GroupType Type { get; set; }
 

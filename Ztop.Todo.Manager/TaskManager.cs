@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Web;
 using Ztop.Todo.Model;
 
 namespace Ztop.Todo.Manager
@@ -9,17 +10,24 @@ namespace Ztop.Todo.Manager
 
     public class TaskManager : ManagerBase
     {
-        public List<UserTaskView> GetUserTasks(UserTaskQueryParameter parameter)
+        public List<UserTaskView> GetUserTasks(TaskQueryParameter parameter)
         {
             List<UserTaskView> list = null;
             using (var db = GetDbContext())
             {
-                var query = db.UserTaskViews.Where(e => e.UserID == parameter.UserID);
+                var query = db.UserTaskViews.AsQueryable();
+                if (parameter.CreatorID > 0)
+                {
+                    query = query.Where(e => e.CreatorID == parameter.CreatorID);
+                }
+                if (parameter.UserID > 0)
+                {
+                    query = query.Where(e => e.UserID == parameter.UserID);
+                }
                 if (!string.IsNullOrEmpty(parameter.SearchKey))
                 {
                     query = query.Where(e => e.Title.Contains(parameter.SearchKey.Trim()));
                 }
-
                 if (parameter.IsCompleted.HasValue)
                 {
                     if (parameter.IsCompleted.Value)
@@ -31,12 +39,18 @@ namespace Ztop.Todo.Manager
                         query = query.Where(e => e.CompletedTime == null);
                     }
                 }
-
+                if (parameter.BeginTime.HasValue)
+                {
+                    query = query.Where(e => e.CreateTime > parameter.BeginTime.Value);
+                }
+                if (parameter.EndTime.HasValue)
+                {
+                    query = query.Where(e => e.CreateTime < parameter.EndTime.Value);
+                }
                 if (parameter.HasRead.HasValue)
                 {
                     query = query.Where(e => e.HasRead == parameter.HasRead.Value);
                 }
-
                 if (parameter.Order == UserTaskOrder.ScheduleTime)
                 {
                     query = query.Where(e => e.ScheduledTime.HasValue);
@@ -58,8 +72,8 @@ namespace Ztop.Todo.Manager
         {
             using (var db = GetDbContext())
             {
-                var userTask = db.UserTasks.Where(e => e.UserID == userId 
-                && e.CompletedTime == null 
+                var userTask = db.UserTasks.Where(e => e.UserID == userId
+                && e.CompletedTime == null
                 && e.HasRead == false
                 && e.CreateTime > minTime)
                 .OrderByDescending(e => e.ID).FirstOrDefault();
@@ -127,14 +141,18 @@ namespace Ztop.Todo.Manager
                     entity.HasRead = true;
                     db.SaveChanges();
                 }
+                else
+                {
+                    throw new HttpException("参数错误或权限不足");
+                }
             }
         }
 
-        public void Delete(int id)
+        public void Delete(int userTaskId)
         {
             using (var db = GetDbContext())
             {
-                var entity = db.Tasks.FirstOrDefault(e => e.ID == id);
+                var entity = db.UserTasks.FirstOrDefault(e => e.ID == userTaskId);
                 if (entity != null)
                 {
                     if (entity.IsCompleted)
@@ -142,8 +160,15 @@ namespace Ztop.Todo.Manager
                         throw new Exception("任务已完成，无法删除");
                     }
                     entity.Deleted = true;
+                    if (db.UserTasks.Any(e => e.TaskID == entity.TaskID && e.Deleted == false))
+                    {
+                        var task = db.Tasks.FirstOrDefault(e => e.ID == entity.TaskID);
+                        task.Deleted = true;
+                    }
+
                     db.SaveChanges();
                 }
+
             }
         }
 
@@ -194,15 +219,10 @@ namespace Ztop.Todo.Manager
             using (var db = GetDbContext())
             {
                 var entity = db.UserTasks.FirstOrDefault(e => e.TaskID == taskId && e.UserID == userId);
+                
                 if (entity != null && !entity.CompletedTime.HasValue)
                 {
                     entity.CompletedTime = DateTime.Now;
-                }
-
-                var task = db.Tasks.FirstOrDefault(e => e.ID == taskId && e.CreatorID == userId);
-                if (task != null)
-                {
-                    task.IsCompleted = true;
                 }
                 db.SaveChanges();
             }

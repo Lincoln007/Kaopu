@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Ztop.Todo.Model;
 using Ztop.Todo.Common;
+using Ztop.Todo.ActiveDirectory;
 
 namespace Ztop.Todo.Manager
 {
@@ -44,8 +45,8 @@ namespace Ztop.Todo.Manager
             {
                 return null;
             }
-            var user= GetAllUsers().FirstOrDefault(e => e.Username == username);
-            user.Type = GetGroupType(username);
+            var user= GetAllUsers().FirstOrDefault(e => e.Username.ToLower() == username.ToLower());
+            //user.Type = GetGroupType(username);
             return user;
         }
 
@@ -141,17 +142,17 @@ namespace Ztop.Todo.Manager
             {
                 return null;
             }
-            var user = Ztop.Todo.Common.ADController.GetUser(SAMAccountName);
+            var user = ADController.GetUser(SAMAccountName);
             if (user.Type == GroupType.Guest)
             {
                 return user;
             }
             user.Managers = Core.AuthorizeManager.GetList(user.Name);
-            user.MGroup = Ztop.Todo.Common.ADController.GetGroupList(SAMAccountName);
-            if (Ztop.Todo.Common.ADController.IsAdministrator(user))
+            user.MGroup = ADController.GetGroupList(SAMAccountName);
+            if (ADController.IsAdministrator(user))
             {
                 user.Type = GroupType.Administrator;
-            }else if (Ztop.Todo.Common.ADController.IsManager(user))
+            }else if (ADController.IsManager(user))
             {
                 user.Type = GroupType.Manager;
             }

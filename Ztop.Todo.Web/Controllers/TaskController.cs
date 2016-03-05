@@ -7,16 +7,15 @@ using Ztop.Todo.Model;
 
 namespace Ztop.Todo.Web.Controllers
 {
-    [UserAuthorize]
     public class TaskController : ControllerBase
     {
         public ActionResult Index(string keyword, int? completed, int page = 1, int rows = 20)
         {
-            var parameter = new UserTaskQueryParameter
+            var parameter = new TaskQueryParameter
             {
                 SearchKey = keyword,
                 IsCompleted = completed == null ? default(bool?) : (completed.Value == 1),
-                UserID = CurrentUser.ID,
+                CreatorID = Identity.UserID,
                 Page = new PageParameter(page, rows),
             };
 
@@ -26,22 +25,8 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
 
-        public ActionResult Edit(int id = 0,string fileOne=null,string Name=null,string Password=null)
+        public ActionResult Edit(int id = 0,string fileOne=null)
         {
-            if (!Identity.IsAuthenticated)
-            {
-                if (!string.IsNullOrEmpty(Name) && !string.IsNullOrEmpty(Password))
-                {
-                    if (!ADLogin(Name, Password))
-                    {
-                        return Redirect("/User/Login");
-                    }
-                }
-                else
-                {
-                    return Redirect("/User/Login");
-                }
-            }
             var model = Core.TaskManager.GetModel(id) ?? new Task();
             ViewBag.Model = model;
             if (model != null && model.ID > 0)
@@ -67,7 +52,7 @@ namespace Ztop.Todo.Web.Controllers
         {
             var model = Core.TaskManager.GetModel(data.ID) ?? new Task
             {
-                CreatorID = CurrentUser.ID,
+                CreatorID = Identity.UserID,
             };
             model.ScheduledTime = data.ScheduledTime;
             model.Title = data.Title;
@@ -85,7 +70,8 @@ namespace Ztop.Todo.Web.Controllers
                     model.Users.Add(user);
                 }
             }
-            model.Users.Add(CurrentUser);
+            var currentUser = Core.UserManager.GetUser(Identity.UserID);
+            model.Users.Add(currentUser);
             Core.TaskManager.Save(model);
             //相关附件
             for (var i = 0; i < Request.Files.Count; i++)
@@ -110,7 +96,7 @@ namespace Ztop.Todo.Web.Controllers
             }
             ViewBag.Model = model;
             var userTasks = Core.TaskManager.GetUserTasks(model.ID);
-            var userTask = userTasks.FirstOrDefault(e => e.UserID == CurrentUser.ID);
+            var userTask = userTasks.FirstOrDefault(e => e.UserID == Identity.UserID);
             if (userTask != null)
             {
                 ViewBag.UserTasks = userTasks;
@@ -118,7 +104,7 @@ namespace Ztop.Todo.Web.Controllers
                 ViewBag.Comments = Core.CommentManager.GetList(model.ID);
                 ViewBag.Attachments = Core.AttachmentManager.GetList(model.ID);
                 //标记已读
-                Core.TaskManager.ReadTask(model.ID, CurrentUser.ID);
+                Core.TaskManager.ReadTask(model.ID, Identity.UserID);
             }
             else
             {
@@ -142,52 +128,52 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
 
-        public ActionResult SaveCopy(int id, int[] userIds)
-        {
-            Task copy = null;
-            var data = Core.TaskManager.GetModel(id);
-            if (data != null)
-            {
-                copy = new Task
-                {
-                    Title = data.Title,
-                    Content = data.Content,
-                    ScheduledTime = data.ScheduledTime,
-                    CreatorID = CurrentUser.ID,
-                    ParentID = data.ID,
-                };
-            }
-            else
-            {
-                throw new ArgumentException("参数错误");
-            }
+        //public ActionResult SaveCopy(int id, int[] userIds)
+        //{
+        //    Task copy = null;
+        //    var data = Core.TaskManager.GetModel(id);
+        //    if (data != null)
+        //    {
+        //        copy = new Task
+        //        {
+        //            Title = data.Title,
+        //            Content = data.Content,
+        //            ScheduledTime = data.ScheduledTime,
+        //            CreatorID = Identity.UserID,
+        //            ParentID = data.ID,
+        //        };
+        //    }
+        //    else
+        //    {
+        //        throw new ArgumentException("参数错误");
+        //    }
 
-            if (userIds == null || userIds.Length == 0)
-            {
-                throw new ArgumentException("没有选择相关人员");
-            }
-            //相关人员
-            foreach (var userId in userIds)
-            {
-                var user = Core.UserManager.GetUser(userId);
-                if (user != null)
-                {
-                    copy.Users.Add(user);
-                }
-            }
-            copy.Users.Add(CurrentUser);
-            Core.TaskManager.Save(copy);
-            Core.AttachmentManager.Copy(data.ID, copy.ID);
-            return RedirectToAction("Index");
-        }
+        //    if (userIds == null || userIds.Length == 0)
+        //    {
+        //        throw new ArgumentException("没有选择相关人员");
+        //    }
+        //    //相关人员
+        //    foreach (var userId in userIds)
+        //    {
+        //        var user = Core.UserManager.GetUser(userId);
+        //        if (user != null)
+        //        {
+        //            copy.Users.Add(user);
+        //        }
+        //    }
+        //    copy.Users.Add(CurrentUser);
+        //    Core.TaskManager.Save(copy);
+        //    Core.AttachmentManager.Copy(data.ID, copy.ID);
+        //    return RedirectToAction("Index");
+        //}
 
         public ActionResult Complete(int id)
         {
-            if (!Core.TaskManager.HasRight(id, CurrentUser.ID))
+            if (!Core.TaskManager.HasRight(id, Identity.UserID))
             {
                 throw new HttpException(401, "你没有权限完成该任务");
             }
-            Core.TaskManager.CompleteTask(id, CurrentUser.ID);
+            Core.TaskManager.CompleteTask(id, Identity.UserID);
             return SuccessJsonResult();
         }
 
@@ -196,7 +182,7 @@ namespace Ztop.Todo.Web.Controllers
             var model = Core.TaskManager.GetModel(id);
             if (model != null)
             {
-                if (model.CreatorID != CurrentUser.ID)
+                if (model.CreatorID != Identity.UserID)
                 {
                     throw new HttpException(401, "你没有权限删除该任务");
                 }
@@ -211,7 +197,7 @@ namespace Ztop.Todo.Web.Controllers
             var model = Core.AttachmentManager.GetModel(id);
             if (model != null)
             {
-                if (!Core.TaskManager.HasRight(model.TaskID, CurrentUser.ID))
+                if (!Core.TaskManager.HasRight(model.TaskID, Identity.UserID))
                 {
                     throw new ArgumentException("权限不足");
                 }
@@ -225,7 +211,7 @@ namespace Ztop.Todo.Web.Controllers
             var model = Core.CommentManager.GetModel(id);
             if (model != null)
             {
-                if (model.UserID != CurrentUser.ID)
+                if (model.UserID != Identity.UserID)
                 {
                     throw new ArgumentException("你没有权限删除该评论");
                 }
@@ -235,13 +221,9 @@ namespace Ztop.Todo.Web.Controllers
             throw new ArgumentException("参数错误，没找到该评论");
         }
 
-        public ActionResult GetNewTask(DateTime lastGetTime,string UserName=null,string Password=null)
+        public ActionResult GetNewTask(DateTime lastGetTime)
         {
-            if (!Identity.IsAuthenticated&&!string.IsNullOrEmpty(UserName)&&!string.IsNullOrEmpty(Password))
-            {
-                ADLogin(UserName, Password);
-            }
-            var task = Core.TaskManager.GetNewTask(CurrentUser.ID, lastGetTime);
+            var task = Core.TaskManager.GetNewTask(Identity.UserID, lastGetTime);
             var json = Newtonsoft.Json.JsonConvert.SerializeObject(task);
             return Content(json);
         }

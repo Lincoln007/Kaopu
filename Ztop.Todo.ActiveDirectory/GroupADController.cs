@@ -4,9 +4,8 @@ using System.DirectoryServices;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Ztop.Todo.Model;
 
-namespace Ztop.Todo.Common
+namespace Ztop.Todo.ActiveDirectory
 {
     public static partial class ADController
     {
@@ -112,7 +111,7 @@ namespace Ztop.Todo.Common
         public static Dictionary<string,List<string>> Gain(string Filter)
         {
             var dict = new Dictionary<string, List<string>>();
-            var collection = Filter.SearchAll();
+            var collection = SearchAll(Filter);
             foreach(SearchResult result in collection)
             {
                 var distingusihedName = result.GetProperty("distinguishedName");
@@ -153,7 +152,7 @@ namespace Ztop.Todo.Common
         public static Dictionary<string,List<Group>> GetGroupDict()
         {
             var dict = new Dictionary<string, List<Group>>();
-            var collection = "(&(objectCategory=group)(objectClass=group))".SearchAll();
+            var collection = SearchAll("(&(objectCategory=group)(objectClass=group))");
             foreach(SearchResult result in collection)
             {
                 var distinguishedName = result.GetDistinguishedName();
@@ -175,7 +174,7 @@ namespace Ztop.Todo.Common
         }
         public static List<string> GetGroupList()
         {
-            return "(&(objectCategory=group)(objectClass=group))".GetList();
+            return GetList("(&(objectCategory=group)(objectClass=group))");
         }
 
         public static Group GetTree()

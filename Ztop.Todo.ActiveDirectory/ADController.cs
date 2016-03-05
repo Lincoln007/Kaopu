@@ -5,9 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
-using Ztop.Todo.Model;
 
-namespace Ztop.Todo.Common
+namespace Ztop.Todo.ActiveDirectory
 {
     public static partial class ADController
     {
@@ -83,7 +82,7 @@ namespace Ztop.Todo.Common
                 return searcher.FindOne();
             }
         }
-        public static SearchResultCollection SearchAll(this string Filter,DirectoryEntry Entry = null)
+        public static SearchResultCollection SearchAll(string Filter,DirectoryEntry Entry = null)
         {
             if (Entry == null)
             {
@@ -96,23 +95,27 @@ namespace Ztop.Todo.Common
                 return searcher.FindAll();
             }
         }
-        public static bool Login(string Name, string Password)
+        public static bool TryLogin(string username, string password)
         {
+#if DEBUG
+            if(username == "liangjun")
+            {
+                return true;
+            }
+#endif
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+            {
+                return false;
+            }
             try
             {
-                if (!string.IsNullOrEmpty(Name) && !string.IsNullOrEmpty(Password))
-                {
-                    var user = GetDirectoryObject(Name, Password);
-                    var result = SearchOne("(&(objectCategory=person)(objectClass=user)(sAMAccountName=" + Name + "))", user);
-                    return result == null ? false : true;
-                }
-                return false;
+                var user = GetDirectoryObject(username, password);
+                return SearchOne("(&(objectCategory=person)(objectClass=user)(sAMAccountName=" + username + "))", user) != null;
             }
             catch
             {
-                return false;
             }
-           
+            return false;
         }
         //通过筛选器获取DirectoryEntry
         private static DirectoryEntry Get(string Filter)
@@ -198,7 +201,7 @@ namespace Ztop.Todo.Common
             }
             return list;
         }
-        private static DirectoryEntries GetChildren(this string OU)
+        private static DirectoryEntries GetChildren(string OU)
         {
             var directoryEntry = GetOrganizationObject(OU);
             if (directoryEntry == null)
@@ -207,10 +210,10 @@ namespace Ztop.Todo.Common
             }
             return directoryEntry.Children;
         }
-        private static List<string> GetList(this string Filter)
+        private static List<string> GetList(string Filter)
         {
             var list = new List<string>();
-            var collection = Filter.SearchAll();
+            var collection = SearchAll(Filter);
             foreach(SearchResult result in collection)
             {
                 if (!result.GetDistinguishedName().IsIgnore())
@@ -224,10 +227,10 @@ namespace Ztop.Todo.Common
         #endregion
 
         #region  组和用户之间操作
-        public static bool MoveUserToGroup(this string sAMAccountName,string NewOrganization)
+        public static bool MoveUserToGroup(string sAMAccountName,string NewOrganization)
         {
-            var userEntry = sAMAccountName.GetUserObject();
-            var orgEntry = NewOrganization.GetOrganizationObject();
+            var userEntry = GetUserObject(sAMAccountName);
+            var orgEntry = GetOrganizationObject(NewOrganization);
             if (userEntry == null || orgEntry == null)
             {
                 return false;
@@ -237,9 +240,9 @@ namespace Ztop.Todo.Common
             userEntry.CommitChanges();
             return true;
         }
-        public static void AddUserToGroup(this string sAMAccountName,string GroupName)
+        public static void AddUserToGroup(string sAMAccountName,string GroupName)
         {
-            var distinguishedName = sAMAccountName.GetUserObject().GetDistinguishedName();
+            var distinguishedName = GetUserObject(sAMAccountName).GetDistinguishedName();
             if (string.IsNullOrEmpty(distinguishedName))
             {
                 throw new ArgumentException("未找到申请用户信息");

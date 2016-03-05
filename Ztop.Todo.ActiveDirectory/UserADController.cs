@@ -4,13 +4,12 @@ using System.DirectoryServices;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Ztop.Todo.Model;
 
-namespace Ztop.Todo.Common
+namespace Ztop.Todo.ActiveDirectory
 {
     public static partial class ADController
     {
-        private static DirectoryEntry GetUserObject(this string sAMAccountName)
+        private static DirectoryEntry GetUserObject(string sAMAccountName)
         {
             return Get("(&(objectCategory=person)(objectClass=user)(sAMAccountName=" + sAMAccountName + "))");
         }
@@ -75,19 +74,19 @@ namespace Ztop.Todo.Common
             {
                 return;
             }
-            var user = sAMAccountName.GetUserObject();
+            var user = GetUserObject(sAMAccountName);
             user.Properties["userAccountControl"][0] = ADAccountOptions.UF_NORMAL_ACCOUNT;
             user.CommitChanges();
             user.Close();
         }
 
-        public static void DisableAccount(this string sAMAccountName)
+        public static void DisableAccount(string sAMAccountName)
         {
             if (string.IsNullOrEmpty(sAMAccountName))
             {
                 return;
             }
-            var user = sAMAccountName.GetUserObject();
+            var user = GetUserObject(sAMAccountName);
             user.Properties["userAccountControl"][0] = ADAccountOptions.UF_NORMAL_ACCOUNT | ADAccountOptions.UF_DONT_EXPIRE_PASSWD | ADAccountOptions.UF_ACCOUNTDISABLE;
             user.CommitChanges();
             user.Close();
@@ -126,14 +125,14 @@ namespace Ztop.Todo.Common
             }
             return list;
         }
-        public static List<AUser> GetUserList(this string GroupName)
+        public static List<AUser> GetUserList(string GroupName)
         {
             var list = new List<AUser>();
             return list;
         }
         public static List<string> GetUserList()
         {
-            return "(&(objectCategory=person)(objectClass=user))".GetList();
+            return GetList("(&(objectCategory=person)(objectClass=user))");
         }
         public static Dictionary<string, List<AUser>> GetUserDict(bool? IsActive, string key = null)
         {
@@ -159,7 +158,7 @@ namespace Ztop.Todo.Common
 
         public static void CreateUser(string Name, string sAMAccountName, string Organization, string FirstPassword)
         {
-            var organizationEntry = Organization.GetOrganizationObject();
+            var organizationEntry = GetOrganizationObject(Organization);
             if (organizationEntry == null)
             {
                 throw new ArgumentException("未找到创建用户的组织单元");

@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Ztop.Todo.Common
+namespace Ztop.Todo.ActiveDirectory
 {
     public static class StringHelper
     {
@@ -15,9 +15,9 @@ namespace Ztop.Todo.Common
             return key[Index].Replace(Filter, "");
         }
 
-        public static Dictionary<string, List<Ztop.Todo.Model.Group>> Sort(this Dictionary<string, List<Ztop.Todo.Model.Group>> Dict)
+        public static Dictionary<string, List<Group>> Sort(this Dictionary<string, List<Group>> Dict)
         {
-            var newDict = new Dictionary<string, List<Ztop.Todo.Model.Group>>();
+            var newDict = new Dictionary<string, List<Group>>();
             foreach (var key in Dict.Keys)
             {
                 newDict.Add(key, Dict[key].OrderBy(e => e.Name).ToList());

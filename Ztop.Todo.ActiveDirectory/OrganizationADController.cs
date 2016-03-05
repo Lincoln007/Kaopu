@@ -5,18 +5,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ztop.Todo.Common
+namespace Ztop.Todo.ActiveDirectory
 {
     public static partial class ADController
     {
-        private static DirectoryEntry GetOrganizationObject(this string OU)
+        private static DirectoryEntry GetOrganizationObject(string OU)
         {
             return Get("(&(OU=" + OU + "))");
         }
-        public static List<string> GetOrganizations(this string OU)
+        public static List<string> GetOrganizations(string OU)
         {
             var list = new List<string>();
-            var childrens = OU.GetChildren();
+            var childrens = GetChildren(OU);
             foreach (DirectoryEntry entry in childrens)
             {
                 var name = entry.GetProperty("name");

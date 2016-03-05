@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Web;
 using System.Web.Mvc;
+using Ztop.Todo.ActiveDirectory;
 using Ztop.Todo.Model;
 
 namespace Ztop.Todo.Web.Common

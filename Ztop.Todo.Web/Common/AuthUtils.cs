@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Security;
+using Ztop.Todo.ActiveDirectory;
 using Ztop.Todo.Model;
 using Ztop.Todo.Web.Common;
 
@@ -12,41 +13,22 @@ namespace Ztop.Todo.Web
     {
         private const string _cookieName = ".user";
 
+        public static string GenerateToken(this HttpContextBase context, User user)
+        {
+            var ticket = new FormsAuthenticationTicket(1, user.ID + "|" + user.DisplayName + "|" + user.Type, DateTime.Now, DateTime.Now.AddDays(1), true, "user_token");
+            var token = FormsAuthentication.Encrypt(ticket);
+            return token;
+        }
+
         public static void SaveAuth(this HttpContextBase context, User user)
         {
-            var ticket = new FormsAuthenticationTicket(user.ID.ToString()+"|"+user.Username+"|"+user.Type.ToString(), true, 60);
-            var cookieValue = FormsAuthentication.Encrypt(ticket);
-            var cookie = new HttpCookie(_cookieName, cookieValue);
+            user.AccessToken = GenerateToken(context, user);
+            var cookie = new HttpCookie(_cookieName, user.AccessToken);
             context.Response.Cookies.Remove(_cookieName);
             context.Response.Cookies.Add(cookie);
         }
-        public static UserIdentity GetCurrentUser(this HttpContextBase context)
-        {
-            var cookie = context.Request.Cookies.Get(_cookieName);
-            if (cookie != null)
-            {
-                if (!string.IsNullOrEmpty(cookie.Value))
-                {
-                    var ticket = FormsAuthentication.Decrypt(cookie.Value);
-                    if (ticket != null && !string.IsNullOrEmpty(ticket.Name))
-                    {
-                        var values = ticket.Name.Split('|');
-                        if (values.Length == 3)
-                        {
-                            var type = GroupType.Guest;
-                            return new UserIdentity
-                            {
-                                UserName = values[1],
-                                GroupType = Enum.TryParse(values[2], out type) ? type : GroupType.Guest
-                            };
-                        }
-                    }
-                }
-            }
-            return UserIdentity.Guest;
-        }
 
-        public static int GetUserID(this HttpContextBase context)
+        private static string GetToken(HttpContextBase context)
         {
             var token = context.Request.Headers["token"];
             if (string.IsNullOrEmpty(token))
@@ -57,29 +39,31 @@ namespace Ztop.Todo.Web
                     token = cookie.Value;
                 }
             }
+            return token;
+        }
 
+        public static UserIdentity GetCurrentUser(this HttpContextBase context)
+        {
+            var token = GetToken(context);
             if (!string.IsNullOrEmpty(token))
             {
-                try
+                var ticket = FormsAuthentication.Decrypt(token);
+                if (ticket != null && !string.IsNullOrEmpty(ticket.Name))
                 {
-                    var ticket = FormsAuthentication.Decrypt(token);
-                    if (ticket != null && !string.IsNullOrEmpty(ticket.Name))
+                    var values = ticket.Name.Split('|');
+                    if (values.Length == 3)
                     {
-                        var values = ticket.Name.Split('|');
-                        if (values.Length == 2)
+                        var type = GroupType.Guest;
+                        return new UserIdentity
                         {
-                            var userId = 0;
-                            int.TryParse(values[0], out userId);
-                            return userId;
-                        }
-                        
+                            UserID = int.Parse(values[0]),
+                            Name = values[1],
+                            GroupType = Enum.TryParse(values[2], out type) ? type : GroupType.Guest
+                        };
                     }
                 }
-                catch
-                {
-                }
             }
-            return 0;
+            return UserIdentity.Guest;
         }
 
         public static void ClearAuth(this HttpContextBase context)

@@ -20,7 +20,7 @@
     }
 
     <button id="btn-copy" class="btn btn-sm btn-info"><i class="glyphicon glyphicon-export"></i> 转发任务</button>
-    @if (model.CreatorID == currentUser.ID && model.IsCompleted == false)
+    @if (model.CreatorID == Identity.UserID && model.IsCompleted == false)
     {
         <button id="btn-task-delete" class="btn btn-sm btn-danger" style="float:right;"><i class="glyphicon glyphicon-remove"></i> 删除该任务</button>
     }
@@ -77,7 +77,7 @@
                     <a title="点击回复Ta" href="javascript:;" class="btn btn-xs btn-default btn-reply" data-user="@(item.User.DisplayName)">@@@(item.User.DisplayName)</a>
                 </b>
                 <span>@(item.CreateTime.ToString())</span>
-                @if (item.UserID == currentUser.ID)
+                @if (item.UserID == Identity.UserID)
                 {
                     <a href="/comment/delete?id=@(item.ID)" class="btn-comment-delete">删除</a>
                 }
@@ -112,7 +112,7 @@
             }
             var data = $(this).serialize();
             $.request(url, data, function () {
-                $("#div-comments").append("<div class=well><p>" + content + "</p><span>@(((User)ViewBag.CurrentUser).DisplayName)</span></div>");
+                $("#div-comments").append("<div class=well><p>" + content + "</p><span>@(Identity.Name)</span></div>");
                 $("#txt-content").val('');
             });
             return false;

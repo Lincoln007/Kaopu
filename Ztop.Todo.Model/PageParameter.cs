@@ -26,7 +26,7 @@ namespace Ztop.Todo.Model
         {
             get
             {
-                return RecordCount / PageSize + (RecordCount % PageSize) > 0 ? 1 : 0;
+                return RecordCount / PageSize + (RecordCount % PageSize > 0 ? 1 : 0);
             }
         }
     }

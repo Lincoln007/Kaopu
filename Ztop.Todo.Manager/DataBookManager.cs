@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Ztop.Todo.Model;
 using Ztop.Todo.Common;
+using Ztop.Todo.ActiveDirectory;
 
 namespace Ztop.Todo.Manager
 {
-    public class DataBookManager:ManagerBase
+    public class DataBookManager : ManagerBase
     {
         public DataBook Get(int ID)
         {
@@ -38,15 +39,15 @@ namespace Ztop.Todo.Manager
                 return db.DataBooks.Where(e => e.GroupName == GroupName).ToList();
             }
         }
-        public List<DataBook> Get(List<string> GroupNames,CheckStatus status)
+        public List<DataBook> Get(List<string> GroupNames, CheckStatus status)
         {
             var list = new List<DataBook>();
-            foreach(var item in GroupNames)
+            foreach (var item in GroupNames)
             {
                 var glist = GetListByGroupName(item).Where(e => e.Status == status).ToList();
                 if (glist != null)
                 {
-                    foreach(var entry in glist)
+                    foreach (var entry in glist)
                     {
                         list.Add(entry);
                     }
@@ -55,7 +56,7 @@ namespace Ztop.Todo.Manager
             return list;
         }
 
-        public DataBook Check(int ID,string Reason,string Checker,int? Day,bool?Check,CheckStatus status)
+        public DataBook Check(int ID, string Reason, string Checker, int? Day, bool? Check, CheckStatus status)
         {
             if (string.IsNullOrEmpty(Checker))
             {
@@ -68,13 +69,7 @@ namespace Ztop.Todo.Manager
             }
             if (status == CheckStatus.Agree)
             {
-                try
-                {
-                    book.Name.AddUserToGroup(book.GroupName);
-                }catch(Exception ex)
-                {
-                    throw new ArgumentException(ex.Message);
-                }
+                ADController.AddUserToGroup(book.Name, book.GroupName);
             }
 
             if (status != CheckStatus.Wait)
@@ -93,19 +88,12 @@ namespace Ztop.Todo.Manager
                 {
                     time = new DateTime(9999, 12, 31, 12, 00, 00);
                 }
-                if (Check.HasValue&&Check.Value)
+                if (Check.HasValue && Check.Value)
                 {
                     time = new DateTime(9999, 12, 31, 12, 00, 00);
                 }
                 book.MaturityTime = time;
-                try
-                {
-                    Edit(book);
-                }
-                catch(Exception ex)
-                {
-                    throw new ArgumentException(ex.Message);
-                }
+                Edit(book);
             }
             return book;
 

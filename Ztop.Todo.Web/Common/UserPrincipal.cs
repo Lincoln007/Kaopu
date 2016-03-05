@@ -4,10 +4,11 @@ using System.Linq;
 using System.Web;
 using System.Security.Principal;
 using Ztop.Todo.Model;
+using Ztop.Todo.ActiveDirectory;
 
 namespace Ztop.Todo.Web.Common
 {
-    public class UserPrincipal:System.Security.Principal.IPrincipal
+    public class UserPrincipal : System.Security.Principal.IPrincipal
     {
         public UserPrincipal(IIdentity identity)
         {
@@ -20,17 +21,17 @@ namespace Ztop.Todo.Web.Common
             throw new NotImplementedException();
         }
     }
+
     public class UserIdentity : System.Security.Principal.IIdentity
     {
-        public static UserIdentity Guest = new UserIdentity();
-        public string UserName { get; set; }
-        public string Password { get; set; }
+        public static readonly UserIdentity Guest = new UserIdentity() { GroupType = GroupType.Guest };
+        public int UserID { get; set; }
         public GroupType GroupType { get; set; }
         public string AuthenticationType { get { return "Web.Session"; } }
-        public string Name { get { return UserName; } }
+        public string Name { get; set; }
         public bool IsAuthenticated
         {
-            get { return string.IsNullOrEmpty(UserName) ? false: true; }
+            get { return UserID > 0; }
         }
     }
 }

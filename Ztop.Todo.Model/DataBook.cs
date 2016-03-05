@@ -69,7 +69,6 @@ namespace Ztop.Todo.Model
                 return Span.Days.ToString() + "天" + Span.Hours.ToString() + "小时" + Span.Minutes.ToString() + "分钟" + Span.Seconds.ToString() + "秒";
             }
         }
-
     }
 
     public enum CheckStatus

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ztop.Todo.Model
+namespace Ztop.Todo.ActiveDirectory
 {
     public class Group
     {

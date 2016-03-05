@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Windows.Forms;
+using Ztop.Todo.ActiveDirectory;
 using Ztop.Todo.Model;
 
 namespace Ztop.Todo.WindowsClient
@@ -38,7 +39,7 @@ namespace Ztop.Todo.WindowsClient
             this.LoginButton.Enabled = false;
             if (!string.IsNullOrEmpty(comboBox1.Text) && !string.IsNullOrEmpty(PasswordText.Text))
             {
-                if(Ztop.Todo.Common.ADController.Login(comboBox1.Text, PasswordText.Text))
+                if(ADController.TryLogin(comboBox1.Text, PasswordText.Text))
                 {
                     var userinfo = new UserInfo { Name = comboBox1.Text, Password = PasswordText.Text };
                     if (!RememberChecked.Checked)

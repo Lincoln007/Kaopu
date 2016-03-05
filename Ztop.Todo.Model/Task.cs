@@ -36,10 +36,7 @@ namespace Ztop.Todo.Model
         [NotMapped]
         public string CreatorName { get; set; }
 
-        public bool IsCompleted { get; set; }
-
         public int ParentID { get; set; }
-
 
         public DateTime CreateTime { get; set; }
 

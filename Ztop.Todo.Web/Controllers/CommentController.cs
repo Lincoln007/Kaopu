@@ -23,7 +23,7 @@ namespace Ztop.Todo.Web.Controllers
             {
                 Content = content,
                 TaskID = taskId,
-                UserID = CurrentUser.ID
+                UserID = Identity.UserID
             });
             return SuccessJsonResult();
         }
@@ -35,7 +35,7 @@ namespace Ztop.Todo.Web.Controllers
             {
                 throw new ArgumentException("参数错误");
             }
-            if(model.UserID != CurrentUser.ID)
+            if(model.UserID != Identity.UserID)
             {
                 throw new HttpException(401,"你没有权限删除该评论");
             }

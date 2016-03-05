@@ -7,20 +7,15 @@ using Ztop.Todo.Common;
 using Ztop.Todo.Model;
 using Ztop.Todo.Web.Common;
 using System.IO;
+using System.Text;
 
 namespace Ztop.Todo.Web.Controllers
 {
-
+    [UserAuthorize]
     public class ControllerBase : AsyncController
     {
         protected ManagerCore Core = ManagerCore.Instance;
 
-        protected User CurrentUser { get; private set; }
-        //private AUser _auser { get; set; }
-        //protected AUser AUser
-        //{
-        //    get { return _auser == null ? _auser = Core.UserManager.GetZTOPAccount(Identity.Name) : _auser; }
-        //}
         protected UserIdentity Identity
         {
             get
@@ -44,62 +39,10 @@ namespace Ztop.Todo.Web.Controllers
             return new ContentResult { Content = new { result = 0, content = ex.Message, data = ex }.ToJson(), ContentEncoding = System.Text.Encoding.UTF8, ContentType = "text/json" };
         }
 
-        private User GetCurrentUser()
-        {
-            var userId = HttpContext.GetUserID();
-            if (userId > 0)
-            {
-                CurrentUser = Core.UserManager.GetUser(userId);
-            }
-            else
-            {
-                if (string.IsNullOrEmpty(Identity.UserName))
-                {
-                    return null;
-                }
-                var user = Core.UserManager.GetUser(Identity.UserName);
-                if (user == null)
-                {
-                    CurrentUser = new User { Username = Identity.UserName };
-                    Core.UserManager.Save(CurrentUser);
-                }
-                else
-                {
-                    CurrentUser = user;
-                }
-                HttpContext.SaveAuth(CurrentUser);
-                Core.UserManager.UpdateLogin(CurrentUser);
-            }
-            return CurrentUser;
-        }
-
-        protected bool ADLogin(string Name,string Password)
-        {
-            if (!string.IsNullOrEmpty(Name) && !string.IsNullOrEmpty(Password))
-            {
-                if (Ztop.Todo.Common.ADController.Login(Name, Password))
-                {
-                    var user = Core.UserManager.GetUser(Name);
-                    if (user == null)
-                    {
-                        user = new User { Username = Name };
-                        Core.UserManager.Save(user);
-                    }
-                    CurrentUser = user;
-                    ViewBag.CurrentUser = CurrentUser;
-                    HttpContext.SaveAuth(user);
-                    return true;
-                }
-            }
-            return false;
-        }
-
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             ViewBag.Controller = filterContext.RequestContext.RouteData.Values["controller"];
             ViewBag.Action = filterContext.RequestContext.RouteData.Values["action"];
-            ViewBag.CurrentUser = GetCurrentUser();
-            ViewBag.GroupType = CurrentUser == null ? GroupType.Guest : CurrentUser.Type;
             base.OnActionExecuting(filterContext);
         }
 
@@ -140,13 +83,6 @@ namespace Ztop.Todo.Web.Controllers
             }
             filterContext.HttpContext.Response.TrySkipIisCustomErrors = true;
             var ex = GetException(filterContext.Exception);
-            using (var fs=new FileStream("error.txt", FileMode.Append, FileAccess.Write))
-            {
-                using (var sw=new StreamWriter(fs))
-                {
-                    sw.WriteLine(string.Format("时间：{0}  用户名：{1}  错误信息：{2}",DateTime.Now,CurrentUser.DisplayName,ex.ToString()));
-                }
-            }
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
                 filterContext.Result = ErrorJsonResult(ex);
@@ -156,7 +92,33 @@ namespace Ztop.Todo.Web.Controllers
                 ViewBag.Exception = ex;
                 filterContext.Result = View("Error");
             }
+            WriteExceptionLog(filterContext.HttpContext, ex);
+        }
 
+        private void WriteExceptionLog(HttpContextBase context, Exception ex)
+        {
+            if (context.Response.StatusCode < 500)
+            {
+                return;
+            }
+            try
+            {
+                var logPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs");
+                if (!Directory.Exists(logPath))
+                {
+                    Directory.CreateDirectory(logPath);
+                }
+                var content = new StringBuilder();
+                content.AppendLine(context.Request.Url.AbsoluteUri);
+                content.AppendLine(ex.Message);
+                content.AppendLine(ex.StackTrace);
+                content.AppendLine(ex.Source);
+                System.IO.File.WriteAllText(Path.Combine(logPath, ex.GetType().Name + DateTime.Now.Ticks.ToString() + ".txt"), content.ToString());
+            }
+            catch
+            {
+
+            }
         }
     }
 }

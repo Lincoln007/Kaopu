@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ztop.Todo.Model
+namespace Ztop.Todo.ActiveDirectory
 {
     public class AUser
     {
@@ -37,9 +37,9 @@ namespace Ztop.Todo.Model
 
     public enum GroupType
     {
-        Administrator,
-        Manager,
+        Guest,
         Member,
-        Guest
+        Manager,
+        Administrator
     }
 }
