@@ -17,7 +17,8 @@ namespace Ztop.Todo.Web.Areas.Jurisdiction
             context.MapRoute(
                 "Jurisdiction_default",
                 "Jurisdiction/{controller}/{action}/{id}",
-                new { action = "Index", id = UrlParameter.Optional }
+                new { controller="Admin", action = "Index", id = UrlParameter.Optional },
+                new[] { "Ztop.Todo.Web.Areas.Jurisdiction.Controllers" }
             );
         }
     }

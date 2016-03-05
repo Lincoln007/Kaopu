@@ -172,7 +172,7 @@ namespace Ztop.Todo.ActiveDirectory
             return false;
         }
         //属性值中提取group或者用户
-        private static List<string> Extract(List<string> Origin, string Category)
+        private static List<string> Extract(this List<string> Origin, string Category)
         {
             var results = new List<string>();
             foreach (var item in Origin)
@@ -187,7 +187,7 @@ namespace Ztop.Todo.ActiveDirectory
             return results;
         }
         //获取DirectoryEntry中属性PropertyName所有的值
-        private static List<string> GetAllProperty(DirectoryEntry Entry, string PropertyName)
+        private static List<string> GetAllProperty(this DirectoryEntry Entry, string PropertyName)
         {
             var list = new List<string>();
             if (Entry.Properties.Contains(PropertyName))

@@ -17,6 +17,7 @@ namespace Ztop.Todo.Web.Common
         }
 
         public GroupType groupType { get; set; }
+        public bool Mode { get; set; }
 
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
@@ -26,7 +27,11 @@ namespace Ztop.Todo.Web.Common
             }
 
             var currentUser = (UserIdentity)Thread.CurrentPrincipal.Identity;
-            if (currentUser.GroupType != groupType)
+            if (Mode)
+            {
+
+            }
+            if (currentUser.GroupType == groupType)
             {
                 throw new HttpException(401, "您没有权限查看此页面");
             }

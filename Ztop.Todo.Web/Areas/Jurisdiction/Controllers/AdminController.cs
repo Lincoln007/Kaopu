@@ -85,6 +85,7 @@ namespace Ztop.Todo.Web.Areas.Jurisdiction.Controllers
         }
         public ActionResult Impower()
         {
+            Core.AuthorizeManager.Add(Core.AuthorizeManager.Get(HttpContext));
             ViewBag.List = Core.AuthorizeManager.GetList();
             ViewBag.Groups = ADController.GetGroupDict().Sort().DictToTable();
             return View();
@@ -96,27 +97,11 @@ namespace Ztop.Todo.Web.Areas.Jurisdiction.Controllers
             return Json(list, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult Manager()
-        {
-            var groups = ADController.GetGroupList();
-            ViewBag.Wait = Core.DataBookManager.Get(groups, Model.CheckStatus.Wait);
-            return View();
-        }
-
         [HttpPost]
-        public ActionResult Manager(int ID, string Reason, int? Day, bool? Check, CheckStatus status = CheckStatus.Wait)
+        public ActionResult ImpowerEdit(int ID)
         {
-            var book = Core.DataBookManager.Check(ID, Reason, Identity.Name, Day, Check, status);
-            Core.MessageManager.Add(new Message
-            {
-                Sender = Identity.Name,
-                Info = string.Format("申请{0}的权限已经确认！", book.GroupName),
-                Receiver = book.Name
-            });
-            var groups = ADController.GetGroupList();
-            ViewBag.Wait = Core.DataBookManager.Get(groups, CheckStatus.Wait);
-            //ViewBag.DGroups=ADController.GetUserDict
-            return View();
+            Core.AuthorizeManager.Edit(Core.AuthorizeManager.Get(HttpContext, ID));
+            return Redirect("/Jurisdiction/Admin/Impower");
         }
     }
 }

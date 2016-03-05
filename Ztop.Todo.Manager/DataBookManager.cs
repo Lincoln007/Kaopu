@@ -19,6 +19,84 @@ namespace Ztop.Todo.Manager
             }
         }
 
+        public List<DataBook> Get(DataBookFilter Filter)
+        {
+            using (var db = GetDbContext())
+            {
+                var query = db.DataBooks.AsQueryable();
+                if (Filter.Status != CheckStatus.All)
+                {
+                    query = query.Where(e => e.Status == Filter.Status);
+                }
+                if (!string.IsNullOrEmpty(Filter.Name))
+                {
+                    query = query.Where(e => e.Name == Filter.Name);
+                }
+                if (!string.IsNullOrEmpty(Filter.Checker))
+                {
+                    query = query.Where(e => e.Checker == Filter.Checker);
+                }
+                if (!string.IsNullOrEmpty(Filter.GroupName))
+                {
+                    query = query.Where(e => e.GroupName == Filter.GroupName);
+                }
+                if (Filter.Label.HasValue)
+                {
+                    query = query.Where(e => e.Label == Filter.Label.Value);
+                }
+
+                if (Filter.Page != null)
+                {
+                    Filter.Page.RecordCount = query.Count();
+                    query = query.OrderBy(e => e.ID).Skip(Filter.Page.PageSize * (Filter.Page.PageIndex - 1)).Take(Filter.Page.PageSize);
+                }
+                return query.ToList();
+               
+            }
+        }
+        public List<DataBook> Get(List<int> Indexs)
+        {
+            var list = new List<DataBook>();
+            foreach(var item in Indexs)
+            {
+                list.Add(Get(item));
+            }
+            return list;
+        }
+        public int Add(DataBook Book)
+        {
+            using (var db = GetDbContext())
+            {
+                db.DataBooks.Add(Book);
+                db.SaveChanges();
+                return Book.ID;
+            }
+        }
+        public List<int> Add(List<string> Groups,string Name)
+        {
+            var list = new List<int>();
+            foreach(var group in Groups)
+            {
+                list.Add(Add(new DataBook { Name = Name, GroupName = group }));
+            }
+            return list;
+        }
+
+        public List<DataBook> GetList(string Name = null)
+        {
+            using (var db = GetDbContext())
+            {
+                if (!string.IsNullOrEmpty(Name))
+                {
+                    return db.DataBooks.Where(e => e.Checker == Name).ToList();
+                }
+                else
+                {
+                    return db.DataBooks.ToList();
+                }
+            }
+        }
+
         public void Edit(DataBook Book)
         {
             using (var db = GetDbContext())

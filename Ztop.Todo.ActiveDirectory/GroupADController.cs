@@ -22,19 +22,16 @@ namespace Ztop.Todo.ActiveDirectory
         {
             return Get("(&(objectCategory=group)(objectClass=group)(cn=" + GroupName + "))");
         }
-        public static Dictionary<string,List<AUser>> GetUserDict(List<string> Groups)
-        {
-            var dict = new Dictionary<string, List<AUser>>();
-            foreach(var item in Groups)
-            {
-                if (dict.ContainsKey(item))
-                {
-                    continue;
-                }
-                //dict.Add(item,getuser)
-            }
 
-            return dict;
+        public static bool IsMember(string GroupName, string sAMAccountName)
+        {
+            var GEntry = GroupName.GetGroupObject();
+            if (GEntry == null)
+            {
+                throw new ArgumentException("未找到相关的组信息");
+            }
+            var UserDistinguishedName = sAMAccountName.GetUserObject().GetDistinguishedName();
+            return GEntry.GetAllProperty("member").Contains(UserDistinguishedName) ? true : false;
         }
 
         private static Group GetGroup(this DirectoryEntry Entry)
@@ -59,7 +56,7 @@ namespace Ztop.Todo.ActiveDirectory
             var Group = GetGroupObject(GroupName);
             return Group.GetGroup();
         }
-        public static List<Group> GetGroupList(string sAMAccountName)
+        public static List<Group> GetGroupList(this string sAMAccountName)
         {
             var GroupsNames = sAMAccountName.GetGroupListBysAMAccountName();
             var list = new List<Group>();
