@@ -70,8 +70,6 @@ namespace Ztop.Todo.Web.Controllers
                     model.Users.Add(user);
                 }
             }
-            var currentUser = Core.UserManager.GetUser(Identity.UserID);
-            model.Users.Add(currentUser);
             Core.TaskManager.Save(model);
             //相关附件
             for (var i = 0; i < Request.Files.Count; i++)

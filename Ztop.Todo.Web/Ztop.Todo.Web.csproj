@@ -152,6 +152,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\jqtree.css" />
     <Content Include="Content\jquery.autocomplete.css" />
+    <Content Include="Content\logo.png" />
     <Content Include="Content\token-input.css" />
     <Content Include="error.txt" />
     <Content Include="Content\jquery.datetimepicker.css" />
@@ -213,7 +214,6 @@
     <Content Include="Views\User\Register.cshtml" />
     <Content Include="Views\Task\SelectUser.cshtml" />
     <Content Include="Views\Home\Login.cshtml" />
-    <Content Include="Views\User\_Layout.cshtml" />
     <Content Include="Views\Shared\_Authority.cshtml" />
     <Content Include="Views\Authority\Manager.cshtml" />
     <Content Include="Views\Authority\Apply.cshtml" />

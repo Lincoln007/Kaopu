@@ -22,6 +22,10 @@
                 <td>
                     @foreach (var user in g.Value.Where(e => e.GroupID == group.ID))
                     {
+                        if(user.DisplayName == Identity.Name)
+                        {
+                            continue;
+                        }
                         <label class="checkbox-inline"><input type="checkbox" name="userIds" value="@(user.ID)" />@(user.DisplayName)</label>
                     }
                 </td>

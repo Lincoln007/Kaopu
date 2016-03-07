@@ -15,7 +15,7 @@
     <input type="hidden" name="ID" value="@(model.ID)" />
     <table class="table">
         <tr>
-            <td>
+            <td style="min-width:380px;">
                 <div class="form-group">
                     <label class="control-label col-lg-2">标题</label>
                     <div class="col-lg-8">
@@ -31,12 +31,14 @@
                 <div class="form-group">
                     <label class="control-label col-lg-2">完成时间</label>
                     <div class="col-lg-8">
-                        <input type="text" id="datetimepicker1" class="form-control" name="ScheduledTime" value="@(model.ScheduledTime.HasValue?model.ScheduledTime.Value.ToShortDateString():null)" />
-                        <a href="javascript:;" data="1" class="btn btn-default btn-schedule">一天</a>
-                        <a href="javascript:;" data="3" class="btn btn-default btn-schedule">三天</a>
-                        <a href="javascript:;" data="7" class="btn btn-default btn-schedule">一周</a>
-                        <a href="javascript:;" data="30" class="btn btn-default btn-schedule">一月</a>
-                        <a href="javascript:;" data="100000" class="btn btn-default btn-schedule">不限</a>
+                        <input type="text" id="datetimepicker1" placeholder="不填写为不限时间" class="form-control" name="ScheduledTime" value="@(model.ScheduledTime.HasValue?model.ScheduledTime.Value.ToShortDateString():null)" />
+                        <div style="padding-top:5px;overflow:hidden;">
+                            <a href="javascript:;" data="1" class="btn btn-default btn-schedule">一天</a>
+                            <a href="javascript:;" data="3" class="btn btn-default btn-schedule">三天</a>
+                            <a href="javascript:;" data="7" class="btn btn-default btn-schedule">一周</a>
+                            <a href="javascript:;" data="30" class="btn btn-default btn-schedule">一月</a>
+                            <a href="javascript:;" data="0" class="btn btn-default btn-schedule">不限</a>
+                        </div>
                     </div>
                 </div>
                 @if (ViewBag.FileOne != null)
@@ -55,10 +57,10 @@
                     <div class="col-lg-8">
                         <a href="javascript:;" id="btn-add" class="btn btn-success btn-sm" style="margin-bottom:5px;"><i class="glyphicon glyphicon-open-file"></i> 添加附件</a>
                         @if (files != null)
-            {
+                        {
                             <table class="table">
                                 @foreach (var file in files)
-                {
+                                {
                                     <tr>
                                         <td>
                                             @(file.FileName)
@@ -75,7 +77,7 @@
                     </div>
                 </div>
             </td>
-            <td>
+            <td style="max-width:300px;">
                 @Html.Action("SelectUser", new { taskId = model.ID })
             </td>
         </tr>
@@ -119,11 +121,26 @@
 
         $(".btn-schedule").click(function () {
             var days = parseInt($(this).attr("data"));
-            var now = new Date();
-            var date = now.getDate() + days;
-            console.log(date);
-            now.setDate(date);
-            $("#datetimepicker1").val((1900 + now.getYear()) + "/" + (now.getMonth() + 1) + "/" + (now.getDate()));
+            var val = "";
+            switch(days)
+            {
+                case 1:
+                    val = "@(DateTime.Today.AddDays(2).ToShortDateString())";
+                    break;
+                case 3:
+                    val = "@(DateTime.Today.AddDays(4).ToShortDateString())";
+                    break;
+                case 7:
+                    val = "@(DateTime.Today.AddDays(8).ToShortDateString())";
+                    break;
+                case 30:
+                    val = "@(DateTime.Today.AddMonths(1).AddDays(1).ToShortDateString())";
+                    break;
+                case 0:
+                    break;
+            }
+
+            $("#datetimepicker1").val(val);
         });
 
         $(".btn-delete").click(function () {
