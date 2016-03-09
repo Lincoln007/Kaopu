@@ -23,17 +23,14 @@ namespace Ztop.Todo.Model
         public string Content { get; set; }
 
         private TaskQueryParameter _parameter;
-        //[NotMapped]
-        //public TaskQueryParameter QueryParameter
-        //{
-        //    get
-        //    {
-        //        if(_parameter == null && !string.IsNullOrEmpty(Content))
-        //        {
-        //            _parameter = Content.ToObject<TaskQueryParameter>();
-        //        }
-        //        return _parameter;
-        //    }
-        //}
+
+        public TaskQueryParameter ConvertToTaskQueryParameter()
+        {
+            if (_parameter == null && !string.IsNullOrEmpty(Content))
+            {
+                _parameter = JsonExtension.ToObject<TaskQueryParameter>(Content);
+            }
+            return _parameter;
+        }
     }
 }

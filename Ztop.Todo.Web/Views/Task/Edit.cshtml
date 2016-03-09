@@ -13,6 +13,7 @@
 </h3>
 <form id="form-task" method="post" action="/task/save" class="form-horizontal" enctype="multipart/form-data">
     <input type="hidden" name="ID" value="@(model.ID)" />
+    <input type="hidden" name="ParentId" value="@(model.ParentID)" />
     <table class="table">
         <tr>
             <td style="min-width:380px;">

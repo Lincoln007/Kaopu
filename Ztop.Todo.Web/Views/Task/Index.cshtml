@@ -1,68 +1,155 @@
 ﻿@{
-    ViewBag.Title = "任务列表";
-
+    ViewBag.Title = "任务查询";
+    List<TaskQuery> queries = ViewBag.Queries;
+    TaskQuery currentQuery = ViewBag.Query;
     List<UserTaskView> list = ViewBag.List;
-    User user = ViewBag.CurrentUser;
-
-}
-
-<h3 class="page-header">
-    @(ViewBag.Title)
-</h3>
-<form class="form-inline search-form" style="margin-bottom:5px;">
-    <div class="input-group">
-        <span class="input-group-addon">查询任务</span>
-        <input type="text" class="form-control" name="keyword" placeholder="任务名称" value="@(Request.QueryString["keyword"])">
-        <div class="input-group-btn">
-            <select class="form-control" name="completed">
-                <option value="0" @((Request.QueryString["completed"] == "0" || Request.QueryString["completed"] == null) ? "selected" : null)>未完成</option>
-                <option value="1" @(Request.QueryString["completed"] == "1" ? "selected" : null)>已完成</option>
-            </select>
-        </div>
-        <div class="input-group-btn">
-            <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i>查询</button>
-            <a href="/task/edit" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i> 创建任务</a>
-        </div>
-    </div>
-</form>
-<table class="table">
-    <tr>
-        <th style="width:30px">ID</th>
-        <th>任务标题</th>
-        <th class="col-lg-2">计划完成时间</th>
-        <th class="col-lg-1">创建者</th>
-        <th class="col-lg-2">创建时间</th>
-        <th class="col-lg-2">操作</th>
-    </tr>
-    @foreach (var item in list)
+    TaskQueryParameter parameter = ViewBag.Parameter ?? new TaskQueryParameter();
+    var queryId = -1;
+    int.TryParse(Request.QueryString["queryId"], out queryId);
+    if (queryId == 0)
     {
-        <tr>
-            <td>@(item.ID)</td>
-            <td><a href="/task/detail?id=@(item.TaskID)">@(item.Title)</a> </td>
-            <td>@(item.ScheduledTime.HasValue ? item.ScheduledTime.Value.ToShortDateString() : null)</td>
-            <td>@(item.CreatorName)</td>
-            <td>@(item.CreateTime.ToShortDateString())</td>
-            <th>
-                @if (item.Completed)
-                {
-                    <span class="label label-success"><i class="glyphicon glyphicon-check"></i>已完成</span>
-                }
-                else
-                {
-                    <a href="/task/complete?id=@(item.ID)" class="btn btn-completed btn-xs btn-default"><i class="glyphicon glyphicon-check"></i></a>
-                }
-            </th>
-        </tr>
+        queryId = -1;
     }
+}
+<table style="border:none;width:100%;">
+    <tr>
+        <td style="width:180px;vertical-align:top;padding:9px;" class="well">
+            <fieldset>
+                <legend>
+                    新建查询
+                </legend>
+                <form id="form-query" style="margin-bottom:5px;" method="get">
+                    <div class="form-group">
+                        <label class="control-label">创建者</label>
+                        <select class="form-control input-sm" name="IsCreator">
+                            <option value="true" @(parameter.IsCreator ? "selected" : null)>我创建的任务</option>
+                            <option value="false" @(!parameter.IsCreator ? "selected" : null)>我收到的任务</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>关键词</label>
+                        <input type="text" class="form-control input-sm" placeholder="任务名称或接收人姓名" name="keyword" value="@(parameter.SearchKey)">
+                    </div>
+                    <div class="form-group">
+                        <label>状态</label>
+                        <select class="form-control input-sm" name="IsCompleted">
+                            <option value="" @(parameter.IsCompleted == null ? "selected" : null)>全部</option>
+                            <option value="false" @(parameter.IsCompleted == false ? "selected" : null)>未完成</option>
+                            <option value="true" @(parameter.IsCompleted == true ? "selected" : null)>已完成</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>排序</label>
+                        <select class="form-control input-sm" name="Order">
+                            <option value="0" @(parameter.Order == UserTaskOrder.CreateTime ? "selected" : null)>任务创建时间倒序</option>
+                            <option value="1" @(parameter.Order == UserTaskOrder.ScheduleTime ? "selected" : null)>要求完成时间倒序</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>时间范围</label>
+                        <select class="form-control input-sm" name="Days">
+                            <option value="" @(parameter.Days == 0 ? "selected" : null)>不限</option>
+                            <option value="7" @(parameter.Days == 7 ? "selected" : null)>一周</option>
+                            <option value="3" @(parameter.Days == 3 ? "selected" : null)>三天</option>
+                            <option value="1" @(parameter.Days == 1 ? "selected" : null)>一天</option>
+                            <option value="30" @(parameter.Days == 30 ? "selected" : null)>一月</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <input type="hidden" name="queryId" value="-1" />
+                        <button class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-search"></i> 立即查询</button>
+                    </div>
+                    <div class="form-group">
+                        <label>查询名称</label>
+                        <input type="text" name="Name" class="form-control input-sm" value="@(Request.QueryString["name"])" />
+                    </div>
+                    <div class="form-group">
+                        <button id="btn-save" class="btn btn-success btn-sm"><i class="glyphicon glyphicon-save"></i> 保存查询</button>
+                    </div>
+                </form>
+            </fieldset>
+        </td>
+        <td style="vertical-align:top;padding-left:10px;">
+            <fieldset>
+                <legend>我的查询 @(currentQuery == null ? "" : "：" + currentQuery.Name)</legend>
+                <div class="alert">
+                    @foreach (var query in queries)
+                    {
+                        <span class="btn-group btn-group-sm">
+                            <a class="btn btn-primary" href="/task?queryId=@(query.ID)">@(query.Name)</a>
+                            @if (query.UserID == Identity.UserID)
+                            {
+                                <a href="/query/delete?queryId=@(query.ID)" class="btn btn-default btn-delete-task"><i class="glyphicon glyphicon-remove"></i></a>
+                            }
+                        </span>
+                    }
+                </div>
+                @if (list != null)
+                {
+                    <table class="table table-hover">
+                        <tr>
+                            <th>任务标题</th>
+                            <th class="col-lg-2">计划完成时间</th>
+                            <th class="col-lg-1">@(!parameter.IsCreator ? "接收人" : "创建者")</th>
+                            <th class="col-lg-2">创建时间</th>
+                            <th class="col-lg-1">操作</th>
+                        </tr>
+                        @foreach (var item in list)
+                        {
+                            <tr>
+                                <td><a href="/task/detail?id=@(item.TaskID)">@(item.Title)</a> </td>
+                                <td>@(item.ScheduledTime.HasValue ? item.ScheduledTime.Value.ToShortDateString() : "不限")</td>
+                                <td>@(parameter.IsCreator ? item.Creator.DisplayName : item.Receiver.DisplayName)</td>
+                                <td>@(item.CreateTime.ToString("yyyy-MM-dd HH:mm"))</td>
+                                <th>
+                                    @if (item.Completed)
+                                    {
+                                        <span class="label label-success"><i class="fa fa-check"></i> 已完成</span>
+                                    }
+                                    else if (item.Receiver.ID == Identity.UserID)
+                                    {
+                                        <a href="/task/complete?taskId=@(item.TaskID)" class="btn btn-completed btn-xs btn-default"><i class="fa fa-check"></i> 标记为完成</a>
+                                    }
+                                </th>
+                            </tr>
+                        }
+                    </table>
+                }
+            </fieldset>
+        </td>
+    </tr>
 </table>
+
+
 @Html.Partial("_pagination", ViewBag.Page as object)
 <script>
     $(function () {
-        $(".btn-completed").click(function () {
-            var href = $(this).attr("href");
-            $.request(href, null, function () {
-                $(this).removeClass("btn-default").addClass("btn-success");
+        $("#btn-save").click(function () {
+            var data = $("#form-query").serialize();
+            $.request("/query/save", data, function (json) {
+                alert("保存成功");
+                location.href = "/task/?queryId=" + json.data.id;
             });
+            return false;
+        });
+        $(".btn-completed").click(function () {
+            if (confirm("你确定完成该任务了吗？")) {
+                var self = $(this);
+                var href = self.attr("href");
+                $.request(href, null, function () {
+                    self.removeClass("btn-default").addClass("btn-success").text("已完成");
+                });
+            }
+            return false;
+        });
+        $(".btn-delete-task").click(function () {
+            if (confirm("你确定要删除该自定义查询吗？")) {
+                var parent = $(this).parent();
+                var href = $(this).attr("href");
+                $.request(href, null, function () {
+                    parent.remove();
+                });
+            }
             return false;
         });
     });

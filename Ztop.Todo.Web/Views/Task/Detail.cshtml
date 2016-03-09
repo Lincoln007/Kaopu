@@ -4,55 +4,65 @@
     List<Comment> comments = ViewBag.Comments;
     List<Attachment> attachments = ViewBag.Attachments;
     List<UserTask> userTasks = ViewBag.UserTasks;
-    UserTask userTask = ViewBag.UserTask;
+    UserTask userTask = ViewBag.UserTask ?? new UserTask();
     User currentUser = ViewBag.CurrentUser;
+    bool isCreator = model.CreatorID == Identity.UserID;
 }
-<h3 class="page-header">
+<h4 class="page-header">
     @(model.Title)
-    <button type="button" class="btn btn-sm btn-default" onclick="history.back();"><i class="glyphicon glyphicon-arrow-left"></i> 返回</button>
-    @if (!userTask.CompletedTime.HasValue)
+    <span class="label label-warning">
+        计划完成时间：@(model.ScheduledTime.HasValue ? model.ScheduledTime.Value.ToShortDateString() : "不限")
+    </span>
+</h4>
+<div class="alert alert-info">
+    <p>@(Html.Raw(HtmlUtils.ToHtml(model.Content)))</p>
+</div>
+
+<button type="button" class="btn btn-sm btn-default" onclick="history.back();"><i class="glyphicon glyphicon-arrow-left"></i> 返回</button>
+<button id="btn-copy" class="btn btn-sm btn-info"><i class="glyphicon glyphicon-export"></i> 转发任务</button>
+@if (!isCreator)
+{
+    if (!userTask.CompletedTime.HasValue)
     {
-        <button id="btn-complete" class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-check"></i> 完成任务</button>
+        <button id="btn-complete" class="btn btn-sm btn-success"><i class="glyphicon glyphicon-check"></i> 完成任务</button>
     }
     else
     {
         <button class="btn btn-success btn-sm disabled"><i class="glyphicon glyphicon-check"></i> 已完成</button>
     }
-
-    <button id="btn-copy" class="btn btn-sm btn-info"><i class="glyphicon glyphicon-export"></i> 转发任务</button>
-    @if (model.CreatorID == Identity.UserID && model.IsCompleted == false)
+    if (!userTask.IsCompleted && userTask.UserID == Identity.UserID)
     {
         <button id="btn-task-delete" class="btn btn-sm btn-danger" style="float:right;"><i class="glyphicon glyphicon-remove"></i> 删除该任务</button>
     }
-</h3>
-<blockquote>
-    @(Html.Raw(HtmlUtils.ToHtml(model.Content)))
-</blockquote>
-<h4 class="page-header">参与人员</h4>
-<div>
-    @foreach (var ut in userTasks)
-    {
-        <div class="col-lg-3">
-            <span class="text-primary">@(ut.User.DisplayName)</span>
-            @if (ut.IsCompleted)
-            {
-            <span class="label label-success">√已完成</span>
-            }
-            else
-            {
-            <span class="label label-default">未完成</span>
-            }
-        </div>
-    }
-</div>
+}
+else
+{
+    <h4 class="page-header">参与人员</h4>
+    <div>
+        @foreach (var ut in userTasks)
+        {
+            <span>
+                <span class="label label-primary">@(ut.User.DisplayName)</span>
+                @if (ut.IsCompleted)
+                {
+                    <span class="text text-success"><i class="fa fa-check"></i> 已完成</span>
+                }
+                else
+                {
+                    <span class="text text-default"><i class="fa fa-check"></i> 未完成</span>
+                }
+            </span>
+        }
+    </div>
+}
 <div style="display:block;clear:both;overflow:hidden;padding:5px;">
 </div>
 <h4>相关附件</h4>
 <table class="table">
     <tr>
-        <th>名称</th>
-        <th>大小</th>
-        <th>下载</th>
+        <th class="col-lg-10">名称</th>
+        <th class="col-lg-1">大小</th>
+        <th class="col-lg-1">下载</th>
     </tr>
     @foreach (var item in attachments)
     {
@@ -149,7 +159,7 @@
         });
 
         $("#btn-copy").click(function () {
-            window.location.href = "/task/copy?id=@(model.ID)";
+            window.location.href = "/task/edit?parentId=@(model.ID)";
             return false;
         });
     });

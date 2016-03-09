@@ -21,3 +21,6 @@ footer { clear: both; }
 .checkbox-inline { min-width: 90px; }
 
 .logo { background-image: url("../content/logo.png"); background-repeat: no-repeat; font-size: 0px; width: 60px; background-position: center; }
+.badge { font-weight:normal;}
+
+#body{padding:10px;}

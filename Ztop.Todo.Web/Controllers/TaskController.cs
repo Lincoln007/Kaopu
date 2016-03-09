@@ -9,25 +9,67 @@ namespace Ztop.Todo.Web.Controllers
 {
     public class TaskController : ControllerBase
     {
-        public ActionResult Index(string keyword, int? completed, int page = 1, int rows = 20)
+        public ActionResult Index(string keyword, bool isCreator = true, int days = 0, UserTaskOrder order = UserTaskOrder.CreateTime, bool? isCompleted = null, int queryId = 0, int page = 1, int rows = 20)
         {
-            var parameter = new TaskQueryParameter
+            TaskQueryParameter parameter = null;
+            //说明是立即查询
+            if (queryId == -1)
             {
-                SearchKey = keyword,
-                IsCompleted = completed == null ? default(bool?) : (completed.Value == 1),
-                CreatorID = Identity.UserID,
-                Page = new PageParameter(page, rows),
-            };
+                parameter = new TaskQueryParameter
+                {
+                    SearchKey = keyword,
+                    IsCompleted = isCompleted,
+                    Order = order,
+                    IsCreator = isCreator,
+                    Page = new PageParameter(page, rows),
+                    GetReceiver = true,
+                    GetCreator = true,
 
-            //最近新添加的
-            ViewBag.List = Core.TaskManager.GetUserTasks(parameter);
-            ViewBag.Page = parameter.Page;
+                };
+            }
+            else if (queryId > 0)
+            {
+                var query = Core.QueryManager.GetModel(queryId);
+                if (query != null)
+                {
+                    ViewBag.Query = query;
+                    parameter = query.ConvertToTaskQueryParameter();
+                }
+            }
+
+            ViewBag.Queries = Core.QueryManager.GetList(Identity.UserID);
+
+            if (parameter != null)
+            {
+                parameter.GetCreator = true;
+                parameter.GetReceiver = true;
+                parameter.Page = new PageParameter(page, rows);
+                //强制为当前用户的ID
+                if (parameter.IsCreator)
+                {
+                    parameter.CreatorID = Identity.UserID;
+                }
+                else
+                {
+                    parameter.ReceiverID = Identity.UserID;
+                }
+                //最近新添加的
+                ViewBag.Parameter = parameter;
+                ViewBag.List = Core.TaskManager.GetUserTasks(parameter);
+                ViewBag.Page = parameter.Page;
+            }
             return View();
         }
 
-        public ActionResult Edit(int id = 0, string file = null)
+        public ActionResult Edit(int id = 0, int parentId = 0, string file = null)
         {
-            var model = Core.TaskManager.GetModel(id) ?? new Task();
+            var isCopy = parentId > 0;
+            var model = Core.TaskManager.GetModel(id == 0 ? parentId : id) ?? new Task();
+            if (isCopy)
+            {
+                model.ID = 0;
+                model.Users.Clear();
+            }
             ViewBag.Model = model;
             if (model != null && model.ID > 0)
             {
@@ -94,19 +136,21 @@ namespace Ztop.Todo.Web.Controllers
             }
             ViewBag.Model = model;
             var userTasks = Core.TaskManager.GetUserTasks(model.ID);
+            var hasRight = model.CreatorID == Identity.UserID || userTasks.Any(e => e.UserID == Identity.UserID);
+            if (!hasRight)
+            {
+                throw new HttpException(401, "你没有权限查看该任务");
+            }
+            ViewBag.UserTasks = userTasks;
+            ViewBag.Comments = Core.CommentManager.GetList(model.ID);
+            ViewBag.Attachments = Core.AttachmentManager.GetList(model.ID);
+
             var userTask = userTasks.FirstOrDefault(e => e.UserID == Identity.UserID);
             if (userTask != null)
             {
-                ViewBag.UserTasks = userTasks;
                 ViewBag.UserTask = userTask;
-                ViewBag.Comments = Core.CommentManager.GetList(model.ID);
-                ViewBag.Attachments = Core.AttachmentManager.GetList(model.ID);
                 //标记已读
                 Core.TaskManager.ReadTask(model.ID, Identity.UserID);
-            }
-            else
-            {
-                throw new HttpException(401, "你没有权限查看该任务");
             }
             return View();
         }
@@ -165,13 +209,13 @@ namespace Ztop.Todo.Web.Controllers
         //    return RedirectToAction("Index");
         //}
 
-        public ActionResult Complete(int id)
+        public ActionResult Complete(int taskId)
         {
-            if (!Core.TaskManager.HasRight(id, Identity.UserID))
+            if (!Core.TaskManager.HasRight(taskId, Identity.UserID))
             {
                 throw new HttpException(401, "你没有权限完成该任务");
             }
-            Core.TaskManager.CompleteTask(id, Identity.UserID);
+            Core.TaskManager.CompleteTask(taskId, Identity.UserID);
             return SuccessJsonResult();
         }
 

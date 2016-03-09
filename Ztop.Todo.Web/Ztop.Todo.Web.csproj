@@ -137,6 +137,7 @@
     <Compile Include="Controllers\CommentController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\AuthorityController.cs" />
+    <Compile Include="Controllers\QueryController.cs" />
     <Compile Include="Controllers\TaskController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
@@ -150,6 +151,8 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.custom.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\font-awesome.css" />
+    <Content Include="Content\font-awesome.min.css" />
     <Content Include="Content\jqtree.css" />
     <Content Include="Content\jquery.autocomplete.css" />
     <Content Include="Content\logo.png" />
@@ -157,6 +160,7 @@
     <Content Include="error.txt" />
     <Content Include="Content\jquery.datetimepicker.css" />
     <Content Include="favicon.ico" />
+    <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -177,6 +181,11 @@
     <Content Include="Areas\Jurisdiction\Views\Admin\Impower.cshtml" />
     <Content Include="Areas\Jurisdiction\Views\Admin\Accredit.cshtml" />
     <Content Include="Areas\Jurisdiction\Views\Admin\Edit.cshtml" />
+    <Content Include="fonts\FontAwesome.otf" />
+    <Content Include="fonts\fontawesome-webfont.woff2" />
+    <Content Include="fonts\fontawesome-webfont.woff" />
+    <Content Include="fonts\fontawesome-webfont.ttf" />
+    <Content Include="fonts\fontawesome-webfont.eot" />
     <None Include="Properties\PublishProfiles\TODO.pubxml" />
     <None Include="Scripts\jquery-1.9.1.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -228,6 +237,7 @@
     <Folder Include="Models\" />
     <Folder Include="Views\Attachment\" />
     <Folder Include="Views\Comment\" />
+    <Folder Include="Views\Query\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

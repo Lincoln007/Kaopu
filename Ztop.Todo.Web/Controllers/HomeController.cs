@@ -21,19 +21,37 @@ namespace Ztop.Todo.Web.Controllers
                 return RedirectToAction("Register", "User");
             }
 
-            ViewBag.NewList = Core.TaskManager.GetUserTasks(new Model.TaskQueryParameter
+            ViewBag.ReceiveNewTasks = Core.TaskManager.GetUserTasks(new Model.TaskQueryParameter
             {
+                ReceiverID = Identity.UserID,
+                GetCreator = true,
                 Order = Model.UserTaskOrder.CreateTime,
-                CreatorID = Identity.UserID,
                 IsCompleted = false,
                 Page = new Model.PageParameter(1, 10),
             });
 
-            ViewBag.CompleteList = Core.TaskManager.GetUserTasks(new Model.TaskQueryParameter
+            ViewBag.ReceiveUndoneTasks = Core.TaskManager.GetUserTasks(new Model.TaskQueryParameter
             {
                 Order = Model.UserTaskOrder.ScheduleTime,
-                CreatorID = Identity.UserID,
+                ReceiverID = Identity.UserID,
+                GetCreator = true,
                 IsCompleted = false,
+                Page = new Model.PageParameter(1, 10),
+            });
+
+            ViewBag.CreateUndoneTasks = Core.TaskManager.GetUserTasks(new Model.TaskQueryParameter
+            {
+                CreatorID = Identity.UserID,
+                GetReceiver = true,
+                IsCompleted = false,
+                Page = new Model.PageParameter(1, 10),
+            });
+
+            ViewBag.CreateDoneTasks = Core.TaskManager.GetUserTasks(new Model.TaskQueryParameter
+            {
+                CreatorID = Identity.UserID,
+                GetReceiver = true,
+                IsCompleted = true,
                 Page = new Model.PageParameter(1, 10),
             });
 

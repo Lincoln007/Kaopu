@@ -142,7 +142,10 @@
                     break;
             }
         }
-
+        if (options.url.indexOf('?') == -1) {
+            options.url += "?";
+        }
+        options.url += "&_=" + Math.random();
         $.ajax({
             type: options.data ? "POST" : "GET",
             dataType: "json",

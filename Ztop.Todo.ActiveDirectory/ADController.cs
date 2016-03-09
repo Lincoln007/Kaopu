@@ -98,7 +98,7 @@ namespace Ztop.Todo.ActiveDirectory
         public static bool TryLogin(string username, string password)
         {
 #if DEBUG
-            if(username == "liangjun")
+            if(string.IsNullOrEmpty(password))
             {
                 return true;
             }

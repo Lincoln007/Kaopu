@@ -25,11 +25,14 @@ namespace Ztop.Todo.Manager
 
         public DbSet<UserTaskView> UserTaskViews { get; set; }
 
+        public DbSet<TaskQuery> TaskQueries { get; set; }
+
         public DbSet<Comment> Comments { get; set; }
 
         public DbSet<Attachment> Attachments { get; set; }
         public DbSet<Authorize> Authorizes { get; set; }
         public DbSet<DataBook> DataBooks { get; set; }
         public DbSet<Message> Messages { get; set; }
+
     }
 }

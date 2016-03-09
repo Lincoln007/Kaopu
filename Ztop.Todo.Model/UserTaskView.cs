@@ -37,6 +37,9 @@ namespace Ztop.Todo.Model
         public int CreatorID { get; set; }
 
         [NotMapped]
-        public string CreatorName { get; set; }
+        public User Creator { get; set; }
+
+        [NotMapped]
+        public User Receiver { get; set; }
     }
 }

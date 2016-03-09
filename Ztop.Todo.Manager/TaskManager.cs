@@ -16,18 +16,35 @@ namespace Ztop.Todo.Manager
             using (var db = GetDbContext())
             {
                 var query = db.UserTaskViews.AsQueryable();
-                if (parameter.CreatorID > 0)
-                {
-                    query = query.Where(e => e.CreatorID == parameter.CreatorID);
-                }
-                if (parameter.UserID > 0)
-                {
-                    query = query.Where(e => e.UserID == parameter.UserID);
-                }
                 if (!string.IsNullOrEmpty(parameter.SearchKey))
                 {
-                    query = query.Where(e => e.Title.Contains(parameter.SearchKey.Trim()));
+                    var user = db.Users.FirstOrDefault(e => e.Username.Contains(parameter.SearchKey) || e.RealName.Contains(parameter.SearchKey));
+                    if (user != null)
+                    {
+                        if (parameter.IsCreator)
+                        {
+                            parameter.CreatorID = user.ID;
+                        }
+                        else
+                        {
+                            parameter.ReceiverID = user.ID;
+                        }
+                    }
+                    else
+                    {
+                        query = query.Where(e => e.Title.Contains(parameter.SearchKey.Trim()));
+                    }
                 }
+
+                if (parameter.CreatorID > 0)
+                {
+                    query = query.Where(e => e.CreatorID == parameter.ReceiverID);
+                }
+                if (parameter.ReceiverID > 0)
+                {
+                    query = query.Where(e => e.UserID == parameter.ReceiverID);
+                }
+
                 if (parameter.IsCompleted.HasValue)
                 {
                     if (parameter.IsCompleted.Value)
@@ -39,13 +56,11 @@ namespace Ztop.Todo.Manager
                         query = query.Where(e => e.CompletedTime == null);
                     }
                 }
-                if (parameter.BeginTime.HasValue)
+                if (parameter.Days > 0)
                 {
-                    query = query.Where(e => e.CreateTime > parameter.BeginTime.Value);
-                }
-                if (parameter.EndTime.HasValue)
-                {
-                    query = query.Where(e => e.CreateTime < parameter.EndTime.Value);
+                    var beginTime = DateTime.Today.AddDays(-parameter.Days);
+                    var endTime = DateTime.Now;
+                    query = query.Where(e => e.CreateTime > beginTime && e.CreateTime < endTime);
                 }
                 if (parameter.HasRead.HasValue)
                 {
@@ -60,9 +75,17 @@ namespace Ztop.Todo.Manager
                 {
                     list = query.OrderByDescending(e => e.ID).SetPage(parameter.Page).ToList();
                 }
+
                 foreach (var item in list)
                 {
-                    item.CreatorName = Core.UserManager.GetUser(item.CreatorID).DisplayName;
+                    if (parameter.GetCreator)
+                    {
+                        item.Creator = Core.UserManager.GetUser(item.CreatorID);
+                    }
+                    if (parameter.GetReceiver)
+                    {
+                        item.Receiver = Core.UserManager.GetUser(item.UserID);
+                    }
                 }
             }
             return list;
@@ -219,12 +242,12 @@ namespace Ztop.Todo.Manager
             using (var db = GetDbContext())
             {
                 var entity = db.UserTasks.FirstOrDefault(e => e.TaskID == taskId && e.UserID == userId);
-                
+
                 if (entity != null && !entity.CompletedTime.HasValue)
                 {
                     entity.CompletedTime = DateTime.Now;
+                    db.SaveChanges();
                 }
-                db.SaveChanges();
             }
         }
     }

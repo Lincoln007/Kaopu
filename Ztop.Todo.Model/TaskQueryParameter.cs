@@ -14,9 +14,11 @@ namespace Ztop.Todo.Model
 
     public class TaskQueryParameter
     {
+        public bool IsCreator { get; set; }
+
         public int CreatorID { get; set; }
 
-        public int UserID { get; set; }
+        public int ReceiverID { get; set; }
 
         public string SearchKey { get; set; }
 
@@ -28,18 +30,10 @@ namespace Ztop.Todo.Model
 
         public bool? HasRead { get; set; }
 
-        public DateTime? BeginTime { get; set; }
-
-        public DateTime? EndTime { get; set; }
+        public int Days { get; set; }
 
         public bool GetCreator { get; set; }
 
         public bool GetReceiver { get; set; }
-
-        public void SetTimeRange(int days)
-        {
-            EndTime = DateTime.Today.AddDays(1);
-            BeginTime = DateTime.Today.AddDays(-days);
-        }
     }
 }
