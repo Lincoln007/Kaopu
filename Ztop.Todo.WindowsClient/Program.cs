@@ -66,6 +66,13 @@ namespace Ztop.Todo.WindowsClient
             return hasStarted > 1;
         }
 
+        private static bool WJLHasInstance()
+        {
+            bool canCreateNew = false;
+            var m = new Mutex(true, "ZTOPTODO", out canCreateNew);
+            return canCreateNew;
+        }
+
         private static void RegisterApplication()
         {
             using (RegistryKey classesroot = Registry.ClassesRoot)
