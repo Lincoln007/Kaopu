@@ -90,35 +90,31 @@ namespace Ztop.Todo.WindowsClient
             webControl1.Source = new Uri(ServerHelper.GetTaskUrl(model));
         }
 
+        private FormWindowState _state;
+        private Size _size;
+
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (e.CloseReason == CloseReason.UserClosing)
             {
+                _state = WindowState;
+                _size = Size;
                 this.WindowState = FormWindowState.Minimized;
-                //this.Close();
                 this.Hide();
                 e.Cancel = true;
             }
-            //timer1.Stop();
-            //timer1.Dispose();
-            //if (this.thread != null && this.thread.IsAlive)
-            //{
-            //    TCPHelper.TCPSend(System.Configuration.ConfigurationManager.AppSettings["TCPSTOP"]);
-            //    this.thread.Abort();
-            //    this.thread.Join();
-            //}
         }
 
         private void notifyIcon1_Click(object sender, EventArgs e)
         {
-            this.Show();
-            this.WindowState = FormWindowState.Normal;
-
-        }
-
-        private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            this.Show();
+            var e1 = e as MouseEventArgs;
+            if (e1.Button != MouseButtons.Right)
+            {
+                this.Show();
+                this.Activate();
+                Size = _size;
+                WindowState = _state;
+            }
         }
 
         private void 退出ToolStripMenuItem_Click(object sender, EventArgs e)

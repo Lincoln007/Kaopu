@@ -16,9 +16,10 @@ namespace Ztop.Todo.WindowsClient
             InitializeComponent();
             timer1.Tick += Timer1_Tick;
             timer1.Interval = 1000;
+            //timer1.Start(); 不需要自动关闭
         }
 
-        private int _duration = 10;
+        private int _duration = 30;
 
         private void Timer1_Tick(object sender, EventArgs e)
         {
@@ -40,7 +41,7 @@ namespace Ztop.Todo.WindowsClient
 
         public Task Task { get; private set; }
 
-        private void btnTitle_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void NavigationToTaskDetailPage()
         {
             foreach (Form form in Application.OpenForms)
             {
@@ -50,13 +51,14 @@ namespace Ztop.Todo.WindowsClient
                     ((MainForm)form).OpenTask(Task);
                 }
             }
+        }
+
+        private void btnTitle_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            NavigationToTaskDetailPage();
             this.Close();
         }
 
-        private void btnClose_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
 
         private void labContent_Click(object sender, EventArgs e)
         {
@@ -68,6 +70,14 @@ namespace Ztop.Todo.WindowsClient
             timer1.Stop();
             timer1.Dispose();
             base.OnClosed(e);
+        }
+
+        private void NoticeForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if(e.CloseReason == CloseReason.UserClosing)
+            {
+
+            }
         }
     }
 }

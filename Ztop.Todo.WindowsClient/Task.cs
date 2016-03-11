@@ -9,6 +9,8 @@ namespace Ztop.Todo.WindowsClient
     {
         public int ID { get; set; }
 
+        public int TaskID { get; set; }
+
         public int UserID { get; set; }
 
         public string Title { get; set; }

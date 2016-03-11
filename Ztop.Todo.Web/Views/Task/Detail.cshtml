@@ -1,60 +1,37 @@
 ﻿@{
-    Task model = ViewBag.Model;
-    ViewBag.Title = model.Title;
+    UserTask model = ViewBag.Model;
+    var task = model.Task;
+    ViewBag.Title = task.Title;
     List<Comment> comments = ViewBag.Comments;
     List<Attachment> attachments = ViewBag.Attachments;
     List<UserTask> userTasks = ViewBag.UserTasks;
-    UserTask userTask = ViewBag.UserTask ?? new UserTask();
-    User currentUser = ViewBag.CurrentUser;
-    bool isCreator = model.CreatorID == Identity.UserID;
+    bool isCreator = task.CreatorID == Identity.UserID;
 }
 <h4 class="page-header">
-    @(model.Title)
+    @(task.Title)
     <span class="label label-warning">
-        计划完成时间：@(model.ScheduledTime.HasValue ? model.ScheduledTime.Value.ToShortDateString() : "不限")
+        计划完成时间：@(task.ScheduledTime.HasValue ? task.ScheduledTime.Value.ToShortDateString() : "不限")
     </span>
 </h4>
 <div class="alert alert-info">
-    <p>@(Html.Raw(HtmlUtils.ToHtml(model.Content)))</p>
+    <p>@(Html.Raw(HtmlUtils.ToHtml(task.Content)))</p>
 </div>
 
 <button type="button" class="btn btn-sm btn-default" onclick="history.back();"><i class="glyphicon glyphicon-arrow-left"></i> 返回</button>
 <button id="btn-copy" class="btn btn-sm btn-info"><i class="glyphicon glyphicon-export"></i> 转发任务</button>
-@if (!isCreator)
+@if (!model.CompletedTime.HasValue)
 {
-    if (!userTask.CompletedTime.HasValue)
-    {
-        <button id="btn-complete" class="btn btn-sm btn-success"><i class="glyphicon glyphicon-check"></i> 完成任务</button>
-    }
-    else
-    {
-        <button class="btn btn-success btn-sm disabled"><i class="glyphicon glyphicon-check"></i> 已完成</button>
-    }
-    if (!userTask.IsCompleted && userTask.UserID == Identity.UserID)
-    {
-        <button id="btn-task-delete" class="btn btn-sm btn-danger" style="float:right;"><i class="glyphicon glyphicon-remove"></i> 删除该任务</button>
-    }
+    <button id="btn-complete" class="btn btn-sm btn-success"><i class="glyphicon glyphicon-check"></i> 完成任务</button>
 }
 else
 {
-    <h4 class="page-header">参与人员</h4>
-    <div>
-        @foreach (var ut in userTasks)
-        {
-            <span>
-                <span class="label label-primary">@(ut.User.DisplayName)</span>
-                @if (ut.IsCompleted)
-                {
-                    <span class="text text-success"><i class="fa fa-check"></i> 已完成</span>
-                }
-                else
-                {
-                    <span class="text text-default"><i class="fa fa-check"></i> 未完成</span>
-                }
-            </span>
-        }
-    </div>
+    <button class="btn btn-success btn-sm disabled"><i class="glyphicon glyphicon-check"></i> 已完成</button>
 }
+@if (!model.IsCompleted)
+{
+    <button id="btn-task-delete" class="btn btn-sm btn-danger" style="float:right;"><i class="glyphicon glyphicon-remove"></i> 删除该任务</button>
+}
+
 <div style="display:block;clear:both;overflow:hidden;padding:5px;">
 </div>
 <h4>相关附件</h4>

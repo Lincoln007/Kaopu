@@ -85,6 +85,7 @@
             this.Text = "任务提醒";
             this.TopMost = true;
             this.WindowState = System.Windows.Forms.FormWindowState.Minimized;
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.NoticeForm_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -6,8 +6,10 @@
     List<UserTaskView> CreatedUndoneTasks = ViewBag.CreateUndoneTasks;
 }
 <h3>
-    欢迎页
+    欢迎页&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-primary" href="/task/edit"><i class="fa fa-plus"></i> 创建任务</a>
+
 </h3>
+
 <table class="table">
     <tr>
         <td style="width:50%;">
@@ -18,7 +20,7 @@
                 @foreach (var item in ReceiveNewTasks)
                 {
                     <li class="list-group-item">
-                        <a href="/task/detail?id=@(item.TaskID)">@(item.Title)</a>
+                        <a href="/task/detail?id=@(item.ID)">@(item.Title)</a>
                         <span class="badge">
                             @(item.Creator.DisplayName)
                         </span>
@@ -34,7 +36,7 @@
                 @foreach (var item in ReceiveUndoneTasks)
                 {
                     <li class="list-group-item">
-                        <a href="/task/detail?id=@(item.TaskID)">@(item.Title)</a>
+                        <a href="/task/detail?id=@(item.ID)">@(item.Title)</a>
                         <span class="badge">
                             @(item.ScheduledTime.HasValue ? item.ScheduledTime.Value.ToShortDateString() : "不限")
                         </span>
@@ -52,7 +54,7 @@
                 @foreach (var item in CreatedDoneTasks)
                 {
                     <li class="list-group-item">
-                        <a href="/task/detail?id=@(item.TaskID)">@(item.Title)</a>
+                        <a href="/task/detail?id=@(item.ID)">@(item.Title)</a>
                         <span class="badge">
                             @(item.CompletedTime.HasValue ? item.CompletedTime.Value.ToShortDateString() : "不限")
                         </span>
@@ -68,7 +70,7 @@
                 @foreach (var item in CreatedUndoneTasks)
                 {
                     <li class="list-group-item">
-                        <a href="/task/detail?id=@(item.TaskID)">@(item.Title)</a>
+                        <a href="/task/detail?id=@(item.ID)">@(item.Title)</a>
                         <span class="badge">
                             @(item.Receiver.DisplayName)
                         </span>

@@ -91,23 +91,21 @@ namespace Ztop.Todo.Manager
             return list;
         }
 
-        public Task GetNewTask(int userId, DateTime minTime)
+        public UserTask GetNewTask(int userId, DateTime minTime)
         {
             using (var db = GetDbContext())
             {
-                var userTask = db.UserTasks.Where(e => e.UserID == userId
+                var model = db.UserTasks.Where(e => e.UserID == userId
                 && e.CompletedTime == null
                 && e.HasRead == false
                 && e.CreateTime > minTime)
                 .OrderByDescending(e => e.ID).FirstOrDefault();
-                if (userTask != null)
+                if (model != null)
                 {
-                    var task = db.Tasks.FirstOrDefault(e => e.ID == userTask.TaskID);
-                    task.CreatorName = Core.UserManager.GetUser(task.CreatorID).DisplayName;
-                    return task;
+                    model.Task = GetTask(model.TaskID);
                 }
+                return model;
             }
-            return null;
         }
 
         public bool HasRight(int taskId, int userId)
@@ -132,7 +130,18 @@ namespace Ztop.Todo.Manager
             }
         }
 
-        public List<User> GetUsers(int taskId)
+        public UserTask GetUserTask(int id)
+        {
+            using (var db = GetDbContext())
+            {
+                var model = db.UserTasks.FirstOrDefault(e => e.ID == id);
+                model.Task = GetTask(model.TaskID);
+
+                return model;
+            }
+        }
+
+        public List<User> GetTaskUsers(int taskId)
         {
             using (var db = GetDbContext())
             {
@@ -143,7 +152,7 @@ namespace Ztop.Todo.Manager
             }
         }
 
-        public Task GetModel(int id)
+        public Task GetTask(int id)
         {
             if (id == 0) return null;
             using (var db = GetDbContext())
@@ -153,20 +162,20 @@ namespace Ztop.Todo.Manager
         }
 
 
-        public void ReadTask(int taskId, int userId)
+        public void FlagUserTaskRead(int userTaskId, int userId)
         {
             using (var db = GetDbContext())
             {
-                var entity = db.UserTasks.FirstOrDefault(e => e.TaskID == taskId && e.UserID == userId);
+                var entity = db.UserTasks.FirstOrDefault(e => e.ID == userTaskId);
                 if (entity != null)
                 {
+                    if (entity.UserID != userId)
+                    {
+                        throw new HttpException("参数错误或权限不足");
+                    }
                     if (entity.HasRead) return;
                     entity.HasRead = true;
                     db.SaveChanges();
-                }
-                else
-                {
-                    throw new HttpException("参数错误或权限不足");
                 }
             }
         }

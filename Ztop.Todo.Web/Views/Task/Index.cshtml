@@ -97,7 +97,7 @@
                         @foreach (var item in list)
                         {
                             <tr>
-                                <td><a href="/task/detail?id=@(item.TaskID)">@(item.Title)</a> </td>
+                                <td><a href="/task/detail?id=@(item.ID)">@(item.Title)</a> </td>
                                 <td>@(item.ScheduledTime.HasValue ? item.ScheduledTime.Value.ToShortDateString() : "不限")</td>
                                 <td>@(parameter.IsCreator ? item.Creator.DisplayName : item.Receiver.DisplayName)</td>
                                 <td>@(item.CreateTime.ToString("yyyy-MM-dd HH:mm"))</td>
