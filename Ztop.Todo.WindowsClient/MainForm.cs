@@ -20,6 +20,14 @@ namespace Ztop.Todo.WindowsClient
     {
         private Thread thread { get; set; }
         private bool IsLive { get; set; }
+        public MainForm()
+        {
+            InitializeComponent();
+
+            WebCore.Initialize(WebConfig.Default, true);
+            WebCore.ResourceInterceptor = new ResourceInterceptor();
+        }
+
         public MainForm(string uploadFile) : this()
         {
             Control.CheckForIllegalCrossThreadCalls = false;
@@ -44,17 +52,6 @@ namespace Ztop.Todo.WindowsClient
 
 
             IsLive = true;
-        }
-        public MainForm()
-        {
-            InitializeComponent();
-
-            WebCore.Initialize(WebConfig.Default, true);
-            WebCore.ResourceInterceptor = new ResourceInterceptor();
-
-            timer1.Tick += Timer1_Tick;
-            timer1.Interval = 1000 * 10;
-            timer1.Start();
         }
 
         private void Timer1_Tick(object sender, EventArgs e)

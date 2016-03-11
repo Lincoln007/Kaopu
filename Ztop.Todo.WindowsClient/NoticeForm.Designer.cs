@@ -30,7 +30,6 @@
         {
             this.components = new System.ComponentModel.Container();
             this.labOwner = new System.Windows.Forms.Label();
-            this.btnClose = new System.Windows.Forms.Button();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.btnTitle = new System.Windows.Forms.LinkLabel();
             this.labContent = new System.Windows.Forms.Label();
@@ -46,18 +45,6 @@
             this.labOwner.TabIndex = 2;
             this.labOwner.Text = "发布者：郑良军";
             // 
-            // btnClose
-            // 
-            this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnClose.Font = new System.Drawing.Font("SimSun", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.btnClose.Location = new System.Drawing.Point(159, 136);
-            this.btnClose.Name = "btnClose";
-            this.btnClose.Size = new System.Drawing.Size(47, 22);
-            this.btnClose.TabIndex = 4;
-            this.btnClose.Text = "关闭";
-            this.btnClose.UseVisualStyleBackColor = false;
-            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
-            // 
             // btnTitle
             // 
             this.btnTitle.ActiveLinkColor = System.Drawing.Color.Green;
@@ -67,7 +54,7 @@
             this.btnTitle.Size = new System.Drawing.Size(187, 21);
             this.btnTitle.TabIndex = 8;
             this.btnTitle.TabStop = true;
-            this.btnTitle.Text = "任务名称";
+            this.btnTitle.Text = "您有新的任务 1 条";
             this.btnTitle.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.btnTitle_LinkClicked);
             // 
             // labContent
@@ -82,14 +69,13 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(220, 170);
             this.Controls.Add(this.btnTitle);
             this.Controls.Add(this.labContent);
-            this.Controls.Add(this.btnClose);
             this.Controls.Add(this.labOwner);
             this.Font = new System.Drawing.Font("Microsoft YaHei", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -106,7 +92,6 @@
 
         #endregion
         private System.Windows.Forms.Label labOwner;
-        private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.LinkLabel btnTitle;
         private System.Windows.Forms.Label labContent;
