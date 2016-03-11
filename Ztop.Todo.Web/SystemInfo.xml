@@ -4,6 +4,15 @@
     <Administrator Name="Administrators"></Administrator>
     <Administrator Name="Domain Admins"></Administrator>
   </Administrators>
+  <Directors>
+    <Director Name="袁洋"></Director>
+    <Director Name="蔡锋铭"></Director>
+    <Director Name="彭盛状"></Director>
+    <Director Name="陈立定"></Director>
+    <Director Name="申屠杜平"></Director>
+    <Director Name="张兴平"></Director>
+    <Director Name="欧阳安娇"></Director>
+  </Directors>
   <Organizations>
     <Organization Name="000ALL"></Organization>
   </Organizations>

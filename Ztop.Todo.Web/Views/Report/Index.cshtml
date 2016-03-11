@@ -1,8 +1,111 @@
-﻿
+﻿@using Ztop.Todo.Model
 @{
     ViewBag.Title = "报销系统";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    List<Sheet> OutList = ViewBag.OutList;
+    List<Sheet> ExaminingList = ViewBag.ExaminingList;
+    List<Sheet> ExaminList = ViewBag.ExaminList;
+    int Serial = 1;
+
 }
 
+<div class="col-md-12">
+    <h3>@(Identity.Name)  您好! &nbsp;&nbsp;</h3>
+</div>
 
+<div class="col-md-6">
+    <h4>
+        最近草稿
+        <a style="float:right;font-size:0.8em" href="">
+            <em class="glyphicon glyphicon-info-sign"></em>详情
+        </a>
+    </h4>
+    <hr />
+    <table class="table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>单据编号</th>
+                <th>报销日期</th>
+                <th>报销金额</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                Serial = 1;
+                foreach (var item in OutList)
+                {
+                    <tr>
+                        <td>@(Serial++)</td>
+                        <td>@(item.Coding)</td>
+                        <td>@(item.Time.ToShortDateString())</td>
+                        <td>@(item.Money)</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<div class="col-md-6">
+    <h4>
+        未完成报销（注：我填报的报销中未审核完成的）
+        <a style="float:right;font-size:0.8em;" href="">
+            <em class="glyphicon glyphicon-info-sign"></em>详情
+        </a>
+    </h4>
+    <hr />
+    <table class="table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>单据编号</th>
+                <th>报销日期</th>
+                <th>报销金额</th>
+                <th>状态</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+</div>
+<div class="col-md-6">
+    <h4>
+        待审核报销(注:需要我审核的报销单)
+        <a style="float:right;font-size: 0.8em;" href="list.html">
+            <em class="glyphicon glyphicon-info-sign"></em> 详情
+        </a>
+    </h4>
+    <hr>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>单据编号</th>
+                <th>报销日期</th>
+                <th>报销金额</th>
+                <th>报销人</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+<div class="col-md-6">
+    <h4>
+        最近已完成的报销
+        <a style="float:right;font-size: 0.8em;" href="list.html">
+            <em class="glyphicon glyphicon-info-sign"></em> 详情
+        </a>
+    </h4>
+    <hr>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>单据编号</th>
+                <th>报销日期</th>
+                <th>报销金额</th>
+            </tr>
+        </thead>
+    </table>
+</div>
 

@@ -1,0 +1,47 @@
+﻿@using Ztop.Todo.ActiveDirectory;
+@{ 
+    var list = XmlHelper.GetDirectors();
+}
+<button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#submitButton">
+     <em class="glyphicon glyphicon-send"></em> 保存转交
+</button>
+
+<div class="modal fade" id="submitButton" tabindex="-1" role="dialog" aria-labelledby="">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">保存转交</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="control-label col-md-3">主管:</label>
+                    <div class="col-lmd-9">
+                        <div class="btn-group" role="group" aria-label="">
+                            @foreach (var name in list)
+                            {
+                                <button type="button" class="btn btn-default" name="Director">@(name)</button>
+                            }
+                        </div>
+                    </div>
+                   <input type="text" name="DirectorVal" style="display:none" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="submit" class="btn btn-primary">转交</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $("[name='Director']").click(function () {
+            $("[name='Director']").removeClass("btn-success").addClass("btn-default");
+            $(this).removeClass("btn-default").addClass("btn-success");
+            var val = $(this).text();
+            $("[name='DirectorVal']").val(val);
+        })
+    })
+</script>

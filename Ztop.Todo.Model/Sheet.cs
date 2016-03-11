@@ -17,12 +17,23 @@ namespace Ztop.Todo.Model
     {
         public Sheet()
         {
-            Number = string.Format("");
+            Number = string.Format("ZTOP{0}{1}{2}",DateTime.Now.Year,DateTime.Now.Month.ToString("00"),DateTime.Now.Day.ToString("00"));
+            Time = DateTime.Now;
         }
         [Key]
         [DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
         public string Number { get; set; }
+        public int NumberExt { get; set; }
+        [NotMapped]
+        public string Coding
+        {
+            get
+            {
+                return Number + NumberExt.ToString("0000");
+            }
+        }
+        public string Name { get; set; }
         public DateTime Time { get; set; }
         public double Money { get; set; }
         [Column(TypeName ="int")]

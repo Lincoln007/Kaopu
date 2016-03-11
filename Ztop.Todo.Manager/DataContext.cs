@@ -33,6 +33,7 @@ namespace Ztop.Todo.Manager
         public DbSet<Authorize> Authorizes { get; set; }
         public DbSet<DataBook> DataBooks { get; set; }
         public DbSet<Message> Messages { get; set; }
-
+        public DbSet<Sheet> Sheets { get; set; }
+        public DbSet<Substancs> Substances { get; set; }
     }
 }

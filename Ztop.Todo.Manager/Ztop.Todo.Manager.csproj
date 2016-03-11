@@ -69,6 +69,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueryableExtensions.cs" />
     <Compile Include="QueryManager.cs" />
+    <Compile Include="SheetManager.cs" />
+    <Compile Include="SubstancsManager.cs" />
     <Compile Include="TaskManager.cs" />
     <Compile Include="UserManager.cs" />
   </ItemGroup>

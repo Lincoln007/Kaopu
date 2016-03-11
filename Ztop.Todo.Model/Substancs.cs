@@ -12,7 +12,7 @@ namespace Ztop.Todo.Model
     /// <summary>
     /// 分项清单
     /// </summary>
-    [Table("substances")]
+    [Table("substancs")]
     public class Substancs
     {
         [Key]
@@ -21,7 +21,7 @@ namespace Ztop.Todo.Model
         [Column(TypeName ="int")]
         public Category Category { get; set; }
         public string Details { get; set; }
-        public double Money { get; set; }
+        public double Price { get; set; }
         public int SID { get; set; }
     }
 

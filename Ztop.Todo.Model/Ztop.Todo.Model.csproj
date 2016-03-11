@@ -63,6 +63,7 @@
     <Compile Include="Message.cs" />
     <Compile Include="PageParameter.cs" />
     <Compile Include="Sheet.cs" />
+    <Compile Include="SheetQueryParameter.cs" />
     <Compile Include="Substancs.cs" />
     <Compile Include="Task.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

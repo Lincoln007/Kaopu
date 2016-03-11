@@ -13,7 +13,6 @@ namespace Ztop.Todo.ActiveDirectory
         private static string ADServer { get; set; }
         private static string ADName { get; set; }
         private static string ADPassword { get; set; }
-        private static XmlDocument configXml { get; set; }
         private static List<string> IgnoresList { get; set; }
         private static List<string> ManagerList { get; set; }
         private static List<string> AdminList { get; set; }
@@ -27,30 +26,16 @@ namespace Ztop.Todo.ActiveDirectory
         }
         private static void Init()
         {
-            configXml = new XmlDocument();
-            configXml.Load(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, System.Configuration.ConfigurationManager.AppSettings["IGNORE"]));
+      
+            IgnoresList = XmlHelper.InitConfig("/Composes/Compose");
 
-            IgnoresList = InitConfig("/Composes/Compose");
+            AdminList = XmlHelper.InitConfig("/Composes/Administrators/Administrator");
 
-            AdminList = InitConfig("/Composes/Administrators/Administrator");
-
-            ManagerList = InitConfig("/Composes/Organizations/Organization");
+            ManagerList = XmlHelper.InitConfig("/Composes/Organizations/Organization");
             
         }
 
-        private static List<string> InitConfig(string SelectString)
-        {
-            var list = new List<string>();
-            var nodes = configXml.SelectNodes(SelectString);
-            if (nodes != null)
-            {
-                for(var i = 0; i < nodes.Count; i++)
-                {
-                    list.Add(nodes[i].Attributes["Name"].Value);
-                }
-            }
-            return list;
-        }
+       
 
         #region 通用
 
