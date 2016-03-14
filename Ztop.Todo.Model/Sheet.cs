@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ztop.Todo.Model
 {
@@ -17,42 +14,63 @@ namespace Ztop.Todo.Model
     {
         public Sheet()
         {
-            Number = string.Format("ZTOP{0}{1}{2}",DateTime.Now.Year,DateTime.Now.Month.ToString("00"),DateTime.Now.Day.ToString("00"));
             Time = DateTime.Now;
         }
         [Key]
         [DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
-        public string Number { get; set; }
-        public int NumberExt { get; set; }
+        /// <summary>
+        /// 单据编号  实例值
+        /// </summary>
         [NotMapped]
-        public string Coding
-        {
-            get
-            {
-                return Number + NumberExt.ToString("0000");
-            }
-        }
+        public SerialNumber SerialNumber { get; set; }
+        /// <summary>
+        /// 报销人
+        /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// 报销时间
+        /// </summary>
         public DateTime Time { get; set; }
+        /// <summary>
+        /// 报销金额
+        /// </summary>
         public double Money { get; set; }
+        /// <summary>
+        /// 报销单状态
+        /// </summary>
         [Column(TypeName ="int")]
         public Status Status { get; set; }
+        /// <summary>
+        /// 备注
+        /// </summary>
         public string Remarks { get; set; }
+        /// <summary>
+        /// 是否删除
+        /// </summary>
+        public bool Deleted { get; set; }
+        /// <summary>
+        /// 内容分项清单
+        /// </summary>
         [NotMapped]
         public List<Substancs> Substances { get; set; }
+        /// <summary>
+        /// 审核信息表
+        /// </summary>
         [NotMapped]
         public List<Verify> Verifys { get; set; }
 
     }
     public enum Status
     {
-        [Description("草稿")]
+        [Description("草稿")]//只是填写了报销单  但是没有提交
         OutLine,
-        [Description("未审核")]
+        [Description("提交成功未审核")]//报销单上交上级  但是上级没有查看审核过
+        Post,
+        [Description("审核中")]//主管开始审核  或者  报销确认  
         Examining,
-        [Description("已审核")]
-        Examine,
+        [Description("已审核")]//财务负责人核准
+        Examined,
     }
     
 }

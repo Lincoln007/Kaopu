@@ -1,0 +1,43 @@
+﻿@model Ztop.Todo.Model.Sheet
+<button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#WidthDrawal">
+    <em class="glyphicon glyphicon-remove-circle"></em>退回
+</button>
+
+<div class="modal fade" id="WidthDrawal" tabindex="-1" role="dialog" aria-labelledby="">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">退回</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" method="post" action="" id="form-WithDrawal">
+                    <input type="text" name="id" value="@(Model.ID)" style="display:none" />
+
+                    <div class="form-group">
+                        <label class="control-label col-md-3">退回原因：</label>
+                        <div class="col-md-9">
+                            <input type="text" name="Reason" class="form-control" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="submit" class="btn btn-primary">退出</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $("#form-WithDrawal").submit(function () {
+            var data = $(this).serialize();
+            $.request("/Report/", data, function (json) {
+                location.href = "";
+            });
+            return false;
+        })
+    })
+</script>

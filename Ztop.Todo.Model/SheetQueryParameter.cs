@@ -10,5 +10,6 @@ namespace Ztop.Todo.Model
     {
         public string Name { get; set; }
         public PageParameter Page { get; set; }
+        public bool? Deleted { get; set; }
     }
 }

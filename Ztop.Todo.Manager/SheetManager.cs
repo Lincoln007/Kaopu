@@ -18,8 +18,28 @@ namespace Ztop.Todo.Manager
                 return db.Sheets.FirstOrDefault(e => e.ID == id);
             }
         }
+        public Sheet GetAllModel(int id)
+        {
+            if (id == 0) return null;
+            using (var db = GetDbContext())
+            {
+                var model = db.Sheets.FirstOrDefault(e => e.ID == id);
+                if (model != null)
+                {
+                    model.SerialNumber = db.SerialNumbers.FirstOrDefault(e => e.SID == model.ID);
+                    model.Substances = db.Substances.Where(e => e.SID == id).OrderBy(e=>e.ID).ToList();
+                    model.Verifys = db.Verifys.Where(e => e.SID == id).OrderBy(e => e.ID).ToList();
+                }
+                return model;
+            }
+        }
+        /// <summary>
+        /// 用于保存报销单
+        /// </summary>
+        /// <param name="sheet"></param>
         public void Save(Sheet sheet)
         {
+            if (sheet == null) return;
             using (var db = GetDbContext())
             {
                 if (sheet.ID == 0)
@@ -35,38 +55,69 @@ namespace Ztop.Todo.Manager
                     }
                 }
                 db.SaveChanges();
-                db.Substances.AddRange(sheet.Substances.OrderBy(e => e.ID).Select(e => new Substancs
+                if (sheet.Substances != null)
                 {
-                    Category = e.Category,
-                    Details = e.Details,
-                    Price = e.Price,
-                    SID = sheet.ID
-                }));
+                    db.Substances.AddRange(sheet.Substances.OrderBy(e => e.ID).Select(e => new Substancs
+                    {
+                        Category = e.Category,
+                        Details = e.Details,
+                        Price = e.Price,
+                        SID = sheet.ID
+                    }));
+                }
+                
                 db.SaveChanges();
 
             }
         }
 
+        private SerialNumber GetSerialNumber(int sid)
+        {
+            if (sid == 0) return null;
+            using (var db = GetDbContext())
+            {
+                return db.SerialNumbers.FirstOrDefault(e => e.SID == sid);
+            }
+        }
+        private List<Sheet> GetSheets()
+        {
+            using (var db = GetDbContext())
+            {
+                return db.Sheets.ToList();
+            }
+        }
+
         public List<Sheet> GetSheets(SheetQueryParameter parameter)
         {
-            using (var db = GetDbContext())
+            var list = GetSheets();
+            foreach(var sheet in list)
             {
-                var query = db.Sheets.AsQueryable();
-                if (!string.IsNullOrEmpty(parameter.Name))
-                {
-                    query = query.Where(e => e.Name == parameter.Name);
-                }
-
-                return query.ToList();
+                sheet.SerialNumber = GetSerialNumber(sheet.ID);
             }
+            var query = list.AsQueryable();
+            if (!string.IsNullOrEmpty(parameter.Name))
+            {
+                query = query.Where(e => e.Name == parameter.Name);
+            }
+            if (parameter.Deleted.HasValue)
+            {
+                query = query.Where(e => e.Deleted == parameter.Deleted.Value);
+            }
+            return query.ToList();
         }
-        public int GetNumberExt(string number)
+        public void Delete(int id)
         {
             using (var db = GetDbContext())
             {
-                var entry = db.Sheets.OrderByDescending(e => e.ID).FirstOrDefault(e => e.Number == number);
-                return entry == null ? 1 : ++entry.NumberExt;
+                var entry = db.Sheets.FirstOrDefault(e => e.ID == id);
+                if (entry != null)
+                {
+                    entry.Deleted = true;
+                    db.SaveChanges();
+                }
             }
         }
+
+        
     }
 }

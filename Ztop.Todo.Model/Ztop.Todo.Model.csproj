@@ -62,6 +62,7 @@
     <Compile Include="DataBook.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="PageParameter.cs" />
+    <Compile Include="SerialNumber.cs" />
     <Compile Include="Sheet.cs" />
     <Compile Include="SheetQueryParameter.cs" />
     <Compile Include="Substancs.cs" />

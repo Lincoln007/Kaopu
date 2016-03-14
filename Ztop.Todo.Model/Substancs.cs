@@ -18,9 +18,18 @@ namespace Ztop.Todo.Model
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
+        /// <summary>
+        /// 分类
+        /// </summary>
         [Column(TypeName ="int")]
         public Category Category { get; set; }
+        /// <summary>
+        /// 内容
+        /// </summary>
         public string Details { get; set; }
+        /// <summary>
+        /// 金额
+        /// </summary>
         public double Price { get; set; }
         public int SID { get; set; }
     }

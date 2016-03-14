@@ -1,0 +1,166 @@
+﻿@using Ztop.Todo.Model;
+@{
+    ViewBag.Title = "报销单";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    Sheet sheet = ViewBag.Sheet;
+    int Serial = 1;
+}
+
+@if (sheet != null)
+{
+    <div class="col-md-12">
+        @switch (sheet.Status)
+        {
+        case Status.OutLine:
+        <h3>报销单草稿</h3>
+        <form method="post" class="form-horizontal col-md-2" action="" id="form-Check">
+            <input type="text" name="ID" value="@(sheet.ID)" style="display:none" />
+            @{
+                Html.RenderPartial("SubmitButton");
+            }
+            <button type="button" class="btn btn-danger btn-sm btn-delete">
+                <em class="glyphicon glyphicon-remove"></em>删除
+            </button>
+        </form>
+
+                        break;
+                    case Status.Post:
+                    <h3>报销单等待审核</h3>
+                    <button type="button" class="btn btn-primary btn-sm btn-checked">
+                        <em class="glyphicon glyphicon-ok"></em>审核通过
+                    </button>
+                    Html.RenderPartial("WithDrawal", sheet);
+                    break;
+                case Status.Examining:
+        <h3>报销单审核</h3>
+        
+        break;
+        case Status.Examined:
+        <h3>报销单</h3>
+        break;
+        default:
+        break;
+        }
+        <button class="btn btn-default btn-sm" type="button">
+            <em class="glyphicon glyphicon-print"></em> 打印
+        </button>
+        <a class="btn btn-warning btn-sm" href="index.html">
+            <em class="glyphicon glyphicon-menu-left"></em> 返回
+        </a>
+    </div>
+   
+                <div class="col-md-8">
+                    <h3>基本信息</h3>
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <td>单据编号</td>
+                                <td>@(sheet.SerialNumber.Coding)</td>
+                                <td>报销日期</td>
+                                <td>@(sheet.Time)</td>
+                            </tr>
+                            <tr>
+                                <td>报销人</td>
+                                <td>@(sheet.Name)</td>
+                                <td>报销金额合计</td>
+                                <td>@(sheet.Money)</td>
+                            </tr>
+                            <tr>
+                                <td>备注</td>
+                                <td colspan="3">
+                                    @(sheet.Remarks)
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h3>内容分项清单</h3>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>分类</th>
+                                <th style="width:50%">内容</th>
+                                <th>金额（元）</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (sheet.Substances != null)
+                            {
+                                Serial = 1;
+                                foreach (var substances in sheet.Substances)
+                                {
+                                    <tr>
+                                        <td>@(Serial++)</td>
+                                        <td>@(substances.Category.GetDescription())</td>
+                                        <td>@(substances.Details)</td>
+                                        <td>@(substances.Price)</td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">
+                                审核信息
+                            </h3>
+                        </div>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>步骤</th>
+                                    <th>姓名</th>
+                                    <th>时间</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (sheet.Verifys != null)
+                                {
+                                    //Serial = 1;
+                                    foreach (var verify in sheet.Verifys)
+                                    {
+                                        <tr>
+                                            <td>  @(verify.Step.GetDescription())</td>
+                                            <td>@(verify.Name)</td>
+                                            <td>@(verify.Time.ToShortDateString())</td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                }
+
+
+
+
+
+<script>
+    $(function () {
+        $("#form-Check").submit(function () {
+            var data = $(this).serialize();
+            $.request("/Report/PostSheet", data, function (json) {
+                location.href = "/Report/Detail?id=@(sheet.ID)";
+            });
+            return false;
+        });
+        $(".btn-delete").click(function () {
+            if (confirm("您确定要删除报销单吗？")) {
+                $.request("/Report/Delete?id=@(sheet.ID)", null, function () {
+                    window.location.href = "/Report";
+                });
+            }
+            return false;
+        });
+        $(".btn-checked").click(function () {
+            if (confirm("您确定要通过当前报销单吗?")) {
+                $.request("/Report/Check1?id=@(sheet.ID)", null, function () {
+                    window.location.href = "/Report/Detail?id=@(sheet.ID)";
+                })
+            }
+        })
+    })
+</script>

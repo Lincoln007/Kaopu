@@ -41,7 +41,9 @@ namespace Ztop.Todo.Manager
         public MessageManager MessageManager { get; private set; }
 
         public QueryManager QueryManager { get; private set; }
+        public SerialNumberManager SerialNumberManager { get; private set; }
         public SheetManager SheetManager { get; private set; }
         public SubstancsManager SubstanceManager { get; private set; }
+        public VerifyManager VerifyManager { get; private set; }
     }
 }

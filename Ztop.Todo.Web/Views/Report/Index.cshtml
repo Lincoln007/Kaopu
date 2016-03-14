@@ -37,7 +37,7 @@
                 {
                     <tr>
                         <td>@(Serial++)</td>
-                        <td>@(item.Coding)</td>
+                        <td><a href="/Report/Detail?id=@(item.ID)">@(item.SerialNumber.Coding)</a> </td>
                         <td>@(item.Time.ToShortDateString())</td>
                         <td>@(item.Money)</td>
                     </tr>
@@ -65,7 +65,19 @@
             </tr>
         </thead>
         <tbody>
-
+            @{ 
+                Serial = 1;
+                foreach(var item in ExaminingList)
+                {
+                    <tr>
+                        <td>@(Serial++)</td>
+                        <td><a href="/Report/Detail?id=@(item.ID)">@(item.SerialNumber.Coding)</a> </td>
+                        <td>@(item.Time.ToShortDateString())</td>
+                        <td>@(item.Money)</td>
+                        <td>@(item.Status.GetDescription())</td>
+                    </tr>
+                }
+            }
         </tbody>
     </table>
 </div>
@@ -106,6 +118,20 @@
                 <th>报销金额</th>
             </tr>
         </thead>
+        <tbody>
+            @{ 
+                Serial = 1;
+                foreach(var item in ExaminList)
+                {
+                    <tr>
+                        <td>@(Serial++)</td>
+                        <td>@(item.SerialNumber.Coding)</td>
+                        <td>@(item.Time.ToShortDateString())</td>
+                        <td>@(item.Money)</td>
+                    </tr>
+                }
+            }
+        </tbody>
     </table>
 </div>
 
