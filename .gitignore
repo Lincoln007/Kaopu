@@ -31,3 +31,5 @@
 /Ztop.Todo.Web/logs
 /Ztop.Todo.ActiveDirectory/bin/Debug
 /Ztop.Todo.ActiveDirectory/obj/Debug
+/Ztop.Todo.ActiveDirectory/bin/Release
+/Ztop.Todo.ActiveDirectory/obj/Release
