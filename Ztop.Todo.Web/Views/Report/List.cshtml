@@ -14,16 +14,35 @@
                             <label class="control-label">表单创建人</label>
                             <div class="input-group">
                                 <div class="input-group-btn">
-                                    <button class="btn btn-primary" name="Ower">我</button>
-                                    <button class="btn btn-default" name="Ower">全部</button>
-                                    <button class="btn btn-default" name="Ower">自定义</button>
+                                    <button type="button" class="btn btn-primary" name="Ower">我</button>
+                                    <button type="button" class="btn btn-default" name="Ower">全部</button>
+                                    <button type="button" class="btn btn-default" name="Ower">自定义</button>
                                 </div>
                                 <input type="text" class="form-control" placeholder="创建人" aria-describedby="sizing-addon2" />
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label">状态</label>
-                            
+                            <div class="input-group">
+                                <div class="input-group-btn">
+                                    <button class="btn btn-primary" name="Status">不限</button>
+                                    <button class="btn btn-default" name="Status">草稿</button>
+                                    <button class="btn btn-default" name="Status">未审核</button>
+                                    <button class="btn btn-default" name="Status">已审核</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">审核人</label>
+                            <div class="input-group">
+                                <div class="input-group-btn">
+                                    <button class="btn btn-primary" name="">不限</button>
+                                    <button class="btn btn-default" name="">一周内</button>
+                                    <button class="btn btn-default" name="">一月内</button>
+                                    <button class="btn btn-default" name="">半年内</button>
+                                    <button class="btn btn-default" name="">一年内</button>
+                                </div>
+                            </div>
                         </div>
                     </form>
                 </fieldset>
@@ -34,8 +53,9 @@
 
 <script>
     $(function () {
-        $("[name=Ower]").click(function () {
-
+        $("[name='Ower']").click(function () {
+            $("[name='Ower']").removeClass("btn-primary").addClass("btn-default");
+            $(this).removeClass("btn-default").addClass("btn-primary");
         })
     })
 </script>

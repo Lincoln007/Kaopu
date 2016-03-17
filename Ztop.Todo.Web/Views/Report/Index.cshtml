@@ -2,9 +2,9 @@
 @{
     ViewBag.Title = "报销系统";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    List<Sheet> OutList = ViewBag.OutList;
-    List<Sheet> ExaminingList = ViewBag.ExaminingList;
-    List<Sheet> ExaminList = ViewBag.ExaminList;
+    List<Sheet> OutList = ViewBag.OutList;//报销单  草稿
+    List<Sheet> ExaminingList = ViewBag.ExaminingList;//报销单 正在报销
+    List<Sheet> ExaminList = ViewBag.ExaminList;//报销完成
     int Serial = 1;
 
 }

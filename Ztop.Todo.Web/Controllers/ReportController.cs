@@ -62,7 +62,6 @@ namespace Ztop.Todo.Web.Controllers
             }
         }
 
-
         /// <summary>
         /// 填写报销单初期（保存报销单 但是不提交上级）
         /// </summary>
@@ -154,6 +153,12 @@ namespace Ztop.Todo.Web.Controllers
                 return SuccessJsonResult();
             }
             throw new ArgumentException("参数错误，没有找打该报销单");
+        }
+
+        public ActionResult List()
+        {
+
+            return View();
         }
 
 

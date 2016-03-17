@@ -113,6 +113,7 @@
                                     <th>步骤</th>
                                     <th>姓名</th>
                                     <th>时间</th>
+                                    <th>状态</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -124,7 +125,16 @@
                                         <tr>
                                             <td>  @(verify.Step.GetDescription())</td>
                                             <td>@(verify.Name)</td>
-                                            <td>@(verify.Time.ToShortDateString())</td>
+                                            @if (verify.IsCheck)
+                                            {
+                                                <td>@(verify.Time.ToShortDateString())</td>
+                                                <td><i class="fa fa-check-square"></i></td>
+                                            }
+                                            else
+                                            {
+                                                <td></td>
+                                                <td><i class="fa fa-refresh fa-spin"></i></td>
+                                            }
                                         </tr>
                                     }
                                 }
