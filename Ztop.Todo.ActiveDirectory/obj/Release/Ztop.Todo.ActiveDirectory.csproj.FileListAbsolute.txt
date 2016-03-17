@@ -1,5 +1,0 @@
-E:\Github\Kaopu\Ztop.Todo.ActiveDirectory\bin\Release\Ztop.Todo.ActiveDirectory.dll
-E:\Github\Kaopu\Ztop.Todo.ActiveDirectory\bin\Release\Ztop.Todo.ActiveDirectory.pdb
-E:\Github\Kaopu\Ztop.Todo.ActiveDirectory\obj\Release\Ztop.Todo.ActiveDirectory.csprojResolveAssemblyReference.cache
-E:\Github\Kaopu\Ztop.Todo.ActiveDirectory\obj\Release\Ztop.Todo.ActiveDirectory.dll
-E:\Github\Kaopu\Ztop.Todo.ActiveDirectory\obj\Release\Ztop.Todo.ActiveDirectory.pdb
