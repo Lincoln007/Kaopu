@@ -78,7 +78,7 @@
                     </div>
                 </div>
             </td>
-            <td style="max-width:300px;">
+            <td style="width:300px;">
                 @Html.Action("SelectUser", new { taskId = model.ID })
             </td>
         </tr>
@@ -123,8 +123,7 @@
         $(".btn-schedule").click(function () {
             var days = parseInt($(this).attr("data"));
             var val = "";
-            switch(days)
-            {
+            switch (days) {
                 case 1:
                     val = "@(DateTime.Today.AddDays(2).ToShortDateString())";
                     break;

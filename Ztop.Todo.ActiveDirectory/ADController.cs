@@ -97,7 +97,7 @@ namespace Ztop.Todo.ActiveDirectory
                 var user = GetDirectoryObject(username, password);
                 return SearchOne("(&(objectCategory=person)(objectClass=user)(sAMAccountName=" + username + "))", user) != null;
             }
-            catch
+            catch(Exception ex)
             {
             }
             return false;

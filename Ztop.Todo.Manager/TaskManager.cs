@@ -38,7 +38,7 @@ namespace Ztop.Todo.Manager
 
                 if (parameter.CreatorID > 0)
                 {
-                    query = query.Where(e => e.CreatorID == parameter.ReceiverID);
+                    query = query.Where(e => e.CreatorID == parameter.CreatorID);
                 }
                 if (parameter.ReceiverID > 0)
                 {
@@ -166,13 +166,9 @@ namespace Ztop.Todo.Manager
         {
             using (var db = GetDbContext())
             {
-                var entity = db.UserTasks.FirstOrDefault(e => e.ID == userTaskId);
+                var entity = db.UserTasks.FirstOrDefault(e => e.ID == userTaskId && e.UserID == userId);
                 if (entity != null)
                 {
-                    if (entity.UserID != userId)
-                    {
-                        throw new HttpException("参数错误或权限不足");
-                    }
                     if (entity.HasRead) return;
                     entity.HasRead = true;
                     db.SaveChanges();

@@ -50,7 +50,7 @@ namespace Ztop.Todo.Manager
             {
                 user.Type = GetGroupType(username);
             }
-            
+
             return user;
         }
 
@@ -62,13 +62,11 @@ namespace Ztop.Todo.Manager
         {
             using (var db = GetDbContext())
             {
-                var group = GetOrSetUserGroup(user.GroupName) ?? new UserGroup();
                 if (user.ID > 0)
                 {
                     var entity = db.Users.FirstOrDefault(e => e.ID == user.ID);
                     if (entity != null)
                     {
-                        entity.GroupID = group.ID;
                         entity.RealName = user.RealName;
                     }
                 }
@@ -79,7 +77,6 @@ namespace Ztop.Todo.Manager
                     {
                         throw new ArgumentException("用户名已被使用");
                     }
-                    user.GroupID = group.ID;
                     db.Users.Add(user);
                 }
                 db.SaveChanges();
@@ -87,20 +84,20 @@ namespace Ztop.Todo.Manager
             Cache.HSet(_userCacheKey, user.ID.ToString(), user);
         }
 
-        private UserGroup GetOrSetUserGroup(string groupName)
+        public UserGroup GetOrSetUserGroup(string groupName)
         {
             if (string.IsNullOrEmpty(groupName)) return null;
-            var group = GetUserGroup(groupName);
-            if (group == null)
+            using (var db = GetDbContext())
             {
-                using (var db = GetDbContext())
+                var group = db.UserGroups.FirstOrDefault(e => e.Name == groupName);
+                if (group == null)
                 {
                     group = new UserGroup { Name = groupName };
                     db.UserGroups.Add(group);
-                    db.SaveChanges();
                 }
+                db.SaveChanges();
+                return group;
             }
-            return group;
         }
 
         public List<UserGroup> GetUserGroups()
@@ -112,16 +109,6 @@ namespace Ztop.Todo.Manager
                     return db.UserGroups.ToList();
                 }
             });
-        }
-
-        public UserGroup GetUserGroup(int id)
-        {
-            return GetUserGroups().FirstOrDefault(e => e.ID == id);
-        }
-
-        public UserGroup GetUserGroup(string name)
-        {
-            return GetUserGroups().FirstOrDefault(e => e.Name == name);
         }
 
         public void UpdateLogin(User user)

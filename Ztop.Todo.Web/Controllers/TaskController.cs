@@ -145,7 +145,10 @@ namespace Ztop.Todo.Web.Controllers
             ViewBag.Attachments = Core.AttachmentManager.GetList(model.TaskID);
 
             //标记已读
-            Core.TaskManager.FlagUserTaskRead(model.ID, Identity.UserID);
+            if (model.UserID == Identity.UserID)
+            {
+                Core.TaskManager.FlagUserTaskRead(model.ID, Identity.UserID);
+            }
             return View();
         }
 
