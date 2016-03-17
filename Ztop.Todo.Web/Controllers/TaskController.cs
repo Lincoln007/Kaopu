@@ -24,7 +24,7 @@ namespace Ztop.Todo.Web.Controllers
                     Page = new PageParameter(page, rows),
                     GetReceiver = true,
                     GetCreator = true,
-
+                    Days = days,
                 };
             }
             else if (queryId > 0)
@@ -263,7 +263,7 @@ namespace Ztop.Todo.Web.Controllers
         public ActionResult GetNewTask(DateTime lastGetTime)
         {
             var data = Core.TaskManager.GetNewTask(Identity.UserID, lastGetTime);
-            if(data == null)
+            if (data == null)
             {
                 return null;
             }

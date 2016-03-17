@@ -34,12 +34,13 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a href="/"><i class="fa fa-desktop"></i> 欢迎页</a></li>
-                    <li><a href="/task"><i class="fa fa-search"></i> 查询任务</a></li>
+                    <li><a href="/task/edit"><i class="fa fa-plus"></i> 创建任务</a></li>
+                    <li><a href="/task?keyword=&IsCreator=true&IsCompleted=&Order=CreateTime&Days=0&queryId=-1&Name="><i class="fa fa-search"></i> 查询任务</a></li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-gears"></i> 权限管理<span class="caret"></span></a>
                         @Html.Partial("_Authority")
                     </li>
-                    <li><a href="/Report"><i class="fa fa-credit-card"></i>报销系统</a></li>
+                    @*<li><a href="/Report"><i class="fa fa-credit-card"></i>报销系统</a></li>
                     <li><a href="/Report/Create"><i class="fa fa-calculator"></i> 报销单</a></li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-area-chart"></i> 我的报销<strong class="caret"></strong></a>
@@ -61,7 +62,7 @@
                                 <a href="#"><i class="fa fa-check-square-o"></i>已审核报销</a>
                             </li>
                         </ul>
-                    </li>
+                    </li>*@
                 </ul>
                 <ul class="navbar-right nav navbar-nav">
                     <li>
