@@ -43,6 +43,8 @@ namespace Ztop.Todo.Model
         public int LoginTimes { get; set; }
 
         public DateTime? LastLoginTime { get; set; }
+
+        public int Order { get; set; }
     }
 
     [Serializable]

@@ -206,29 +206,16 @@ namespace Ztop.Todo.Web.Controllers
         //    return RedirectToAction("Index");
         //}
 
-        public ActionResult Complete(int taskId)
+        public ActionResult Complete(int id)
         {
-            if (!Core.TaskManager.HasRight(taskId, Identity.UserID))
-            {
-                throw new HttpException(401, "你没有权限完成该任务");
-            }
-            Core.TaskManager.CompleteTask(taskId, Identity.UserID);
+            Core.TaskManager.CompleteTask(id, Identity.UserID);
             return SuccessJsonResult();
         }
 
         public ActionResult Delete(int id)
         {
-            var model = Core.TaskManager.GetTask(id);
-            if (model != null)
-            {
-                if (model.CreatorID != Identity.UserID)
-                {
-                    throw new HttpException(401, "你没有权限删除该任务");
-                }
-                Core.TaskManager.Delete(id);
-                return SuccessJsonResult();
-            }
-            throw new ArgumentException("参数错误，没找到该任务");
+            Core.TaskManager.Delete(id, Identity.UserID);
+            return SuccessJsonResult();
         }
 
         public ActionResult DeleteAttachment(int id)

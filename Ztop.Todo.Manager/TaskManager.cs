@@ -176,7 +176,7 @@ namespace Ztop.Todo.Manager
             }
         }
 
-        public void Delete(int userTaskId)
+        public void Delete(int userTaskId, int creatorId)
         {
             using (var db = GetDbContext())
             {
@@ -187,16 +187,19 @@ namespace Ztop.Todo.Manager
                     {
                         throw new Exception("任务已完成，无法删除");
                     }
-                    entity.Deleted = true;
-                    if (db.UserTasks.Any(e => e.TaskID == entity.TaskID && e.Deleted == false))
+                    var task = db.Tasks.FirstOrDefault(e => e.ID == entity.TaskID);
+                    if (task != null && task.CreatorID == creatorId)
                     {
-                        var task = db.Tasks.FirstOrDefault(e => e.ID == entity.TaskID);
-                        task.Deleted = true;
+                        entity.Deleted = true;
+                        if (db.UserTasks.Any(e => e.TaskID == entity.TaskID && e.Deleted == false))
+                        {
+                            task.Deleted = true;
+                        }
+                        db.SaveChanges();
                     }
-
-                    db.SaveChanges();
                 }
 
+                throw new HttpException(401, "你没有权限删除该任务");
             }
         }
 
@@ -242,17 +245,34 @@ namespace Ztop.Todo.Manager
 
         }
 
-        public void CompleteTask(int taskId, int userId)
+        public void CompleteTask(int userTaskId, int userId)
         {
             using (var db = GetDbContext())
             {
-                var entity = db.UserTasks.FirstOrDefault(e => e.TaskID == taskId && e.UserID == userId);
-
-                if (entity != null && !entity.CompletedTime.HasValue)
+                var entity = db.UserTasks.FirstOrDefault(e => e.ID == userTaskId);
+                if (entity == null)
+                {
+                    throw new ArgumentException("参数错误");
+                }
+                if (entity.IsCompleted)
+                {
+                    return;
+                }
+                if (entity.UserID != userId)
+                {
+                    var task = db.Tasks.FirstOrDefault(e => e.ID == entity.TaskID);
+                    if (task != null && task.CreatorID == userId)
+                    {
+                        entity.CompletedTime = DateTime.Now;
+                        db.SaveChanges();
+                    }
+                }
+                else
                 {
                     entity.CompletedTime = DateTime.Now;
                     db.SaveChanges();
                 }
+                throw new HttpException(401, "你没有权限完成该任务");
             }
         }
     }

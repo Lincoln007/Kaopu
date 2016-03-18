@@ -11,7 +11,7 @@
 <h3>
     @(ViewBag.Title)
 </h3>
-<form id="form-task" method="post" action="/task/save" class="form-horizontal" enctype="multipart/form-data">
+<form id="form-task" method="post" action="/task/save" class="form-horizontal" enctype="multipart/form-data" style="margin-top:20px;">
     <input type="hidden" name="ID" value="@(model.ID)" />
     <input type="hidden" name="ParentId" value="@(model.ParentID)" />
     <table class="table">
@@ -78,7 +78,7 @@
                     </div>
                 </div>
             </td>
-            <td style="width:300px;">
+            <td style="width:50%;">
                 @Html.Action("SelectUser", new { taskId = model.ID })
             </td>
         </tr>

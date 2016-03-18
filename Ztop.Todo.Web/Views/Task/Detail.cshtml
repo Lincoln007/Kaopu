@@ -27,7 +27,7 @@ else
 {
     <button class="btn btn-success btn-sm disabled"><i class="glyphicon glyphicon-check"></i> 已完成</button>
 }
-@if (!model.IsCompleted)
+@if (!model.IsCompleted && task.CreatorID == Identity.UserID)
 {
     <button id="btn-task-delete" class="btn btn-sm btn-danger" style="float:right;"><i class="glyphicon glyphicon-remove"></i> 删除该任务</button>
 }
@@ -136,7 +136,7 @@ else
         });
 
         $("#btn-copy").click(function () {
-            window.location.href = "/task/edit?parentId=@(model.ID)";
+            window.location.href = "/task/edit?parentId=@(model.TaskID)";
             return false;
         });
     });
