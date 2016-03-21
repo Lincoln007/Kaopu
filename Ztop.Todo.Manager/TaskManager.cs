@@ -112,7 +112,7 @@ namespace Ztop.Todo.Manager
         {
             using (var db = GetDbContext())
             {
-                return db.UserTasks.Any(e => e.TaskID == taskId && e.UserID == userId);
+                 return db.UserTaskViews.Any(e => e.TaskID == taskId && (e.UserID == userId || e.CreatorID == userId));
             }
         }
 
@@ -136,7 +136,7 @@ namespace Ztop.Todo.Manager
             {
                 var model = db.UserTasks.FirstOrDefault(e => e.ID == id);
                 model.Task = GetTask(model.TaskID);
-
+                model.User = Core.UserManager.GetUser(model.UserID);
                 return model;
             }
         }
@@ -157,7 +157,9 @@ namespace Ztop.Todo.Manager
             if (id == 0) return null;
             using (var db = GetDbContext())
             {
-                return db.Tasks.FirstOrDefault(e => e.ID == id);
+                var model = db.Tasks.FirstOrDefault(e => e.ID == id);
+                model.Creator = Core.UserManager.GetUser(model.CreatorID);
+                return model;
             }
         }
 
@@ -197,13 +199,19 @@ namespace Ztop.Todo.Manager
                         }
                         db.SaveChanges();
                     }
+                    else
+                    {
+                        throw new HttpException(401, "你没有权限删除该任务");
+                    }
                 }
-
-                throw new HttpException(401, "你没有权限删除该任务");
+                else
+                {
+                    throw new ArgumentException("参数错误");
+                }
             }
         }
 
-        public void Save(Task model)
+        public void Save(Task model, List<User> receivers)
         {
             using (var db = GetDbContext())
             {
@@ -234,7 +242,7 @@ namespace Ztop.Todo.Manager
                 db.SaveChanges();
 
                 //保存参与人员，移除重复数据
-                db.UserTasks.AddRange(model.Users.GroupBy(e => e.ID).ToDictionary(g => g.Key, g => g.First()).Select(e => new UserTask
+                db.UserTasks.AddRange(receivers.GroupBy(e => e.ID).ToDictionary(g => g.Key, g => g.First()).Select(e => new UserTask
                 {
                     TaskID = model.ID,
                     UserID = e.Value.ID,
@@ -266,13 +274,16 @@ namespace Ztop.Todo.Manager
                         entity.CompletedTime = DateTime.Now;
                         db.SaveChanges();
                     }
+                    else
+                    {
+                        throw new HttpException(401, "你没有权限完成该任务");
+                    }
                 }
                 else
                 {
                     entity.CompletedTime = DateTime.Now;
                     db.SaveChanges();
                 }
-                throw new HttpException(401, "你没有权限完成该任务");
             }
         }
     }

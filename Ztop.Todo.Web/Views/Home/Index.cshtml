@@ -56,7 +56,7 @@
                     <li class="list-group-item">
                         <a href="/task/detail?id=@(item.ID)">@(item.Title)</a>
                         <span class="badge">
-                            @(item.CompletedTime.HasValue ? item.CompletedTime.Value.ToShortDateString() : "不限")
+                            @(item.Receiver.DisplayName)
                         </span>
                     </li>
                 }
@@ -71,6 +71,9 @@
                 {
                     <li class="list-group-item">
                         <a href="/task/detail?id=@(item.ID)">@(item.Title)</a>
+                        <span class="badge">
+                            @(item.CompletedTime.Value.ToShortDateString())
+                        </span>
                         <span class="badge">
                             @(item.Receiver.DisplayName)
                         </span>

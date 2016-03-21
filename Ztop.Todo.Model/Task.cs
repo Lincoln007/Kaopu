@@ -13,7 +13,6 @@ namespace Ztop.Todo.Model
     {
         public Task()
         {
-            Users = new List<User>();
             CreateTime = DateTime.Now;
         }
 
@@ -34,15 +33,12 @@ namespace Ztop.Todo.Model
         public int CreatorID { get; set; }
 
         [NotMapped]
-        public string CreatorName { get; set; }
+        public User Creator { get; set; }
 
         public int ParentID { get; set; }
 
         public DateTime CreateTime { get; set; }
 
         public bool Deleted { get; set; }
-
-        [NotMapped]
-        public List<User> Users { get; set; }
     }
 }

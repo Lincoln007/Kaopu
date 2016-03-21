@@ -8,7 +8,20 @@
     bool isCreator = task.CreatorID == Identity.UserID;
 }
 <h4 class="page-header">
-    @(task.Title)
+    @(task.Title)&nbsp;&nbsp;
+    @if (isCreator)
+    {
+        <span class="label label-warning">
+            接收人：@(model.User.DisplayName)
+        </span>
+    }
+    else
+    {
+        <span class="label label-warning">
+            下达人：@(task.Creator.DisplayName)
+        </span>
+    }
+     &nbsp;&nbsp;
     <span class="label label-warning">
         计划完成时间：@(task.ScheduledTime.HasValue ? task.ScheduledTime.Value.ToShortDateString() : "不限")
     </span>

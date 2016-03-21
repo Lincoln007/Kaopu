@@ -110,10 +110,20 @@ namespace Ztop.Todo.WindowsClient
             var e1 = e as MouseEventArgs;
             if (e1.Button != MouseButtons.Right)
             {
-                this.Show();
-                this.Activate();
-                Size = _size;
-                WindowState = _state;
+                if (WindowState == FormWindowState.Minimized)
+                {
+                    this.Show();
+                    this.Activate();
+                    Size = _size;
+                    WindowState = _state;
+                }
+                else
+                {
+                    _state = WindowState;
+                    _size = Size;
+                    this.WindowState = FormWindowState.Minimized;
+                    this.Hide();
+                }
             }
         }
 

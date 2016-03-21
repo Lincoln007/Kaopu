@@ -42,12 +42,12 @@
                         </div>
                     </div>
                 </div>
-                @if (ViewBag.FileOne != null)
+                @if (ViewBag.ClientFile != null)
                 {
                     <div class="form-group">
-                        <label class="control-label col-lg-2">已添加附件</label>
+                        <label class="control-label col-lg-2">客户端附件</label>
                         <div class="col-lg-8">
-                            <input type="text" class="form-control" name="AddedFile" value="@(ViewBag.File)" />
+                            <input type="text" class="form-control" name="ClientFile" value="@(ViewBag.ClientFile)" />
                         </div>
                     </div>
                 }
@@ -64,10 +64,11 @@
                                 {
                                     <tr>
                                         <td>
+                                            <input type="hidden" name="AddedFiles" value="@(file.ID)" />
                                             @(file.FileName)
                                         </td>
                                         <td>@(file.FileSize / 1024)k</td>
-                                        <td><a href="/attachment/delete?id=@(file.ID)" class="btn btn-xs btn-delete"><i class="glyphicon glyphicon-remove"></i></a></td>
+                                        <td><a class="btn btn-xs btn-delete"><i class="glyphicon glyphicon-remove"></i></a></td>
                                     </tr>
                                 }
                             </table>
@@ -145,10 +146,10 @@
 
         $(".btn-delete").click(function () {
             var self = this;
-            var href = $(this).attr("href");
-            $.request(href, null, function () {
+            if(confirm("确定删除该附件？")){
                 $(self).parent().parent().remove();
-            });
+            }
+
         });
 
         $("#datetimepicker1").datetimepicker({

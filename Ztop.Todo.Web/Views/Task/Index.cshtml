@@ -93,6 +93,10 @@
                         <tr>
                             <th>任务标题</th>
                             <th class="col-lg-2">计划完成时间</th>
+                            @if (parameter.IsCompleted == true)
+                            {
+                                <th class="col-lg-2">任务完成时间</th>
+                            }
                             <th class="col-lg-1">@(parameter.IsCreator ? "接收人" : "创建者")</th>
                             <th class="col-lg-2">创建时间</th>
                             <th class="col-lg-1">操作</th>
@@ -102,16 +106,20 @@
                             <tr>
                                 <td><a href="/task/detail?id=@(item.ID)">@(item.Title)</a> </td>
                                 <td>@(item.ScheduledTime.HasValue ? item.ScheduledTime.Value.ToShortDateString() : "不限")</td>
-                                <td>@(!parameter.IsCreator ? item.Creator.DisplayName : item.Receiver.DisplayName)</td>
+                                @if (parameter.IsCompleted == true)
+                                {
+                                    <td><span class="@(item.CompletedTime.Value>item.ScheduledTime.Value?"text-danger":"text-default")">@(item.CompletedTime.Value.ToShortDateString())</span></td>
+                                }
+                               <td>@(!parameter.IsCreator ? item.Creator.DisplayName : item.Receiver.DisplayName)</td>
                                 <td>@(item.CreateTime.ToString("yyyy-MM-dd HH:mm"))</td>
                                 <th>
                                     @if (item.Completed)
                                     {
                                         <span class="label label-success"><i class="fa fa-check"></i> 已完成</span>
                                     }
-                                    else if (item.Receiver.ID == Identity.UserID)
+                                    else if (item.Receiver.ID == Identity.UserID || item.CreatorID == Identity.UserID)
                                     {
-                                        <a href="/task/complete?taskId=@(item.TaskID)" class="btn btn-completed btn-xs btn-default"><i class="fa fa-check"></i> 标记为完成</a>
+                                        <a href="/task/complete?id=@(item.ID)" class="btn btn-completed btn-xs btn-default"><i class="fa fa-check"></i> 标记为完成</a>
                                     }
                                 </th>
                             </tr>
