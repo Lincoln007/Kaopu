@@ -29,6 +29,8 @@ namespace Ztop.Todo.Manager
 
         public void Upload(HttpPostedFileBase file, int taskId)
         {
+            if (file.ContentLength == 0) return;
+
             if (!Directory.Exists(_uploadDir))
             {
                 Directory.CreateDirectory(_uploadDir);
@@ -135,6 +137,8 @@ namespace Ztop.Todo.Manager
 
         public void UpdateFiles(int taskId, int[] fileIds)
         {
+            if (fileIds == null || fileIds.Length == 0) return;
+
             using (var db = GetDbContext())
             {
                 var task = Core.TaskManager.GetTask(taskId);

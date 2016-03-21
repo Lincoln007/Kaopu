@@ -90,6 +90,15 @@ namespace Ztop.Todo.Web.Controllers
 
         public ActionResult Save(Task data, int[] userIds, int[] addedFiles = null, string clientFile = null)
         {
+            if (string.IsNullOrEmpty(data.Title))
+            {
+                throw new ArgumentException("内容标题没有填写");
+            }
+            if (string.IsNullOrEmpty(data.Content))
+            {
+                throw new ArgumentException("任务内容没有填写");
+            }
+
             var model = Core.TaskManager.GetTask(data.ID) ?? new Task
             {
                 CreatorID = Identity.UserID,
