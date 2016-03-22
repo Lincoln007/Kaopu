@@ -29,21 +29,21 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.labOwner = new System.Windows.Forms.Label();
+            this.txtCreator = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.btnTitle = new System.Windows.Forms.LinkLabel();
-            this.labContent = new System.Windows.Forms.Label();
+            this.txtContent = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // labOwner
+            // txtCreator
             // 
-            this.labOwner.AutoSize = true;
-            this.labOwner.Location = new System.Drawing.Point(13, 135);
-            this.labOwner.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.labOwner.Name = "labOwner";
-            this.labOwner.Size = new System.Drawing.Size(107, 20);
-            this.labOwner.TabIndex = 2;
-            this.labOwner.Text = "发布者：郑良军";
+            this.txtCreator.AutoSize = true;
+            this.txtCreator.Location = new System.Drawing.Point(13, 135);
+            this.txtCreator.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.txtCreator.Name = "txtCreator";
+            this.txtCreator.Size = new System.Drawing.Size(107, 20);
+            this.txtCreator.TabIndex = 2;
+            this.txtCreator.Text = "发布者：郑良军";
             // 
             // btnTitle
             // 
@@ -57,13 +57,13 @@
             this.btnTitle.Text = "您有新的任务 1 条";
             this.btnTitle.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.btnTitle_LinkClicked);
             // 
-            // labContent
+            // txtContent
             // 
-            this.labContent.Location = new System.Drawing.Point(15, 30);
-            this.labContent.Name = "labContent";
-            this.labContent.Size = new System.Drawing.Size(186, 100);
-            this.labContent.TabIndex = 9;
-            this.labContent.Click += new System.EventHandler(this.labContent_Click);
+            this.txtContent.Location = new System.Drawing.Point(15, 30);
+            this.txtContent.Name = "txtContent";
+            this.txtContent.Size = new System.Drawing.Size(186, 100);
+            this.txtContent.TabIndex = 9;
+            this.txtContent.Click += new System.EventHandler(this.labContent_Click);
             // 
             // NoticeForm
             // 
@@ -72,8 +72,8 @@
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(220, 170);
             this.Controls.Add(this.btnTitle);
-            this.Controls.Add(this.labContent);
-            this.Controls.Add(this.labOwner);
+            this.Controls.Add(this.txtContent);
+            this.Controls.Add(this.txtCreator);
             this.Font = new System.Drawing.Font("Microsoft YaHei", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -92,9 +92,9 @@
         }
 
         #endregion
-        private System.Windows.Forms.Label labOwner;
+        private System.Windows.Forms.Label txtCreator;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.LinkLabel btnTitle;
-        private System.Windows.Forms.Label labContent;
+        private System.Windows.Forms.Label txtContent;
     }
 }

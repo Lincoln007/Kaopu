@@ -11,7 +11,7 @@
 <h3>
     @(ViewBag.Title)
 </h3>
-<form id="form-task" method="post" action="/task/save" class="form-horizontal" enctype="multipart/form-data">
+<form id="form-task" method="post" action="/task/save" class="form-horizontal" enctype="multipart/form-data" style="margin-top:20px;">
     <input type="hidden" name="ID" value="@(model.ID)" />
     <input type="hidden" name="ParentId" value="@(model.ParentID)" />
     <table class="table">
@@ -42,12 +42,12 @@
                         </div>
                     </div>
                 </div>
-                @if (ViewBag.FileOne != null)
+                @if (ViewBag.ClientFile != null)
                 {
                     <div class="form-group">
-                        <label class="control-label col-lg-2">已添加附件</label>
+                        <label class="control-label col-lg-2">客户端附件</label>
                         <div class="col-lg-8">
-                            <input type="text" class="form-control" name="AddedFile" value="@(ViewBag.File)" />
+                            <input type="text" class="form-control" name="ClientFile" value="@(ViewBag.ClientFile)" />
                         </div>
                     </div>
                 }
@@ -64,10 +64,11 @@
                                 {
                                     <tr>
                                         <td>
+                                            <input type="hidden" name="AddedFiles" value="@(file.ID)" />
                                             @(file.FileName)
                                         </td>
                                         <td>@(file.FileSize / 1024)k</td>
-                                        <td><a href="/attachment/delete?id=@(file.ID)" class="btn btn-xs btn-delete"><i class="glyphicon glyphicon-remove"></i></a></td>
+                                        <td><a class="btn btn-xs btn-delete"><i class="glyphicon glyphicon-remove"></i></a></td>
                                     </tr>
                                 }
                             </table>
@@ -78,7 +79,7 @@
                     </div>
                 </div>
             </td>
-            <td style="max-width:300px;">
+            <td style="width:50%;">
                 @Html.Action("SelectUser", new { taskId = model.ID })
             </td>
         </tr>
@@ -123,8 +124,7 @@
         $(".btn-schedule").click(function () {
             var days = parseInt($(this).attr("data"));
             var val = "";
-            switch(days)
-            {
+            switch (days) {
                 case 1:
                     val = "@(DateTime.Today.AddDays(2).ToShortDateString())";
                     break;
@@ -146,10 +146,10 @@
 
         $(".btn-delete").click(function () {
             var self = this;
-            var href = $(this).attr("href");
-            $.request(href, null, function () {
+            if(confirm("确定删除该附件？")){
                 $(self).parent().parent().remove();
-            });
+            }
+
         });
 
         $("#datetimepicker1").datetimepicker({

@@ -4,25 +4,30 @@
     List<User> allUsers = ViewBag.AllUsers;
     List<User> selectedUsers = ViewBag.Users ?? new List<User>();
 
-    var users = allUsers.GroupBy(e => e.GroupID).ToDictionary(g => g.Key, g => g.ToList());
 }
+<style>
+    #accordion .panel-title a { width: 100%; display: block; }
+    .table{margin-bottom:10px;}
+    .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td{padding:0px;}
+</style>
 <div class="form-group">
     <div>
         <label class="label-control">选择成员</label>
     </div>
-    @foreach (var g in users)
+    @foreach (var group in groups.OrderByDescending(e => e.Order))
     {
-        var groupId = g.Key;
-        var group = groups.FirstOrDefault(e => e.ID == groupId) ?? new UserGroup { ID = 0, Name = "未分组" };
         <table class="table">
-            <tr>
-                <th>@(group.Name)</th>
-            </tr>
+            @if (group.Name != "协调组")
+            {
+                <tr>
+                    <th>@(group.Name)</th>
+                </tr>
+            }
             <tr>
                 <td>
-                    @foreach (var user in g.Value.Where(e => e.GroupID == group.ID))
+                    @foreach (var user in allUsers.Where(e => e.GroupID == group.ID).OrderByDescending(e => e.Order))
                     {
-                        if(user.DisplayName == Identity.Name)
+                        if (user.DisplayName == Identity.Name)
                         {
                             continue;
                         }
@@ -31,6 +36,33 @@
                 </td>
             </tr>
         </table>
-
     }
+    @*<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            @foreach (var g in users)
+            {
+                var groupId = g.Key;
+                var group = groups.FirstOrDefault(e => e.ID == groupId) ?? new UserGroup { ID = 0, Name = "未分组" };
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="group-header-@(group.ID)">
+                        <h4 class="panel-title">
+                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#group-body-@(group.ID)" aria-expanded="true" aria-controls="group-header-@(group.ID)">
+                                @(group.Name)
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="group-body-@(group.ID)" class="panel-collapse collapse" role="tabpanel" aria-labelledby="group-header-@(group.ID)">
+                        <div class="panel-body">
+                            @foreach (var user in g.Value.Where(e => e.GroupID == group.ID))
+                            {
+                                if (user.DisplayName == Identity.Name)
+                                {
+                                    continue;
+                                }
+                                <label class="checkbox-inline"><input type="checkbox" name="userIds" value="@(user.ID)" />@(user.DisplayName)</label>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>*@
 </div>

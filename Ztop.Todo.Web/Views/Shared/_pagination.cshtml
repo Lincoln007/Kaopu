@@ -10,24 +10,40 @@
     }
 
     var pageCount = page.RecordCount / page.PageSize;
-    
-    if(pageCount<2)
+
+    if (pageCount < 2)
     {
         return;
     }
-    
+
+    var pageRegex = new System.Text.RegularExpressions.Regex(@"page=(\d+)", System.Text.RegularExpressions.RegexOptions.Compiled | System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
+    Func<int, string> GetPageLink = (p) =>
+    {
+        var query = Request.Url.Query;
+        if (string.IsNullOrEmpty(query))
+        {
+            query = "?";
+        }
+        else if (query.Contains("page="))
+        {
+            query = pageRegex.Replace(query, string.Empty);
+        }
+        query += "&page=" + p;
+        return query;
+    };
 }
 
 <ul class="pagination">
-    <li><a href="?page=1">首页</a></li>
+    <li><a href="@(GetPageLink(1))">首页</a></li>
     @if (page.PageIndex > 1)
-    { 
-        <li><a href="?page=@(page.PageIndex - 1)">上一页</a></li>
+    {
+        <li><a href="@(GetPageLink(page.PageIndex - 1))">上一页</a></li>
     }
     @if (page.PageIndex < pageCount - 1)
-    { 
-        <li><a href="?page=@(page.PageIndex + 1)">下一页</a></li>
+    {
+        <li><a href="@(GetPageLink(page.PageIndex + 1))">下一页</a></li>
     }
-    <li><a href="?page=@(pageCount)">尾页</a></li>
+    <li><a href="@(GetPageLink(pageCount))">尾页</a></li>
     @(page.PageIndex)/@(pageCount)
 </ul>

@@ -22,6 +22,9 @@
                     <li class="list-group-item">
                         <a href="/task/detail?id=@(item.ID)">@(item.Title)</a>
                         <span class="badge">
+                            @(item.ScheduledTime.HasValue ? item.ScheduledTime.Value.ToShortDateString() : "不限")
+                        </span>
+                        <span class="badge">
                             @(item.Creator.DisplayName)
                         </span>
                     </li>
@@ -40,7 +43,10 @@
                         <span class="badge">
                             @(item.ScheduledTime.HasValue ? item.ScheduledTime.Value.ToShortDateString() : "不限")
                         </span>
-                    </li>
+                        <span class="badge">
+                            @(item.Creator.DisplayName)
+                        </span>
+                   </li>
                 }
             </ul>
         </td>
@@ -51,12 +57,12 @@
                 下达未完成的任务
             </h4>
             <ul class="list-group">
-                @foreach (var item in CreatedDoneTasks)
+                @foreach (var item in CreatedUndoneTasks)
                 {
                     <li class="list-group-item">
                         <a href="/task/detail?id=@(item.ID)">@(item.Title)</a>
                         <span class="badge">
-                            @(item.CompletedTime.HasValue ? item.CompletedTime.Value.ToShortDateString() : "不限")
+                            @(item.Receiver.DisplayName)
                         </span>
                     </li>
                 }
@@ -67,10 +73,13 @@
                 下达已完成的任务
             </h4>
             <ul class="list-group">
-                @foreach (var item in CreatedUndoneTasks)
+                @foreach (var item in CreatedDoneTasks)
                 {
                     <li class="list-group-item">
                         <a href="/task/detail?id=@(item.ID)">@(item.Title)</a>
+                        <span class="badge">
+                            @(item.CompletedTime.Value.ToShortDateString())
+                        </span>
                         <span class="badge">
                             @(item.Receiver.DisplayName)
                         </span>

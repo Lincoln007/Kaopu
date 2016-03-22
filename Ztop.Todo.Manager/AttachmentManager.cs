@@ -29,6 +29,8 @@ namespace Ztop.Todo.Manager
 
         public void Upload(HttpPostedFileBase file, int taskId)
         {
+            if (file.ContentLength == 0) return;
+
             if (!Directory.Exists(_uploadDir))
             {
                 Directory.CreateDirectory(_uploadDir);
@@ -50,7 +52,7 @@ namespace Ztop.Todo.Manager
                 db.SaveChanges();
             }
         }
-        public void Upload(string AddedFile,int taskId)
+        public void Upload(string AddedFile, int taskId)
         {
             System.IO.FileInfo file = new FileInfo(AddedFile);
             if (file.Exists)
@@ -69,9 +71,9 @@ namespace Ztop.Todo.Manager
             }
             else
             {
-                throw new ArgumentException("该目录下的文件不存在："+AddedFile);
+                throw new ArgumentException("该目录下的文件不存在：" + AddedFile);
             }
-            
+
         }
 
         public byte[] GetFileData(Attachment model)
@@ -129,6 +131,39 @@ namespace Ztop.Todo.Manager
                         TaskID = targetId
                     });
                 }
+                db.SaveChanges();
+            }
+        }
+
+        public void UpdateFiles(int taskId, int[] fileIds)
+        {
+            if (fileIds == null || fileIds.Length == 0) return;
+
+            using (var db = GetDbContext())
+            {
+                var task = Core.TaskManager.GetTask(taskId);
+                //如果传递的附件的ID不属于该Task，则表示拷贝这些附件
+                if (!db.Attachments.Any(e=>e.TaskID == task.ID && fileIds.Contains(e.ID)))
+                {
+                    var files = db.Attachments.Where(e => fileIds.Contains(e.ID)).ToList();
+                    foreach (var file in files)
+                    {
+                        db.Attachments.Add(new Attachment
+                        {
+                            FileName = file.FileName,
+                            FileSize = file.FileSize,
+                            SavePath = file.SavePath,
+                            TaskID = task.ID,
+                        });
+                    }
+                }
+                else
+                {
+                    //编辑的时候，处理已存在的文件只会有删除操作
+                    var deletedFiles = db.Attachments.Where(e => e.TaskID == task.ID && !fileIds.Contains(e.ID));
+                    db.Attachments.RemoveRange(deletedFiles);
+                }
+
                 db.SaveChanges();
             }
         }

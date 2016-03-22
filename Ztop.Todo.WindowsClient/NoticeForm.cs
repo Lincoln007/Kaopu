@@ -36,7 +36,8 @@ namespace Ztop.Todo.WindowsClient
         {
             Task = task;
             btnTitle.Text = task.Title;
-            labContent.Text = task.Content;
+            txtContent.Text = task.Content;
+            txtCreator.Text = task.CreatorName;
         }
 
         public Task Task { get; private set; }

@@ -9,7 +9,7 @@ namespace Ztop.Todo.Web.Controllers
 {
     public class TaskController : ControllerBase
     {
-        public ActionResult Index(string keyword, bool isCreator = true, int days = 0, UserTaskOrder order = UserTaskOrder.CreateTime, bool? isCompleted = null, int queryId = 0, int page = 1, int rows = 20)
+        public ActionResult Index(string keyword, bool isCreator = true, int days = 0, UserTaskOrder order = UserTaskOrder.CreateTime, bool? isCompleted = null, int queryId = -1, int page = 1, int rows = 20)
         {
             TaskQueryParameter parameter = null;
             //说明是立即查询
@@ -24,7 +24,7 @@ namespace Ztop.Todo.Web.Controllers
                     Page = new PageParameter(page, rows),
                     GetReceiver = true,
                     GetCreator = true,
-
+                    Days = days,
                 };
             }
             else if (queryId > 0)
@@ -65,17 +65,15 @@ namespace Ztop.Todo.Web.Controllers
         {
             var isCopy = parentId > 0;
             var model = Core.TaskManager.GetTask(id == 0 ? parentId : id) ?? new Task();
+            ViewBag.Model = model;
+            var attachments = Core.AttachmentManager.GetList(model.ID);
             if (isCopy)
             {
                 model.ID = 0;
-                model.Users.Clear();
+                ViewBag.Copy = true;
             }
-            ViewBag.Model = model;
-            if (model != null && model.ID > 0)
-            {
-                ViewBag.Attachments = Core.AttachmentManager.GetList(model.ID);
-            }
-            ViewBag.File = file;
+            ViewBag.Attachments = attachments;
+            ViewBag.ClientFile = file;
             return View();
         }
 
@@ -90,8 +88,17 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
 
-        public ActionResult Save(Task data, int[] userIds, string AddedFile)
+        public ActionResult Save(Task data, int[] userIds, int[] addedFiles = null, string clientFile = null)
         {
+            if (string.IsNullOrEmpty(data.Title))
+            {
+                throw new ArgumentException("内容标题没有填写");
+            }
+            if (string.IsNullOrEmpty(data.Content))
+            {
+                throw new ArgumentException("任务内容没有填写");
+            }
+
             var model = Core.TaskManager.GetTask(data.ID) ?? new Task
             {
                 CreatorID = Identity.UserID,
@@ -104,26 +111,29 @@ namespace Ztop.Todo.Web.Controllers
                 throw new ArgumentException("没有选择相关人员");
             }
             //相关人员
+            var receivers = new List<User>();
             foreach (var userId in userIds)
             {
                 var user = Core.UserManager.GetUser(userId);
                 if (user != null)
                 {
-                    model.Users.Add(user);
+                    receivers.Add(user);
                 }
             }
-            Core.TaskManager.Save(model);
-            //相关附件
+            Core.TaskManager.Save(model, receivers);
+            //先处理编辑或拷贝时的旧附件，有的附件可能已被移除
+            Core.AttachmentManager.UpdateFiles(model.ID, addedFiles);
+            //再上传新的附件
             for (var i = 0; i < Request.Files.Count; i++)
             {
                 var file = Request.Files[i];
                 Core.AttachmentManager.Upload(file, model.ID);
             }
-            if (!string.IsNullOrEmpty(AddedFile))
+            //上传客户端发送的附件
+            if (!string.IsNullOrEmpty(clientFile))
             {
-                Core.AttachmentManager.Upload(AddedFile, model.ID);
+                Core.AttachmentManager.Upload(clientFile, model.ID);
             }
-
             return RedirectToAction("Index");
         }
 
@@ -134,7 +144,6 @@ namespace Ztop.Todo.Web.Controllers
             {
                 throw new ArgumentException("参数错误");
             }
-
             ViewBag.Model = model;
             var hasRight = model.Task.CreatorID == Identity.UserID || model.UserID == Identity.UserID;
             if (!hasRight)
@@ -145,122 +154,29 @@ namespace Ztop.Todo.Web.Controllers
             ViewBag.Attachments = Core.AttachmentManager.GetList(model.TaskID);
 
             //标记已读
-            Core.TaskManager.FlagUserTaskRead(model.ID, Identity.UserID);
+            if (model.UserID == Identity.UserID)
+            {
+                Core.TaskManager.FlagUserTaskRead(model.ID, Identity.UserID);
+            }
             return View();
         }
 
-        public ActionResult Copy(int id)
+        public ActionResult Complete(int id)
         {
-            var model = Core.TaskManager.GetTask(id);
-            if (model == null)
-            {
-                throw new ArgumentException("参数错误");
-            }
-            ViewBag.Model = model;
-            var selectedUsers = Core.TaskManager.GetTaskUsers(model.ID);
-            var allUsers = Core.UserManager.GetAllUsers();
-            //转发会排除掉原任务已有的参与人员
-            ViewBag.Users = allUsers.Where(e => !selectedUsers.Any(e1 => e1.ID == e.ID)).ToList();
-            return View();
-        }
-
-        //public ActionResult SaveCopy(int id, int[] userIds)
-        //{
-        //    Task copy = null;
-        //    var data = Core.TaskManager.GetModel(id);
-        //    if (data != null)
-        //    {
-        //        copy = new Task
-        //        {
-        //            Title = data.Title,
-        //            Content = data.Content,
-        //            ScheduledTime = data.ScheduledTime,
-        //            CreatorID = Identity.UserID,
-        //            ParentID = data.ID,
-        //        };
-        //    }
-        //    else
-        //    {
-        //        throw new ArgumentException("参数错误");
-        //    }
-
-        //    if (userIds == null || userIds.Length == 0)
-        //    {
-        //        throw new ArgumentException("没有选择相关人员");
-        //    }
-        //    //相关人员
-        //    foreach (var userId in userIds)
-        //    {
-        //        var user = Core.UserManager.GetUser(userId);
-        //        if (user != null)
-        //        {
-        //            copy.Users.Add(user);
-        //        }
-        //    }
-        //    copy.Users.Add(CurrentUser);
-        //    Core.TaskManager.Save(copy);
-        //    Core.AttachmentManager.Copy(data.ID, copy.ID);
-        //    return RedirectToAction("Index");
-        //}
-
-        public ActionResult Complete(int taskId)
-        {
-            if (!Core.TaskManager.HasRight(taskId, Identity.UserID))
-            {
-                throw new HttpException(401, "你没有权限完成该任务");
-            }
-            Core.TaskManager.CompleteTask(taskId, Identity.UserID);
+            Core.TaskManager.CompleteTask(id, Identity.UserID);
             return SuccessJsonResult();
         }
 
         public ActionResult Delete(int id)
         {
-            var model = Core.TaskManager.GetTask(id);
-            if (model != null)
-            {
-                if (model.CreatorID != Identity.UserID)
-                {
-                    throw new HttpException(401, "你没有权限删除该任务");
-                }
-                Core.TaskManager.Delete(id);
-                return SuccessJsonResult();
-            }
-            throw new ArgumentException("参数错误，没找到该任务");
-        }
-
-        public ActionResult DeleteAttachment(int id)
-        {
-            var model = Core.AttachmentManager.GetModel(id);
-            if (model != null)
-            {
-                if (!Core.TaskManager.HasRight(model.TaskID, Identity.UserID))
-                {
-                    throw new ArgumentException("权限不足");
-                }
-            }
-            Core.AttachmentManager.Delete(id);
+            Core.TaskManager.Delete(id, Identity.UserID);
             return SuccessJsonResult();
-        }
-
-        public ActionResult DeleteComment(int id)
-        {
-            var model = Core.CommentManager.GetModel(id);
-            if (model != null)
-            {
-                if (model.UserID != Identity.UserID)
-                {
-                    throw new ArgumentException("你没有权限删除该评论");
-                }
-                Core.CommentManager.Delete(model.ID);
-                return SuccessJsonResult();
-            }
-            throw new ArgumentException("参数错误，没找到该评论");
         }
 
         public ActionResult GetNewTask(DateTime lastGetTime)
         {
             var data = Core.TaskManager.GetNewTask(Identity.UserID, lastGetTime);
-            if(data == null)
+            if (data == null)
             {
                 return null;
             }
@@ -272,7 +188,7 @@ namespace Ztop.Todo.Web.Controllers
                 data.Task.Title,
                 data.Task.Content,
                 data.Task.CreatorID,
-                data.Task.CreatorName,
+                CreatorName = data.Task.Creator.DisplayName,
                 data.Task.CreateTime,
                 data.Task.ScheduledTime,
             });

@@ -88,7 +88,25 @@ namespace Ztop.Todo.WindowsClient
         public void OpenTask(Task model)
         {
             webControl1.Source = new Uri(ServerHelper.GetTaskUrl(model));
+            OpenWindow();
         }
+
+        private void OpenWindow()
+        {
+            this.Show();
+            this.Activate();
+            Size = _size;
+            WindowState = _state;
+        }
+
+        private void CloseWindow()
+        {
+            _state = WindowState;
+            _size = Size;
+            this.WindowState = FormWindowState.Minimized;
+            this.Hide();
+        }
+
 
         private FormWindowState _state;
         private Size _size;
@@ -97,10 +115,7 @@ namespace Ztop.Todo.WindowsClient
         {
             if (e.CloseReason == CloseReason.UserClosing)
             {
-                _state = WindowState;
-                _size = Size;
-                this.WindowState = FormWindowState.Minimized;
-                this.Hide();
+                CloseWindow();
                 e.Cancel = true;
             }
         }
@@ -110,10 +125,14 @@ namespace Ztop.Todo.WindowsClient
             var e1 = e as MouseEventArgs;
             if (e1.Button != MouseButtons.Right)
             {
-                this.Show();
-                this.Activate();
-                Size = _size;
-                WindowState = _state;
+                if (WindowState == FormWindowState.Minimized)
+                {
+                    OpenWindow();
+                }
+                else
+                {
+                    CloseWindow();
+                }
             }
         }
 

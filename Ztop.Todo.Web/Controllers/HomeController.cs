@@ -57,5 +57,34 @@ namespace Ztop.Todo.Web.Controllers
 
             return View();
         }
+
+        public ActionResult Import()
+        {
+            ViewBag.Data = Ztop.Todo.ActiveDirectory.ADController.GetUserDict(true, null);
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Import(string[] users)
+        {
+            foreach (var str in users)
+            {
+                var arr = str.Split('_');
+                var groupName = arr[0];
+                var account = arr[1];
+                var name = arr[2];
+
+                var group = Core.UserManager.GetOrSetUserGroup(groupName);
+                var user = Core.UserManager.GetUser(account) ?? new Model.User
+                {
+                    Username = account
+                };
+                user.GroupID = group.ID;
+                user.RealName = name;
+
+                Core.UserManager.Save(user);
+            }
+            return Content("导入成功");
+        }
     }
 }
