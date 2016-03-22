@@ -29,4 +29,5 @@
   <Compose Name="Users"></Compose>
   <Compose Name="Infrastructure"></Compose>
   <Compose Name="a"></Compose>
+  <Compose Name="特殊帐号" ></Compose>
 </Composes>

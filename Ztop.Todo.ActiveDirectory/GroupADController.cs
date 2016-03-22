@@ -207,8 +207,9 @@ namespace Ztop.Todo.ActiveDirectory
         private static TreeObject GetTreeObject(this DirectoryEntry Entry)
         {
             var tree = new TreeObject();
-            tree.label = Entry.GetProperty("name");
-            if (string.IsNullOrEmpty(tree.label) || IgnoresList.Contains(tree.label) || "内部用户" == tree.label)
+            tree.label = Entry.GetProperty("name").Trim();
+            System.Console.WriteLine(tree.label);
+            if (string.IsNullOrEmpty(tree.label) || IgnoresList.Contains(tree.label) || "内部用户" == tree.label|| "特殊帐号".Trim()==tree.label)
             {
                 return null;
             }

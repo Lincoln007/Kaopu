@@ -83,10 +83,10 @@ namespace Ztop.Todo.ActiveDirectory
         public static bool TryLogin(string username, string password)
         {
 #if DEBUG
-            if(string.IsNullOrEmpty(password))
-            {
-                return true;
-            }
+            //if(string.IsNullOrEmpty(password))
+            //{
+            //    return true;
+            //}
 #endif
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
