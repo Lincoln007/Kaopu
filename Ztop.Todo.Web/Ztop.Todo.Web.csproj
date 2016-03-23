@@ -238,6 +238,7 @@
     <Content Include="Views\Report\Detail.cshtml" />
     <Content Include="Views\Report\WithDrawal.cshtml" />
     <Content Include="Views\Home\Import.cshtml" />
+    <Content Include="Views\Home\Resources.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

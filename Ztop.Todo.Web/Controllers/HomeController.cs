@@ -86,5 +86,10 @@ namespace Ztop.Todo.Web.Controllers
             }
             return Content("导入成功");
         }
+
+        public ActionResult Resources()
+        {
+            return View();
+        }
     }
 }
