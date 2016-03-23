@@ -13,9 +13,10 @@ namespace Ztop.Todo.ActiveDirectory
         private static string ADServer { get; set; }
         private static string ADName { get; set; }
         private static string ADPassword { get; set; }
-        private static List<string> IgnoresList { get; set; }
+        private static List<string> IgnoresList { get; set; }//忽略的组OU
         private static List<string> ManagerList { get; set; }
-        private static List<string> AdminList { get; set; }
+        private static List<string> AdminList { get; set; }//管理员的组OU
+        
 
         static ADController()
         {
@@ -97,7 +98,7 @@ namespace Ztop.Todo.ActiveDirectory
                 var user = GetDirectoryObject(username, password);
                 return SearchOne("(&(objectCategory=person)(objectClass=user)(sAMAccountName=" + username + "))", user) != null;
             }
-            catch(Exception ex)
+            catch
             {
             }
             return false;
@@ -240,6 +241,46 @@ namespace Ztop.Todo.ActiveDirectory
             group.Properties["member"].Add(distinguishedName);
             group.CommitChanges();
             group.Close();
+        }
+
+        public static bool DeleteUserFromGroup(string name,string groupName,out string error)
+        {
+            error = string.Empty;
+            if (!IsMember(groupName, name))
+            {
+                error = "当前组中不包含该成员";
+                return true;
+            }
+            var userDirectoryEntry = GetUserObject(name);
+            if (userDirectoryEntry == null)
+            {
+                error = "未获得用户DirectoryEntry对象";
+                return false;
+            }
+            var userDistinguishedName = userDirectoryEntry.GetProperty("distinguishedName");
+            if (string.IsNullOrEmpty(userDistinguishedName))
+            {
+                error = string.Format("未找到相关用户：{0} 信息", name);
+                return false;
+            }
+            var groupEntry = groupName.GetGroupObject();
+            if (groupEntry == null)
+            {
+                error = string.Format("未找到需要操作的组：{0}的DirectoryEntry对象", groupName);
+                return false;
+            }
+            try
+            {
+                groupEntry.Properties["member"].Remove(userDistinguishedName);
+                groupEntry.CommitChanges();
+                groupEntry.Close();
+            }catch(Exception ex)
+            {
+                error = ex.ToString();
+                return false;
+            }
+            return true;
+
         }
 
         #endregion

@@ -97,6 +97,23 @@ namespace Ztop.Todo.Manager
             }
         }
 
+        public List<DataBook> GetPastDue()
+        {
+            var list = GetList().Where(e=>e.Label==false).ToList();
+            var thelist = new List<DataBook>();
+            foreach(var item in list)
+            {
+                if (item.CheckTime > DateTime.MinValue && item.MaturityTime > DateTime.MinValue)
+                {
+                    if (item.Span.Days < 0 || item.Span.Hours < 0 || item.Span.Minutes < 0 || item.Span.Seconds < 0)
+                    {
+                        thelist.Add(item);
+                    }
+                }
+            }
+            return thelist;
+        }
+
         public void Edit(DataBook Book)
         {
             using (var db = GetDbContext())
@@ -175,6 +192,51 @@ namespace Ztop.Todo.Manager
             }
             return book;
 
+        }
+
+        public bool Examine(DataBook dataBook,out string error)
+        {
+            error = string.Empty;
+            if (dataBook.Span.Days > 0 || dataBook.Span.Hours > 0 || dataBook.Span.Minutes > 0 || dataBook.Span.Seconds > 0)
+            {
+                return false;
+            }
+            string str = "";
+            if(ADController.DeleteUserFromGroup(dataBook.Name,dataBook.GroupName,out str))
+            {
+                dataBook.Label = true;
+                try
+                {
+                    Edit(dataBook);
+                }catch(Exception ex)
+                {
+                    error = ex.Message;
+                    return false;
+                }
+            }
+            else
+            {
+                error = str;
+                return false;
+            }
+            return true;
+        }
+        public void Records(Record record)
+        {
+            using (var db = GetDbContext())
+            {
+                var entry = db.Records.FirstOrDefault(e => e.DID == record.DID);
+                if (entry != null)
+                {
+                    record.ID = entry.ID;
+                    db.Entry(entry).CurrentValues.SetValues(record);
+                }
+                else
+                {
+                    db.Records.Add(record);
+                }
+                db.SaveChanges();
+            }
         }
     }
 }

@@ -33,3 +33,7 @@
 /Ztop.Todo.ActiveDirectory/obj/Debug
 /Ztop.Todo.ActiveDirectory/bin/Release
 /Ztop.Todo.ActiveDirectory/obj/Release
+/Ztop.Todo.Console/bin
+/Ztop.Todo.Console/obj
+/Ztop.Todo.Services/bin
+/Ztop.Todo.Services/obj

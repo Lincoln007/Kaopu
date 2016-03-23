@@ -1,18 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7CD2B374-71D9-4D16-AFD2-4AD8B8E578DE}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{2862BC65-6889-4318-BF7F-8ED60226AE91}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Ztop.Todo.Model</RootNamespace>
-    <AssemblyName>Ztop.Todo.Model</AssemblyName>
+    <RootNamespace>Ztop.Todo.Console</RootNamespace>
+    <AssemblyName>Ztop.Todo.Console</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -20,14 +22,17 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
@@ -56,40 +61,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Attachment.cs" />
-    <Compile Include="Authorize.cs" />
-    <Compile Include="Comment.cs" />
-    <Compile Include="DataBook.cs" />
-    <Compile Include="Message.cs" />
-    <Compile Include="PageParameter.cs" />
-    <Compile Include="Record.cs" />
-    <Compile Include="SerialNumber.cs" />
-    <Compile Include="Sheet.cs" />
-    <Compile Include="SheetQueryParameter.cs" />
-    <Compile Include="Substancs.cs" />
-    <Compile Include="Task.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TaskQuery.cs" />
-    <Compile Include="TaskQueryParameter.cs" />
-    <Compile Include="User.cs" />
-    <Compile Include="UserGroup.cs" />
-    <Compile Include="UserTask.cs" />
-    <Compile Include="UserTaskView.cs" />
-    <Compile Include="Verify.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Ztop.Todo.Manager\Ztop.Todo.Manager.csproj">
+      <Project>{9cd9c6bb-3d53-4c9b-a99d-b0ed7fd9fd06}</Project>
+      <Name>Ztop.Todo.Manager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ztop.Todo.Model\Ztop.Todo.Model.csproj">
+      <Project>{7cd2b374-71d9-4d16-afd2-4ad8b8e578de}</Project>
+      <Name>Ztop.Todo.Model</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Ztop.Todo.ActiveDirectory\Ztop.Todo.ActiveDirectory.csproj">
-      <Project>{1c595662-fe88-4117-afb3-5ffdb3c5a178}</Project>
-      <Name>Ztop.Todo.ActiveDirectory</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Ztop.Todo.Common\Ztop.Todo.Common.csproj">
-      <Project>{81bb1b7c-c8b3-4c00-bdf4-d35a7055ef3c}</Project>
-      <Name>Ztop.Todo.Common</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

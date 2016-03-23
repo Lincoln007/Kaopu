@@ -37,5 +37,6 @@ namespace Ztop.Todo.Manager
         public DbSet<Sheet> Sheets { get; set; }
         public DbSet<Substancs> Substances { get; set; }
         public DbSet<Verify> Verifys { get; set; }
+        public DbSet<Record> Records { get; set; }
     }
 }
