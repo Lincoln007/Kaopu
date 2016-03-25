@@ -45,9 +45,9 @@ namespace Ztop.Todo.WindowsClient
             return null;
         }
 
-        private static readonly string TokenFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\ZtopTodo";
+        private static readonly string TokenFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\ZtopTodo\\";
 
-        private static readonly string TokenPath = TokenFolder + "\\token.txt";
+        private static readonly string TokenPath = TokenFolder + "token.txt";
         static LoginHelper()
         {
             if (!Directory.Exists(TokenFolder))
@@ -79,7 +79,7 @@ namespace Ztop.Todo.WindowsClient
             _accessToken = null;
             try
             {
-                File.Delete(TokenFolder);
+                File.Delete(TokenPath);
             }
             catch { }
         }
