@@ -31,7 +31,7 @@ namespace Ztop.Todo.Web.Controllers
             return null;
         }
 
-        //[HttpPost]
+        [HttpPost]
         public ActionResult LoginResult(string username, string password)
         {
             var user = LoginActiveDirectory(username, password);

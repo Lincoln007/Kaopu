@@ -40,11 +40,14 @@ namespace Ztop.Todo.WindowsClient
                 txtUsername.Focus();
                 return;
             }
+#if DEBUG
+#else
             if (string.IsNullOrEmpty(txtPassword.Text))
             {
                 txtPassword.Focus();
                 return;
             }
+#endif
 
             this.btnLogin.Text = "正在登陆";
             this.btnLogin.Enabled = false;
