@@ -178,5 +178,10 @@ namespace Ztop.Todo.WindowsClient
                 OpenTask("/task/edit?FileOne=" + FileOne);
             }
         }
+
+        private void LoginOffBtn_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

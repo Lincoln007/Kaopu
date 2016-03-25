@@ -75,6 +75,8 @@ namespace Ztop.Todo.WindowsClient
 
         private static void RegisterApplication()
         {
+            var exePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, AppDomain.CurrentDomain.FriendlyName);
+            #region  注册鼠标右键
             using (RegistryKey classesroot = Registry.ClassesRoot)
             {
                 using (RegistryKey star = classesroot.OpenSubKey("*"))
@@ -85,8 +87,6 @@ namespace Ztop.Todo.WindowsClient
                         {
                             using (RegistryKey command = TODO.CreateSubKey("Command"))
                             {
-
-                                var exePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, AppDomain.CurrentDomain.FriendlyName);
                                 command.SetValue(null, string.Format("{0} %1", exePath));
                                 command.Close();
                             }
@@ -98,6 +98,21 @@ namespace Ztop.Todo.WindowsClient
                 }
                 classesroot.Close();
             }
+            #endregion
+
+            #region  注册开机启动
+            //using (RegistryKey localMachine = Registry.LocalMachine)
+            //{
+            //    RegistryKey reg = localMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
+            //    if (reg == null)
+            //    {
+            //        reg = localMachine.CreateSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run");
+            //    }
+            //    reg.SetValue("ZTOPTODO", exePath);
+            //    reg.Close();
+            //    localMachine.Close();
+            //}
+            #endregion
         }
     }
 }
