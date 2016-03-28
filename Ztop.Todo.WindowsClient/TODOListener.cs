@@ -51,6 +51,9 @@ namespace Ztop.Todo.WindowsClient
                     }
                 }
             }
+            tcpListener.Stop();
+            tcpListener.Server.Close();
+            
         }
     }
 }

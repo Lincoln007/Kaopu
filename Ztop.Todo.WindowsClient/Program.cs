@@ -39,16 +39,17 @@ namespace Ztop.Todo.WindowsClient
                     RegisterApplication();
                 }
                 catch { }
+                Application.Run(new LoginForm(filePath));
 
-                var token = LoginHelper.GetToken();
-                if (!string.IsNullOrEmpty(token))
-                {
-                    Application.Run(new MainForm(filePath));
-                }
-                else
-                {
-                    Application.Run(new LoginForm(filePath));
-                }
+                //var token = LoginHelper.GetToken();
+                //if (!string.IsNullOrEmpty(token))
+                //{
+                //    Application.Run(new MainForm(filePath));
+                //}
+                //else
+                //{
+                //    Application.Run(new LoginForm(filePath));
+                //}
             }
         }
 

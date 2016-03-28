@@ -20,12 +20,17 @@ namespace Ztop.Todo.WindowsClient
     {
         private Thread thread { get; set; }
         private bool IsLive { get; set; }
+        private LoginForm _loginForm { get; set; }
         public MainForm()
         {
             InitializeComponent();
-
-            WebCore.Initialize(WebConfig.Default, true);
-            WebCore.ResourceInterceptor = new ResourceInterceptor();
+            if (!WebCore.IsInitialized)
+            {
+                WebCore.Initialize(WebConfig.Default, true);
+                WebCore.ResourceInterceptor = new ResourceInterceptor();
+            }
+            
+          
         }
 
         public MainForm(string uploadFile) : this()
@@ -136,7 +141,7 @@ namespace Ztop.Todo.WindowsClient
             }
         }
 
-        private void 退出ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void Stop()
         {
             webControl1.Dispose();
             WebCore.DestroyUnwrappedViews();
@@ -146,14 +151,22 @@ namespace Ztop.Todo.WindowsClient
             if (this.thread != null && this.thread.IsAlive)
             {
                 TCPHelper.TCPSend(System.Configuration.ConfigurationManager.AppSettings["TCPSTOP"]);
-                this.thread.Abort();
+                //this.thread.Abort();
+                //Thread.Sleep(500);
                 this.thread.Join();
             }
-            Application.Exit();
-            System.Environment.Exit(0);
+            
+
         }
 
-        private void MainForm_Load(object sender, EventArgs e)
+        private void 退出ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Stop();
+            this.DialogResult = DialogResult.Cancel;
+            //this.Hide();
+        }
+
+        private void Start()
         {
             var listener = new TODOListener(this);
             this.thread = new Thread(listener.Listen);
@@ -163,6 +176,11 @@ namespace Ztop.Todo.WindowsClient
             timer1.Tick += Timer1_Tick;
             timer1.Interval = 1000 * 10;
             timer1.Start();
+        }
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            Start();
+            _loginForm = this.Owner as LoginForm;
         }
 
         private delegate void FlushClient(string FileOne);
@@ -179,9 +197,12 @@ namespace Ztop.Todo.WindowsClient
             }
         }
 
-        private void LoginOffBtn_Click(object sender, EventArgs e)
-        {
 
+        private void 注销ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Stop();
+            LoginHelper.Logout();
+            this.DialogResult = DialogResult.OK;
         }
     }
 }

@@ -162,6 +162,7 @@
             this.MaximizeBox = false;
             this.Name = "LoginForm";
             this.Text = "智拓TODO";
+            this.Load += new System.EventHandler(this.LoginForm_Load);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.ResumeLayout(false);
