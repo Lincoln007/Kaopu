@@ -69,11 +69,10 @@ namespace Ztop.Todo.WindowsClient
                     {
                         LoginHelper.Remeber(token);
                     }
-
-                    new MainForm(_uploadFile).Show();
-
-                    this.Hide();
-
+                    MShow();
+                    //MainForm mainform =  new MainForm(_uploadFile);
+                    //this.Hide();
+                    //mainform.ShowDialog();
                     btnLogin.Text = "登陆";
                     btnLogin.Enabled = true;
                 }));
@@ -110,6 +109,34 @@ namespace Ztop.Todo.WindowsClient
             if (e.KeyCode == Keys.Enter)
             {
                 this.LoginButton_Click(sender, e);
+            }
+        }
+        private void MShow()
+        {
+            var mainForm = new MainForm(_uploadFile);
+            this.Hide();
+            var result = mainForm.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                Thread.Sleep(500);
+                mainForm.Close();
+                this.Show();
+            }
+            else if (result == DialogResult.Cancel)
+            {
+                mainForm.Close();
+                this.Close();
+                Application.Exit();
+                System.Environment.Exit(0);
+            }
+        }
+
+        private void LoginForm_Load(object sender, EventArgs e)
+        {
+            var token = LoginHelper.GetToken();
+            if (!string.IsNullOrEmpty(token))
+            {
+                MShow();  
             }
         }
     }
