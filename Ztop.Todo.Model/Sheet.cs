@@ -42,6 +42,10 @@ namespace Ztop.Todo.Model
         [Column(TypeName ="int")]
         public Status Status { get; set; }
         /// <summary>
+        /// 当前需要审核人
+        /// </summary>
+        public string Controler { get; set; }
+        /// <summary>
         /// 备注
         /// </summary>
         public string Remarks { get; set; }
@@ -65,11 +69,15 @@ namespace Ztop.Todo.Model
     {
         [Description("草稿")]//只是填写了报销单  但是没有提交
         OutLine,
-        [Description("提交成功未审核")]//报销单上交上级  但是上级没有查看审核过
-        Post,
-        [Description("审核中")]//主管开始审核  或者  报销确认  
-        Examining,
-        [Description("已审核")]//财务负责人核准
+        //[Description("提交成功未审核")]//报销单上交上级  但是上级没有查看审核过
+        //Post,
+        [Description("审核中-主管")]//主管开始审核 
+        ExaminingDirector,
+        [Description("审核中-申屠")]//申屠经理审核
+        ExaminingManager,
+        [Description("审核中-财务")]//财务审核
+        ExaminingFinance,
+        [Description("已完成")]//审核完成
         Examined,
     }
     

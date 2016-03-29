@@ -18,7 +18,7 @@ namespace Ztop.Todo.Manager
         {
             using (var db = GetDbContext())
             {
-                var entry = db.Verifys.FirstOrDefault(e => e.Name == verify.Name && e.SID == verify.SID && e.Step == verify.Step);
+                var entry = db.Verifys.FirstOrDefault(e => e.Name == verify.Name && e.SID == verify.SID && e.Step == verify.Step&&e.Position==Position.Wait);
                 if (entry != null)
                 {
                     verify.ID = entry.ID;

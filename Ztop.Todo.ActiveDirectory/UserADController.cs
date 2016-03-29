@@ -85,6 +85,10 @@ namespace Ztop.Todo.ActiveDirectory
         {
             return Get("(&(objectCategory=person)(objectClass=user)(name=" + Name + "))").GetProperty("sAMAccountName");
         }
+        public static string GetDisplayName(this string sAMAccountName)
+        {
+            return GetUserObject(sAMAccountName).GetProperty("displayName");
+        }
 
         public static void DisableAccount(string sAMAccountName)
         {

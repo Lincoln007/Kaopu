@@ -11,5 +11,7 @@ namespace Ztop.Todo.Model
         public string Name { get; set; }
         public PageParameter Page { get; set; }
         public bool? Deleted { get; set; }
+        public string Controler { get; set; }
+        public Status? Status { get; set; }
     }
 }

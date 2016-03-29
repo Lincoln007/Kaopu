@@ -5,6 +5,7 @@
     List<Sheet> OutList = ViewBag.OutList;//报销单  草稿
     List<Sheet> ExaminingList = ViewBag.ExaminingList;//报销单 正在报销
     List<Sheet> ExaminList = ViewBag.ExaminList;//报销完成
+    List<Sheet> WaitForMe = ViewBag.WaitForMe;
     int Serial = 1;
 
 }
@@ -81,26 +82,45 @@
         </tbody>
     </table>
 </div>
-<div class="col-md-6">
-    <h4>
-        待审核报销(注:需要我审核的报销单)
-        <a style="float:right;font-size: 0.8em;" href="list.html">
-            <em class="glyphicon glyphicon-info-sign"></em> 详情
-        </a>
-    </h4>
-    <hr>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>单据编号</th>
-                <th>报销日期</th>
-                <th>报销金额</th>
-                <th>报销人</th>
-            </tr>
-        </thead>
-    </table>
-</div>
+@if (WaitForMe != null)
+{
+    <div class="col-md-6">
+        <h4>
+            待审核报销(注:需要我审核的报销单)
+            <a style="float:right;font-size: 0.8em;" href="list.html">
+                <em class="glyphicon glyphicon-info-sign"></em> 详情
+            </a>
+        </h4>
+        <hr>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>单据编号</th>
+                    <th>报销日期</th>
+                    <th>报销金额</th>
+                    <th>报销人</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    Serial = 1;
+                    foreach (var sheet in WaitForMe)
+                    {
+                        <tr>
+                            <td>@(Serial++)</td>
+                            <td><a href="/Report/Detail?id=@(sheet.ID)">@(sheet.SerialNumber.Coding)</a></td>
+                            <td>@(sheet.Time.ToShortDateString())</td>
+                            <td>@(sheet.Money)</td>
+                            <td>@(sheet.Name)</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
 <div class="col-md-6">
     <h4>
         最近已完成的报销
@@ -125,7 +145,7 @@
                 {
                     <tr>
                         <td>@(Serial++)</td>
-                        <td>@(item.SerialNumber.Coding)</td>
+                        <td><a href="/Report/Detail?id=@(item.ID)">@(item.SerialNumber.Coding)</a> </td>
                         <td>@(item.Time.ToShortDateString())</td>
                         <td>@(item.Money)</td>
                     </tr>

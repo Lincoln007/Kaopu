@@ -38,7 +38,8 @@ namespace Ztop.Todo.Model
         /// <summary>
         /// 状态
         /// </summary>
-        public bool IsCheck { get; set; }
+        //public bool IsCheck { get; set; }
+        public Position Position { get; set; }
         /// <summary>
         /// 关联的报销单ID
         /// </summary>
@@ -48,13 +49,23 @@ namespace Ztop.Todo.Model
 
     public enum Step
     {
-        [Description("报销填单")]
+        [Description("报销填单")]//报销人
         Create,
-        [Description("主管审核")]
+        [Description("主管审核")]//主管
         Examine,
-        [Description("报销确认")]
+        [Description("报销确认")]//申屠
         Confirm,
-        [Description("财务负责人核准")]
+        [Description("财务负责人核准")]//财务
         Approved
+    }
+
+    public enum Position
+    {
+        [Description("等待审核或者完善")]
+        Wait,
+        [Description("审核通过")]
+        Check,
+        [Description("退回")]
+        RollBack
     }
 }

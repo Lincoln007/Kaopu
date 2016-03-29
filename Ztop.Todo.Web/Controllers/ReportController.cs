@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Ztop.Todo.ActiveDirectory;
 using Ztop.Todo.Model;
 
 namespace Ztop.Todo.Web.Controllers
 {
     public class ReportController : ControllerBase
     {
+        protected List<string> Directors = XmlHelper.GetDirectors();
         public ActionResult Index()
         {
             SheetQueryParameter parameter = new SheetQueryParameter
@@ -18,8 +20,14 @@ namespace Ztop.Todo.Web.Controllers
             };
             var list = Core.SheetManager.GetSheets(parameter);
             ViewBag.OutList = list.Where(e => e.Status == Status.OutLine).ToList();//草稿
-            ViewBag.ExaminingList = list.Where(e => e.Status == Status.Examining||e.Status==Status.Post).ToList();
+            //未完成审核    提交 主管审核  申屠审核  财务审核
+            ViewBag.ExaminingList = list.Where(e => e.Status == Status.ExaminingDirector || e.Status == Status.ExaminingFinance || e.Status == Status.ExaminingManager).ToList();
+            //  我提交的报销单  同时也
             ViewBag.ExaminList = list.Where(e => e.Status == Status.Examined).ToList();
+            if (Directors.Contains(Identity.Name))
+            {
+                ViewBag.WaitForMe = Core.SheetManager.GetSheets(new SheetQueryParameter { Deleted = false, Controler = Identity.Name }).Where(e => e.Status != Status.Examined && e.Status != Status.OutLine).ToList();
+            }
             
             return View();
         }
@@ -39,7 +47,13 @@ namespace Ztop.Todo.Web.Controllers
         {
             if (!string.IsNullOrEmpty(DirectorVal))
             {
-                sheet.Status = Status.Post;
+                sheet.Status = Status.ExaminingDirector;
+                sheet.Controler = DirectorVal;
+            }
+            else
+            {
+                sheet.Status = Status.OutLine;
+                sheet.Controler = Identity.Name;
             }
             Core.SheetManager.Save(sheet);
             var verify = new Verify//创建审核步骤记录表
@@ -48,14 +62,15 @@ namespace Ztop.Todo.Web.Controllers
                 SID = sheet.ID,
                 Name = Identity.Name,
                 Time=DateTime.Now,
-                IsCheck = sheet.Status == Status.Post ? true : false//当报销单处于审核状态，那么确认用户提交了
+                Position=sheet.Status==Status.ExaminingDirector?Position.Check:Position.Wait
+                //IsCheck = sheet.Status == Status.ExaminingDirector ? true : false//当报销单处于审核状态，那么确认用户提交了
             };
             Core.VerifyManager.Update(verify);
             if (!string.IsNullOrEmpty(DirectorVal))//做了 提交申请  需要等主管确认
             {
                 Core.VerifyManager.Save(new Verify
                 {
-                    Step = Step.Confirm,
+                    Step = Step.Examine,
                     SID = sheet.ID,
                     Name = DirectorVal
                 });
@@ -77,7 +92,7 @@ namespace Ztop.Todo.Web.Controllers
             {
                 throw new ArgumentException("参数错误，未找到单据编号信息");
             }
-            sheet.Substances = Core.SubstanceManager.Get(HttpContext);
+            sheet.Substances = Core.SubstanceManager.Get(HttpContext);//获取详细清单
             Save(sheet, DirectorVal);
 
             serialNumber.ID = snid;
@@ -129,31 +144,110 @@ namespace Ztop.Todo.Web.Controllers
             throw new ArgumentException("参数错误，没有找到该报销单");
             
         }
-
-        /// <summary>
-        /// 主管审核通过
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public ActionResult Check1(int id)
+        private void Reversion(Sheet sheet,string reason)
         {
-            var model = Core.SheetManager.GetModel(id);
-            if (model != null)
+            if (sheet.Controler != Identity.Name)
             {
-                model.Status = Status.Examining;//将报销单切换到正在审核中
-                Core.SheetManager.Save(model);
-                //var verify = new Verify
-                //{
-                //    Name = Identity.Name,
-                //    SID = model.ID,
-                //    Step=Step.Examine,
-                //    IsCheck=true
-                //};
-                //Core.VerifyManager.Save(verify);
-                return SuccessJsonResult();
+                throw new ArgumentException("当前您无法进行退出操作");
             }
-            throw new ArgumentException("参数错误，没有找打该报销单");
+            var sverify = new Verify
+            {
+                Name = Identity.Name,
+                SID = sheet.ID,
+                Time = DateTime.Now,
+                Position = Position.RollBack,
+                Reason=reason
+            };
+            switch (sheet.Status)
+            {
+                case Status.ExaminingDirector:
+                    sverify.Step = Step.Examine;
+                    break;
+                case Status.ExaminingManager:
+                    sverify.Step = Step.Confirm;
+                    break;
+                case Status.ExaminingFinance:
+                    sverify.Step = Step.Approved;
+                    break;
+                default:break;
+            }
+            sheet.Controler = sheet.Name;
+            sheet.Status = Status.OutLine;
+            Core.SheetManager.Save(sheet);
+            Core.VerifyManager.Update(sverify);
         }
+
+        private void Check(Sheet sheet)
+        {
+            if (sheet.Controler != Identity.Name)
+            {
+                throw new ArgumentException("当前您无法进行审核操作");
+            }
+            var sverify = new Verify
+            {
+                Name = Identity.Name,
+                SID = sheet.ID,
+                Time = DateTime.Now,
+                Position=Position.Check
+                //IsCheck = true
+            };
+            var nVerify = new Verify
+            {
+                SID = sheet.ID
+            };
+            switch (sheet.Status)
+            {
+                case Status.ExaminingDirector://主管审核通过
+                    sheet.Status = Status.ExaminingManager;
+                    sheet.Controler = XmlHelper.GetManager();
+                    sverify.Step = Step.Examine;
+                    nVerify.Name = sheet.Controler;
+                    nVerify.Step = Step.Confirm;
+                    break;
+                case Status.ExaminingManager://申屠审核通过
+                    sheet.Status = Status.ExaminingFinance;
+                    sheet.Controler = XmlHelper.GetFinance();
+                    sverify.Step = Step.Confirm;
+                    nVerify.Name = sheet.Controler;
+                    nVerify.Step = Step.Approved;
+                    break;
+                case Status.ExaminingFinance://财务审核通过
+                    sheet.Status = Status.Examined;
+                    sheet.Controler = Identity.Name;
+                    sverify.Step = Step.Approved;
+
+                    break;
+                default:
+                    break;
+            }
+            Core.VerifyManager.Update(sverify);
+            if (sheet.Status != Status.Examined)
+            {
+                Core.VerifyManager.Save(nVerify);
+            }
+            Core.SheetManager.Save(sheet);
+        }
+        public ActionResult Check(int id)
+        {
+            var sheet = Core.SheetManager.GetModel(id);
+            if (sheet == null)
+            {
+                throw new ArgumentException("参数错误，未找到相关报销单");
+            }
+            Check(sheet);
+            return SuccessJsonResult();
+        }
+        [HttpPost]
+        public ActionResult Reversion(int id,string Reason)
+        {
+            var sheet = Core.SheetManager.GetModel(id);
+            if (sheet == null)
+            {
+                throw new ArgumentException("参数不正确，未找到相关报销单信息");
+            }
+            Reversion(sheet, Reason);
+            return SuccessJsonResult();
+        } 
 
         public ActionResult List()
         {

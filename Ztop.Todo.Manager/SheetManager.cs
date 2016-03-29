@@ -57,6 +57,13 @@ namespace Ztop.Todo.Manager
                 db.SaveChanges();
                 if (sheet.Substances != null)
                 {
+                    var older = db.Substances.Where(e => e.SID == sheet.ID).ToList();//如果重新编辑了报销单，则删除之前所有的子清单
+                    if (older != null)
+                    {
+                        db.Substances.RemoveRange(older);
+                        db.SaveChanges();
+                    }
+                    
                     db.Substances.AddRange(sheet.Substances.OrderBy(e => e.ID).Select(e => new Substancs
                     {
                         Category = e.Category,
@@ -70,7 +77,6 @@ namespace Ztop.Todo.Manager
 
             }
         }
-
         private SerialNumber GetSerialNumber(int sid)
         {
             if (sid == 0) return null;
@@ -86,7 +92,6 @@ namespace Ztop.Todo.Manager
                 return db.Sheets.ToList();
             }
         }
-
         public List<Sheet> GetSheets(SheetQueryParameter parameter)
         {
             var list = GetSheets();
@@ -99,9 +104,17 @@ namespace Ztop.Todo.Manager
             {
                 query = query.Where(e => e.Name == parameter.Name);
             }
+            if (!string.IsNullOrEmpty(parameter.Controler))
+            {
+                query = query.Where(e => e.Controler == parameter.Controler);
+            }
             if (parameter.Deleted.HasValue)
             {
                 query = query.Where(e => e.Deleted == parameter.Deleted.Value);
+            }
+            if (parameter.Status.HasValue)
+            {
+                query = query.Where(e => e.Status == parameter.Status.Value);
             }
             return query.ToList();
         }
@@ -117,7 +130,5 @@ namespace Ztop.Todo.Manager
                 }
             }
         }
-
-        
     }
 }

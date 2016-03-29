@@ -23,7 +23,11 @@ namespace Ztop.Todo.Web.Controllers
                 var user = Core.UserManager.GetUser(username);
                 if (user == null)
                 {
-                    user = new User { Username = username };
+                    user = new User
+                    {
+                        Username = username,
+                        RealName = username.GetDisplayName()
+                    };
                     Core.UserManager.Save(user);
                 }
                 return user;

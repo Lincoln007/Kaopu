@@ -9,7 +9,56 @@
 @if (sheet != null)
 {
     <div class="col-md-12">
-        @switch (sheet.Status)
+        <h3>报销单详情</h3>
+        @if (sheet.Status == Status.OutLine)//草稿
+        {
+            <form method="post" class="form-horizontal col-md-12" action="" id="form-Check">
+                <input type="text" name="ID" value="@(sheet.ID)" style="display:none" />
+                @{ 
+                    Html.RenderPartial("SubmitButton");
+                }
+                <a href="" class="btn btn-primary btn-sm">
+                    <em class="glyphicon glyphicon-edit"></em>修改
+                </a>
+                <button type="button" class="btn btn-danger btn-sm btn-delete">
+                    <em class="glyphicon glyphicon-remove"></em>删除
+                </button>
+                <button class="btn btn-default btn-sm" type="button">
+                    <em class="glyphicon glyphicon-print"></em> 打印
+                </button>
+                <a class="btn btn-warning btn-sm" href="/Report">
+                    <em class="glyphicon glyphicon-menu-left"></em> 返回
+                </a>
+            </form>
+                    }
+                    else if (sheet.Status == Status.ExaminingDirector||sheet.Status==Status.ExaminingManager||sheet.Status==Status.ExaminingFinance)//主管审核
+
+                    {
+                        if (sheet.Name == Identity.Name)//用户自己查看报销单时候
+                        {
+                            <span class="label label-success">报销单已经提交，等待审核</span>
+                        }
+                        else if (sheet.Controler == Identity.Name)//主管  查看报销单
+                        {
+                            <button type="button" class="btn btn-primary btn-sm btn-checked">
+                                <em class="glyphicon glyphicon-ok">审核通过</em>
+                            </button>
+                            {
+                                Html.RenderPartial("WithDrawal", sheet);
+                            }
+                        }
+                        <button class="btn btn-default btn-sm" type="button">
+                            <em class="glyphicon glyphicon-print"></em> 打印
+                        </button>
+                            <a class="btn btn-warning btn-sm" href="/Report">
+                                <em class="glyphicon glyphicon-menu-left"></em> 返回
+                         </a>
+                    }else if (sheet.Status == Status.Examined)
+                    {
+                        <span class="label label-success">当前报销已经成功报销</span>
+                    }
+
+        @*@switch (sheet.Status)
         {
         case Status.OutLine:
         <h3>报销单草稿</h3>
@@ -31,22 +80,20 @@
                     </button>
                     Html.RenderPartial("WithDrawal", sheet);
                     break;
-                case Status.Examining:
+                case Status.ExaminingDirector:
+                case Status.ExaminingFinance:
+                case Status.ExaminingManager:
         <h3>报销单审核</h3>
-        
+
+
         break;
-        case Status.Examined:
+                case Status.Examined:
         <h3>报销单</h3>
         break;
         default:
         break;
-        }
-        <button class="btn btn-default btn-sm" type="button">
-            <em class="glyphicon glyphicon-print"></em> 打印
-        </button>
-        <a class="btn btn-warning btn-sm" href="index.html">
-            <em class="glyphicon glyphicon-menu-left"></em> 返回
-        </a>
+        }*@
+        
     </div>
    
                 <div class="col-md-8">
@@ -114,6 +161,7 @@
                                     <th>姓名</th>
                                     <th>时间</th>
                                     <th>状态</th>
+                                    <th>备注</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -125,16 +173,21 @@
                                         <tr>
                                             <td>  @(verify.Step.GetDescription())</td>
                                             <td>@(verify.Name)</td>
-                                            @if (verify.IsCheck)
+                                            @if (verify.Position==Position.Check)
                                             {
                                                 <td>@(verify.Time.ToShortDateString())</td>
                                                 <td><i class="fa fa-check-square"></i></td>
+                                            }else if (verify.Position==Position.RollBack)
+                                            {
+                                                <td>@(verify.Time.ToShortDateString())</td>
+                                                <td><i class="fa fa-ambulance"></i></td>
                                             }
                                             else
                                             {
                                                 <td></td>
                                                 <td><i class="fa fa-refresh fa-spin"></i></td>
                                             }
+                                            <td>@(verify.Reason)</td>
                                         </tr>
                                     }
                                 }
@@ -167,8 +220,9 @@
         });
         $(".btn-checked").click(function () {
             if (confirm("您确定要通过当前报销单吗?")) {
-                $.request("/Report/Check1?id=@(sheet.ID)", null, function () {
-                    window.location.href = "/Report/Detail?id=@(sheet.ID)";
+                $.request("/Report/Check?id=@(sheet.ID)", null, function () {
+                    window.location.href = "/Report";
+                    //window.location.href = "/Report/Detail?id=@(sheet.ID)";
                 })
             }
         })

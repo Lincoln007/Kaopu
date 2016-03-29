@@ -29,10 +29,27 @@ namespace Ztop.Todo.ActiveDirectory
             }
             return list;
         }
+        private static string Get(string selectString)
+        {
+            var node = _configXml.SelectSingleNode(selectString);
+            if (node != null)
+            {
+                return node.Attributes["Name"].Value;
+            }
+            return string.Empty;
+        }
 
         public static List<string> GetDirectors()
         {
             return InitConfig("/Composes/Directors/Director");
+        }
+        public static string GetManager()
+        {
+            return Get("/Composes/Directors/Manager");
+        }
+        public static string GetFinance()
+        {
+            return Get("/Composes/Directors/Finance");
         }
     }
 }
