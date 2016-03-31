@@ -18,6 +18,23 @@ namespace Ztop.Todo.Manager
                 return db.Sheets.FirstOrDefault(e => e.ID == id);
             }
         }
+        public Sheet GetSerialNumberModel(int id)
+        {
+            if (id == 0)
+            {
+                return new Sheet
+                {
+                    SerialNumber = Core.SerialNumberManager.GetNewModel()
+                };
+            }
+            var sheet = GetAllModel(id);
+            if (sheet == null)
+            {
+                throw new ArgumentException("参数错误，未找到相关报销单信息");
+            }
+            return sheet;
+
+        }
         public Sheet GetAllModel(int id)
         {
             if (id == 0) return null;

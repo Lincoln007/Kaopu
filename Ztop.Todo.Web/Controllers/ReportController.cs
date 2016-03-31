@@ -10,7 +10,7 @@ namespace Ztop.Todo.Web.Controllers
 {
     public class ReportController : ControllerBase
     {
-        protected List<string> Directors = XmlHelper.GetDirectors();
+        protected static List<string> Directors = XmlHelper.GetDirectors();
         public ActionResult Index()
         {
             SheetQueryParameter parameter = new SheetQueryParameter
@@ -20,10 +20,11 @@ namespace Ztop.Todo.Web.Controllers
             };
             var list = Core.SheetManager.GetSheets(parameter);
             ViewBag.OutList = list.Where(e => e.Status == Status.OutLine).ToList();//草稿
-            //未完成审核    提交 主管审核  申屠审核  财务审核
-            ViewBag.ExaminingList = list.Where(e => e.Status == Status.ExaminingDirector || e.Status == Status.ExaminingFinance || e.Status == Status.ExaminingManager).ToList();
+            //未完成审核    提交 主管审核  申屠审核  财务审核  退回
+            ViewBag.ExaminingList = list.Where(e => e.Status == Status.ExaminingDirector || e.Status == Status.ExaminingFinance || e.Status == Status.ExaminingManager||e.Status==Status.RollBack).ToList();
             //  我提交的报销单  同时也
             ViewBag.ExaminList = list.Where(e => e.Status == Status.Examined).ToList();
+            ViewBag.RollBackList = list.Where(e => e.Status == Status.RollBack).ToList();
             if (Directors.Contains(Identity.Name))
             {
                 ViewBag.WaitForMe = Core.SheetManager.GetSheets(new SheetQueryParameter { Deleted = false, Controler = Identity.Name }).Where(e => e.Status != Status.Examined && e.Status != Status.OutLine).ToList();
@@ -37,8 +38,9 @@ namespace Ztop.Todo.Web.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public ActionResult Create()
+        public ActionResult Create(int id=0)
         {
+            ViewBag.Sheet = Core.SheetManager.GetSerialNumberModel(id);
             ViewBag.SerialNumber = Core.SerialNumberManager.GetNewModel();//获取唯一单据编号
             return View();
         }
@@ -172,7 +174,8 @@ namespace Ztop.Todo.Web.Controllers
                 default:break;
             }
             sheet.Controler = sheet.Name;
-            sheet.Status = Status.OutLine;
+            sheet.Status = Status.RollBack;
+            //sheet.Status = Status.OutLine;
             Core.SheetManager.Save(sheet);
             Core.VerifyManager.Update(sverify);
         }

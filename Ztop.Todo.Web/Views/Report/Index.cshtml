@@ -5,7 +5,8 @@
     List<Sheet> OutList = ViewBag.OutList;//报销单  草稿
     List<Sheet> ExaminingList = ViewBag.ExaminingList;//报销单 正在报销
     List<Sheet> ExaminList = ViewBag.ExaminList;//报销完成
-    List<Sheet> WaitForMe = ViewBag.WaitForMe;
+    List<Sheet> WaitForMe = ViewBag.WaitForMe;//  需要我审核的报销单
+    //List<Sheet> RollBackList = ViewBag.RollBackList;//退回报销单
     int Serial = 1;
 
 }
@@ -38,7 +39,7 @@
                 {
                     <tr>
                         <td>@(Serial++)</td>
-                        <td><a href="/Report/Detail?id=@(item.ID)">@(item.SerialNumber.Coding)</a> </td>
+                        <td><a href="/Report/Detail?id=@(item.ID)" >@(item.SerialNumber.Coding)</a> </td>
                         <td>@(item.Time.ToShortDateString())</td>
                         <td>@(item.Money)</td>
                     </tr>
@@ -72,7 +73,7 @@
                 {
                     <tr>
                         <td>@(Serial++)</td>
-                        <td><a href="/Report/Detail?id=@(item.ID)">@(item.SerialNumber.Coding)</a> </td>
+                        <td><a href="/Report/Detail?id=@(item.ID)" class="@(item.Status==Status.RollBack?"text-danger":"")">@(item.SerialNumber.Coding)</a> </td>
                         <td>@(item.Time.ToShortDateString())</td>
                         <td>@(item.Money)</td>
                         <td>@(item.Status.GetDescription())</td>
@@ -120,6 +121,8 @@
         </table>
     </div>
 }
+
+
 
 <div class="col-md-6">
     <h4>

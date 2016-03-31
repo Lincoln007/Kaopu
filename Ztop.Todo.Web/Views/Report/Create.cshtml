@@ -2,16 +2,19 @@
 @{
     ViewBag.Title = "创建报销单";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    SerialNumber serialNumber = ViewBag.SerialNumber;
+    // SerialNumber serialNumber = ViewBag.SerialNumber;
+    Sheet sheet = ViewBag.Sheet;
+    int serial = 1;
 }
 
 
 <form method="post" id="form-Create" action="/Report/Save" class="form-horizontal" enctype="multipart/form-data">
     <h2>报销单</h2>
-    <input type="text" name="SNID" value="@(serialNumber.ID)" style="display:none" />
-    <input type="text" name="Number" value="@(serialNumber.Number)" style="display:none" />
-    <input type="text" name="NumberExt" value="@(serialNumber.NumberExt)" style="display:none" />
+    <input type="text" name="SNID" value="@(sheet.SerialNumber.ID)" style="display:none" />
+    <input type="text" name="Number" value="@(sheet.SerialNumber.Number)" style="display:none" />
+    <input type="text" name="NumberExt" value="@(sheet.SerialNumber.NumberExt)" style="display:none" />
     <input type="text"  name="Name" value="@(Identity.Name)" style="display:none" />
+    <input type="text" name="ID" value="@(sheet.ID)" style="display:none" />
     <div class="col-md-12">
         @{ 
             Html.RenderPartial("SubmitButton");
@@ -35,9 +38,9 @@
             <tbody>
                 <tr>
                     <td>单据编号</td>
-                    <td>@(serialNumber.Coding) </td>
+                    <td>@(sheet.SerialNumber.Coding) </td>
                     <td>报销日期</td>
-                    <td><input type="text" id="datetimepicker2" value="@(DateTime.Now.ToShortDateString())" name="Time" /></td>
+                    <td><input type="text" id="datetimepicker2" value="@(sheet.Time.ToShortDateString())" name="Time" /></td>
                 </tr>
                 <tr>
                     <td>报销人</td>
@@ -45,11 +48,11 @@
                         @(Identity.Name)
                     </td>
                     <td>报销金额合计</td>
-                    <td><input type="text"  name="Money" /></td>
+                    <td><input type="text"  name="Money" value="@(sheet.Money)" /></td>
                 </tr>
                 <tr>
                     <td>备注</td>
-                    <td colspan="3"><input type="text" name="Remarks" style="width:100%" /></td>
+                    <td colspan="3"><input type="text" name="Remarks" style="width:100%" value="@(sheet.Remarks)" /></td>
                 </tr>
             </tbody>
         </table>
@@ -71,23 +74,46 @@
                     </th>
                 </tr>
             </thead>
-@for (var i = 0; i < 10; i++)
-{
-    <tr>
-        <td>@(i + 1)</td>
-        <td>
-            <select name="Category">
-                <option value="">请选择</option>
-                @foreach (Category category in Enum.GetValues(typeof(Category)))
+            <tbody>
+                @if (sheet.Substances != null)
                 {
-                    <option value="@(category)">@(category.GetDescription())</option>
+                    foreach (var subtance in sheet.Substances)
+                    {
+                        <tr>
+                            <td>@(serial++)</td>
+                            <td>
+                                <select name="Category">
+                                    <option value="">请选择</option>
+                                    @foreach (Category category in Enum.GetValues(typeof(Category)))
+                                    {
+                                        <option value="@(category)" @(subtance.Category == category ? "selected=selected" : "")>@(category.GetDescription())</option>
+                                    }
+                                </select>
+                            </td>
+                            <td><input type="text" name="Detail" style="width:100%" value="@(subtance.Details)" /></td>
+                            <td><input type="text" name="Price" value="@(subtance.Price)" /></td>
+                        </tr>
+                    }
                 }
-            </select>
-        </td>
-        <td><input type="text" name="Detail" style="width:100%" /></td>
-        <td><input type="text" name="Price" /></td>
-    </tr>
-}
+                @for (var i = serial - 1; i < 10; i++)
+                {
+                    <tr>
+                        <td>@(i + 1)</td>
+                        <td>
+                            <select name="Category">
+                                <option value="">请选择</option>
+                                @foreach (Category category in Enum.GetValues(typeof(Category)))
+                {
+                                    <option value="@(category)">@(category.GetDescription())</option>
+                                }
+                            </select>
+                        </td>
+                        <td><input type="text" name="Detail" style="width:100%" /></td>
+                        <td><input type="text" name="Price" /></td>
+                    </tr>
+                }
+            </tbody>
+
         </table>
     </div>
     <div class="col-md-4">
@@ -109,50 +135,17 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>
-                        报销填单
-                    </td>
-                    <td>
-                        袁总
-                    </td>
-                    <td>
-                        2016-01-01
-                    </td>
-                </tr>
-                <tr class="active">
-                    <td>
-                        主管审核
-                    </td>
-                    <td>
-                        袁总
-                    </td>
-                    <td>
-                        2016-01-01
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        报销确认
-                    </td>
-                    <td>
-                        袁总
-                    </td>
-                    <td>
-                        2016-01-01
-                    </td>
-                </tr>
-                <tr class="active">
-                    <td>
-                        财务负责人核准
-                    </td>
-                    <td>
-                        袁总
-                    </td>
-                    <td>
-                        2016-01-01
-                    </td>
-                </tr>
+                @if (sheet.Verifys != null)
+                {
+                    foreach(var verify in sheet.Verifys)
+                    {
+                        <tr>
+                            <td>@(verify.Step.GetDescription())</td>
+                            <td>@(verify.Name)</td>
+                            <td>@(verify.Time.ToShortDateString())</td>
+                        </tr>
+                    }
+                }
             </tbody>
         </table>
 
@@ -221,12 +214,41 @@
         });
 
         $("#form-Create").submit(function () {
-            var data = $(this).serialize();
-            $.request("/Report/Save", data, function (json) {
-                location.href = "/Report/Index";
+            if (checkMoney()) {
+                var data = $(this).serialize();
+                $.request("/Report/Save", data, function (json) {
+                    location.href = "/Report/Index";
+                });
+                return false;
+            } else {
+                alert("报销金额不能为0或者金额合计与分项合计不相等，请核对!");
+                $("[name='Director']").removeClass("btn-success").addClass("btn-default");
+                $("[name='DirectorVal']").val("");
+                return false;
+            }
+           
+        });
+
+
+        function checkMoney() {
+            var sum = parseInt($("input[name='Money']").val());
+            if (isNaN(sum)||sum==0) {
+                //alert("报销单合计金额不能为空！");
+                return false;
+            }
+            var sum2 = 0;
+            $("input[name='Price']").each(function () {
+                var a = parseInt($(this).val());
+                if (!isNaN(a)) {
+                    sum2 += a;
+                }
             });
-            return false;
-        })
+            if (sum == sum2) {
+                return true;
+            } else {
+                return false;
+            }
+        }
     })
 </script>
 

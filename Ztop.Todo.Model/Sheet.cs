@@ -79,6 +79,8 @@ namespace Ztop.Todo.Model
         ExaminingFinance,
         [Description("已完成")]//审核完成
         Examined,
+        [Description("退回")]
+        RollBack
     }
     
 }

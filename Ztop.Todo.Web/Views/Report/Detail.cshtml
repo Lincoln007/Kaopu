@@ -17,7 +17,7 @@
                 @{ 
                     Html.RenderPartial("SubmitButton");
                 }
-                <a href="" class="btn btn-primary btn-sm">
+                <a href="/Report/Create?id=@(sheet.ID)" class="btn btn-primary btn-sm">
                     <em class="glyphicon glyphicon-edit"></em>修改
                 </a>
                 <button type="button" class="btn btn-danger btn-sm btn-delete">
@@ -31,7 +31,7 @@
                 </a>
             </form>
                     }
-                    else if (sheet.Status == Status.ExaminingDirector||sheet.Status==Status.ExaminingManager||sheet.Status==Status.ExaminingFinance)//主管审核
+                    else if (sheet.Status == Status.ExaminingDirector||sheet.Status==Status.ExaminingManager||sheet.Status==Status.ExaminingFinance||sheet.Status==Status.RollBack)//主管审核
 
                     {
                         if (sheet.Name == Identity.Name)//用户自己查看报销单时候
