@@ -40,7 +40,7 @@
                     <tr>
                         <td>@(Serial++)</td>
                         <td><a href="/Report/Detail?id=@(item.ID)" >@(item.SerialNumber.Coding)</a> </td>
-                        <td>@(item.Time.ToShortDateString())</td>
+                        <td>@(item.Time.ToLongDateString())</td>
                         <td>@(item.Money)</td>
                     </tr>
                 }

@@ -252,9 +252,20 @@ namespace Ztop.Todo.Web.Controllers
             return SuccessJsonResult();
         } 
 
-        public ActionResult List()
+        public ActionResult List(string Creater="我", string Custom = null, string Position="不限", string Checker = "我", string Checker2 = null, string CurrentTime="不限",Order order=Order.Time)
         {
-
+            var queryParameter = new QueryParameter
+            {
+                Creater = (Operator)Enum.Parse(typeof(Operator), Creater, true),
+                Custom = Custom,
+                Status = (StatusPosition)Enum.Parse(typeof(StatusPosition), Position, true),
+                Checker = (Operator)Enum.Parse(typeof(Operator), Checker, true),
+                Checker2 = Checker2,
+                Time = (Time)Enum.Parse(typeof(Time), CurrentTime, true),
+                Order = order
+            };
+            ViewBag.List = Core.SheetManager.GetSheets(queryParameter, Identity.Name);
+            ViewBag.Parameter = queryParameter;
             return View();
         }
 

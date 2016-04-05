@@ -26,7 +26,8 @@ namespace Ztop.Todo.Web.Controllers
                     user = new User
                     {
                         Username = username,
-                        RealName = username.GetDisplayName()
+                        RealName = username.GetDisplayName(),
+                        GroupID = Core.UserManager.GetGroupID(username.GetGroupName())
                     };
                     Core.UserManager.Save(user);
                 }

@@ -63,6 +63,11 @@ namespace Ztop.Todo.Model
         /// </summary>
         [NotMapped]
         public List<Verify> Verifys { get; set; }
+        /// <summary>
+        /// 审核人
+        /// </summary>
+        [NotMapped]
+        public string Checkers { get; set; }
 
     }
     public enum Status

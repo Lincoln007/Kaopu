@@ -109,13 +109,18 @@ namespace Ztop.Todo.Manager
                 return db.Sheets.ToList();
             }
         }
-        public List<Sheet> GetSheets(SheetQueryParameter parameter)
+        private List<Sheet> GetSerialNumberSheets()
         {
             var list = GetSheets();
             foreach(var sheet in list)
             {
                 sheet.SerialNumber = GetSerialNumber(sheet.ID);
             }
+            return list;
+        }
+        public List<Sheet> GetSheets(SheetQueryParameter parameter)
+        {
+            var list = GetSerialNumberSheets();
             var query = list.AsQueryable();
             if (!string.IsNullOrEmpty(parameter.Name))
             {
@@ -132,6 +137,62 @@ namespace Ztop.Todo.Manager
             if (parameter.Status.HasValue)
             {
                 query = query.Where(e => e.Status == parameter.Status.Value);
+            }
+            return query.ToList();
+        }
+
+        public List<Sheet> GetSheets(QueryParameter parameter,string name)
+        {
+            var list = GetSerialNumberSheets();
+            var query = list.AsQueryable();
+            if (parameter.Creater == Operator.我)
+            {
+                query = query.Where(e => e.Name == name);
+            }else if (parameter.Creater == Operator.自定义)
+            {
+                query = query.Where(e => e.Name == parameter.Custom.Trim().ToUpper());
+            }
+
+            switch (parameter.Status)
+            {
+                case StatusPosition.草稿:
+                    query = query.Where(e => e.Status == Status.OutLine);
+                    break;
+                case StatusPosition.未审核:
+                    query = query.Where(e => e.Status == Status.ExaminingDirector || e.Status == Status.ExaminingManager || e.Status == Status.ExaminingFinance);
+                    break;
+                case StatusPosition.已审核:
+                    query = query.Where(e => e.Status == Status.Examined);
+                    break;
+            }
+            var days = 0;
+            switch (parameter.Time)
+            {
+                case Time.一周内:
+                    days = 7;
+                    break;
+                case Time.一年内:
+                    days = 365;
+                    break;
+                case Time.一月内:
+                    days = 31;
+                    break;
+                case Time.半年内:
+                    days = 183;
+                    break;
+            }
+            if (days != 0)
+            {
+                var time = DateTime.Now.AddDays(days);
+                query = query.Where(e => e.Time <= time);
+            }
+            if (parameter.Order == Order.Time)
+            {
+                query = query.OrderBy(e => e.Time);
+            }
+            else
+            {
+                query = query.OrderBy(e => e.Money);
             }
             return query.ToList();
         }

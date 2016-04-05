@@ -72,12 +72,12 @@ namespace Ztop.Todo.Manager
                 return Book.ID;
             }
         }
-        public List<int> Add(List<string> Groups,string Name)
+        public List<int> Add(List<string> Groups,string Name,string sAMAccountName)
         {
             var list = new List<int>();
             foreach(var group in Groups)
             {
-                list.Add(Add(new DataBook { Name = Name, GroupName = group }));
+                list.Add(Add(new DataBook { Name = Name, GroupName = group,sAMAccountName=sAMAccountName }));
             }
             return list;
         }
@@ -164,7 +164,7 @@ namespace Ztop.Todo.Manager
             }
             if (status == CheckStatus.Agree)
             {
-                ADController.AddUserToGroup(book.Name, book.GroupName);
+                ADController.AddUserToGroup(book.sAMAccountName, book.GroupName);
             }
 
             if (status != CheckStatus.Wait)
@@ -202,7 +202,7 @@ namespace Ztop.Todo.Manager
                 return false;
             }
             string str = "";
-            if(ADController.DeleteUserFromGroup(dataBook.Name,dataBook.GroupName,out str))
+            if(ADController.DeleteUserFromGroup(dataBook.sAMAccountName,dataBook.GroupName,out str))
             {
                 dataBook.Label = true;
                 try

@@ -74,10 +74,10 @@ namespace Ztop.Todo.Web.Controllers
             List<string> None;
             List<string> Have;
             List<int> Indexs;
-            Core.AuthorizeManager.Screen(groups, Identity.Name, out None, out Have);
+            Core.AuthorizeManager.Screen(groups, Identity.sAMAccountName, out None, out Have);
             try
             {
-                Indexs = Core.DataBookManager.Add(None, Identity.Name);
+                Indexs = Core.DataBookManager.Add(None, Identity.Name,Identity.sAMAccountName);
             }
             catch (Exception ex)
             {

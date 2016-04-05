@@ -10,7 +10,7 @@
 {
     <div class="col-md-12">
         <h3>报销单详情</h3>
-        @if (sheet.Status == Status.OutLine)//草稿
+        @if (sheet.Status == Status.OutLine||sheet.Status==Status.RollBack)//草稿  或者退回
         {
             <form method="post" class="form-horizontal col-md-12" action="" id="form-Check">
                 <input type="text" name="ID" value="@(sheet.ID)" style="display:none" />
@@ -31,7 +31,7 @@
                 </a>
             </form>
                     }
-                    else if (sheet.Status == Status.ExaminingDirector||sheet.Status==Status.ExaminingManager||sheet.Status==Status.ExaminingFinance||sheet.Status==Status.RollBack)//主管审核
+                    else if (sheet.Status == Status.ExaminingDirector||sheet.Status==Status.ExaminingManager||sheet.Status==Status.ExaminingFinance)//主管审核
 
                     {
                         if (sheet.Name == Identity.Name)//用户自己查看报销单时候
@@ -57,43 +57,6 @@
                     {
                         <span class="label label-success">当前报销已经成功报销</span>
                     }
-
-        @*@switch (sheet.Status)
-        {
-        case Status.OutLine:
-        <h3>报销单草稿</h3>
-        <form method="post" class="form-horizontal col-md-2" action="" id="form-Check">
-            <input type="text" name="ID" value="@(sheet.ID)" style="display:none" />
-            @{
-                Html.RenderPartial("SubmitButton");
-            }
-            <button type="button" class="btn btn-danger btn-sm btn-delete">
-                <em class="glyphicon glyphicon-remove"></em>删除
-            </button>
-        </form>
-
-                        break;
-                    case Status.Post:
-                    <h3>报销单等待审核</h3>
-                    <button type="button" class="btn btn-primary btn-sm btn-checked">
-                        <em class="glyphicon glyphicon-ok"></em>审核通过
-                    </button>
-                    Html.RenderPartial("WithDrawal", sheet);
-                    break;
-                case Status.ExaminingDirector:
-                case Status.ExaminingFinance:
-                case Status.ExaminingManager:
-        <h3>报销单审核</h3>
-
-
-        break;
-                case Status.Examined:
-        <h3>报销单</h3>
-        break;
-        default:
-        break;
-        }*@
-        
     </div>
    
                 <div class="col-md-8">

@@ -1,7 +1,9 @@
-﻿
+﻿@using Ztop.Todo.Model
 @{
     ViewBag.Title = "报销单";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    List<Sheet> List = ViewBag.List;
+    QueryParameter parameter = ViewBag.Parameter;
 }
 <div class="col-md-3">
     <table style="border:none;width:100%">
@@ -10,25 +12,30 @@
                 <fieldset>
                     <legend>查询设置</legend>
                     <form id="" style="margin-bottom:5px;" method="get">
+                        <input type="hidden" name="Creater"  value="@(Request.QueryString["Creater"])"/>
+                        <input type="hidden" name="Position"  value="@(Request.QueryString["Position"])" />
+                        <input type="hidden" name="CurrentTime"  value="@(Request.QueryString["CurrentTime"])" />
+                        <input type="hidden" name="Checker"  value="@(Request.QueryString["Checker"])" />
                         <div class="form-group">
                             <label class="control-label">表单创建人</label>
                             <div class="input-group">
                                 <div class="input-group-btn">
-                                    <button type="button" class="btn btn-primary" name="Ower">我</button>
-                                    <button type="button" class="btn btn-default" name="Ower">全部</button>
-                                    <button type="button" class="btn btn-default" name="Ower">自定义</button>
+                                    @foreach(Operator creater in Enum.GetValues(typeof(Operator)))
+                                    {
+                                        <button type="button" class="btn btn-@(parameter.Creater==creater?"primary":"default")" name="Ower">@(creater.ToString())</button>
+                                    }
                                 </div>
-                                <input type="text" class="form-control" placeholder="创建人" aria-describedby="sizing-addon2" />
+                                <input type="text" class="form-control" placeholder="创建人" aria-describedby="sizing-addon2"  name="Custom" />
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label">状态</label>
                             <div class="input-group">
                                 <div class="input-group-btn">
-                                    <button class="btn btn-primary" name="Status">不限</button>
-                                    <button class="btn btn-default" name="Status">草稿</button>
-                                    <button class="btn btn-default" name="Status">未审核</button>
-                                    <button class="btn btn-default" name="Status">已审核</button>
+                                    @foreach(StatusPosition status in Enum.GetValues(typeof(StatusPosition)))
+                                    {
+                                        <button type="button" class="btn btn-@(parameter.Status==status?"primary":"default")" name="Status">@(status.ToString())</button>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -36,18 +43,76 @@
                             <label class="control-label">审核人</label>
                             <div class="input-group">
                                 <div class="input-group-btn">
-                                    <button class="btn btn-primary" name="">不限</button>
-                                    <button class="btn btn-default" name="">一周内</button>
-                                    <button class="btn btn-default" name="">一月内</button>
-                                    <button class="btn btn-default" name="">半年内</button>
-                                    <button class="btn btn-default" name="">一年内</button>
+                                    @foreach(Operator checker in Enum.GetValues(typeof(Operator)))
+                                    {
+                                        <button type="button" class="btn btn-@(parameter.Checker==checker?"primary":"default")" name="Check">@(checker.ToString())</button>
+                                    }
+                                </div>
+                                <input type="text" class="form-control" placeholder="审核人" aria-describedby="sizing-addon2" name="Checker2" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">时间</label>
+                            <div class="input-group">
+                                <div class="input-group-btn">
+
+                                    @foreach(Time time in Enum.GetValues(typeof(Time)))
+                                    {
+                                        <button type="button" class="btn btn-@(parameter.Time==time?"primary":"default")" name="Time">@(time.ToString())</button>
+                                    }
                                 </div>
                             </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">排序</label>
+                            <select name="Order" class="form-control">
+                                <option value="Time">时间排序</option>
+                                <option value="Money">金额排序</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-success">立即查询</button>
                         </div>
                     </form>
                 </fieldset>
             </td>
         </tr>
+    </table>
+</div>
+<div class="col-md-9">
+    <h3>报销列表</h3>
+    <hr />
+    <ul class="nav nav-tabs">
+        <li role="presentation" class="active"><a href="#">报销单草稿</a></li>
+        <li role="presentation"><a href="#">已提交报销</a></li>
+        <li role="presentation"><a href="#">已完成报销</a></li>
+        <li role="presentation"><a href="#">未审核报销</a></li>
+        <li role="presentation"><a href="#">已审核报销</a></li>
+    </ul>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>单据编号</th>
+                <th>报销日期</th>
+                <th>报销金额</th>
+                <th>报销人</th>
+                <th>状态</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var sheet in List)
+            {
+                <tr>
+                    <td>#</td>
+                    <td><a href="">@(sheet.SerialNumber.Coding)</a></td>
+                    <td>@(sheet.Time.ToLongDateString())</td>
+                    <td>@(sheet.Money)</td>
+                    <td>@(sheet.Name)</td>
+                    <td>@(sheet.Status.GetDescription())</td>
+                </tr>
+            }
+        </tbody>
     </table>
 </div>
 
@@ -56,6 +121,26 @@
         $("[name='Ower']").click(function () {
             $("[name='Ower']").removeClass("btn-primary").addClass("btn-default");
             $(this).removeClass("btn-default").addClass("btn-primary");
+            var key = $(this).text();
+            $("input[name='Creater']").val(key);
+        });
+        $("[name='Status']").click(function () {
+            $("[name='Status']").removeClass("btn-primary").addClass("btn-default");
+            $(this).removeClass("btn-default").addClass("btn-primary");
+            var key = $(this).text();
+            $("input[name='Position']").val(key);
+        });
+        $("[name='Time']").click(function () {
+            $("[name='Time']").removeClass("btn-primary").addClass("btn-default");
+            $(this).removeClass("btn-default").addClass("btn-primary");
+            var key = $(this).text();
+            $("input[name='CurrentTime']").val(key);
+        });
+        $("[name='Check']").click(function () {
+            $("[name='Check']").removeClass("btn-primary").addClass("btn-default");
+            $(this).removeClass("btn-default").addClass("btn-primary");
+            var key = $(this).text();
+            $("input[name='Checker']").val(key);
         })
     })
 </script>

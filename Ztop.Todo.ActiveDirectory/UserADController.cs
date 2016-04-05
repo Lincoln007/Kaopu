@@ -69,7 +69,6 @@ namespace Ztop.Todo.ActiveDirectory
             int iFlagExists = iUserAccountControl & iUserAccountControl_Disabled;
             return iFlagExists > 0 ? false : true;
         }
-        
         public static void ActiveAccount(this string sAMAccountName)
         {
             if (string.IsNullOrEmpty(sAMAccountName))
@@ -89,7 +88,6 @@ namespace Ztop.Todo.ActiveDirectory
         {
             return GetUserObject(sAMAccountName).GetProperty("displayName");
         }
-
         public static void DisableAccount(string sAMAccountName)
         {
             if (string.IsNullOrEmpty(sAMAccountName))
@@ -146,7 +144,6 @@ namespace Ztop.Todo.ActiveDirectory
             }
             return list;
         }
-
         public static Dictionary<string, List<AUser>> GetUserDict(List<string> Groups)
         {
             var dict = new Dictionary<string, List<AUser>>();
@@ -186,7 +183,6 @@ namespace Ztop.Todo.ActiveDirectory
             }
             return dict;
         }
-
         public static void CreateUser(string Name, string sAMAccountName, string Organization, string FirstPassword)
         {
             var organizationEntry = GetOrganizationObject(Organization);

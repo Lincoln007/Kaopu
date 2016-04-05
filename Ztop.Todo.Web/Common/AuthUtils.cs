@@ -15,7 +15,7 @@ namespace Ztop.Todo.Web
 
         public static string GenerateToken(this HttpContextBase context, User user)
         {
-            var ticket = new FormsAuthenticationTicket(1, user.ID + "|" + user.DisplayName + "|" + user.Type, DateTime.Now, DateTime.Now.AddDays(1), true, "user_token");
+            var ticket = new FormsAuthenticationTicket(1, user.ID + "|" + user.DisplayName + "|" + user.Type+"|"+user.Username, DateTime.Now, DateTime.Now.AddDays(1), true, "user_token");
             var token = FormsAuthentication.Encrypt(ticket);
             return token;
         }
@@ -51,14 +51,15 @@ namespace Ztop.Todo.Web
                 if (ticket != null && !string.IsNullOrEmpty(ticket.Name))
                 {
                     var values = ticket.Name.Split('|');
-                    if (values.Length == 3)
+                    if (values.Length == 4)
                     {
                         var type = GroupType.Guest;
                         return new UserIdentity
                         {
                             UserID = int.Parse(values[0]),
                             Name = values[1],
-                            GroupType = Enum.TryParse(values[2], out type) ? type : GroupType.Guest
+                            GroupType = Enum.TryParse(values[2], out type) ? type : GroupType.Guest,
+                            sAMAccountName=values[3]
                         };
                     }
                 }

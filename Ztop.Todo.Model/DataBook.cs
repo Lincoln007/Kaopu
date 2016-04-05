@@ -24,6 +24,10 @@ namespace Ztop.Todo.Model
         /// </summary>
         public string Name { get; set; }
         /// <summary>
+        /// 域用户账号  （字母）
+        /// </summary>
+        public string sAMAccountName { get; set; }
+        /// <summary>
         /// 申请的组名
         /// </summary>
         public string GroupName { get; set; }

@@ -23,6 +23,20 @@ namespace Ztop.Todo.ActiveDirectory
             return Get("(&(objectCategory=group)(objectClass=group)(cn=" + GroupName + "))");
         }
 
+        public static string GetGroupName(this string sAMAccountName)
+        {
+            var distinguishedName = GetUserObject(sAMAccountName).GetDistinguishedName();
+            if (string.IsNullOrEmpty(distinguishedName))
+            {
+                throw new ArgumentException("未找到相关用户信息");
+            }
+            var values = distinguishedName.Split(',');
+            if (values.Count() == 5)
+            {
+                return values[1].Replace("OU=", "");
+            }
+            return string.Empty;
+        }
         public static bool IsMember(string GroupName, string sAMAccountName)
         {
             var GEntry = GroupName.GetGroupObject();

@@ -168,5 +168,19 @@ namespace Ztop.Todo.Manager
             }
             return user;
         }
+
+        public int GetGroupID(string groupName)
+        {
+            if (string.IsNullOrEmpty(groupName)) return 0;
+            using (var db = GetDbContext())
+            {
+                var entry = db.UserGroups.FirstOrDefault(e => e.Name == groupName.Trim().ToUpper());
+                if (entry != null)
+                {
+                    return entry.ID;
+                }
+            }
+            return 0;
+        }
     }
 }

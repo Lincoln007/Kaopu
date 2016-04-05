@@ -29,6 +29,7 @@ namespace Ztop.Todo.Web.Common
         public GroupType GroupType { get; set; }
         public string AuthenticationType { get { return "Web.Session"; } }
         public string Name { get; set; }
+        public string sAMAccountName { get; set; }
         public bool IsAuthenticated
         {
             get { return UserID > 0; }
