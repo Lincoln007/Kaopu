@@ -208,5 +208,30 @@ namespace Ztop.Todo.Manager
                 }
             }
         }
+
+        public Dictionary<string,double> Statistic(string name,DateTime startTime,DateTime endTime)
+        {
+            var dict = new Dictionary<string, double>();
+            var list = GetSheets(new QueryParameter()
+            {
+                Creater = Operator.我,
+                Status = StatusPosition.已审核,
+                Order=Order.Time
+            }, name);
+            list = list.Where(e => e.Time >= startTime && e.Time <= endTime).ToList();
+            foreach(var sheet in list)
+            {
+                var time = sheet.Time.ToLongDateString();
+                if (dict.ContainsKey(time))
+                {
+                    dict[time] += sheet.Money;
+                }
+                else
+                {
+                    dict.Add(time, sheet.Money);
+                }
+            }
+            return dict;
+        }
     }
 }
