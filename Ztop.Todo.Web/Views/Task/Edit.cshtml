@@ -34,7 +34,7 @@
                     <div class="col-lg-8">
                         <input type="text" id="datetimepicker1" placeholder="不填写为不限时间" class="form-control" name="ScheduledTime" value="@(model.ScheduledTime.HasValue?model.ScheduledTime.Value.ToShortDateString():null)" />
                         <div style="padding-top:5px;overflow:hidden;">
-                            <a href="javascript:;" data="1" class="btn btn-default btn-schedule">一天</a>
+                            <a href="javascript:;" data="1" class="btn btn-default btn-schedule">今天</a>
                             <a href="javascript:;" data="3" class="btn btn-default btn-schedule">三天</a>
                             <a href="javascript:;" data="7" class="btn btn-default btn-schedule">一周</a>
                             <a href="javascript:;" data="30" class="btn btn-default btn-schedule">一月</a>
@@ -126,16 +126,16 @@
             var val = "";
             switch (days) {
                 case 1:
-                    val = "@(DateTime.Today.AddDays(2).ToShortDateString())";
+                    val = "@(DateTime.Today.AddDays(1).ToShortDateString())";
                     break;
                 case 3:
-                    val = "@(DateTime.Today.AddDays(4).ToShortDateString())";
+                    val = "@(DateTime.Today.AddDays(3).ToShortDateString())";
                     break;
                 case 7:
-                    val = "@(DateTime.Today.AddDays(8).ToShortDateString())";
+                    val = "@(DateTime.Today.AddDays(7).ToShortDateString())";
                     break;
                 case 30:
-                    val = "@(DateTime.Today.AddMonths(1).AddDays(1).ToShortDateString())";
+                    val = "@(DateTime.Today.AddMonths(1).ToShortDateString())";
                     break;
                 case 0:
                     break;

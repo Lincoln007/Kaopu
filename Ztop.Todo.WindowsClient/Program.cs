@@ -22,6 +22,8 @@ namespace Ztop.Todo.WindowsClient
         [STAThread]
         static void Main(string[] args)
         {
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
             var filePath = string.Join(" ", args ?? new string[] { });
             if (HasInstance())
             {
@@ -41,6 +43,12 @@ namespace Ztop.Todo.WindowsClient
                 catch { }
                 Application.Run(new LoginForm(filePath));
             }
+        }
+
+        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            var ex = (Exception)e.ExceptionObject;
+            LogHelper.WriteLog(ex);
         }
 
         private static bool HasInstance()
