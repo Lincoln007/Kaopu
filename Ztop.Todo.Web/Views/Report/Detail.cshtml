@@ -23,7 +23,7 @@
                 <button type="button" class="btn btn-danger btn-sm btn-delete">
                     <em class="glyphicon glyphicon-remove"></em>删除
                 </button>
-                <button class="btn btn-default btn-sm" type="button">
+                <button class="btn btn-default btn-sm" type="button" onclick="javascript:window.print()">
                     <em class="glyphicon glyphicon-print"></em> 打印
                 </button>
                 <a class="btn btn-warning btn-sm" href="/Report">
@@ -36,7 +36,8 @@
                     {
                         if (sheet.Name == Identity.Name)//用户自己查看报销单时候
                         {
-                            <span class="label label-success">报销单已经提交，等待审核</span>
+                            <button type="button" class="btn btn-warning btn-sm"><i class="fa fa-refresh fa-spin"></i>审核中</button>
+                            @*<span class="label label-success">报销单已经提交，等待审核</span>*@
                         }
                         else if (sheet.Controler == Identity.Name)//主管  查看报销单
                         {
@@ -47,7 +48,7 @@
                                 Html.RenderPartial("WithDrawal", sheet);
                             }
                         }
-                        <button class="btn btn-default btn-sm" type="button">
+                        <button class="btn btn-default btn-sm" type="button" onclick="javascript:window.print()">
                             <em class="glyphicon glyphicon-print"></em> 打印
                         </button>
                             <a class="btn btn-warning btn-sm" href="/Report">
@@ -55,7 +56,13 @@
                          </a>
                     }else if (sheet.Status == Status.Examined)
                     {
-                        <span class="label label-success">当前报销已经成功报销</span>
+                        <button type="button" class="btn btn-success btn-sm"><i class="fa fa-flag"></i>成功报销</button>
+                        <button class="btn btn-default btn-sm" type="button" onclick="javascript:window.print()">
+                            <em class="glyphicon glyphicon-print"></em> 打印
+                        </button>
+                        <a class="btn btn-warning btn-sm" href="/Report">
+                            <em class="glyphicon glyphicon-menu-left"></em> 返回
+                        </a>
                     }
     </div>
    
@@ -67,12 +74,12 @@
                                 <td>单据编号</td>
                                 <td>@(sheet.SerialNumber.Coding)</td>
                                 <td>报销日期</td>
-                                <td>@(sheet.Time)</td>
+                                <td>@(sheet.Time.ToLongDateString())</td>
                             </tr>
                             <tr>
                                 <td>报销人</td>
                                 <td>@(sheet.Name)</td>
-                                <td>报销金额合计</td>
+                                <td>报销金额合计(元)</td>
                                 <td>@(sheet.Money)</td>
                             </tr>
                             <tr>
@@ -138,11 +145,11 @@
                                             <td>@(verify.Name)</td>
                                             @if (verify.Position==Position.Check)
                                             {
-                                                <td>@(verify.Time.ToShortDateString())</td>
+                                                <td>@(verify.Time.ToLongDateString())</td>
                                                 <td><i class="fa fa-check-square"></i></td>
                                             }else if (verify.Position==Position.RollBack)
                                             {
-                                                <td>@(verify.Time.ToShortDateString())</td>
+                                                <td>@(verify.Time.ToLongDateString())</td>
                                                 <td><i class="fa fa-ambulance"></i></td>
                                             }
                                             else
@@ -156,6 +163,16 @@
                                 }
                             </tbody>
                         </table>
+                    </div>
+                </div>
+
+                
+                <div class="col-md-8">
+                    <h3>报销确认</h3>
+                    <div class="form-group">
+                        <label class="control-label col-md-4">报销人签字：________________________</label>
+                        <label class="control-label col-md-4">审核人签字：________________________</label>
+                        <label class="control-label col-md-4">财务签字：__________________________</label>
                     </div>
                 </div>
                 }
