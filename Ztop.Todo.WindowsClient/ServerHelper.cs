@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using Ztop.Todo.Common;
 
 namespace Ztop.Todo.WindowsClient
 {
@@ -37,7 +38,15 @@ namespace Ztop.Todo.WindowsClient
                 {
                     var json = sr.ReadToEnd();
                     _lastGetTime = DateTime.Now;
-                    return Newtonsoft.Json.JsonConvert.DeserializeObject<Task>(json);
+                    try
+                    {
+                        return Newtonsoft.Json.JsonConvert.DeserializeObject<Task>(json);
+                    }
+                    catch (Exception ex)
+                    {
+                        LogHelper.WriteLog(ex);
+                        return null;
+                    }
                 }
             }
         }

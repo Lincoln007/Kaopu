@@ -15,7 +15,7 @@ namespace Ztop.Todo.Web
 
         public static string GenerateToken(this HttpContextBase context, User user)
         {
-            var ticket = new FormsAuthenticationTicket(1, user.ID + "|" + user.DisplayName + "|" + user.Type, DateTime.Now, DateTime.Now.AddDays(1), true, "user_token");
+            var ticket = new FormsAuthenticationTicket(1, user.ID + "|" + user.DisplayName + "|" + user.Type, DateTime.Now, DateTime.MaxValue, true, "user_token");
             var token = FormsAuthentication.Encrypt(ticket);
             return token;
         }

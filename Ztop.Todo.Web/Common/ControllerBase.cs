@@ -62,16 +62,6 @@ namespace Ztop.Todo.Web.Controllers
             return statusCode;
         }
 
-        private Exception GetException(Exception ex)
-        {
-            var innerEx = ex.InnerException;
-            if (innerEx != null)
-            {
-                return GetException(innerEx);
-            }
-            return ex;
-        }
-
         protected override void OnException(ExceptionContext filterContext)
         {
             if (filterContext.ExceptionHandled)
@@ -83,17 +73,17 @@ namespace Ztop.Todo.Web.Controllers
                 filterContext.HttpContext.Response.StatusCode = GetStatusCode(filterContext.Exception);
             }
             filterContext.HttpContext.Response.TrySkipIisCustomErrors = true;
-            var ex = GetException(filterContext.Exception);
+
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
-                filterContext.Result = ErrorJsonResult(ex);
+                filterContext.Result = ErrorJsonResult(filterContext.Exception);
             }
             else
             {
-                ViewBag.Exception = ex;
+                ViewBag.Exception = filterContext.Exception;
                 filterContext.Result = View("Error");
             }
-            WriteExceptionLog(filterContext.HttpContext, ex);
+            WriteExceptionLog(filterContext.HttpContext, filterContext.Exception);
         }
 
         private void WriteExceptionLog(HttpContextBase context, Exception ex)
@@ -102,24 +92,7 @@ namespace Ztop.Todo.Web.Controllers
             {
                 return;
             }
-            try
-            {
-                var logPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs");
-                if (!Directory.Exists(logPath))
-                {
-                    Directory.CreateDirectory(logPath);
-                }
-                var content = new StringBuilder();
-                content.AppendLine(context.Request.Url.AbsoluteUri);
-                content.AppendLine(ex.Message);
-                content.AppendLine(ex.StackTrace);
-                content.AppendLine(ex.Source);
-                System.IO.File.WriteAllText(Path.Combine(logPath, ex.GetType().Name + DateTime.Now.Ticks.ToString() + ".txt"), content.ToString());
-            }
-            catch
-            {
-
-            }
+            LogHelper.WriteLog(ex);
         }
     }
 }
