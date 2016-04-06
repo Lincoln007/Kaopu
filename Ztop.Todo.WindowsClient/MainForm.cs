@@ -109,7 +109,7 @@ namespace Ztop.Todo.WindowsClient
             _state = WindowState;
             _size = Size;
             this.WindowState = FormWindowState.Minimized;
-            this.Hide();
+            //this.Hide();
         }
 
 
@@ -120,9 +120,10 @@ namespace Ztop.Todo.WindowsClient
         {
             if (e.CloseReason == CloseReason.UserClosing)
             {
-                CloseWindow();
                 e.Cancel = true;
+                CloseWindow();
             }
+            
         }
 
         private void notifyIcon1_Click(object sender, EventArgs e)
@@ -151,8 +152,6 @@ namespace Ztop.Todo.WindowsClient
             if (this.thread != null && this.thread.IsAlive)
             {
                 TCPHelper.TCPSend(System.Configuration.ConfigurationManager.AppSettings["TCPSTOP"]);
-                //this.thread.Abort();
-                //Thread.Sleep(500);
                 this.thread.Join();
             }
             
@@ -162,8 +161,8 @@ namespace Ztop.Todo.WindowsClient
         private void 退出ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Stop();
-            this.DialogResult = DialogResult.Cancel;
-            //this.Hide();
+            this.Close();
+            _loginForm.Close();
         }
 
         private void Start()
@@ -200,9 +199,18 @@ namespace Ztop.Todo.WindowsClient
 
         private void 注销ToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            
             Stop();
             LoginHelper.Logout();
-            this.DialogResult = DialogResult.OK;
+            
+            this.Close();
+            this.Dispose();
+            _loginForm.Show();
+        }
+
+        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+
         }
     }
 }
