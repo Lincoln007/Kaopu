@@ -2,9 +2,7 @@
 @{
     ViewBag.Title = "创建报销单";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    // SerialNumber serialNumber = ViewBag.SerialNumber;
     Sheet sheet = ViewBag.Sheet;
-    int serial = 1;
 }
 
 
@@ -15,6 +13,7 @@
     <input type="text" name="NumberExt" value="@(sheet.SerialNumber.NumberExt)" style="display:none" />
     <input type="text"  name="Name" value="@(Identity.Name)" style="display:none" />
     <input type="text" name="ID" value="@(sheet.ID)" style="display:none" />
+    <input type="hidden" name="Type" value="@(sheet.Type)" />
     <div class="col-md-12">
         @{ 
             Html.RenderPartial("SubmitButton");
@@ -25,7 +24,7 @@
         <button class="btn btn-danger btn-sm" type="button">
             <em class="glyphicon glyphicon-remove-circle"></em> 删除
         </button>
-        <button class="btn btn-default btn-sm" type="button">
+        <button class="btn btn-default btn-sm" type="button" onclick="javascript:window.print()">
             <em class="glyphicon glyphicon-print"></em> 打印
         </button>
         <a class="btn btn-warning btn-sm" href="/Report">
@@ -56,65 +55,14 @@
                 </tr>
             </tbody>
         </table>
-        <h3 class="col-md-11" style="margin-top:0px;">内容分项清单</h3>
-        <table class="table table-bordered" id="SHEET">
-            <thead>
-                <tr>
-                    <th>
-                        #
-                    </th>
-                    <th>
-                        分类
-                    </th>
-                    <th style="width:50%">
-                        内容
-                    </th>
-                    <th>
-                        金额(元)
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (sheet.Substances != null)
-                {
-                    foreach (var subtance in sheet.Substances)
-                    {
-                        <tr>
-                            <td>@(serial++)</td>
-                            <td>
-                                <select name="Category">
-                                    <option value="">请选择</option>
-                                    @foreach (Category category in Enum.GetValues(typeof(Category)))
-                                    {
-                                        <option value="@(category)" @(subtance.Category == category ? "selected=selected" : "")>@(category.GetDescription())</option>
-                                    }
-                                </select>
-                            </td>
-                            <td><input type="text" name="Detail" style="width:100%" value="@(subtance.Details)" /></td>
-                            <td><input type="text" name="Price" value="@(subtance.Price)" /></td>
-                        </tr>
-                    }
-                }
-                @for (var i = serial - 1; i < 10; i++)
-                {
-                    <tr>
-                        <td>@(i + 1)</td>
-                        <td>
-                            <select name="Category">
-                                <option value="">请选择</option>
-                                @foreach (Category category in Enum.GetValues(typeof(Category)))
-                {
-                                    <option value="@(category)">@(category.GetDescription())</option>
-                                }
-                            </select>
-                        </td>
-                        <td><input type="text" name="Detail" style="width:100%" /></td>
-                        <td><input type="text" name="Price" /></td>
-                    </tr>
-                }
-            </tbody>
-
-        </table>
+        @if (sheet.Type == SheetType.Daily)
+        {
+            Html.RenderPartial("Subitem", sheet);
+        }
+        else
+        {
+            Html.RenderPartial("Errand", sheet.Evection);
+        }
     </div>
     <div class="col-md-4">
         <h3>
@@ -214,41 +162,25 @@
         });
 
         $("#form-Create").submit(function () {
-            if (checkMoney()) {
-                var data = $(this).serialize();
-                $.request("/Report/Save", data, function (json) {
-                    location.href = "/Report/Index";
-                });
-                return false;
-            } else {
-                alert("报销金额不能为0或者金额合计与分项合计不相等，请核对!");
-                $("[name='Director']").removeClass("btn-success").addClass("btn-default");
-                $("[name='DirectorVal']").val("");
-                return false;
-            }
+            var data = $(this).serialize();
+            $.request("/Report/Save", data, function (json) {
+                location.href = "/Report/Index";
+            });
+            return false;
+
+            //if (checkMoney()) {
+                
+            //} else {
+            //    alert("报销金额不能为0或者金额合计与分项合计不相等，请核对!");
+            //    $("[name='Director']").removeClass("btn-success").addClass("btn-default");
+            //    $("[name='DirectorVal']").val("");
+            //    return false;
+            //}
            
         });
 
 
-        function checkMoney() {
-            var sum = parseInt($("input[name='Money']").val());
-            if (isNaN(sum)||sum==0) {
-                //alert("报销单合计金额不能为空！");
-                return false;
-            }
-            var sum2 = 0;
-            $("input[name='Price']").each(function () {
-                var a = parseInt($(this).val());
-                if (!isNaN(a)) {
-                    sum2 += a;
-                }
-            });
-            if (sum == sum2) {
-                return true;
-            } else {
-                return false;
-            }
-        }
+        
     })
 </script>
 

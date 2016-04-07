@@ -60,8 +60,10 @@
     <Compile Include="Authorize.cs" />
     <Compile Include="Comment.cs" />
     <Compile Include="DataBook.cs" />
+    <Compile Include="Evection.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="PageParameter.cs" />
+    <Compile Include="PieData.cs" />
     <Compile Include="Record.cs" />
     <Compile Include="SerialNumber.cs" />
     <Compile Include="Sheet.cs" />

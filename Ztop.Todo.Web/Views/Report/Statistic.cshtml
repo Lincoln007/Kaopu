@@ -2,13 +2,103 @@
 @{
     ViewBag.Title = "报销统计";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    List<string> users = ViewBag.Users;
 }
 
 <div class="col-md-6">
-    <form class="form-inline" method="post" action="">
+    <form class="form-inline" method="post" action="" id="form-statistic1">
         <div class="form-group">
-            <label class="control-label"></label>
+            <label class="control-label">报销人:</label>
+            <select name="name" class="form-control">
+                @foreach(var name in users)
+                {
+                    <option value="@(name)">@(name)</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">起始时间：</label>
+            <input type="text" class="form-control"  value="@(DateTime.Today.ToString("yyyy-MM-dd"))" name="StartTime" />
+        </div>
+        <div class="form-group">
+            <label class="control-label">结束时间：</label>
+            <input type="text" class="form-control"  value="@(DateTime.Today.ToString("yyy-MM-dd"))" name="EndTime" />
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-success">统计</button>
         </div>
     </form>
+    <div>
+        <canvas id="canvas1" height="450" width="600"></canvas>
+    </div>
 </div>
+
+<div class="col-md-6">
+    <form id="form-statistic2" class="form-inline" method="post">
+        <div class="form-group">
+            <label class="control-label">报销人:</label>
+            <select name="name" class="form-control">
+                @foreach (var name in users)
+                {
+                    <option value="@(name)">@(name)</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">分类：</label>
+            <select name="Category" class="form-control">
+                @foreach(Category category in Enum.GetValues(typeof(Category)))
+                {
+                    <option value="@(category)">@(category.GetDescription())</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">起始时间：</label>
+            <input type="text" class="form-control" value="@(DateTime.Today.ToString("yyyy-MM-dd"))" name="StartTime" />
+        </div>
+        <div class="form-group">
+            <label class="control-label">结束时间:</label>
+            <input type="text" class="form-control" value="@(DateTime.Today.ToString("yyyy-MM-dd"))" name="EndTime" />
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-success">统计</button>
+        </div>
+    </form>
+    <div>
+        <canvas id="canvas2" height="450" width="600"></canvas>
+    </div>
+</div>
+
+<script>
+
+    $("input[name='StartTime']").datetimepicker({
+        timepicker: false,
+        format: 'Y-m-d',
+        maxDate:'@(DateTime.Today.ToLongDateString())'
+    });
+
+    $("input[name='EndTime']").datetimepicker({
+        timepicker: false,
+        format: 'Y-m-d',
+        maxDate: '@(DateTime.Today.ToLongDateString())'
+    });
+
+    $("#form-statistic1").submit(function () {
+        var data = $(this).serialize();
+        $.request("/Report/Statistic", data, function (json) {
+            var ctx = $("#canvas1").get(0).getContext("2d");
+            new Chart(ctx).Pie(json);
+        });
+        return false;
+    });
+
+    $("#form-statistic2").submit(function () {
+        var data = $(this).serialize();
+        $.request("/Report/Statistic2", data, function (json) {
+
+        })
+    })
+
+</script>
 

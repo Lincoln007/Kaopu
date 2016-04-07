@@ -4,6 +4,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     List<Sheet> List = ViewBag.List;
     QueryParameter parameter = ViewBag.Parameter;
+    int serial = 1;
 }
 <div class="col-md-3">
     <table style="border:none;width:100%">
@@ -84,13 +85,6 @@
 <div class="col-md-9">
     <h3>报销列表</h3>
     <hr />
-    @*<ul class="nav nav-tabs">
-        <li role="presentation" class="active"><a href="#">报销单草稿</a></li>
-        <li role="presentation"><a href="#">已提交报销</a></li>
-        <li role="presentation"><a href="#">已完成报销</a></li>
-        <li role="presentation"><a href="#">未审核报销</a></li>
-        <li role="presentation"><a href="#">已审核报销</a></li>
-    </ul>*@
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -106,7 +100,7 @@
             @foreach(var sheet in List)
             {
                 <tr>
-                    <td>#</td>
+                    <td>@(serial++)</td>
                     <td><a href="/Report/Detail?id=@(sheet.ID)">@(sheet.SerialNumber.Coding)</a></td>
                     <td>@(sheet.Time.ToLongDateString())</td>
                     <td>@(sheet.Money)</td>
@@ -116,6 +110,7 @@
             }
         </tbody>
     </table>
+    @Html.Partial("_pagination", ViewBag.Page as object)
 </div>
 
 <script>

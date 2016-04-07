@@ -189,8 +189,10 @@
     <Content Include="fonts\fontawesome-webfont.eot" />
     <None Include="Properties\PublishProfiles\TODO.pubxml" />
     <None Include="Scripts\jquery-1.9.1.intellisense.js" />
+    <Content Include="Scripts\BarBase.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\Chart.js" />
     <Content Include="Scripts\common.js" />
     <Content Include="Scripts\jquery-1.9.1.js" />
     <Content Include="Scripts\jquery-1.9.1.min.js" />
@@ -240,6 +242,8 @@
     <Content Include="Views\Home\Import.cshtml" />
     <Content Include="Views\Home\Resources.cshtml" />
     <Content Include="Views\Report\Statistic.cshtml" />
+    <Content Include="Views\Report\Subitem.cshtml" />
+    <Content Include="Views\Report\Errand.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

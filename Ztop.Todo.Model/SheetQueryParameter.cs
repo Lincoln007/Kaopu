@@ -46,6 +46,11 @@ namespace Ztop.Todo.Model
         /// 排序
         /// </summary>
         public Order Order { get; set; }
+        /// <summary>
+        /// 报销类型   null 全部  日常报销  出差报销
+        /// </summary>
+        public SheetType? Type { get; set; }
+        public PageParameter Page { get; set; }
     }
 
     public enum Operator

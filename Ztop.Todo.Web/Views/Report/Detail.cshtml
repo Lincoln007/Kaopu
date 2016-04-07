@@ -90,32 +90,41 @@
                             </tr>
                         </tbody>
                     </table>
-                    <h3>内容分项清单</h3>
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>分类</th>
-                                <th style="width:50%">内容</th>
-                                <th>金额（元）</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (sheet.Substances != null)
-                            {
-                                Serial = 1;
-                                foreach (var substances in sheet.Substances)
+                    
+                    @if (sheet.Type == SheetType.Daily)
+                    {
+                        <h3>内容分项清单</h3>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>分类</th>
+                                    <th style="width:50%">内容</th>
+                                    <th>金额（元）</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (sheet.Substances != null)
                                 {
-                                    <tr>
-                                        <td>@(Serial++)</td>
-                                        <td>@(substances.Category.GetDescription())</td>
-                                        <td>@(substances.Details)</td>
-                                        <td>@(substances.Price)</td>
-                                    </tr>
+                                    Serial = 1;
+                                    foreach (var substances in sheet.Substances)
+                                    {
+                                        <tr>
+                                            <td>@(Serial++)</td>
+                                            <td>@(substances.Category.GetDescription())</td>
+                                            <td>@(substances.Details)</td>
+                                            <td>@(substances.Price)</td>
+                                        </tr>
+                                    }
                                 }
-                            }
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        Html.RenderPartial("Errand", sheet.Evection);
+                    }
+
                 </div>
                 <div class="col-md-4">
                     <div class="panel panel-default">

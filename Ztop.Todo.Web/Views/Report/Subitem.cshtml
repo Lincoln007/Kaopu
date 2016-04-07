@@ -1,0 +1,87 @@
+﻿@model Ztop.Todo.Model.Sheet
+@{ 
+    int serial = 1;
+}
+<h3 class="col-md-11" style="margin-top:0px;">内容分项清单</h3>
+<table class="table table-bordered" id="SHEET">
+    <thead>
+        <tr>
+            <th>
+                #
+            </th>
+            <th>
+                分类
+            </th>
+            <th style="width:50%">
+                内容
+            </th>
+            <th>
+                金额(元)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Substances != null)
+        {
+            foreach (var subtance in Model.Substances)
+            {
+                <tr>
+                    <td>@(serial++)</td>
+                    <td>
+                        <select name="Category">
+                            <option value="">请选择</option>
+                            @foreach (Category category in Enum.GetValues(typeof(Category)))
+                            {
+                                <option value="@(category)" @(subtance.Category == category ? "selected=selected" : "")>@(category.GetDescription())</option>
+                            }
+                        </select>
+                    </td>
+                    <td><input type="text" name="Detail" style="width:100%" value="@(subtance.Details)" /></td>
+                    <td><input type="text" name="Price" value="@(subtance.Price)" /></td>
+                </tr>
+            }
+        }
+        @for (var i = serial - 1; i < 10; i++)
+        {
+            <tr>
+                <td>@(i + 1)</td>
+                <td>
+                    <select name="Category">
+                        <option value="">请选择</option>
+                        @foreach (Category category in Enum.GetValues(typeof(Category)))
+                {
+                            <option value="@(category)">@(category.GetDescription())</option>
+                        }
+                    </select>
+                </td>
+                <td><input type="text" name="Detail" style="width:100%" /></td>
+                <td><input type="text" name="Price" /></td>
+            </tr>
+        }
+    </tbody>
+
+</table>
+
+
+<script>
+    $(function () {
+        function checkMoney() {
+            var sum = parseInt($("input[name='Money']").val());
+            if (isNaN(sum) || sum == 0) {
+                return false;
+            }
+            var sum2 = 0;
+            $("input[name='Price']").each(function () {
+                var a = parseInt($(this).val());
+                if (!isNaN(a)) {
+                    sum2 += a;
+                }
+            });
+            if (sum == sum2) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    })
+</script>

@@ -50,14 +50,23 @@ namespace Ztop.Todo.Model
         /// </summary>
         public string Remarks { get; set; }
         /// <summary>
+        /// 报销单类型
+        /// </summary>
+        public SheetType Type { get; set; }
+        /// <summary>
         /// 是否删除
         /// </summary>
         public bool Deleted { get; set; }
         /// <summary>
-        /// 内容分项清单
+        /// 日常报销—— 内容分项清单
         /// </summary>
         [NotMapped]
         public List<Substancs> Substances { get; set; }
+        /// <summary>
+        /// 出差报销——分类清单
+        /// </summary>
+        [NotMapped]
+        public Evection Evection { get; set; }
         /// <summary>
         /// 审核信息表
         /// </summary>
@@ -70,6 +79,14 @@ namespace Ztop.Todo.Model
         public string Checkers { get; set; }
 
     }
+    public enum SheetType
+    {
+        [Description("日常报销")]
+        Daily,
+        [Description("出差报销")]
+        Errand
+    }
+
     public enum Status
     {
         [Description("草稿")]//只是填写了报销单  但是没有提交
