@@ -87,6 +87,10 @@ namespace Ztop.Todo.WindowsClient
         public void OpenTask(string UriPath)
         {
             webControl1.Source = new Uri(ServerHelper.GetServerUrl() + UriPath);
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                OpenWindow();
+            }
         }
 
 
@@ -109,7 +113,7 @@ namespace Ztop.Todo.WindowsClient
             _state = WindowState;
             _size = Size;
             this.WindowState = FormWindowState.Minimized;
-            //this.Hide();
+            this.Hide();
         }
 
 
@@ -118,6 +122,7 @@ namespace Ztop.Todo.WindowsClient
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            Console.WriteLine(e.CloseReason.ToString());
             if (e.CloseReason == CloseReason.UserClosing)
             {
                 e.Cancel = true;
@@ -152,7 +157,7 @@ namespace Ztop.Todo.WindowsClient
             if (this.thread != null && this.thread.IsAlive)
             {
                 TCPHelper.TCPSend(System.Configuration.ConfigurationManager.AppSettings["TCPSTOP"]);
-                this.thread.Join();
+                this.thread.Join(500);
             }
             
 
@@ -192,7 +197,7 @@ namespace Ztop.Todo.WindowsClient
             }
             else
             {
-                OpenTask("/task/edit?FileOne=" + FileOne);
+                OpenTask("/task/edit?file=" + FileOne);
             }
         }
 
@@ -205,6 +210,7 @@ namespace Ztop.Todo.WindowsClient
             
             this.Close();
             this.Dispose();
+            _loginForm.WindowState = FormWindowState.Normal;
             _loginForm.Show();
         }
 

@@ -29,30 +29,20 @@ namespace Ztop.Todo.WindowsClient
                 string str = TCPHelper.TCPRecevier(tcpListener);
                 if (str == System.Configuration.ConfigurationManager.AppSettings["TCPSTOP"])
                 {
+                    tcpListener.Stop();
+                    tcpListener.Server.Close();
                     IsLive = false;
                     continue;
                 }
-                if (!string.IsNullOrEmpty(str) && System.IO.File.Exists(str))
+                if (!string.IsNullOrEmpty(str))
                 {
-                    string uploadPath = string.Empty;
-                    try
+                    if (this.mainForm != null)
                     {
-                        uploadPath = FTPHelper.UploadFile(str);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("上传失败，错误信息：" + ex.ToString());
-                        continue;
-                    }
-                    MessageBox.Show("成功上传文件到服务器" + str);
-                    if (!string.IsNullOrEmpty(uploadPath) && this.mainForm != null)
-                    {
-                        mainForm.ThreadFunction(uploadPath);
+                        mainForm.ThreadFunction(str);
                     }
                 }
             }
-            tcpListener.Stop();
-            tcpListener.Server.Close();
+
             
         }
     }

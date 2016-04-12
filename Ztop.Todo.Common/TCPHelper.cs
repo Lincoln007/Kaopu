@@ -13,16 +13,10 @@ namespace Ztop.Todo.Common
         {
             TcpClient tcpClient = new TcpClient(IPHelper.GetIPAddress().ToString(), Int32.Parse(System.Configuration.ConfigurationManager.AppSettings["Port"]));
             NetworkStream ns = tcpClient.GetStream();
-            byte[] buffer = System.Text.Encoding.Unicode.GetBytes(Message);
-            try
+            byte[] buffer = System.Text.Encoding.UTF8.GetBytes(Message);
+            lock (ns)
             {
-                lock (ns)
-                {
-                    ns.Write(buffer, 0, buffer.Length);
-                }
-            }catch(Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
+                ns.Write(buffer, 0, buffer.Length);
             }
         }
 
@@ -32,9 +26,14 @@ namespace Ztop.Todo.Common
             using (TcpClient tcpClient = tcpListener.AcceptTcpClient())
             {
                 NetworkStream ns = tcpClient.GetStream();
-                byte[] buffer = new byte[tcpClient.Available];
+                int length = tcpClient.Available;
+                if (length == 0)
+                {
+                    length = 1024;
+                }
+                byte[] buffer = new byte[length];
                 ns.Read(buffer, 0, buffer.Length);
-                result = System.Text.Encoding.Unicode.GetString(buffer).Trim();
+                result = System.Text.Encoding.UTF8.GetString(buffer);
             } 
             return result;
         }

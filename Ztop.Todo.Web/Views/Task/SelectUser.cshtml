@@ -27,10 +27,6 @@
                 <td>
                     @foreach (var user in allUsers.Where(e => e.GroupID == group.ID).OrderByDescending(e => e.Order))
                     {
-                        if (user.DisplayName == Identity.Name)
-                        {
-                            continue;
-                        }
                         <label class="checkbox-inline"><input type="checkbox" name="userIds" value="@(user.ID)" />@(user.DisplayName)</label>
                     }
                 </td>

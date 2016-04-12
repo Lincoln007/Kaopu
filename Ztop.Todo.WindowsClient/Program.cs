@@ -29,7 +29,34 @@ namespace Ztop.Todo.WindowsClient
             {
                 if (!string.IsNullOrEmpty(filePath))
                 {
-                    TCPHelper.TCPSend(filePath);
+                    filePath = System.IO.Path.GetFullPath(filePath);
+                    if (!System.IO.File.Exists(filePath))
+                    {
+                        MessageBox.Show(string.Format("无法识别的文件路径，当前识别路径：{0}", filePath));
+                        return;
+                    }
+                    try
+                    {
+                        filePath = FTPHelper.UploadFile(filePath);
+                    }
+                    catch(Exception ex)
+                    {
+                        MessageBox.Show(string.Format("上传文件失败！请确保该文件是否被占用，错误信息：{0}", ex.ToString()));
+                        return;
+                    }
+                    
+                    try
+                    {
+                       
+                        TCPHelper.TCPSend(filePath);
+                    }
+                    catch(Exception ex)
+                    {
+                        MessageBox.Show(string.Format("发送文件信息失败，错误信息：{0}",ex.ToString()));
+                        return;
+                    }
+                    //MessageBox.Show(string.Format("成功发送文件路径：{0}", filePath));
+                  
                 }
             }
             else
@@ -40,7 +67,10 @@ namespace Ztop.Todo.WindowsClient
                 {
                     RegisterApplication();
                 }
-                catch { }
+                catch(Exception ex)
+                {
+                    MessageBox.Show(string.Format("注册右键附件上传失败，请确保以管理员运行本程序，错误信息：{0}", ex.ToString()) );
+                }
                 Application.Run(new LoginForm(filePath));
             }
         }

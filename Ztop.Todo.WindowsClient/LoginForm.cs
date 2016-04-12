@@ -32,7 +32,6 @@ namespace Ztop.Todo.WindowsClient
         {
             InitializeComponent();
         }
-
         private void LoginButton_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(txtUsername.Text))
@@ -75,7 +74,6 @@ namespace Ztop.Todo.WindowsClient
                 }));
             }).Start();
         }
-
         private void Remember(UserInfo userInfo)
         {
             if (Users != null)
@@ -100,7 +98,6 @@ namespace Ztop.Todo.WindowsClient
         {
             Application.Exit();
         }
-
         private void PasswordText_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
@@ -111,8 +108,8 @@ namespace Ztop.Todo.WindowsClient
         private void MShow()
         {
             var mainForm = new MainForm(_uploadFile);
+            mainForm.Show(this);
             this.Hide();
-            mainForm.ShowDialog(this);
         }
         private void Init()
         {
@@ -124,6 +121,11 @@ namespace Ztop.Todo.WindowsClient
         }
 
         private void LoginForm_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void LoginForm_Activated(object sender, EventArgs e)
         {
             Init();
         }

@@ -64,21 +64,9 @@ namespace Ztop.Todo.Common
                     } while (!(dataRead < BufferSize));
                     rs.Close();
                 }
-                //try
-                //{
-                   
-                //}catch(Exception ex)
-                //{
-                //    Console.WriteLine(ex.ToString());
-                //}
-                //finally
-                //{
-                //    fs.Close();
-                //}
             }
             ftp = null;
             return System.IO.Path.Combine(FTPDirectory, Target);
-            //Console.WriteLine("成功上传文件");
 
         }
 
