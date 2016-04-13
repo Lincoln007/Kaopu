@@ -65,7 +65,7 @@ namespace Ztop.Todo.WindowsClient
                 Application.SetCompatibleTextRenderingDefault(false);
                 try
                 {
-                    RegisterApplication();
+                    //RegisterApplication();
                 }
                 catch(Exception ex)
                 {

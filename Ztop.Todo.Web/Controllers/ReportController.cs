@@ -303,5 +303,16 @@ namespace Ztop.Todo.Web.Controllers
             return Json(dict);
         }
 
+
+        /// <summary>
+        /// 等待我审核的报销单
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Sheeting()
+        {
+            ViewBag.WaitForMe = Core.SheetManager.GetSheets(new SheetQueryParameter { Deleted = false, Controler = Identity.Name }).Where(e => e.Status != Status.Examined && e.Status != Status.OutLine).ToList();
+            return View();
+        }
+
     }
 }

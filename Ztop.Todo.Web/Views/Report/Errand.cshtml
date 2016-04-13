@@ -2,111 +2,185 @@
     @{ 
         bool flag = ViewBag.Detail??false;
     }
-<h3 class="col-md-11" style="margin-top:0px">报销内容分项清单</h3>
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>编号</th>
-            <th>分类</th>
-            <th style="width:500px;">内容</th>
-            <th>备注</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>1</td>
-            <td>公里数</td>
-            <td>
-                <div class="input-group col-md-12">
-                    <input type="text" class="form-control" name="KiloMeters" value="@(Model.KiloMeters)" @(flag?"disabled=disabled":"") />
-                    <div class="input-group-addon">公里</div>
-                </div>
-            </td>
-            <td>用车填写</td>
-        </tr>
-        <tr>
-            <td>2</td>
-            <td>交通费</td>
-            <td>
-                <div class="input-group col-md-12">
-                    <input type="text" class="form-control" name="Traffic" value="@(Model.Traffic)" @(flag?"disabled=disabled":"")/>
-                    <div class="input-group-addon">元</div>
-                </div>
-            </td>
-            <td>车票或油费</td>
-        </tr>
-        <tr>
-            <td>3</td>
-            <td>出差人数*天</td>
-            <td>
-                <div class="input-group col-md-12">
-                    <input type="text" class="form-control" name="Peoples" value="@(Model.Peoples)" @(flag?"disabled=disabled":"")/>
-                    <div class="input-group-addon">人</div>
-                    <input type="text" class="form-control" name="Days" value="@(Model.Days)" @(flag?"disabled=disabled":"") />
-                    <div class="input-group-addon">天</div>
-                </div>
-            </td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>4</td>
-            <td>出差补贴</td>
-            <td>
-                <div class="input-group col-md-12">
-                    <input type="text" class="form-control" name="SubSidy" value="@(Model.SubSidy)" @(flag?"disabled=disabled":"")/>
-                    <div class="input-group-addon">元</div>
-                </div>
-            </td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>5</td>
-            <td>出差住宿</td>
-            <td>
-                <div class="input-group col-md-12">
-                    <input type="text" class="form-control" name="Hotel" value="@(Model.Hotel)" @(flag?"disabled=disabled":"")/>
-                    <div class="input-group-addon">元</div>
-                </div>
-            </td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>6</td>
-            <td>其他内容</td>
-            <td>
-                <input type="text" class="form-control col-md-12" name="Mark" value="@(Model.Mark)" @(flag?"disabled=disabled":"")/>
-            </td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>7</td>
-            <td>其他金额</td>
-            <td>
-                <div class="input-group col-md-12">
-                    <input type="text" class="form-control" name="Other" value="@(Model.Other)" @(flag?"disabled=disabled":"")/>
-                    <div class="input-group-addon">元</div>
-                </div>
-            </td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>8</td>
-            <td>过路费</td>
-            <td>
-                <div class="input-group col-md-12">
-                    <input type="text" class="form-control" name="Toll" value="@(Model.Toll)" @(flag?"disabled=disabled":"")/>
-                    <div class="input-group-addon">元</div>
-                </div>
-            </td>
-            <td>用车填写</td>
-        </tr>
-        <tr>
-            <td>9</td>
-            <td>出差人</td>
-            <td>
-                <input type="text" class="form-control col-md-12" name="Names" value="@(Model.Names)" @(flag?"disabled=disabled":"")/>    
-            </td>
-            <td></td>
-        </tr>
-    </tbody>
-</table>
+<h3>报销内容分项清单&nbsp;</h3>
+<div id="bill">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>编号</th>
+                <th class="text-center">分类</th>
+                <th style="width:50%;" class="text-center">内容</th>
+                <th>备注</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>公里数</td>
+                @if (flag)
+                {
+                    <td class="text-center">@(Model.KiloMeters) 公里</td>
+                }
+                else
+                {
+                    <td>
+                        <div class="input-group col-md-10">
+                            <input type="text" class="form-control" name="KiloMeters" value="@(Model.KiloMeters)" />
+                            <div class="input-group-addon">公里</div>
+                        </div>
+                    </td>
+                    
+                }
+                <td>用车填写</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>交通费</td>
+                @if (flag)
+                {
+                    <td class="text-center">@(Model.Traffic) 元</td>
+                }
+                else
+                {
+                    <td>
+                        <div class="input-group col-md-10">
+                            <input type="text" class="form-control" name="Traffic" value="@(Model.Traffic)"/>
+                            <div class="input-group-addon">元</div>
+                        </div>
+                    </td>
+                }
+                <td>车票或油费</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>出差人数*天</td>
+                @if (flag)
+                {
+                    <td class="text-center">@(Model.Peoples) 人 @(Model.Days) 天</td>
+                }
+                else
+                {
+                    <td>
+                        <div class="input-group col-md-10">
+                            <input type="text" class="form-control" name="Peoples" value="@(Model.Peoples)" />
+                            <div class="input-group-addon">人</div>
+                            <input type="text" class="form-control" name="Days" value="@(Model.Days)" />
+                            <div class="input-group-addon">天</div>
+                        </div>
+                    </td>
+                }
+                
+                <td></td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>出差补贴</td>
+                @if (flag)
+                {
+                    <td class="text-center">@(Model.SubSidy) 元</td>
+                }
+                else
+                {
+                    <td>
+                        <div class="input-group col-md-10">
+                            <input type="text" class="form-control" name="SubSidy" value="@(Model.SubSidy)" />
+                            <div class="input-group-addon">元</div>
+                        </div>
+                    </td>
+                }
+                
+                <td></td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>出差住宿</td>
+                @if (flag)
+                {
+                    <td class="text-center">@(Model.Hotel) 元</td>
+                }
+                else
+                {
+                    <td>
+                        <div class="input-group col-md-10">
+                            <input type="text" class="form-control" name="Hotel" value="@(Model.Hotel)"  />
+                            <div class="input-group-addon">元</div>
+                        </div>
+                    </td>
+                }
+                
+                <td></td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>其他内容</td>
+                @if (flag)
+                {
+                    <td class="text-center">@(Model.Mark)</td>
+                }
+                else
+                {
+                    <td>
+                        <input type="text" class="form-control col-md-10" name="Mark" value="@(Model.Mark)" />
+                    </td>
+                }
+                
+                <td></td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>其他金额</td>
+                @if (flag)
+                {
+                    <td class="text-center">@(Model.Other)  元</td>
+                }
+                else
+                {
+                    <td>
+                        <div class="input-group col-md-10">
+                            <input type="text" class="form-control" name="Other" value="@(Model.Other)" />
+                            <div class="input-group-addon">元</div>
+                        </div>
+                    </td>
+                }
+               
+                <td></td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td>过路费</td>
+                @if (flag)
+                {
+                    <td class="text-center">@(Model.Toll) 元</td>
+                }
+                else
+                {
+                    <td>
+                        <div class="input-group col-md-10">
+                            <input type="text" class="form-control" name="Toll" value="@(Model.Toll)" />
+                            <div class="input-group-addon">元</div>
+                        </div>
+                    </td>
+                }
+               
+                <td>用车填写</td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td>出差人</td>
+                @if (flag)
+                {
+                    <td class="text-center">@(Model.Names)</td>
+                }
+                else
+                {
+                    <td>
+                        <input type="text" class="form-control col-md-10" name="Names" value="@(Model.Names)" />
+                    </td>
+                }
+                
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
