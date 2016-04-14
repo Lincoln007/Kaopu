@@ -154,11 +154,11 @@ namespace Ztop.Todo.WindowsClient
 
             timer1.Stop();
             timer1.Dispose();
-            if (this.thread != null && this.thread.IsAlive)
-            {
-                TCPHelper.TCPSend(System.Configuration.ConfigurationManager.AppSettings["TCPSTOP"]);
-                this.thread.Join(500);
-            }
+            //if (this.thread != null && this.thread.IsAlive)
+            //{
+            //    TCPHelper.TCPSend(System.Configuration.ConfigurationManager.AppSettings["TCPSTOP"]);
+            //    this.thread.Join(500);
+            //}
             
 
         }
@@ -172,10 +172,10 @@ namespace Ztop.Todo.WindowsClient
 
         private void Start()
         {
-            var listener = new TODOListener(this);
-            this.thread = new Thread(listener.Listen);
-            this.thread.IsBackground = false;
-            this.thread.Start();
+            //var listener = new TODOListener(this);
+            //this.thread = new Thread(listener.Listen);
+            //this.thread.IsBackground = false;
+            //this.thread.Start();
 
             timer1.Tick += Timer1_Tick;
             timer1.Interval = 1000 * 10;

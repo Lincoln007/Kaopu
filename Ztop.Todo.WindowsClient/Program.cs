@@ -6,16 +6,18 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using Ztop.Todo.Common;
+using Ztop.Todo.Model;
 
 namespace Ztop.Todo.WindowsClient
 {
     static class Program
     {
-
+        const int WM_COPYDATA = 0x004A;
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -44,19 +46,31 @@ namespace Ztop.Todo.WindowsClient
                         MessageBox.Show(string.Format("上传文件失败！请确保该文件是否被占用，错误信息：{0}", ex.ToString()));
                         return;
                     }
-                    
-                    try
+                    #region  发送信息
+
+                    int WINDOW_HANDLER = FindWindow(null, "智拓TODO");
+                    if (WINDOW_HANDLER != 0)
                     {
-                       
-                        TCPHelper.TCPSend(filePath);
+                        byte[] sarr = System.Text.Encoding.Default.GetBytes(filePath);
+                        int len = sarr.Length;
+                        COPYDATASTRUCT cds;
+                        cds.dwData = (IntPtr)100;
+                        cds.IpData = filePath;
+                        cds.cbData = len + 1;
+                        SendMessage(WINDOW_HANDLER, WM_COPYDATA, 0, ref cds);
                     }
-                    catch(Exception ex)
-                    {
-                        MessageBox.Show(string.Format("发送文件信息失败，错误信息：{0}",ex.ToString()));
-                        return;
-                    }
-                    //MessageBox.Show(string.Format("成功发送文件路径：{0}", filePath));
-                  
+                    #endregion
+                    //try
+                    //{
+
+                    //    TCPHelper.TCPSend(filePath);
+                    //}
+                    //catch(Exception ex)
+                    //{
+                    //    MessageBox.Show(string.Format("发送文件信息失败，错误信息：{0}",ex.ToString()));
+                    //    return;
+                    //}
+
                 }
             }
             else
@@ -143,5 +157,10 @@ namespace Ztop.Todo.WindowsClient
             //}
             #endregion
         }
+
+        [DllImport("User32.dll",EntryPoint ="SendMessage")]
+        private static extern int SendMessage(int hWnd, int Msg, int wParam, ref COPYDATASTRUCT IParam);
+        [DllImport("User32.dll",EntryPoint ="FindWindow")]
+        private static extern int FindWindow(string IpClassName, string IpWindowName);
     }
 }

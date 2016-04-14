@@ -199,7 +199,7 @@
         var LODOP = getCLodop();
        
         var strStyleCSS = "<link href='/Content/bootstrap.css' type='text/css' rel='stylesheet' />";
-        var strHTML = strStyleCSS+"<body>"+ document.getElementById("Print").innerHTML+"<div class='col-md-8'><h3>报销确认</h3><div class='form-group'><label class='control-label col-md-4'>报销人签字：________________________</label><label class='control-label col-md-4'>审核人签字：________________________</label><label class='control-label col-md-4'>财务签字：__________________________</label></div></div> </body>";
+        var strHTML = strStyleCSS + "<body>" + document.getElementById("Print").innerHTML + "<div class='col-md-8'><h3>报销确认</h3><div class='form-group'><label class='control-label col-md-4'>审核人签字：________________________</label><label class='control-label col-md-4'>财务签字：__________________________</label><label class='control-label col-md-4'>报销人签字：________________________</label></div></div> </body>";
         LODOP.PRINT_INITA(1, 1, 770, 660,"打印报销单");
         LODOP.ADD_PRINT_HTM(0, 0, "100%", "80%", strHTML);
         //LODOP.ADD_PRINT_TABLE("2%", "1%", "96%", "98%", document.getElementById("bill").innerHTML);

@@ -16,7 +16,10 @@ namespace Ztop.Todo.WindowsClient
 {
     public partial class LoginForm : Form
     {
+        const int WM_COPYDATA = 0x004A;
+        private List<string> _receviers { get; set; }
         private string _uploadFile { get; set; }
+        private MainForm _mainForm { get; set; }
         private Dictionary<string, UserInfo> Users { get; set; }
         private List<UserInfo> List { get; set; }
         private string RememberFile { get; set; }
@@ -31,6 +34,7 @@ namespace Ztop.Todo.WindowsClient
         public LoginForm()
         {
             InitializeComponent();
+            _receviers = new List<string>();
         }
         private void LoginButton_Click(object sender, EventArgs e)
         {
@@ -107,8 +111,8 @@ namespace Ztop.Todo.WindowsClient
         }
         private void MShow()
         {
-            var mainForm = new MainForm(_uploadFile);
-            mainForm.Show(this);
+            _mainForm = new MainForm(_uploadFile);
+            _mainForm.Show(this);
             this.Hide();
         }
         private void Init()
@@ -128,6 +132,35 @@ namespace Ztop.Todo.WindowsClient
         private void LoginForm_Activated(object sender, EventArgs e)
         {
             Init();
+        }
+
+        protected override void DefWndProc(ref System.Windows.Forms.Message m)
+        {
+            switch (m.Msg)
+            {
+                case WM_COPYDATA:
+                    var mystr = new COPYDATASTRUCT();
+                    var myType = mystr.GetType();
+                    mystr = (COPYDATASTRUCT)m.GetLParam(myType);
+                    if (!string.IsNullOrEmpty(mystr.IpData))
+                    {
+                        if (_receviers.Count == 0&&_mainForm!=null)
+                        {
+                            timer1.Enabled = true;
+                        }
+                        _receviers.Add(mystr.IpData);
+                    }
+                    break;
+            }
+            base.DefWndProc(ref m);
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+
+            _receviers.Clear();
+            timer1.Enabled = false;
+
         }
     }
 }
