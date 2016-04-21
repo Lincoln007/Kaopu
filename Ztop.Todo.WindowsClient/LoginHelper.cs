@@ -68,11 +68,7 @@ namespace Ztop.Todo.WindowsClient
             {
                 if (File.Exists(TokenPath))
                 {
-                    var creationTime = File.GetCreationTime(TokenPath);
-                    if ((DateTime.Now - creationTime).TotalDays < 7)
-                    {
-                        _accessToken = File.ReadAllText(TokenPath);
-                    }
+                    _accessToken = File.ReadAllText(TokenPath);
                 }
             }
             return _accessToken;

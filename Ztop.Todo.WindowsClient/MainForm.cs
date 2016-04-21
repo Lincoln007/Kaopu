@@ -67,7 +67,7 @@ namespace Ztop.Todo.WindowsClient
         public void OpenTask(string UriPath)
         {
             var url = ServerHelper.GetServerUrl() + UriPath;
-            this.label3.Text = url;
+            //this.label3.Text = url;
             webControl1.Source = new Uri(url);
             if (this.WindowState == FormWindowState.Minimized)
             {

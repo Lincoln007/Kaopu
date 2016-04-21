@@ -128,7 +128,7 @@ namespace Ztop.Todo.WindowsClient
                 var token = LoginHelper.GetToken();
                 if (!string.IsNullOrEmpty(token))
                 {
-                    this.btnLogin.Text = "正在登陆";
+                    this.btnLogin.Text = "正在登陆......";
                     this.btnLogin.Enabled = false;
                     Console.WriteLine("timer2 控件开始计时");
                     timer2.Enabled = true;
