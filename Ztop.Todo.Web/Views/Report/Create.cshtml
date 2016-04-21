@@ -39,7 +39,7 @@
                     <td>单据编号</td>
                     <td>@(sheet.SerialNumber.Coding) </td>
                     <td>报销日期</td>
-                    <td><input type="text" id="datetimepicker2" value="@(sheet.Time.ToShortDateString())" name="Time" /></td>
+                    <td><input type="text" id="datetimepicker2" class="form-control" value="@(sheet.Time.ToShortDateString())" name="Time" /></td>
                 </tr>
                 <tr>
                     <td>报销人</td>
@@ -47,13 +47,21 @@
                         @(Identity.Name)
                     </td>
                     <td>报销金额合计</td>
-                    <td><input type="text"  name="Money" value="@(sheet.Money)" /></td>
+                    <td class="col-md-5">
+                        <div class="input-group">
+                            <input type="text" name="Money" value="@(sheet.Money)" class="form-control" />
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-success" onclick="@(sheet.Type==SheetType.Errand?"SumErrand()":"SumDialy()")">合计</button>
+                            </span>
+                        </div>
+                        
+                    </td>
                 </tr>
                 <tr>
                     <td>发票张数</td>
-                    <td><input type="text" name="Count" value="@(sheet.Count)" /></td>
+                    <td><input type="text" name="Count" value="@(sheet.Count)" class="form-control" /></td>
                     <td>备注</td>
-                    <td><input type="text" name="Remarks" style="width:100%" value="@(sheet.Remarks)" /></td>
+                    <td><input type="text" name="Remarks" style="width:100%" value="@(sheet.Remarks)" class="form-control" /></td>
                 </tr>
             </tbody>
         </table>
@@ -128,6 +136,26 @@
 
 
 <script>
+    
+
+    function SumErrand() {
+        var fields=["Traffic","SubSidy","Hotel","Other","Toll"];
+        var sum = 0;
+        for(var field in fields){
+            var a=$("[name='"+fields[field]+"']").val();
+            if(a==NaN||a==undefined||a==""||a=="undefined"){
+                continue;
+            }
+            var val = parseFloat(a);
+            sum += val;
+        }
+        $("[name='Money']").val(sum);
+        return false;
+    }
+
+    function SumDialy() {
+
+    }
     $(function () {
 
         var template = $("#template").html();
@@ -151,10 +179,7 @@
             });
             return false;
            
-        });
-
-
-        
+        });        
     })
 </script>
 

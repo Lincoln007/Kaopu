@@ -40,6 +40,14 @@ namespace Ztop.Todo.Web.Controllers
         public ActionResult Create(SheetType type=SheetType.Daily,int id=0)
         {
             ViewBag.Sheet = Core.SheetManager.GetSerialNumberModel(id,type);
+            ViewBag.Groups = Core.UserManager.GetUserGroups();
+            ViewBag.Users = Core.UserManager.GetAllUsers();
+            return View();
+        }
+
+        public ActionResult ChooseUser()
+        {
+            
             return View();
         }
         private void Save(Sheet sheet,string DirectorVal)

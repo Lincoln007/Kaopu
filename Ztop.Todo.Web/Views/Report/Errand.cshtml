@@ -1,6 +1,7 @@
 ﻿@model Ztop.Todo.Model.Evection
     @{ 
         bool flag = ViewBag.Detail??false;
+        ViewBag.CheckString = Model.Names;
     }
 <h3>报销内容分项清单&nbsp;</h3>
 <div id="bill">
@@ -245,7 +246,32 @@
                 else
                 {
                     <td>
-                        <input type="text" class="form-control col-md-10" name="Names" value="@(Model.Names)" />
+                        <div class="input-group col-md-10">
+                            <input type="text" class="form-control col-md-10" name="Names" value="@(Model.Names)" readonly="readonly" />
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".choose">选择用户</button>
+                            </span>         
+                        </div>
+                        <div class="modal fade choose" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                            <div class="modal-dialog modal-lg" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        <h4 class="modal-title">选择出差人</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        @{
+                                            Html.RenderPartial("ChooseUser");
+                                        }
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" id="BS" class="btn btn-primary">确定</button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
                     </td>
                 }
                 
@@ -298,6 +324,16 @@
         });
         $("input[name='SubSidy']").focus(function () {
             SumSubSidy();
+        });
+
+        $("#BS").click(function () {
+            var chk_val = [];
+            var buiness = "";
+            $("[name='Businesser']:checked").each(function () {
+                chk_val.push($(this).val());
+                buiness += $(this).val()+";";
+            });
+            $("[name='Names']").val(buiness);
         })
 
     })

@@ -1,0 +1,47 @@
+﻿@using Ztop.Todo.ActiveDirectory;
+@{
+    List<UserGroup> groups = ViewBag.Groups;
+    List<User> allUsers = ViewBag.Users;
+    string CheckString = ViewBag.CheckString;
+    string[] checkeds = new string[1];
+    if (!string.IsNullOrEmpty(CheckString))
+    {
+        checkeds = CheckString.Split(';');
+    }
+}
+
+<div class="panel-group" id="Choose" role="tablist" aria-multiselectable="true">
+    @foreach (var group in groups.OrderByDescending(e => e.Order))
+    {
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="@(group.Name)">
+                <h4 class="panel-title">
+                    <a role="button" data-toggle="collapse" data-parent="#Choose" href="#collapse@(group.Name)" aria-expanded="true" aria-controls="collapse@(group.Name)">
+                        @(group.Name)
+                    </a>
+                </h4>
+            </div>
+            <div id="collapse@(group.Name)" class="panel-collapse collapse" role="tabpanel" aria-labelledby="@(group.Name)">
+                <div class="panel-body">
+                    @{
+                        var table = allUsers.Where(e => e.GroupID == group.ID).OrderByDescending(e => e.Order).ToList().ListToTable(4);
+                        foreach (var item in table)
+                        {
+                            foreach (var entry in item)
+                            {
+                                if (entry != null)
+                                {
+                                    <label class="checkbox-inline col-md-3">
+                                        <input type="checkbox" value="@(entry.DisplayName)" name="Businesser" @(checkeds.Contains(entry.DisplayName)?"checked='checked'":"")/>@(entry.DisplayName)
+                                    </label>
+                                }
+                            }
+                            <hr />
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+      }
+   
+</div>
