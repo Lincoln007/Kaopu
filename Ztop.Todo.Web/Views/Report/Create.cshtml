@@ -50,8 +50,10 @@
                     <td><input type="text"  name="Money" value="@(sheet.Money)" /></td>
                 </tr>
                 <tr>
+                    <td>发票张数</td>
+                    <td><input type="text" name="Count" value="@(sheet.Count)" /></td>
                     <td>备注</td>
-                    <td colspan="3"><input type="text" name="Remarks" style="width:100%" value="@(sheet.Remarks)" /></td>
+                    <td><input type="text" name="Remarks" style="width:100%" value="@(sheet.Remarks)" /></td>
                 </tr>
             </tbody>
         </table>
@@ -98,23 +100,6 @@
         </table>
 
     </div>
-    <div class="col-md-12">
-        <button class="btn btn-success btn-sm" type="button">
-            <em class="glyphicon glyphicon-send"></em> 保存转交
-        </button>
-        <button class="btn btn-success btn-sm" type="button">
-            <em class="glyphicon glyphicon-floppy-disk"></em> 保存返回
-        </button>
-        <button class="btn btn-danger btn-sm" type="button">
-            <em class="glyphicon glyphicon-remove-circle"></em> 删除
-        </button>
-        <button class="btn btn-default btn-sm" type="button">
-            <em class="glyphicon glyphicon-print"></em> 打印
-        </button>
-        <button class="btn btn-warning btn-sm" type="button">
-            <em class="glyphicon glyphicon-menu-left"></em> 返回
-        </button>
-    </div>
 </form>
 
 <table id="template" style="display:none">
@@ -157,8 +142,6 @@
         $("#datetimepicker2").datetimepicker({
             timepicker: false,
             format: 'Y/m/d',
-            @*maxDate:'@(DateTime.Today.ToShortDateString())'*@
-            @*//minDate: '@(DateTime.Today.ToShortDateString())'*@
         });
 
         $("#form-Create").submit(function () {
@@ -167,15 +150,6 @@
                 location.href = "/Report/Index";
             });
             return false;
-
-            //if (checkMoney()) {
-                
-            //} else {
-            //    alert("报销金额不能为0或者金额合计与分项合计不相等，请核对!");
-            //    $("[name='Director']").removeClass("btn-success").addClass("btn-default");
-            //    $("[name='DirectorVal']").val("");
-            //    return false;
-            //}
            
         });
 

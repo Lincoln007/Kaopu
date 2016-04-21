@@ -19,7 +19,6 @@ namespace Ztop.Todo.WindowsClient
     public partial class MainForm : Form
     {
         private Thread thread { get; set; }
-        private bool IsLive { get; set; }
         private LoginForm _loginForm { get; set; }
         public MainForm()
         {
@@ -29,34 +28,16 @@ namespace Ztop.Todo.WindowsClient
                 WebCore.Initialize(WebConfig.Default, true);
                 WebCore.ResourceInterceptor = new ResourceInterceptor();
             }
-            
-          
         }
 
-        public MainForm(string uploadFile) : this()
+        public MainForm(List<string> files) : this()
         {
             Control.CheckForIllegalCrossThreadCalls = false;
-
-            if (!string.IsNullOrEmpty(uploadFile))
+            webControl1.Source = new Uri(ServerHelper.GetServerUrl());
+            if (files != null&&files.Count>0)
             {
-                var savePath = string.Empty;
-                try
-                {
-                    savePath = FTPHelper.UploadFile(uploadFile);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("上传文件到服务器失败，错误信息：" + ex.ToString());
-                }
-                webControl1.Source = new Uri(ServerHelper.GetServerUrl() + "/task/edit?file=" + savePath);
+                UploadFile(files);
             }
-            else
-            {
-                webControl1.Source = new Uri(ServerHelper.GetServerUrl());
-            }
-
-
-            IsLive = true;
         }
 
         private void Timer1_Tick(object sender, EventArgs e)
@@ -83,23 +64,21 @@ namespace Ztop.Todo.WindowsClient
                 form.Show();
             }
         }
-
         public void OpenTask(string UriPath)
         {
-            webControl1.Source = new Uri(ServerHelper.GetServerUrl() + UriPath);
+            var url = ServerHelper.GetServerUrl() + UriPath;
+            this.label3.Text = url;
+            webControl1.Source = new Uri(url);
             if (this.WindowState == FormWindowState.Minimized)
             {
                 OpenWindow();
             }
         }
-
-
         public void OpenTask(Task model)
         {
             webControl1.Source = new Uri(ServerHelper.GetTaskUrl(model));
             OpenWindow();
         }
-
         private void OpenWindow()
         {
             this.Show();
@@ -107,7 +86,6 @@ namespace Ztop.Todo.WindowsClient
             Size = _size;
             WindowState = _state;
         }
-
         private void CloseWindow()
         {
             _state = WindowState;
@@ -151,16 +129,8 @@ namespace Ztop.Todo.WindowsClient
         {
             webControl1.Dispose();
             WebCore.DestroyUnwrappedViews();
-
             timer1.Stop();
             timer1.Dispose();
-            //if (this.thread != null && this.thread.IsAlive)
-            //{
-            //    TCPHelper.TCPSend(System.Configuration.ConfigurationManager.AppSettings["TCPSTOP"]);
-            //    this.thread.Join(500);
-            //}
-            
-
         }
 
         private void 退出ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -172,11 +142,6 @@ namespace Ztop.Todo.WindowsClient
 
         private void Start()
         {
-            //var listener = new TODOListener(this);
-            //this.thread = new Thread(listener.Listen);
-            //this.thread.IsBackground = false;
-            //this.thread.Start();
-
             timer1.Tick += Timer1_Tick;
             timer1.Interval = 1000 * 10;
             timer1.Start();
@@ -187,18 +152,23 @@ namespace Ztop.Todo.WindowsClient
             _loginForm = this.Owner as LoginForm;
         }
 
-        private delegate void FlushClient(string FileOne);
-        public void ThreadFunction(string FileOne)
+        private delegate void FlushClient(string files);
+        public void ThreadFunction(string files)
         {
             if (this.webControl1.InvokeRequired)
             {
                 FlushClient fs = new FlushClient(ThreadFunction);
-                this.Invoke(fs, new[] { FileOne });
+                this.Invoke(fs, new[] { files });
             }
             else
             {
-                OpenTask("/task/edit?file=" + FileOne);
+                var url = "/task/edit?file=" + files;
+                OpenTask(url);
             }
+        }
+        public void ShowMessage(string error)
+        {
+            MessageBox.Show(error);      
         }
 
 
@@ -210,6 +180,7 @@ namespace Ztop.Todo.WindowsClient
             
             this.Close();
             this.Dispose();
+            _loginForm._mainForm = null;
             _loginForm.WindowState = FormWindowState.Normal;
             _loginForm.Show();
         }
@@ -217,6 +188,27 @@ namespace Ztop.Todo.WindowsClient
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
 
+        }
+
+        public void UploadFile(List<string> files)
+        {
+            var dict = files.GetUniqueDict();
+            var queryString = dict.Select(e => e.Value).ToList().AToString();
+            if (queryString.Length > 4000)
+            {
+                MessageBox.Show("右键上传的文件过多");
+                return;
+            }
+            if (!string.IsNullOrEmpty(queryString))
+            {
+                //MessageBox.Show(queryString);
+                ThreadFunction(queryString);
+            }
+
+            var TODOFTP = new TODOFTP(this, dict);
+            var thread = new Thread(TODOFTP.Start);
+            thread.IsBackground = false;
+            thread.Start();
         }
     }
 }

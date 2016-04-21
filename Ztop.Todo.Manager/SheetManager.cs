@@ -54,7 +54,8 @@ namespace Ztop.Todo.Manager
                     }
                     else
                     {
-                        model.Evection = db.Evections.FirstOrDefault(e => e.SID == id);
+                        model.Evection = db.Evections.FirstOrDefault(e => e.SID == id);//获取出差报销分项清单
+                        model.Evection.Errands = db.Errands.Where(e => e.EID == model.Evection.ID).ToList();//获取出差人数列表
                     }
                     
                     model.Verifys = db.Verifys.Where(e => e.SID == id).OrderBy(e => e.ID).ToList();
@@ -103,6 +104,8 @@ namespace Ztop.Todo.Manager
                 }
                 if (sheet.Type == SheetType.Errand && sheet.Evection != null)
                 {
+                    #region  更新出差报销中的分项清单
+
                     sheet.Evection.SID = sheet.ID;
                     var entry = db.Evections.FirstOrDefault(e => e.SID == sheet.ID);
                     if (entry == null)
@@ -114,8 +117,26 @@ namespace Ztop.Todo.Manager
                         sheet.Evection.ID = entry.ID;
                         db.Entry(entry).CurrentValues.SetValues(sheet.Evection);
                     }
+                    #endregion
+
+                    #region  更新出差人数的列表
+                    var older = db.Errands.Where(e => e.EID == sheet.Evection.ID).ToList();
+                    if (older != null)
+                    {
+                        db.Errands.RemoveRange(older);
+                        db.SaveChanges();
+                    }
+                    db.Errands.AddRange(sheet.Evection.Errands.Select(e => new Errand
+                    {
+                        StartTime=e.StartTime,
+                        EndTime=e.EndTime,
+                        Peoples = e.Peoples,
+                        Days = e.Days,
+                        EID = sheet.Evection.ID
+                    }));
+                    #endregion
                 }
-                
+
                 db.SaveChanges();
 
             }

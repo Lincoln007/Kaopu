@@ -44,12 +44,22 @@
                 </div>
                 @if (ViewBag.ClientFile != null)
                 {
-                    <div class="form-group">
-                        <label class="control-label col-lg-2">客户端附件</label>
-                        <div class="col-lg-8">
-                            <input type="text" class="form-control" name="ClientFile" value="@(ViewBag.ClientFile)" />
+                    string clientfile = ViewBag.ClientFile;
+                    var clientfiles = clientfile.Split('*');
+                    if (clientfile.Count() > 0)
+                    {
+                        <input type="hidden" name="ClientFile" value="@(clientfile)" />
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">客户端附件</label>
+                            <div class="col-lg-8">
+                                @foreach (var entryfile in clientfiles)
+                                {
+                                    <input type="text" class="form-control" value="@(entryfile)" style="margin-bottom:10px" disabled="disabled" />
+                                }
+                            </div>
                         </div>
-                    </div>
+                    }
+
                 }
                 <div class="form-group">
                     <label class="control-label col-lg-2">

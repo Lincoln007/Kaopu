@@ -103,6 +103,7 @@
     <Compile Include="ResourceInterceptor.cs" />
     <Compile Include="ServerHelper.cs" />
     <Compile Include="Task.cs" />
+    <Compile Include="TODOFTP.cs" />
     <Compile Include="TODOListener.cs" />
     <EmbeddedResource Include="LoginForm.resx">
       <DependentUpon>LoginForm.cs</DependentUpon>

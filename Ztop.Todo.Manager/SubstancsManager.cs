@@ -10,7 +10,7 @@ namespace Ztop.Todo.Manager
 {
     public class SubstancsManager:ManagerBase
     {
-        public List<Substancs> Get(HttpContextBase context)
+        public List<Substancs> GetSubstances(HttpContextBase context)
         {
             var categorys = context.Request.Form["Category"].ToString().Split(',');
             var details = context.Request.Form["Detail"].Split(',');
@@ -34,6 +34,32 @@ namespace Ztop.Todo.Manager
                     Details = details[i],
                     Price = double.TryParse(prices[i], out temp) ? temp : .0
                 });
+            }
+            return list;
+        }
+        public List<Errand> GetErrands(HttpContextBase context)
+        {
+            int a = 0, b = 0;
+            DateTime startTime, endTime;
+            var list = new List<Errand>();
+            for(var i = 0; i < 3; i++)
+            {
+                if(int.TryParse(context.Request.Form[string.Format("Peoples{0}",i)].ToString(),out a))
+                {
+                    if(DateTime.TryParse(context.Request.Form[string.Format("StartTime{0}", i)].ToString(), out startTime))
+                    {
+                        if(DateTime.TryParse(context.Request.Form[string.Format("EndTime{0}",i)].ToString(),out endTime))
+                        {
+                            list.Add(new Errand
+                            {
+                                StartTime = startTime,
+                                EndTime = endTime,
+                                Peoples = a,
+                                Days = int.TryParse(context.Request.Form[string.Format("Days{0}", i)].ToString(), out b) ? b : (endTime - startTime).Days+1
+                            });
+                        }
+                    }
+                }
             }
             return list;
         }

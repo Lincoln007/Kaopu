@@ -33,6 +33,10 @@ namespace Ztop.Todo.Model
         /// </summary>
         public DateTime Time { get; set; }
         /// <summary>
+        /// 发票张数
+        /// </summary>
+        public int Count { get; set; }
+        /// <summary>
         /// 报销金额
         /// </summary>
         public double Money { get; set; }

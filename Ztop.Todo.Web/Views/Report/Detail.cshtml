@@ -70,28 +70,33 @@
    
                 <div class="col-md-8" id="Print">
                     <h3>基本信息&nbsp;</h3>
-                    <table class="table table-bordered">
-                        <tbody>
-                            <tr>
-                                <td>单据编号</td>
-                                <td>@(sheet.SerialNumber.Coding)</td>
-                                <td>报销日期</td>
-                                <td>@(sheet.Time.ToLongDateString())</td>
-                            </tr>
-                            <tr>
-                                <td>报销人</td>
-                                <td>@(sheet.Name)</td>
-                                <td>报销金额合计(元)</td>
-                                <td>@(sheet.Money)</td>
-                            </tr>
-                            <tr>
-                                <td>备注</td>
-                                <td colspan="3">
-                                    @(sheet.Remarks)
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div id="Main">
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <td>单据编号</td>
+                                    <td>@(sheet.SerialNumber.Coding)</td>
+                                    <td>报销日期</td>
+                                    <td>@(sheet.Time.ToLongDateString())</td>
+                                </tr>
+                                <tr>
+                                    <td>报销人</td>
+                                    <td>@(sheet.Name)</td>
+                                    <td>报销金额合计(元)</td>
+                                    <td>@(sheet.Money)</td>
+                                </tr>
+                                <tr>
+                                    <td>发票张数</td>
+                                    <td>@(sheet.Count)</td>
+                                    <td>备注</td>
+                                    <td>
+                                        @(sheet.Remarks)
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
                     
                     @if (sheet.Type == SheetType.Daily)
                     {
@@ -126,7 +131,9 @@
                     {
                         Html.RenderPartial("Errand", sheet.Evection);
                     }
-
+                    <div class="hidden">
+                        报销合计：@(sheet.Money) 元
+                    </div>
                 </div>
                 <div class="col-md-4 noprint">
                     <div class="panel panel-default">
@@ -177,16 +184,7 @@
                     </div>
                 </div>
 
-                
-                <div class="col-md-8 hidden" >
-                    <h3>报销确认</h3>
-                    <div class="form-group">
-                        <label class="control-label col-md-4">报销人签字：________________________</label>
-                        <label class="control-label col-md-4">审核人签字：________________________</label>
-                        <label class="control-label col-md-4">财务签字：__________________________</label>
-                    </div>
-                </div>
-                }
+}
 
 
 
@@ -198,12 +196,13 @@
     function Preview() {
         var LODOP = getCLodop();
        
-        var strStyleCSS = "<link href='/Content/bootstrap.css' type='text/css' rel='stylesheet' />";
-        var strHTML = strStyleCSS + "<body>" + document.getElementById("Print").innerHTML + "<div class='col-md-8'><h3>报销确认</h3><div class='form-group'><label class='control-label col-md-4'>审核人签字：________________________</label><label class='control-label col-md-4'>财务签字：__________________________</label><label class='control-label col-md-4'>报销人签字：________________________</label></div></div> </body>";
-        LODOP.PRINT_INITA(1, 1, 770, 660,"打印报销单");
+        var strStyleCSS = "<style>table{ border-collapse:collapse; border-spacing:0;} td,th{ border:solid 1px #000; font-size:12px;padding:0;} h3,div{font-size:15px; font-weight:bold;margin:0px;padding:2px;}</style>";
+        var strHTML = strStyleCSS + "<body>" + document.getElementById("Print").innerHTML + "<div class='col-md-8'><h3>报销确认&nbsp;</h3><div class='form-group'><label class='control-label col-md-4'>审核人：________________________</label><label class='control-label col-md-4'>报销人：________________________</label></div></div> </body>";
+        LODOP.PRINT_INITA(1, 1, 770, 660, "打印报销单");
+        //LODOP.ADD_PRINT_TABLE(50, 10, "50%", 220, document.getElementById("Main").innerHTML);
+        //LODOP.ADD_PRINT_TABLE(0, 0, "100%", "80%", strHTML);
         LODOP.ADD_PRINT_HTM(0, 0, "100%", "80%", strHTML);
-        //LODOP.ADD_PRINT_TABLE("2%", "1%", "96%", "98%", document.getElementById("bill").innerHTML);
-        LODOP.SET_PRINT_PAGESIZE(0, 0, 0, "A5");
+        LODOP.SET_PRINT_PAGESIZE(2, 0, 0, "A5");
         LODOP.SET_PREVIEW_WINDOW(0, 0, 0, 760, 540, "");
         LODOP.PREVIEW();
         //LODOP.PRINT_DESIGN();

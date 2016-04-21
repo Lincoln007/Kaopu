@@ -42,7 +42,7 @@ namespace Ztop.Todo.Model
         OfficialBussiness,
         [Description("市内交通")]
         Traffic,
-        [Description("设备费用")]
+        [Description("耗材费用")]
         Equipment,
         [Description("车辆费用")]
         Bus,
@@ -58,6 +58,8 @@ namespace Ztop.Todo.Model
         Express,
         [Description("财务费用")]
         Financial,
+        [Description("标书")]
+        Bidding,
         [Description("其他")]
         Other
 

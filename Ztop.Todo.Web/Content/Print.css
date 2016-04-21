@@ -1,0 +1,9 @@
+﻿/*table{
+    border-collapse:collapse;
+    width:300px;
+    height:300px;
+}*/
+
+table td{
+    border:solid 1px #000
+}

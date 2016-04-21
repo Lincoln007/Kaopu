@@ -93,11 +93,12 @@ namespace Ztop.Todo.Web.Controllers
             double sum = .0;
             if (sheet.Type == SheetType.Daily)//日常报销
             {
-                sheet.Substances = Core.SubstanceManager.Get(HttpContext);//获取详细清单
+                sheet.Substances = Core.SubstanceManager.GetSubstances(HttpContext);//获取详细清单
                 sum = sheet.Substances.Sum(e => e.Price);
             }
             else//出差报销
             {
+                evection.Errands = Core.SubstanceManager.GetErrands(HttpContext);
                 sheet.Evection = evection;
                 sum = evection.Traffic + evection.Toll + evection.SubSidy + evection.Hotel + evection.Other;
             }

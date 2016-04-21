@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using Ztop.Todo.ActiveDirectory;
+using Ztop.Todo.Common;
 using Ztop.Todo.Model;
 
 namespace Ztop.Todo.WindowsClient
@@ -18,15 +19,20 @@ namespace Ztop.Todo.WindowsClient
     {
         const int WM_COPYDATA = 0x004A;
         private List<string> _receviers { get; set; }
-        private string _uploadFile { get; set; }
-        private MainForm _mainForm { get; set; }
+        private int _count { get; set; }
+        public MainForm _mainForm { get; set; }
         private Dictionary<string, UserInfo> Users { get; set; }
         private List<UserInfo> List { get; set; }
         private string RememberFile { get; set; }
         public LoginForm(string uploadFile)
         {
             InitializeComponent();
-            _uploadFile = uploadFile;
+            _receviers = new List<string>();
+            if (!string.IsNullOrEmpty(uploadFile))
+            {
+                _receviers.Add(uploadFile);
+            }
+            this.timer1.Enabled = false;
             this.RememberFile = System.Configuration.ConfigurationManager.AppSettings["REME"];
             this.Users = new Dictionary<string, UserInfo>();
             this.List = new List<UserInfo>();
@@ -34,7 +40,7 @@ namespace Ztop.Todo.WindowsClient
         public LoginForm()
         {
             InitializeComponent();
-            _receviers = new List<string>();
+            
         }
         private void LoginButton_Click(object sender, EventArgs e)
         {
@@ -51,7 +57,6 @@ namespace Ztop.Todo.WindowsClient
                 return;
             }
 #endif
-
             this.btnLogin.Text = "正在登陆";
             this.btnLogin.Enabled = false;
 
@@ -111,17 +116,26 @@ namespace Ztop.Todo.WindowsClient
         }
         private void MShow()
         {
-            _mainForm = new MainForm(_uploadFile);
+            _mainForm = new MainForm(_receviers);
             _mainForm.Show(this);
             this.Hide();
+            _receviers.Clear();
         }
         private void Init()
         {
-            var token = LoginHelper.GetToken();
-            if (!string.IsNullOrEmpty(token))
+            if (_mainForm == null)
             {
-                MShow();
+                var token = LoginHelper.GetToken();
+                if (!string.IsNullOrEmpty(token))
+                {
+                    this.btnLogin.Text = "正在登陆";
+                    this.btnLogin.Enabled = false;
+                    Console.WriteLine("timer2 控件开始计时");
+                    timer2.Enabled = true;
+                }
+                
             }
+            
         }
 
         private void LoginForm_Load(object sender, EventArgs e)
@@ -146,21 +160,42 @@ namespace Ztop.Todo.WindowsClient
                     {
                         if (_receviers.Count == 0&&_mainForm!=null)
                         {
+                            Console.WriteLine("timer控件开始计时");
                             timer1.Enabled = true;
                         }
                         _receviers.Add(mystr.IpData);
                     }
                     break;
+                default:
+                    base.DefWndProc(ref m);
+                    break;
+
             }
-            base.DefWndProc(ref m);
+            
         }
 
         private void timer1_Tick(object sender, EventArgs e)
         {
+            if (_receviers.Count == _count)//时间间隔到了  如果当前保存的列表中的数据没有变化  那么说明一次右键启动的所有信息都接收到了
+            {
+                timer1.Enabled = false;
+                _mainForm.UploadFile(_receviers);
+                _receviers.Clear();
+                _count = 0;
+                
+            }
+            else//如果当前列表中数据不等于 那么说明还在接受信息  
+            {
+                _count = _receviers.Count;
+            }
+            
 
-            _receviers.Clear();
-            timer1.Enabled = false;
+        }
 
+        private void timer2_Tick(object sender, EventArgs e)
+        {
+            timer2.Enabled = false;
+            MShow();
         }
     }
 }

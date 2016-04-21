@@ -157,6 +157,7 @@
     <Content Include="Content\jqtree.css" />
     <Content Include="Content\jquery.autocomplete.css" />
     <Content Include="Content\logo.png" />
+    <Content Include="Content\Print.css" />
     <Content Include="Content\token-input.css" />
     <Content Include="error.txt" />
     <Content Include="Content\jquery.datetimepicker.css" />

@@ -9,13 +9,30 @@
             <tr>
                 <th>编号</th>
                 <th class="text-center">分类</th>
-                <th style="width:50%;" class="text-center">内容</th>
+                <th style="width:60%;" class="text-center">内容</th>
                 <th>备注</th>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <td>1</td>
+                <td>出差地点</td>
+                @if (flag)
+                {
+                    <td class="text-center">@(Model.Place)</td>
+                }
+                else
+                {
+                    <td>
+                        <div class="input-group col-md-10">
+                            <input type="text" class="form-control" name="Place" value="@(Model.Place)" />
+                        </div>
+                    </td>
+                }
+                <td>出差地点</td>
+            </tr>
+            <tr>
+                <td>2</td>
                 <td>公里数</td>
                 @if (flag)
                 {
@@ -34,7 +51,27 @@
                 <td>用车填写</td>
             </tr>
             <tr>
-                <td>2</td>
+                <td>3</td>
+                <td>用车类型</td>
+                @if (flag)
+                {
+                    <td class="text-center">@(Model.BusType.GetDescription())</td>
+                }
+                else
+                {
+                    <td>
+                        @foreach(BusType type in Enum.GetValues(typeof(BusType)))
+                        {
+                            <label class="radio-inline">
+                                <input type="radio" name="BusType" value="@(type)" @(type==Model.BusType?"checked='checked'":"")/>@(type.GetDescription())
+                            </label>
+                        }
+                    </td>
+                }
+                <td></td>
+            </tr>
+            <tr>
+                <td>4</td>
                 <td>交通费</td>
                 @if (flag)
                 {
@@ -52,28 +89,62 @@
                 <td>车票或油费</td>
             </tr>
             <tr>
-                <td>3</td>
+                <td>5</td>
                 <td>出差人数*天</td>
                 @if (flag)
                 {
-                    <td class="text-center">@(Model.Peoples) 人 @(Model.Days) 天</td>
+                    <td class="text-center">
+                        @foreach(var errand in Model.Errands)
+                        {
+                            <span class="label label-success">@(errand.StartTime.ToString("yyyy-MM-dd"))至@(errand.EndTime.ToString("yyyy-MM-dd")) @(errand.Peoples) 人 @(errand.Days) 天;</span>
+                        }
+                    </td>
                 }
                 else
                 {
                     <td>
-                        <div class="input-group col-md-10">
-                            <input type="text" class="form-control" name="Peoples" value="@(Model.Peoples)" />
-                            <div class="input-group-addon">人</div>
-                            <input type="text" class="form-control" name="Days" value="@(Model.Days)" />
-                            <div class="input-group-addon">天</div>
-                        </div>
+                        @{
+                            var serial = 0;
+                            if (Model.Errands != null)
+                            {
+                                foreach (var errand in Model.Errands)
+                                {
+                                    <div class="input-group col-md-12" style="margin-bottom:10px;">
+                                        <input type="text" class="form-control datetimepicker" name="StartTime@(serial)" targetId="@(serial)" value="@(errand.StartTime.ToString("yyyy-MM-dd"))" />
+                                        <div class="input-group-addon">至</div>
+                                        <input type="text" class="form-control datetimepicker" name="EndTime@(serial)" targetId="@(serial)"  value="@(errand.EndTime.ToString("yyyy-MM-dd"))"/>
+                                        <div class="input-group-addon">合计</div>
+                                        <input type="text" class="form-control People" name="Peoples@(serial)"  value="@(errand.Peoples)"/>
+                                        <div class="input-group-addon">人</div>
+                                        <input type="text" class="form-control" name="Days@(serial)" readonly="readonly" value="@(errand.Days)" />
+                                        <div class="input-group-addon">天</div>
+                                    </div>
+                                    serial++;
+                                }
+                            }
+
+                            for (var i = serial; i < 3; i++)
+                            {
+                                <div class="input-group col-md-12" style="margin-bottom:10px;">
+                                    <input type="text" class="form-control datetimepicker" name="StartTime@(i)" targetId="@(i)" />
+                                    <div class="input-group-addon">至</div>
+                                    <input type="text" class="form-control datetimepicker" name="EndTime@(i)"  targetId="@(i)"/>
+                                    <div class="input-group-addon">合计</div>
+                                    <input type="text" class="form-control People" name="Peoples@(i)" />
+                                    <div class="input-group-addon">人</div>
+                                    <input type="text" class="form-control" name="Days@(i)" readonly="readonly" />
+                                    <div class="input-group-addon">天</div>
+                                </div>
+                            }
+                        }
+                        
                     </td>
                 }
                 
                 <td></td>
             </tr>
             <tr>
-                <td>4</td>
+                <td>6</td>
                 <td>出差补贴</td>
                 @if (flag)
                 {
@@ -83,16 +154,16 @@
                 {
                     <td>
                         <div class="input-group col-md-10">
-                            <input type="text" class="form-control" name="SubSidy" value="@(Model.SubSidy)" />
+                            <input type="text" class="form-control" name="SubSidy" value="@(Model.SubSidy)"  readonly="readonly"/>
                             <div class="input-group-addon">元</div>
                         </div>
                     </td>
                 }
                 
-                <td></td>
+                <td>注：补贴合计如有错误，请点击输入框进行重新计算！</td>
             </tr>
             <tr>
-                <td>5</td>
+                <td>7</td>
                 <td>出差住宿</td>
                 @if (flag)
                 {
@@ -111,7 +182,7 @@
                 <td></td>
             </tr>
             <tr>
-                <td>6</td>
+                <td>8</td>
                 <td>其他内容</td>
                 @if (flag)
                 {
@@ -127,7 +198,7 @@
                 <td></td>
             </tr>
             <tr>
-                <td>7</td>
+                <td>9</td>
                 <td>其他金额</td>
                 @if (flag)
                 {
@@ -146,7 +217,7 @@
                 <td></td>
             </tr>
             <tr>
-                <td>8</td>
+                <td>10</td>
                 <td>过路费</td>
                 @if (flag)
                 {
@@ -165,7 +236,7 @@
                 <td>用车填写</td>
             </tr>
             <tr>
-                <td>9</td>
+                <td>11</td>
                 <td>出差人</td>
                 @if (flag)
                 {
@@ -184,3 +255,50 @@
     </table>
 </div>
 
+
+<script>
+    $(function () {
+        $(".datetimepicker").datetimepicker({
+            timepicker: false,
+            format: 'Y-m-d',
+        }).blur(function () {
+            var targetId = $(this).attr("targetId");
+            var start = $("[name='StartTime"+targetId+"']").val();
+            var end = $("[name='EndTime"+targetId+"']").val();
+            if (start == NaN || start == ""||start==undefined||start=="undefined" || end == NaN || end == ""||end==undefined||end=="undefined") {
+                return false;
+            }
+            var d1 = new Date(start);
+            var d2 = new Date(end);
+            if (d2 < d1) {
+                alert("截止日期小于起始日期");
+                $("[name='Days"+targetId+"']").val(0);
+                return false;
+            }
+            var day_d1 = d1.getTime() / 1000 / 3600 / 24;
+            var day_d2 = d2.getTime() / 1000 / 3600 / 24;
+            $("[name='Days"+targetId+"']").val(day_d2 - day_d1+1);
+        });
+
+        function SumSubSidy() {
+            var sum = 0;
+            for (var i = 0; i < 3; i++) {
+                var peoples = $("[name='Peoples" + i + "']").val();
+                var days = $("[name='Days" + i + "']").val();
+                if (peoples == NaN || peoples == "" || peoples == undefined || peoples == "undefined" || days == NaN || days == "" || days == undefined || days == "undefined") {
+                    continue;
+                }
+                sum += parseInt(peoples) * parseInt(days);
+            }
+            $("[name='SubSidy']").val(sum * 40);
+        }
+
+        $(".People").blur(function () {
+            SumSubSidy();
+        });
+        $("input[name='SubSidy']").focus(function () {
+            SumSubSidy();
+        })
+
+    })
+</script>
