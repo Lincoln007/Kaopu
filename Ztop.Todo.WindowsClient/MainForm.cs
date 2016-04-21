@@ -201,7 +201,6 @@ namespace Ztop.Todo.WindowsClient
             }
             if (!string.IsNullOrEmpty(queryString))
             {
-                //MessageBox.Show(queryString);
                 ThreadFunction(queryString);
             }
 

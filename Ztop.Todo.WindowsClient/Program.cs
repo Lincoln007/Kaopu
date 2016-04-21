@@ -18,7 +18,7 @@ namespace Ztop.Todo.WindowsClient
     static class Program
     {
         const int WM_COPYDATA = 0x004A;
-        private static Mutex _m;
+        //private static Mutex _m;
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -44,12 +44,6 @@ namespace Ztop.Todo.WindowsClient
                     SendMessage(filePath);
                     #endregion
                 }
-
-                if (_m != null)
-                {
-                    _m.ReleaseMutex();
-                }
-
             }
             else
             {
@@ -92,7 +86,7 @@ namespace Ztop.Todo.WindowsClient
 
             #region  方式二
             bool canCreateNew = false;
-            _m = new Mutex(true, "ZTOP-TODO", out canCreateNew);
+            var _m = new Mutex(true, "ZTOP-TODO", out canCreateNew);
             return !canCreateNew;
             #endregion
         }

@@ -57,8 +57,6 @@ namespace Ztop.Todo.Common
             {
                 return;
             }
-            //string Target = System.IO.Path.GetFileNameWithoutExtension(FilePath) +Guid.NewGuid().ToString() + System.IO.Path.GetExtension(FilePath);
-            //string Target = System.IO.Path.GetFileNameWithoutExtension(FilePath) +"-"+ DateTime.Now.Ticks.ToString() + System.IO.Path.GetExtension(FilePath);
             string URL = "FTP://" + FTPIP + "/" + target;
             var ftp = GetRequest(URL);
             ftp.Method = System.Net.WebRequestMethods.Ftp.UploadFile;
@@ -82,8 +80,6 @@ namespace Ztop.Todo.Common
                 }
             }
             ftp = null;
-            //return System.IO.Path.Combine(FTPDirectory, Target);
-
         }
 
         private static void MakeDirectory(string DirName,string HostName,string UserName,string Password)
