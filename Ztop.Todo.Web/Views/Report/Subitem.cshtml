@@ -12,7 +12,7 @@
             <th>
                 分类
             </th>
-            <th style="width:50%">
+            <th>
                 内容
             </th>
             <th>
@@ -28,7 +28,7 @@
                 <tr>
                     <td>@(serial++)</td>
                     <td>
-                        <select name="Category">
+                        <select name="Category" class="form-control">
                             <option value="">请选择</option>
                             @foreach (Category category in Enum.GetValues(typeof(Category)))
                             {
@@ -36,8 +36,8 @@
                             }
                         </select>
                     </td>
-                    <td><input type="text" name="Detail" style="width:100%" value="@(subtance.Details)" /></td>
-                    <td><input type="text" name="Price" value="@(subtance.Price)" /></td>
+                    <td><input type="text" name="Detail" style="width:100%" value="@(subtance.Details)" class="form-control" /></td>
+                    <td><input type="text" name="Price" value="@(subtance.Price)" class="form-control" /></td>
                 </tr>
             }
         }
@@ -46,7 +46,7 @@
             <tr>
                 <td>@(i + 1)</td>
                 <td>
-                    <select name="Category">
+                    <select name="Category" class="form-control">
                         <option value="">请选择</option>
                         @foreach (Category category in Enum.GetValues(typeof(Category)))
                 {
@@ -54,8 +54,8 @@
                         }
                     </select>
                 </td>
-                <td><input type="text" name="Detail" style="width:100%" /></td>
-                <td><input type="text" name="Price" /></td>
+                <td><input type="text" name="Detail" style="width:100%" class="form-control" /></td>
+                <td><input type="text" name="Price" class="form-control" /></td>
             </tr>
         }
     </tbody>

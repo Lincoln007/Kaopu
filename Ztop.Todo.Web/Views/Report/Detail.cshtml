@@ -25,9 +25,6 @@
                 <button type="button" class="btn btn-danger btn-sm btn-delete">
                     <em class="glyphicon glyphicon-remove"></em>删除
                 </button>
-                <button class="btn btn-default btn-sm" type="button" onclick="javascript:Preview()">
-                    <em class="glyphicon glyphicon-print"></em> 打印
-                </button>
                 <a class="btn btn-warning btn-sm" href="/Report">
                     <em class="glyphicon glyphicon-menu-left"></em> 返回
                 </a>
@@ -39,7 +36,13 @@
                         if (sheet.Name == Identity.Name)//用户自己查看报销单时候
                         {
                             <button type="button" class="btn btn-warning btn-sm"><i class="fa fa-refresh fa-spin"></i>审核中</button>
-                            @*<span class="label label-success">报销单已经提交，等待审核</span>*@
+                            if (sheet.Controler == sheet.Checkers)
+                            {
+                                <button type="button" class="btn btn-danger btn-sm" id="Revoke">
+                                    <em class="glyphicon glyphicon-log-out"></em>撤回
+                                </button>
+                                @*<a class="btn btn-danger btn-sm" href="/Report/Revoke?id=@(sheet.ID)"><em class="glyphicon glyphicon-log-out"></em>撤回</a>*@
+                            }
                         }
                         else if (sheet.Controler == Identity.Name)//主管  查看报销单
                         {
@@ -185,9 +188,6 @@
                 </div>
 
 }
-
-
-
 <style type="text/css" media="print">
     .noprint{display:none;}
 </style>
@@ -209,9 +209,6 @@
     }
 
     $(function () {
-        
-
-
         $("#form-Check").submit(function () {
             var data = $(this).serialize();
             $.request("/Report/PostSheet", data, function (json) {
@@ -231,7 +228,13 @@
             if (confirm("您确定要通过当前报销单吗?")) {
                 $.request("/Report/Check?id=@(sheet.ID)", null, function () {
                     window.location.href = "/Report";
-                    //window.location.href = "/Report/Detail?id=@(sheet.ID)";
+                })
+            }
+        });
+        $("#Revoke").click(function () {
+            if (confirm("您确定撤回当前报销单？")) {
+                $.request("/Report/Revoke?id=@(sheet.ID)", null, function () {
+                    location.href = "/Report/Detail?id=@(sheet.ID)";
                 })
             }
         })

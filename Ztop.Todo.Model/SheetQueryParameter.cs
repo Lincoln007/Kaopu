@@ -9,10 +9,25 @@ namespace Ztop.Todo.Model
 {
     public class SheetQueryParameter
     {
+        /// <summary>
+        /// 报销人
+        /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// 页数信息
+        /// </summary>
         public PageParameter Page { get; set; }
+        /// <summary>
+        /// 是否删除  全部  删除  未删除
+        /// </summary>
         public bool? Deleted { get; set; }
+        /// <summary>
+        /// 当前 需要审核的人
+        /// </summary>
         public string Controler { get; set; }
+        /// <summary>
+        /// 报销单状态
+        /// </summary>
         public Status? Status { get; set; }
     }
 

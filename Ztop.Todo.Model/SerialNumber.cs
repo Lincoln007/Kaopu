@@ -20,6 +20,7 @@ namespace Ztop.Todo.Model
         public int ID { get; set; }
         public string Number { get; set; }
         public int NumberExt { get; set; }
+        public string Name { get; set; }
         [NotMapped]
         /// <summary>
         /// 单据编号

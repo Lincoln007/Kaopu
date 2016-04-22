@@ -20,7 +20,7 @@ namespace Ztop.Todo.Manager
                 return db.Sheets.FirstOrDefault(e => e.ID == id);
             }
         }
-        public Sheet GetSerialNumberModel(int id,SheetType type)
+        public Sheet GetSerialNumberModel(int id,SheetType type,string name)
         {
             if (id == 0)
             {
@@ -28,7 +28,7 @@ namespace Ztop.Todo.Manager
                 {
                     Type = type,
                     Evection = type == SheetType.Errand ? new Evection() : null,
-                    SerialNumber = Core.SerialNumberManager.GetNewModel()
+                    SerialNumber = Core.SerialNumberManager.GetNewModel(name)
                 };
             }
             var sheet = GetAllModel(id);

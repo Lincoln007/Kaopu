@@ -77,9 +77,8 @@ namespace Ztop.Todo.Model
         [NotMapped]
         public List<Verify> Verifys { get; set; }
         /// <summary>
-        /// 审核人
+        /// 审核人  直接上级领导  点击提交的第一人领导
         /// </summary>
-        [NotMapped]
         public string Checkers { get; set; }
 
     }

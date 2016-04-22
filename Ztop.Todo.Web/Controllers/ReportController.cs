@@ -39,19 +39,15 @@ namespace Ztop.Todo.Web.Controllers
         /// <returns></returns>
         public ActionResult Create(SheetType type=SheetType.Daily,int id=0)
         {
-            ViewBag.Sheet = Core.SheetManager.GetSerialNumberModel(id,type);
+            ViewBag.Sheet = Core.SheetManager.GetSerialNumberModel(id,type,Identity.Name);
             ViewBag.Groups = Core.UserManager.GetUserGroups();
             ViewBag.Users = Core.UserManager.GetAllUsers();
             return View();
         }
 
-        public ActionResult ChooseUser()
-        {
-            
-            return View();
-        }
         private void Save(Sheet sheet,string DirectorVal)
         {
+            sheet.Checkers = DirectorVal;
             if (!string.IsNullOrEmpty(DirectorVal))
             {
                 sheet.Status = Status.ExaminingDirector;
@@ -164,11 +160,44 @@ namespace Ztop.Todo.Web.Controllers
             throw new ArgumentException("参数错误，没有找到该报销单");
             
         }
+
+        public ActionResult Revoke(int id)
+        {
+            var sheet = Core.SheetManager.GetAllModel(id);
+            if (sheet == null)
+            {
+                throw new ArgumentException("参数不正确，无法获取报销单信息");
+            }
+            if (sheet.Controler != sheet.Checkers)//
+            {
+                throw new ArgumentException("当前报销单主管已经审核，无法执行撤回操作！");
+            }
+            var sverify = new Verify
+            {
+                Name = Identity.Name,
+                SID = sheet.ID,
+                Time = DateTime.Now,
+                Position = Position.RollBack,
+                Step=Step.Roll
+            };
+            sheet.Controler = Identity.Name;
+            sheet.Status = Status.RollBack;
+            Core.SheetManager.Save(sheet);
+            Core.VerifyManager.Update(sverify);
+            return SuccessJsonResult();
+        }
+
+
+        /// <summary>
+        /// 审核人  点击退回
+        /// </summary>
+        /// <param name="sheet"></param>
+        /// <param name="reason"></param>
         private void Reversion(Sheet sheet,string reason)
         {
             if (sheet.Controler != Identity.Name)
             {
-                throw new ArgumentException("当前您无法进行退出操作");
+                throw new ArgumentException("当前您无法进行退回操作");
             }
             var sverify = new Verify
             {
@@ -193,7 +222,6 @@ namespace Ztop.Todo.Web.Controllers
             }
             sheet.Controler = sheet.Name;
             sheet.Status = Status.RollBack;
-            //sheet.Status = Status.OutLine;
             Core.SheetManager.Save(sheet);
             Core.VerifyManager.Update(sverify);
         }
@@ -323,5 +351,10 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
 
+        public ActionResult CheckByMe()
+        {
+
+            return View();
+        }
     }
 }

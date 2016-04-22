@@ -154,7 +154,19 @@
     }
 
     function SumDialy() {
-
+        var sum=0;
+        $("[name='Price']").each(function(){
+            var a=$(this).val();
+            if(a!=NaN||a!=undefined||a!=""||a!="undefined"){
+                var val=parseFloat(a);
+                if(!isNaN(val)){
+                    sum+=val;
+                }
+                
+            }
+        });
+        $("[name='Money']").val(sum);
+        return false;
     }
     $(function () {
 
