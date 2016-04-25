@@ -39,7 +39,7 @@
                     <td>单据编号</td>
                     <td>@(sheet.SerialNumber.Coding) </td>
                     <td>报销日期</td>
-                    <td><input type="text" id="datetimepicker2" value="@(sheet.Time.ToShortDateString())" name="Time" /></td>
+                    <td><input type="text" id="datetimepicker2" class="form-control" value="@(sheet.Time.ToShortDateString())" name="Time" /></td>
                 </tr>
                 <tr>
                     <td>报销人</td>
@@ -47,11 +47,22 @@
                         @(Identity.Name)
                     </td>
                     <td>报销金额合计</td>
-                    <td><input type="text"  name="Money" value="@(sheet.Money)" /></td>
+                    <td>
+                        <input type="text" name="Money" value="@(sheet.Money)" class="form-control"  onclick="@(sheet.Type==SheetType.Errand?"SumErrand()":"SumDialy()")" />
+                        <div class="input-group">
+                            
+                            @*<span class="input-group-btn">
+                                <button type="button" class="btn btn-success" onclick="@(sheet.Type==SheetType.Errand?"SumErrand()":"SumDialy()")">合计</button>
+                            </span>*@
+                        </div>
+                        
+                    </td>
                 </tr>
                 <tr>
+                    <td>发票张数</td>
+                    <td><input type="number" name="Count" value="@(sheet.Count)" class="form-control" /></td>
                     <td>备注</td>
-                    <td colspan="3"><input type="text" name="Remarks" style="width:100%" value="@(sheet.Remarks)" /></td>
+                    <td><input type="text" name="Remarks" style="width:100%" value="@(sheet.Remarks)" class="form-control" /></td>
                 </tr>
             </tbody>
         </table>
@@ -98,23 +109,6 @@
         </table>
 
     </div>
-    <div class="col-md-12">
-        <button class="btn btn-success btn-sm" type="button">
-            <em class="glyphicon glyphicon-send"></em> 保存转交
-        </button>
-        <button class="btn btn-success btn-sm" type="button">
-            <em class="glyphicon glyphicon-floppy-disk"></em> 保存返回
-        </button>
-        <button class="btn btn-danger btn-sm" type="button">
-            <em class="glyphicon glyphicon-remove-circle"></em> 删除
-        </button>
-        <button class="btn btn-default btn-sm" type="button">
-            <em class="glyphicon glyphicon-print"></em> 打印
-        </button>
-        <button class="btn btn-warning btn-sm" type="button">
-            <em class="glyphicon glyphicon-menu-left"></em> 返回
-        </button>
-    </div>
 </form>
 
 <table id="template" style="display:none">
@@ -143,6 +137,38 @@
 
 
 <script>
+    
+
+    function SumErrand() {
+        var fields=["Traffic","SubSidy","Hotel","Other"];
+        var sum = 0;
+        for(var field in fields){
+            var a=$("[name='"+fields[field]+"']").val();
+            if(a==NaN||a==undefined||a==""||a=="undefined"){
+                continue;
+            }
+            var val = parseFloat(a);
+            sum += val;
+        }
+        $("[name='Money']").val(sum);
+        return false;
+    }
+
+    function SumDialy() {
+        var sum=0;
+        $("[name='Price']").each(function(){
+            var a=$(this).val();
+            if(a!=NaN||a!=undefined||a!=""||a!="undefined"){
+                var val=parseFloat(a);
+                if(!isNaN(val)){
+                    sum+=val;
+                }
+                
+            }
+        });
+        $("[name='Money']").val(sum);
+        return false;
+    }
     $(function () {
 
         var template = $("#template").html();
@@ -157,8 +183,6 @@
         $("#datetimepicker2").datetimepicker({
             timepicker: false,
             format: 'Y/m/d',
-            @*maxDate:'@(DateTime.Today.ToShortDateString())'*@
-            @*//minDate: '@(DateTime.Today.ToShortDateString())'*@
         });
 
         $("#form-Create").submit(function () {
@@ -167,20 +191,8 @@
                 location.href = "/Report/Index";
             });
             return false;
-
-            //if (checkMoney()) {
-                
-            //} else {
-            //    alert("报销金额不能为0或者金额合计与分项合计不相等，请核对!");
-            //    $("[name='Director']").removeClass("btn-success").addClass("btn-default");
-            //    $("[name='DirectorVal']").val("");
-            //    return false;
-            //}
            
-        });
-
-
-        
+        });    
     })
 </script>
 

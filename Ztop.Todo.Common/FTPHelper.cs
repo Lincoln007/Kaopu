@@ -34,16 +34,30 @@ namespace Ztop.Todo.Common
             result.KeepAlive = false;
             return result;
         }
-        public static string UploadFile(string FilePath)
+        public static Dictionary<string,string> GetUniqueDict(this List<string> files)
+        {
+            var dict = new Dictionary<string, string>();
+            foreach(var item in files)
+            {
+                if (!dict.ContainsKey(item))
+                {
+                    dict.Add(item, string.Format("{0}-{1}{2}", System.IO.Path.GetFileNameWithoutExtension(item), DateTime.Now.Ticks.ToString(), System.IO.Path.GetExtension(item)));
+                }
+            }
+            return dict;
+        }
+        public static string GetFTPFullPath(string fileName)
+        {
+            return System.IO.Path.Combine(FTPDirectory, fileName);
+        }
+        public static void UploadFile(string FilePath,string target)
         {
             FileInfo fi = new FileInfo(FilePath);
             if (!fi.Exists)
             {
-                return null;
+                return;
             }
-            //string Target = System.IO.Path.GetFileNameWithoutExtension(FilePath) +Guid.NewGuid().ToString() + System.IO.Path.GetExtension(FilePath);
-            string Target = System.IO.Path.GetFileNameWithoutExtension(FilePath) +"-"+ DateTime.Now.Ticks.ToString() + System.IO.Path.GetExtension(FilePath);
-            string URL = "FTP://" + FTPIP + "/" + Target;
+            string URL = "FTP://" + FTPIP + "/" + target;
             var ftp = GetRequest(URL);
             ftp.Method = System.Net.WebRequestMethods.Ftp.UploadFile;
             ftp.UseBinary = true;
@@ -66,8 +80,6 @@ namespace Ztop.Todo.Common
                 }
             }
             ftp = null;
-            return System.IO.Path.Combine(FTPDirectory, Target);
-
         }
 
         private static void MakeDirectory(string DirName,string HostName,string UserName,string Password)

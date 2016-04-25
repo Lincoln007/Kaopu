@@ -38,7 +38,7 @@ namespace Ztop.Todo.WindowsClient
                 {
                     if (this.mainForm != null)
                     {
-                        mainForm.ThreadFunction(str);
+                        //mainForm.ThreadFunction(str);
                     }
                 }
             }

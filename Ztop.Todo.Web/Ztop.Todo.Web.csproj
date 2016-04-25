@@ -158,6 +158,7 @@
     <Content Include="Content\jqtree.css" />
     <Content Include="Content\jquery.autocomplete.css" />
     <Content Include="Content\logo.png" />
+    <Content Include="Content\Print.css" />
     <Content Include="Content\token-input.css" />
     <Content Include="error.txt" />
     <Content Include="Content\jquery.datetimepicker.css" />
@@ -194,6 +195,7 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\Chart.js" />
+    <Content Include="Scripts\CLodopfuncs.js" />
     <Content Include="Scripts\common.js" />
     <Content Include="Scripts\jquery-1.9.1.js" />
     <Content Include="Scripts\jquery-1.9.1.min.js" />
@@ -245,6 +247,8 @@
     <Content Include="Views\Report\Statistic.cshtml" />
     <Content Include="Views\Report\Subitem.cshtml" />
     <Content Include="Views\Report\Errand.cshtml" />
+    <Content Include="Views\Report\ChooseUser.cshtml" />
+    <Content Include="Views\Report\Sheeting.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

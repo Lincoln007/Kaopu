@@ -132,7 +132,12 @@ namespace Ztop.Todo.Web.Controllers
             //上传客户端发送的附件
             if (!string.IsNullOrEmpty(clientFile))
             {
-                Core.AttachmentManager.Upload(clientFile, model.ID);
+                var clientFiles = clientFile.Split('*');
+                if (clientFiles != null)
+                {
+                    Core.AttachmentManager.Upload(clientFiles, model.ID);
+                }
+                //Core.AttachmentManager.Upload(clientFile, model.ID);
             }
             return RedirectToAction("Index");
         }

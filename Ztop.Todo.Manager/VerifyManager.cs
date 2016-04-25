@@ -18,7 +18,7 @@ namespace Ztop.Todo.Manager
         {
             using (var db = GetDbContext())
             {
-                var entry = db.Verifys.FirstOrDefault(e => e.Name == verify.Name && e.SID == verify.SID && e.Step == verify.Step&&e.Position==Position.Wait);
+                var entry = db.Verifys.OrderByDescending(e=>e.ID).FirstOrDefault(e => e.Name == verify.Name && e.SID == verify.SID && e.Step == verify.Step);
                 if (entry != null)
                 {
                     verify.ID = entry.ID;
@@ -32,12 +32,20 @@ namespace Ztop.Todo.Manager
             }
         }
 
+
         public void Save(Verify verify)
         {
             using (var db = GetDbContext())
             {
                 db.Verifys.Add(verify);
                 db.SaveChanges();
+            }
+        }
+        public List<int> GetSheetID(string name)
+        {
+            using (var db = GetDbContext())
+            {
+                return db.Verifys.Where(e => e.Name == name).GroupBy(e => e.SID).Select(g => g.Key).ToList();
             }
         }
         

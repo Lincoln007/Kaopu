@@ -13,13 +13,14 @@ namespace Ztop.Todo.Model
     {
         public SerialNumber()
         {
-            Number = string.Format("ZTOP{0}{1}{2}", DateTime.Now.Year.ToString("0000"), DateTime.Now.Month.ToString("00"), DateTime.Now.Day.ToString("00"));
+            Number = string.Format("{0}{1}", DateTime.Now.Year.ToString("0000"), DateTime.Now.Month.ToString("00"));
         }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
         public string Number { get; set; }
         public int NumberExt { get; set; }
+        public string Name { get; set; }
         [NotMapped]
         /// <summary>
         /// 单据编号

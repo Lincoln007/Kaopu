@@ -6,16 +6,19 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using Ztop.Todo.Common;
+using Ztop.Todo.Model;
 
 namespace Ztop.Todo.WindowsClient
 {
     static class Program
     {
-
+        const int WM_COPYDATA = 0x004A;
+        //private static Mutex _m;
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -25,8 +28,9 @@ namespace Ztop.Todo.WindowsClient
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
             var filePath = string.Join(" ", args ?? new string[] { });
-            if (HasInstance())
+            if (WJLHasInstance())
             {
+                
                 if (!string.IsNullOrEmpty(filePath))
                 {
                     filePath = System.IO.Path.GetFullPath(filePath);
@@ -35,44 +39,19 @@ namespace Ztop.Todo.WindowsClient
                         MessageBox.Show(string.Format("无法识别的文件路径，当前识别路径：{0}", filePath));
                         return;
                     }
-                    try
-                    {
-                        filePath = FTPHelper.UploadFile(filePath);
-                    }
-                    catch(Exception ex)
-                    {
-                        MessageBox.Show(string.Format("上传文件失败！请确保该文件是否被占用，错误信息：{0}", ex.ToString()));
-                        return;
-                    }
-                    
-                    try
-                    {
-                       
-                        TCPHelper.TCPSend(filePath);
-                    }
-                    catch(Exception ex)
-                    {
-                        MessageBox.Show(string.Format("发送文件信息失败，错误信息：{0}",ex.ToString()));
-                        return;
-                    }
-                    //MessageBox.Show(string.Format("成功发送文件路径：{0}", filePath));
-                  
+                    #region  发送信息
+                    Thread.Sleep(500);
+                    SendMessage(filePath);
+                    #endregion
                 }
             }
             else
             {
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
-                try
-                {
-                    RegisterApplication();
-                }
-                catch(Exception ex)
-                {
-                    MessageBox.Show(string.Format("注册右键附件上传失败，请确保以管理员运行本程序，错误信息：{0}", ex.ToString()) );
-                }
                 Application.Run(new LoginForm(filePath));
             }
+          
         }
 
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -97,9 +76,19 @@ namespace Ztop.Todo.WindowsClient
 
         private static bool WJLHasInstance()
         {
+            #region  方式一
+
+            //bool isAppRunning = false;
+            //System.Threading.Mutex mutex = new System.Threading.Mutex(true, System.Diagnostics.Process.GetCurrentProcess().ProcessName, out isAppRunning);
+            //return !isAppRunning;
+
+            #endregion
+
+            #region  方式二
             bool canCreateNew = false;
-            var m = new Mutex(true, "ZTOPTODO", out canCreateNew);
-            return canCreateNew;
+            var _m = new Mutex(true, "ZTOP-TODO", out canCreateNew);
+            return !canCreateNew;
+            #endregion
         }
 
         private static void RegisterApplication()
@@ -142,6 +131,26 @@ namespace Ztop.Todo.WindowsClient
             //    localMachine.Close();
             //}
             #endregion
+        }
+
+        [DllImport("User32.dll",EntryPoint ="SendMessage")]
+        private static extern int SendMessage(int hWnd, int Msg, int wParam, ref COPYDATASTRUCT IParam);
+        [DllImport("User32.dll",EntryPoint ="FindWindow")]
+        private static extern int FindWindow(string IpClassName, string IpWindowName);
+
+        private static void SendMessage(string filePath)
+        {
+            int WINDOW_HANDLER = FindWindow(null, "智拓TODO");
+            if (WINDOW_HANDLER != 0)
+            {
+                byte[] sarr = System.Text.Encoding.Default.GetBytes(filePath);
+                int len = sarr.Length;
+                COPYDATASTRUCT cds;
+                cds.dwData = (IntPtr)100;
+                cds.IpData = filePath;
+                cds.cbData = len + 1;
+                SendMessage(WINDOW_HANDLER, WM_COPYDATA, 0, ref cds);
+            }
         }
     }
 }

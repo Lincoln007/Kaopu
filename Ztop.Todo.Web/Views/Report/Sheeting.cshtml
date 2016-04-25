@@ -1,0 +1,31 @@
+﻿
+@{
+    ViewBag.Title = "等待审核报销单";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<Sheet> list = ViewBag.List;
+    int Serial = 1;
+}
+<h4>当前需要审核报销单列表</h4>
+
+<table class="table table-bordered">
+    <tr>
+        <th>序号</th>
+        <th>单据编号</th>
+        <th>报销人</th>
+        <th>报销金额（元）</th>
+        <th>报销时间</th>
+        <th>报销类型</th>
+    </tr>
+    @foreach(var sheet in list)
+    {
+        <tr>
+            <td>@(Serial++)</td>
+            <td><a href="/Report/Detail?id=@(sheet.ID)">@(sheet.SerialNumber.Coding)</a> </td>
+            <td>@(sheet.Name)</td>
+            <td>@(sheet.Money)</td>
+            <td>@(sheet.Time.ToLongDateString())</td>
+            <td>@(sheet.Type.GetDescription())</td>
+        </tr>
+    }
+</table>
+

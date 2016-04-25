@@ -20,7 +20,7 @@ namespace Ztop.Todo.Manager
                 return db.Sheets.FirstOrDefault(e => e.ID == id);
             }
         }
-        public Sheet GetSerialNumberModel(int id,SheetType type)
+        public Sheet GetSerialNumberModel(int id,SheetType type,string name)
         {
             if (id == 0)
             {
@@ -28,7 +28,7 @@ namespace Ztop.Todo.Manager
                 {
                     Type = type,
                     Evection = type == SheetType.Errand ? new Evection() : null,
-                    SerialNumber = Core.SerialNumberManager.GetNewModel()
+                    SerialNumber = Core.SerialNumberManager.GetNewModel(name)
                 };
             }
             var sheet = GetAllModel(id);
@@ -54,7 +54,8 @@ namespace Ztop.Todo.Manager
                     }
                     else
                     {
-                        model.Evection = db.Evections.FirstOrDefault(e => e.SID == id);
+                        model.Evection = db.Evections.FirstOrDefault(e => e.SID == id);//获取出差报销分项清单
+                        model.Evection.Errands = db.Errands.Where(e => e.EID == model.Evection.ID).ToList();//获取出差人数列表
                     }
                     
                     model.Verifys = db.Verifys.Where(e => e.SID == id).OrderBy(e => e.ID).ToList();
@@ -103,6 +104,8 @@ namespace Ztop.Todo.Manager
                 }
                 if (sheet.Type == SheetType.Errand && sheet.Evection != null)
                 {
+                    #region  更新出差报销中的分项清单
+
                     sheet.Evection.SID = sheet.ID;
                     var entry = db.Evections.FirstOrDefault(e => e.SID == sheet.ID);
                     if (entry == null)
@@ -114,8 +117,26 @@ namespace Ztop.Todo.Manager
                         sheet.Evection.ID = entry.ID;
                         db.Entry(entry).CurrentValues.SetValues(sheet.Evection);
                     }
+                    #endregion
+
+                    #region  更新出差人数的列表
+                    var older = db.Errands.Where(e => e.EID == sheet.Evection.ID).ToList();
+                    if (older != null)
+                    {
+                        db.Errands.RemoveRange(older);
+                        db.SaveChanges();
+                    }
+                    db.Errands.AddRange(sheet.Evection.Errands.Select(e => new Errand
+                    {
+                        StartTime=e.StartTime,
+                        EndTime=e.EndTime,
+                        Peoples = e.Peoples,
+                        Days = e.Days,
+                        EID = sheet.Evection.ID
+                    }));
+                    #endregion
                 }
-                
+
                 db.SaveChanges();
 
             }
@@ -229,6 +250,11 @@ namespace Ztop.Todo.Manager
             }
             return query.ToList();
         }
+        public List<Sheet> GetSheets(string name)
+        {
+            var list = Core.VerifyManager.GetSheetID(name);
+            return list.Select(e => GetAllModel(e)).Where(e=>e.Deleted==false).ToList();
+        }
         public void Delete(int id)
         {
             using (var db = GetDbContext())
@@ -288,7 +314,7 @@ namespace Ztop.Todo.Manager
                 else
                 {
                     var key = "出差报销";
-                    var val = sheet.Evection.Traffic + sheet.Evection.SubSidy + sheet.Evection.Hotel + sheet.Evection.Other + sheet.Evection.Toll;
+                    var val = sheet.Evection.Traffic + sheet.Evection.SubSidy + sheet.Evection.Hotel + sheet.Evection.Other;
                     if (dict.ContainsKey(key))
                     {
                         dict[key] += val;

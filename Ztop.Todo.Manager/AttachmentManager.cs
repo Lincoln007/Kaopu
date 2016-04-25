@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using Ztop.Todo.Common;
 using Ztop.Todo.Model;
 
 namespace Ztop.Todo.Manager
@@ -52,26 +53,28 @@ namespace Ztop.Todo.Manager
                 db.SaveChanges();
             }
         }
-        public void Upload(string AddedFile, int taskId)
+        
+        public void Upload(string[] addedFiles,int taskId)
         {
-            System.IO.FileInfo file = new FileInfo(AddedFile);
-            if (file.Exists)
+            foreach(var addfile in addedFiles)
             {
-                using (var db = GetDbContext())
-                {
-                    db.Attachments.Add(new Attachment
-                    {
-                        FileName = System.IO.Path.GetFileName(AddedFile),
-                        FileSize = (int)file.Length,
-                        SavePath = AddedFile,
-                        TaskID = taskId
-                    });
-                    db.SaveChanges();
-                }
+                Upload(FTPHelper.GetFTPFullPath(addfile), taskId);
             }
-            else
+        }
+
+        public void Upload(string addedFile, int taskId)
+        {
+            System.IO.FileInfo file = new FileInfo(addedFile);
+            using (var db = GetDbContext())
             {
-                throw new ArgumentException("该目录下的文件不存在：" + AddedFile);
+                db.Attachments.Add(new Attachment
+                {
+                    FileName = System.IO.Path.GetFileName(addedFile),
+                    FileSize = file.Exists ? (int)file.Length : 0,
+                    SavePath = addedFile,
+                    TaskID = taskId
+                });
+                db.SaveChanges();
             }
 
         }

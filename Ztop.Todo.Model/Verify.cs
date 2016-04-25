@@ -56,13 +56,13 @@ namespace Ztop.Todo.Model
         [Description("报销确认")]//申屠
         Confirm,
         [Description("财务负责人核准")]//财务
-        Approved
+        Approved,
+        [Description("撤回")]
+        Roll
     }
 
     public enum Position
     {
-        [Description("等待审核或者完善")]
-        Wait,
         [Description("审核通过")]
         Check,
         [Description("退回")]
