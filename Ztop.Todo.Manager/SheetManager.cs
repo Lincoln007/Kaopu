@@ -314,7 +314,7 @@ namespace Ztop.Todo.Manager
                 else
                 {
                     var key = "出差报销";
-                    var val = sheet.Evection.Traffic + sheet.Evection.SubSidy + sheet.Evection.Hotel + sheet.Evection.Other + sheet.Evection.Toll;
+                    var val = sheet.Evection.Traffic + sheet.Evection.SubSidy + sheet.Evection.Hotel + sheet.Evection.Other;
                     if (dict.ContainsKey(key))
                     {
                         dict[key] += val;

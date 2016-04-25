@@ -64,5 +64,46 @@ namespace Ztop.Todo.Manager
             }
             return list;
         }
+        public List<Traffic> GetTraffic(HttpContextBase context,string[] busTypes)
+        {
+            if (busTypes == null)
+            {
+                return null;
+            }
+            var a = .0;
+            var b = 0;
+            var list = new List<Traffic>();
+            var times = context.Request.Form["Times"].Split(',');
+            var plates = context.Request.Form["Plate"].Split(',');
+            var tolls = context.Request.Form["Toll"].Split(',');
+            foreach(var type in busTypes)
+            {
+                var traffic = new Traffic()
+                {
+                    Type = (BusType)Enum.Parse(typeof(BusType), type),
+                    Cost = double.TryParse(context.Request.Form[string.Format("Cost{0}", type)].ToString(), out a) ? a : .0,
+                };
+                switch (traffic.Type)
+                {
+                    case BusType.Company:
+                        traffic.Toll = double.TryParse(tolls[0], out a) ? a : .0;
+                        traffic.Plate = plates[0];
+                        break;
+                    case BusType.Personal:
+                        traffic.Toll = double.TryParse(tolls[1], out a) ? a : .0;
+                        traffic.Plate = plates[1];
+                        break;
+                    case BusType.Didi:
+                        traffic.Times = int.TryParse(times[0], out b) ? b : 0;
+                        break;
+                    case BusType.Taxi:
+                        traffic.Times = int.TryParse(times[1], out b) ? b : 0;
+                        break;
+                    default:break;
+                }
+                list.Add(traffic);
+            }
+            return list;
+        }
     }
 }

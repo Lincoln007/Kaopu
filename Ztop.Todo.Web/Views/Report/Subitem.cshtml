@@ -37,7 +37,7 @@
                         </select>
                     </td>
                     <td><input type="text" name="Detail" style="width:100%" value="@(subtance.Details)" class="form-control" /></td>
-                    <td><input type="text" name="Price" value="@(subtance.Price)" class="form-control" /></td>
+                    <td><input type="number" name="Price" value="@(subtance.Price)" class="form-control" /></td>
                 </tr>
             }
         }
@@ -55,7 +55,7 @@
                     </select>
                 </td>
                 <td><input type="text" name="Detail" style="width:100%" class="form-control" /></td>
-                <td><input type="text" name="Price" class="form-control" /></td>
+                <td><input type="number" name="Price" class="form-control" /></td>
             </tr>
         }
     </tbody>
@@ -83,5 +83,16 @@
                 return false;
             }
         }
+        
+        $("input[name='Price']").focus(function () {
+            var sum = 0;
+            $("input[name='Price']").each(function () {
+                var str = $(this).val();
+                if (str != NaN && str != undefined && str != "undefined" && str != "") {
+                    sum += parseFloat(str);
+                }
+            });
+            $("input[name='Money']").val(sum);
+        })
     })
 </script>

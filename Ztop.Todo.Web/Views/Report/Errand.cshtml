@@ -1,7 +1,6 @@
 ﻿@model Ztop.Todo.Model.Evection
     @{ 
         bool flag = ViewBag.Detail??false;
-        ViewBag.CheckString = Model.Names;
     }
 <h3>报销内容分项清单&nbsp;</h3>
 <div id="bill">
@@ -38,7 +37,7 @@
                 {
                     <td>
                         <div class="input-group col-md-10">
-                            <input type="text" class="form-control" name="KiloMeters" value="@(Model.KiloMeters)" />
+                            <input type="number" class="form-control" name="KiloMeters" value="@(Model.KiloMeters)" />
                             <div class="input-group-addon">公里</div>
                         </div>
                     </td>
@@ -49,7 +48,7 @@
                 <td>交通费用</td>
                 @if (flag)
                 {
-                    <td class="text-center">@(Model.BusType.GetDescription())</td>
+                    @*<td class="text-center">@(Model.BusType.GetDescription())</td>*@
                 }
                 else
                 {
@@ -60,16 +59,16 @@
                                 <span class="input-group-addon">
                                     <input type="checkbox" name="BusType" value="@(type)" aria-label="" />@(type.GetDescription())
                                 </span>
-                                <input type="text" class="form-control" name="Cost@(type)" aria-label="" placeholder="金额" />
+                                <input type="number" class="form-control" name="Cost@(type)" aria-label="" placeholder="金额" />
                                 <div class="input-group-addon">元</div>
                                 @if (type == BusType.Company || type == BusType.Personal)
                                 {
-                                    <input type="text" class="form-control" name="Toll" placeholder="过路费/油费" />
+                                    <input type="number" class="form-control" name="Toll" placeholder="过路费/油费" />
                                     <div class="input-group-addon">元</div>
                                     <input type="text" class="form-control" name="Plate" placeholder="车牌" />
                                 }else if (type == BusType.Didi||type==BusType.Taxi)
                                 {
-                                    <input type="text" class="form-control"  name="Times" placeholder=""/>
+                                    <input type="number" class="form-control"  name="Times" placeholder=""/>
                                     <div class="input-group-addon">次</div>
                                 }
                             </div>
@@ -77,8 +76,9 @@
                         <hr />
                         <div class="input-group">
                             <div class="input-group-addon">合计</div>
-                            <input type="text" class="form-control"  placeholder="合计" readonly="readonly" name="Traffic" value="@(Model.Traffic)"/>
+                            <input type="number" class="form-control"  placeholder="合计" readonly="readonly" name="Traffic" value="@(Model.Traffic)"/>
                             <div class="input-group-addon">元</div>
+                            <span></span>
                         </div>   
                     </td>
                 }
@@ -87,7 +87,7 @@
                 <td>出差补贴</td>
                 <td >
                     <div class="input-group">
-                        <input type="text" class="form-control" name="SubSidy" readonly="readonly" value="@(Model.SubSidy)" />
+                        <input type="number" class="form-control" name="SubSidy" readonly="readonly" value="@(Model.SubSidy)" />
                         <div class="input-group-addon">元</div>
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".ViewSubSidy">出差人数详情</button>
@@ -124,9 +124,9 @@
                                         <div class="form-group">
                                             <label class="control-label col-md-2">小计：</label>
                                             <div class="input-group col-md-10">
-                                                <input type="text" class="form-control People" name="Peoples@(i)" readonly="readonly" />
+                                                <input type="number" class="form-control People" name="Peoples@(i)" readonly="readonly" />
                                                 <div class="input-group-addon">人</div>
-                                                <input type="text" class="form-control" name="Days@(i)" readonly="readonly" />
+                                                <input type="number" class="form-control" name="Days@(i)" readonly="readonly" />
                                                 <div class="input-group-addon">天</div>  
                                             </div>
                                         </div>
@@ -168,7 +168,7 @@
                 {
                     <td>
                         <div class="input-group col-md-10">
-                            <input type="text" class="form-control" name="Hotel" value="@(Model.Hotel)"  />
+                            <input type="number" class="form-control" name="Hotel" value="@(Model.Hotel)"  />
                             <div class="input-group-addon">元</div>
                         </div>
                     </td>
@@ -197,7 +197,7 @@
                 {
                     <td>
                         <div class="input-group col-md-10">
-                            <input type="text" class="form-control" name="Other" value="@(Model.Other)" />
+                            <input type="number" class="form-control" name="Other" value="@(Model.Other)" />
                             <div class="input-group-addon">元</div>
                         </div>
                     </td>
@@ -265,16 +265,7 @@
             $("[name='Peoples" + id + "']").val(count);
             $(".choose" + id + "").modal("hide");
         })
-        //$("#BS").click(function () {
-        //    var chk_val = [];
-        //    var buiness = "";
-        //    $("[name='Businesser']:checked").each(function () {
-        //        chk_val.push($(this).val());
-        //        buiness += $(this).val() + ";";
-        //    });
-        //    $("[name='Names']").val(buiness);
-        //});
-        $("[name='Traffic']").click(function () {
+        $("input[name='Traffic']").click(function () {
             var sum = 0;
             $("[name='BusType']:checked").each(function () {
                 var type = $(this).val();
@@ -286,6 +277,11 @@
                 }
             });
             $(this).val(sum);
+        }).change(function () {
+            SumErrand();
+        });
+        $("input[name='Hotel']").change(function () {
+            SumErrand();
         });
 
     })

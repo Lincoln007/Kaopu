@@ -47,19 +47,20 @@
                         @(Identity.Name)
                     </td>
                     <td>报销金额合计</td>
-                    <td class="col-md-5">
+                    <td>
+                        <input type="text" name="Money" value="@(sheet.Money)" class="form-control"  onclick="@(sheet.Type==SheetType.Errand?"SumErrand()":"SumDialy()")" />
                         <div class="input-group">
-                            <input type="text" name="Money" value="@(sheet.Money)" class="form-control" />
-                            <span class="input-group-btn">
+                            
+                            @*<span class="input-group-btn">
                                 <button type="button" class="btn btn-success" onclick="@(sheet.Type==SheetType.Errand?"SumErrand()":"SumDialy()")">合计</button>
-                            </span>
+                            </span>*@
                         </div>
                         
                     </td>
                 </tr>
                 <tr>
                     <td>发票张数</td>
-                    <td><input type="text" name="Count" value="@(sheet.Count)" class="form-control" /></td>
+                    <td><input type="number" name="Count" value="@(sheet.Count)" class="form-control" /></td>
                     <td>备注</td>
                     <td><input type="text" name="Remarks" style="width:100%" value="@(sheet.Remarks)" class="form-control" /></td>
                 </tr>
@@ -191,7 +192,7 @@
             });
             return false;
            
-        });        
+        });    
     })
 </script>
 

@@ -27,9 +27,10 @@ namespace Ztop.Todo.Model
         /// </summary>
         public double KiloMeters { get; set; }
         /// <summary>
-        /// 用车类型
+        /// 交通费用详情列表
         /// </summary>
-        public BusType BusType { get; set; }
+        [NotMapped]
+        public List<Traffic> TCosts { get; set; }
         /// <summary>
         /// 交通费
         /// </summary>
@@ -50,19 +51,10 @@ namespace Ztop.Todo.Model
         /// 其他金额
         /// </summary>
         public double Other { get; set; }
-        /// <summary>
-        /// 过路费
-        /// </summary>
-        public double Toll { get; set; }
-        /// <summary>
-        /// 出差人  名字
-        /// </summary>
-        public string Names { get; set; }
         public int SID { get; set; }
         [NotMapped]
         public List<Errand> Errands { get; set; }
-        [NotMapped]
-        public List<Traffic> TCosts { get; set; }
+       
     }
 
     [Table("traffic")]
@@ -74,8 +66,9 @@ namespace Ztop.Todo.Model
         public BusType Type { get; set; }
         public double Cost { get; set; }
         /// <summary>
-        /// 公司派车或者私家车使用时  填写
+        /// 公司派车或者私家车使用时  填写  过路费/油费 车牌
         /// </summary>
+        public double Toll { get; set; }
         public string Plate { get; set; }
         /// <summary>
         /// 企业滴滴或者出租车填写的时候  填写次数
