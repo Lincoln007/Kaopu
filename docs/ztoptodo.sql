@@ -1,7 +1,7 @@
 -- --------------------------------------------------------
--- 主机:                           10.22.102.3
+-- 主机:                           10.22.102.90
 -- 服务器版本:                        5.1.73-community - MySQL Community Server (GPL)
--- 服务器操作系统:                      Win64
+-- 服务器操作系统:                      Win32
 -- HeidiSQL 版本:                  9.3.0.4984
 -- --------------------------------------------------------
 
@@ -59,6 +59,7 @@ CREATE TABLE IF NOT EXISTS `comment` (
 CREATE TABLE IF NOT EXISTS `databooks` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `Name` varchar(255) DEFAULT NULL,
+  `sAMAccountName` varchar(255) DEFAULT NULL,
   `GroupName` varchar(255) DEFAULT NULL,
   `CreateTime` datetime DEFAULT NULL,
   `Checker` varchar(255) DEFAULT NULL,
@@ -68,6 +69,42 @@ CREATE TABLE IF NOT EXISTS `databooks` (
   `Reason` varchar(255) DEFAULT NULL,
   `Label` bit(1) NOT NULL,
   PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- 数据导出被取消选择。
+
+
+-- 导出  表 ztoptodo.errands 结构
+CREATE TABLE IF NOT EXISTS `errands` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `StartTime` datetime NOT NULL,
+  `EndTime` datetime NOT NULL,
+  `Peoples` int(11) NOT NULL DEFAULT '0',
+  `Days` int(11) NOT NULL DEFAULT '0',
+  `EID` int(11) NOT NULL DEFAULT '0',
+  `Users` varchar(1023) NOT NULL,
+  KEY `ID` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- 数据导出被取消选择。
+
+
+-- 导出  表 ztoptodo.evections 结构
+CREATE TABLE IF NOT EXISTS `evections` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `Place` varchar(1023) DEFAULT NULL,
+  `KiloMeters` double NOT NULL DEFAULT '0',
+  `Traffic` double NOT NULL DEFAULT '0',
+  `Peoples` int(11) NOT NULL DEFAULT '0',
+  `Days` int(11) NOT NULL DEFAULT '0',
+  `SubSidy` int(11) NOT NULL DEFAULT '0',
+  `Hotel` double NOT NULL DEFAULT '0',
+  `Mark` varchar(1023) DEFAULT NULL,
+  `Other` double NOT NULL DEFAULT '0',
+  `Toll` double NOT NULL DEFAULT '0',
+  `Names` varchar(1023) DEFAULT NULL,
+  `SID` int(11) NOT NULL DEFAULT '0',
+  KEY `ID` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- 数据导出被取消选择。
@@ -107,6 +144,7 @@ CREATE TABLE IF NOT EXISTS `serialnumbers` (
   `Number` varchar(255) NOT NULL DEFAULT '0',
   `NumberExt` int(11) NOT NULL DEFAULT '0',
   `SID` int(11) NOT NULL DEFAULT '0',
+  `Name` varchar(255) NOT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -118,10 +156,14 @@ CREATE TABLE IF NOT EXISTS `sheets` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `Name` varchar(255) DEFAULT NULL,
   `Time` datetime NOT NULL,
+  `Count` int(11) NOT NULL DEFAULT '0',
   `Money` double NOT NULL DEFAULT '0',
-  `Status` bit(1) NOT NULL,
+  `Status` bit(3) NOT NULL,
+  `Controler` varchar(255) DEFAULT NULL,
   `Remarks` varchar(1023) DEFAULT NULL,
   `Deleted` bit(1) NOT NULL,
+  `Type` bit(3) NOT NULL,
+  `Checkers` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -170,6 +212,20 @@ CREATE TABLE IF NOT EXISTS `task_query` (
   `Content` varchar(512) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `UserID` (`UserID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- 数据导出被取消选择。
+
+
+-- 导出  表 ztoptodo.traffic 结构
+CREATE TABLE IF NOT EXISTS `traffic` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `Type` bit(3) NOT NULL,
+  `Cost` double NOT NULL,
+  `Plate` varchar(255) DEFAULT NULL,
+  `Times` int(11) NOT NULL DEFAULT '0',
+  `EID` int(11) NOT NULL DEFAULT '0',
+  KEY `ID` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- 数据导出被取消选择。
@@ -244,7 +300,7 @@ CREATE TABLE IF NOT EXISTS `verifys` (
   `Time` datetime DEFAULT NULL,
   `Name` varchar(255) DEFAULT NULL,
   `Reason` varchar(255) DEFAULT NULL,
-  `IsCheck` bit(1) NOT NULL,
+  `Position` int(2) NOT NULL DEFAULT '0',
   `SID` int(11) NOT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
