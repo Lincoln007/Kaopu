@@ -61,22 +61,22 @@ namespace Ztop.Todo.WindowsClient
 
         private void Timer1_Tick(object sender, EventArgs e)
         {
-            var task = ServerHelper.GetNewTask();
-            if (task != null)
+            var notification = ServerHelper.GetNotification();
+            if (notification != null)
             {
                 foreach (Form nf in Application.OpenForms)
                 {
                     //如果已经有一个提醒和当前查询的新任务同一个任务，就不再提醒了
                     if (nf is NoticeForm)
                     {
-                        if (((NoticeForm)nf).Task.ID == task.ID)
+                        if (((NoticeForm)nf).Notification.ID == notification.ID)
                         {
                             return;
                         }
                     }
                 }
 
-                var form = new NoticeForm(task);
+                var form = new NoticeForm(notification);
                 form.StartPosition = FormStartPosition.Manual;
                 form.WindowState = FormWindowState.Normal;
                 form.Location = new Point(Screen.PrimaryScreen.WorkingArea.Width - form.Width - 5, Screen.PrimaryScreen.WorkingArea.Height - form.Height - 5);
@@ -94,9 +94,9 @@ namespace Ztop.Todo.WindowsClient
         }
 
 
-        public void OpenTask(Task model)
+        public void OpenTask(Notification model)
         {
-            webControl1.Source = new Uri(ServerHelper.GetTaskUrl(model));
+            webControl1.Source = new Uri(ServerHelper.GetNotificationUrl(model));
             OpenWindow();
         }
 

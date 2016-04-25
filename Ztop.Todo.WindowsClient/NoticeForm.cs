@@ -32,15 +32,13 @@ namespace Ztop.Todo.WindowsClient
             }
         }
 
-        public NoticeForm(Task task):this()
+        public NoticeForm(Notification notification):this()
         {
-            Task = task;
-            btnTitle.Text = task.Title;
-            txtContent.Text = task.Content;
-            txtCreator.Text = task.CreatorName;
+            Notification = notification;
+            txtContent.Text = notification.Description;
         }
 
-        public Task Task { get; private set; }
+        public Notification Notification { get; private set; }
 
         private void NavigationToTaskDetailPage()
         {
@@ -49,7 +47,7 @@ namespace Ztop.Todo.WindowsClient
                 if (form is MainForm)
                 {
                     form.Show();
-                    ((MainForm)form).OpenTask(Task);
+                    ((MainForm)form).OpenTask(Notification);
                 }
             }
         }

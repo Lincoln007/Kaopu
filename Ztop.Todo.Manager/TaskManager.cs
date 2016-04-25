@@ -112,7 +112,7 @@ namespace Ztop.Todo.Manager
         {
             using (var db = GetDbContext())
             {
-                 return db.UserTaskViews.Any(e => e.TaskID == taskId && (e.UserID == userId || e.CreatorID == userId));
+                return db.UserTaskViews.Any(e => e.TaskID == taskId && (e.UserID == userId || e.CreatorID == userId));
             }
         }
 
@@ -215,6 +215,7 @@ namespace Ztop.Todo.Manager
         {
             using (var db = GetDbContext())
             {
+                var isAdd = model.ID == 0;
                 if (model.ID > 0)
                 {
                     var entity = db.Tasks.FirstOrDefault(e => e.ID == model.ID);
@@ -241,14 +242,21 @@ namespace Ztop.Todo.Manager
 
                 db.SaveChanges();
 
+                var userIds = receivers.GroupBy(e => e.ID).Select(g => g.Key).ToArray();
                 //保存参与人员，移除重复数据
-                db.UserTasks.AddRange(receivers.GroupBy(e => e.ID).ToDictionary(g => g.Key, g => g.First()).Select(e => new UserTask
+                db.UserTasks.AddRange(userIds.Select(userId => new UserTask
                 {
                     TaskID = model.ID,
-                    UserID = e.Value.ID,
+                    UserID = userId,
                 }));
 
                 db.SaveChanges();
+
+                if (isAdd)
+                {
+                    //添加通知记录
+                    Core.NotificationManager.Add(model);
+                }
             }
 
         }

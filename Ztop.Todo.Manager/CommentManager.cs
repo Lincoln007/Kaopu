@@ -13,6 +13,7 @@ namespace Ztop.Todo.Manager
         {
             using (var db = GetDbContext())
             {
+                var isAdd = model.ID == 0;
                 if (model.ID > 0)
                 {
                     var entity = db.Comments.FirstOrDefault(e => e.ID == model.ID);
@@ -23,6 +24,10 @@ namespace Ztop.Todo.Manager
                     db.Comments.Add(model);
                 }
                 db.SaveChanges();
+                if (isAdd)
+                {
+                    Core.NotificationManager.Add(model);
+                }
             }
         }
 
@@ -31,7 +36,7 @@ namespace Ztop.Todo.Manager
             using (var db = GetDbContext())
             {
                 var list = db.Comments.Where(e => e.TaskID == taskId).ToList();
-                foreach(var item in list)
+                foreach (var item in list)
                 {
                     item.User = Core.UserManager.GetUser(item.UserID);
                 }

@@ -137,6 +137,7 @@
     <Compile Include="Controllers\CommentController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\AuthorityController.cs" />
+    <Compile Include="Controllers\NotificationController.cs" />
     <Compile Include="Controllers\QueryController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\TaskController.cs" />
@@ -252,6 +253,7 @@
     <Folder Include="Models\" />
     <Folder Include="Views\Attachment\" />
     <Folder Include="Views\Comment\" />
+    <Folder Include="Views\Notification\" />
     <Folder Include="Views\Query\" />
   </ItemGroup>
   <ItemGroup>

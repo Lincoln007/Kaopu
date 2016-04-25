@@ -62,6 +62,7 @@
     <Compile Include="DataBook.cs" />
     <Compile Include="Evection.cs" />
     <Compile Include="Message.cs" />
+    <Compile Include="Notification.cs" />
     <Compile Include="PageParameter.cs" />
     <Compile Include="PieData.cs" />
     <Compile Include="Record.cs" />

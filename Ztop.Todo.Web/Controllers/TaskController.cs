@@ -156,7 +156,8 @@ namespace Ztop.Todo.Web.Controllers
             //标记已读
             if (model.UserID == Identity.UserID)
             {
-                Core.TaskManager.FlagUserTaskRead(model.ID, Identity.UserID);
+                Core.TaskManager.FlagUserTaskRead(model.ID, model.UserID);
+                Core.NotificationManager.FlagRead(model.TaskID, InfoType.Task);
             }
             return View();
         }
@@ -171,6 +172,12 @@ namespace Ztop.Todo.Web.Controllers
         {
             Core.TaskManager.Delete(id, Identity.UserID);
             return SuccessJsonResult();
+        }
+
+        public ActionResult GetNotification()
+        {
+            var model = Core.NotificationManager.GetNewest(Identity.UserID);
+            return Json(model);
         }
 
         public ActionResult GetNewTask(DateTime lastGetTime)

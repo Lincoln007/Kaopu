@@ -16,17 +16,14 @@ namespace Ztop.Todo.WindowsClient
             return System.Configuration.ConfigurationManager.AppSettings["Server"];
         }
 
-        private static DateTime _lastGetTime = DateTime.Today;
-
-        public static string GetTaskUrl(Task task)
+        public static string GetNotificationUrl(Notification notice)
         {
-            return GetServerUrl() + "/Task/Detail?id=" + task.ID;
+            return GetServerUrl() + "/" + notice.Path;
         }
 
-
-        public static Task GetNewTask()
+        public static Notification GetNotification()
         {
-            var url = GetServerUrl() + "/Task/GetNewTask?lastGetTime=" + _lastGetTime.ToString("yyyy-MM-ddTHH:mm:ss");
+            var url = GetServerUrl() + "/Notification/GetNewest?_=" + DateTime.Now.Ticks;
 
             var request = WebRequest.Create(url);
 
@@ -37,10 +34,9 @@ namespace Ztop.Todo.WindowsClient
                 using (var sr = new StreamReader(response.GetResponseStream()))
                 {
                     var json = sr.ReadToEnd();
-                    _lastGetTime = DateTime.Now;
                     try
                     {
-                        return Newtonsoft.Json.JsonConvert.DeserializeObject<Task>(json);
+                        return Newtonsoft.Json.JsonConvert.DeserializeObject<Notification>(json);
                     }
                     catch (Exception ex)
                     {

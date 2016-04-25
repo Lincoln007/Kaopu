@@ -67,8 +67,9 @@ else
 <h4 class="page-header">讨论</h4>
 <div id="div-comments">
     @foreach (var item in comments)
-            {
+    {
         <div class="well" id="div-comment-@(item.ID)">
+            <a name="comment-@(item.ID)"></a>
             <p>
                 @(Html.Raw(HtmlUtils.ToHtml(item.Content)))
             </p>

@@ -29,40 +29,17 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.txtCreator = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.btnTitle = new System.Windows.Forms.LinkLabel();
             this.txtContent = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // txtCreator
-            // 
-            this.txtCreator.AutoSize = true;
-            this.txtCreator.Location = new System.Drawing.Point(13, 135);
-            this.txtCreator.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.txtCreator.Name = "txtCreator";
-            this.txtCreator.Size = new System.Drawing.Size(107, 20);
-            this.txtCreator.TabIndex = 2;
-            this.txtCreator.Text = "发布者：郑良军";
-            // 
-            // btnTitle
-            // 
-            this.btnTitle.ActiveLinkColor = System.Drawing.Color.Green;
-            this.btnTitle.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.btnTitle.Location = new System.Drawing.Point(15, 9);
-            this.btnTitle.Name = "btnTitle";
-            this.btnTitle.Size = new System.Drawing.Size(187, 21);
-            this.btnTitle.TabIndex = 8;
-            this.btnTitle.TabStop = true;
-            this.btnTitle.Text = "您有新的任务 1 条";
-            this.btnTitle.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.btnTitle_LinkClicked);
-            // 
             // txtContent
             // 
-            this.txtContent.Location = new System.Drawing.Point(15, 30);
+            this.txtContent.Location = new System.Drawing.Point(12, 9);
             this.txtContent.Name = "txtContent";
             this.txtContent.Size = new System.Drawing.Size(186, 100);
             this.txtContent.TabIndex = 9;
+            this.txtContent.Text = "郑良军  下达了  测试新的通知任务";
             this.txtContent.Click += new System.EventHandler(this.labContent_Click);
             // 
             // NoticeForm
@@ -70,10 +47,8 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(220, 170);
-            this.Controls.Add(this.btnTitle);
+            this.ClientSize = new System.Drawing.Size(206, 117);
             this.Controls.Add(this.txtContent);
-            this.Controls.Add(this.txtCreator);
             this.Font = new System.Drawing.Font("Microsoft YaHei", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -87,14 +62,11 @@
             this.WindowState = System.Windows.Forms.FormWindowState.Minimized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.NoticeForm_FormClosing);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
-        private System.Windows.Forms.Label txtCreator;
         private System.Windows.Forms.Timer timer1;
-        private System.Windows.Forms.LinkLabel btnTitle;
         private System.Windows.Forms.Label txtContent;
     }
 }
