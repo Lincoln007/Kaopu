@@ -63,8 +63,6 @@ namespace Ztop.Todo.Model
 
     public enum Position
     {
-        [Description("等待审核或者完善")]
-        Wait,
         [Description("审核通过")]
         Check,
         [Description("退回")]

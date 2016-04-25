@@ -22,6 +22,10 @@ namespace Ztop.Todo.Model
         /// 结束时间
         /// </summary>
         public DateTime EndTime { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Users { get; set; }
         public int Peoples { get; set; }
         public int Days { get; set; }
         public int EID { get; set; }

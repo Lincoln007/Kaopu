@@ -54,8 +54,9 @@ namespace Ztop.Todo.Manager
                             {
                                 StartTime = startTime,
                                 EndTime = endTime,
+                                Users = context.Request.Form[string.Format("Users{0}", i)].ToString(),
                                 Peoples = a,
-                                Days = int.TryParse(context.Request.Form[string.Format("Days{0}", i)].ToString(), out b) ? b : (endTime - startTime).Days+1
+                                Days = int.TryParse(context.Request.Form[string.Format("Days{0}", i)].ToString(), out b) ? b : (endTime - startTime).Days + 1
                             });
                         }
                     }

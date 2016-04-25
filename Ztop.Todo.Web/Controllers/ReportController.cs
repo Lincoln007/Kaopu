@@ -59,24 +59,17 @@ namespace Ztop.Todo.Web.Controllers
                 sheet.Controler = Identity.Name;
             }
             Core.SheetManager.Save(sheet);
-            var verify = new Verify//创建审核步骤记录表
+            if (sheet.Status == Status.ExaminingDirector)
             {
-                Step = Step.Create,
-                SID = sheet.ID,
-                Name = Identity.Name,
-                Time=DateTime.Now,
-                Position=sheet.Status==Status.ExaminingDirector?Position.Check:Position.Wait
-                //IsCheck = sheet.Status == Status.ExaminingDirector ? true : false//当报销单处于审核状态，那么确认用户提交了
-            };
-            Core.VerifyManager.Update(verify);
-            if (!string.IsNullOrEmpty(DirectorVal))//做了 提交申请  需要等主管确认
-            {
-                Core.VerifyManager.Save(new Verify
+                var verify = new Verify//创建审核步骤记录表
                 {
-                    Step = Step.Examine,
+                    Step = Step.Create,
                     SID = sheet.ID,
-                    Name = DirectorVal
-                });
+                    Name = Identity.Name,
+                    Time = DateTime.Now,
+                    Position = Position.Check
+                };
+                Core.VerifyManager.Save(verify);
             }
         }
         /// <summary>
@@ -183,7 +176,7 @@ namespace Ztop.Todo.Web.Controllers
             sheet.Controler = Identity.Name;
             sheet.Status = Status.RollBack;
             Core.SheetManager.Save(sheet);
-            Core.VerifyManager.Update(sverify);
+            Core.VerifyManager.Save(sverify);
             return SuccessJsonResult();
         }
 
@@ -223,7 +216,7 @@ namespace Ztop.Todo.Web.Controllers
             sheet.Controler = sheet.Name;
             sheet.Status = Status.RollBack;
             Core.SheetManager.Save(sheet);
-            Core.VerifyManager.Update(sverify);
+            Core.VerifyManager.Save(sverify);
         }
         private void Check(Sheet sheet)
         {
@@ -237,11 +230,6 @@ namespace Ztop.Todo.Web.Controllers
                 SID = sheet.ID,
                 Time = DateTime.Now,
                 Position=Position.Check
-                //IsCheck = true
-            };
-            var nVerify = new Verify
-            {
-                SID = sheet.ID
             };
             switch (sheet.Status)
             {
@@ -249,15 +237,11 @@ namespace Ztop.Todo.Web.Controllers
                     sheet.Status = Status.ExaminingManager;
                     sheet.Controler = XmlHelper.GetManager();
                     sverify.Step = Step.Examine;
-                    nVerify.Name = sheet.Controler;
-                    nVerify.Step = Step.Confirm;
                     break;
                 case Status.ExaminingManager://申屠审核通过
                     sheet.Status = Status.ExaminingFinance;
                     sheet.Controler = XmlHelper.GetFinance();
                     sverify.Step = Step.Confirm;
-                    nVerify.Name = sheet.Controler;
-                    nVerify.Step = Step.Approved;
                     break;
                 case Status.ExaminingFinance://财务审核通过
                     sheet.Status = Status.Examined;
@@ -268,11 +252,7 @@ namespace Ztop.Todo.Web.Controllers
                 default:
                     break;
             }
-            Core.VerifyManager.Update(sverify);
-            if (sheet.Status != Status.Examined)
-            {
-                Core.VerifyManager.Save(nVerify);
-            }
+            Core.VerifyManager.Save(sverify);
             Core.SheetManager.Save(sheet);
         }
         public ActionResult Check(int id)
@@ -345,15 +325,19 @@ namespace Ztop.Todo.Web.Controllers
         /// 等待我审核的报销单
         /// </summary>
         /// <returns></returns>
-        public ActionResult Sheeting()
+        public ActionResult Sheeting(StatusPosition position)
         {
-            ViewBag.WaitForMe = Core.SheetManager.GetSheets(new SheetQueryParameter { Deleted = false, Controler = Identity.Name }).Where(e => e.Status != Status.Examined && e.Status != Status.OutLine).ToList();
-            return View();
-        }
-
-        public ActionResult CheckByMe()
-        {
-
+            if (position == StatusPosition.已审核)
+            {
+                ViewBag.List = Core.SheetManager.GetSheets(Identity.Name);
+            }else if (position == StatusPosition.未审核)
+            {
+                ViewBag.List = Core.SheetManager.GetSheets(new SheetQueryParameter { Deleted = false, Controler = Identity.Name }).Where(e => e.Status != Status.Examined && e.Status != Status.OutLine).ToList();
+            }
+            else
+            {
+                throw new ArgumentException("参数有误！");
+            }
             return View();
         }
     }

@@ -8,15 +8,12 @@
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>编号</th>
                 <th class="text-center">分类</th>
-                <th style="width:60%;" class="text-center">内容</th>
-                <th>备注</th>
+                <th style="width:70%;" class="text-center">内容</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td>1</td>
                 <td>出差地点</td>
                 @if (flag)
                 {
@@ -30,10 +27,8 @@
                         </div>
                     </td>
                 }
-                <td>出差地点</td>
             </tr>
             <tr>
-                <td>2</td>
                 <td>公里数</td>
                 @if (flag)
                 {
@@ -49,11 +44,9 @@
                     </td>
                     
                 }
-                <td>用车填写</td>
             </tr>
             <tr>
-                <td>3</td>
-                <td>用车类型</td>
+                <td>交通费用</td>
                 @if (flag)
                 {
                     <td class="text-center">@(Model.BusType.GetDescription())</td>
@@ -61,110 +54,111 @@
                 else
                 {
                     <td>
-                        @foreach(BusType type in Enum.GetValues(typeof(BusType)))
+                        @foreach (BusType type in Enum.GetValues(typeof(BusType)))
                         {
-                            <label class="radio-inline">
-                                <input type="radio" name="BusType" value="@(type)" @(type==Model.BusType?"checked='checked'":"")/>@(type.GetDescription())
-                            </label>
-                        }
-                    </td>
-                }
-                <td></td>
-            </tr>
-            <tr>
-                <td>4</td>
-                <td>交通费</td>
-                @if (flag)
-                {
-                    <td class="text-center">@(Model.Traffic) 元</td>
-                }
-                else
-                {
-                    <td>
-                        <div class="input-group col-md-10">
-                            <input type="text" class="form-control" name="Traffic" value="@(Model.Traffic)"/>
-                            <div class="input-group-addon">元</div>
-                        </div>
-                    </td>
-                }
-                <td>车票或油费</td>
-            </tr>
-            <tr>
-                <td>5</td>
-                <td>出差人数*天</td>
-                @if (flag)
-                {
-                    <td class="text-center">
-                        @foreach(var errand in Model.Errands)
-                        {
-                            <span class="label label-success">@(errand.StartTime.ToString("yyyy-MM-dd"))至@(errand.EndTime.ToString("yyyy-MM-dd")) @(errand.Peoples) 人 @(errand.Days) 天;</span>
-                        }
-                    </td>
-                }
-                else
-                {
-                    <td>
-                        @{
-                            var serial = 0;
-                            if (Model.Errands != null)
-                            {
-                                foreach (var errand in Model.Errands)
+                            <div class="input-group" style="margin-bottom:10px;">
+                                <span class="input-group-addon">
+                                    <input type="checkbox" name="BusType" value="@(type)" aria-label="" />@(type.GetDescription())
+                                </span>
+                                <input type="text" class="form-control" name="Cost@(type)" aria-label="" placeholder="金额" />
+                                <div class="input-group-addon">元</div>
+                                @if (type == BusType.Company || type == BusType.Personal)
                                 {
-                                    <div class="input-group col-md-12" style="margin-bottom:10px;">
-                                        <input type="text" class="form-control datetimepicker" name="StartTime@(serial)" targetId="@(serial)" value="@(errand.StartTime.ToString("yyyy-MM-dd"))" />
-                                        <div class="input-group-addon">至</div>
-                                        <input type="text" class="form-control datetimepicker" name="EndTime@(serial)" targetId="@(serial)"  value="@(errand.EndTime.ToString("yyyy-MM-dd"))"/>
-                                        <div class="input-group-addon">合计</div>
-                                        <input type="text" class="form-control People" name="Peoples@(serial)"  value="@(errand.Peoples)"/>
-                                        <div class="input-group-addon">人</div>
-                                        <input type="text" class="form-control" name="Days@(serial)" readonly="readonly" value="@(errand.Days)" />
-                                        <div class="input-group-addon">天</div>
-                                    </div>
-                                    serial++;
+                                    <input type="text" class="form-control" name="Toll" placeholder="过路费/油费" />
+                                    <div class="input-group-addon">元</div>
+                                    <input type="text" class="form-control" name="Plate" placeholder="车牌" />
+                                }else if (type == BusType.Didi||type==BusType.Taxi)
+                                {
+                                    <input type="text" class="form-control"  name="Times" placeholder=""/>
+                                    <div class="input-group-addon">次</div>
                                 }
-                            }
-
-                            for (var i = serial; i < 3; i++)
-                            {
-                                <div class="input-group col-md-12" style="margin-bottom:10px;">
-                                    <input type="text" class="form-control datetimepicker" name="StartTime@(i)" targetId="@(i)" />
-                                    <div class="input-group-addon">至</div>
-                                    <input type="text" class="form-control datetimepicker" name="EndTime@(i)"  targetId="@(i)"/>
-                                    <div class="input-group-addon">合计</div>
-                                    <input type="text" class="form-control People" name="Peoples@(i)" />
-                                    <div class="input-group-addon">人</div>
-                                    <input type="text" class="form-control" name="Days@(i)" readonly="readonly" />
-                                    <div class="input-group-addon">天</div>
-                                </div>
-                            }
-                        }
-                        
-                    </td>
-                }
-                
-                <td></td>
-            </tr>
-            <tr>
-                <td>6</td>
-                <td>出差补贴</td>
-                @if (flag)
-                {
-                    <td class="text-center">@(Model.SubSidy) 元</td>
-                }
-                else
-                {
-                    <td>
-                        <div class="input-group col-md-10">
-                            <input type="text" class="form-control" name="SubSidy" value="@(Model.SubSidy)"  readonly="readonly"/>
+                            </div>
+                        } 
+                        <hr />
+                        <div class="input-group">
+                            <div class="input-group-addon">合计</div>
+                            <input type="text" class="form-control"  placeholder="合计" readonly="readonly" name="Traffic" value="@(Model.Traffic)"/>
                             <div class="input-group-addon">元</div>
-                        </div>
+                        </div>   
                     </td>
                 }
-                
-                <td>注：补贴合计如有错误，请点击输入框进行重新计算！</td>
             </tr>
             <tr>
-                <td>7</td>
+                <td>出差补贴</td>
+                <td >
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="SubSidy" readonly="readonly" value="@(Model.SubSidy)" />
+                        <div class="input-group-addon">元</div>
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".ViewSubSidy">出差人数详情</button>
+                        </span>
+                       
+                    </div>
+                    <div class="modal fade ViewSubSidy" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title">出差详情</h4>
+                                </div>
+                                <div class="modal-body">
+                                    @for(var i = 0; i < 3; i++)
+                                    {
+                                        <div class="form-group">
+                                            <label class="control-label col-lg-2">时间：</label>
+                                            <div class="input-group col-md-10">
+                                                <input type="text" class="form-control datetimepicker" name="StartTime@(i)" targetId="@(i)" />
+                                                <div class="input-group-addon">至</div>
+                                                <input type="text" class="form-control datetimepicker" name="EndTime@(i)" targetId="@(i)" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-2">人员：</label>
+                                            <div class="input-group col-md-10">
+                                                <input type="text" class="form-control" name="Users@(i)" targetId="@(i)" readonly="readonly" />
+                                                <span class="input-group-btn">
+                                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".choose@(i)">选择用户</button>
+                                                </span> 
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-2">小计：</label>
+                                            <div class="input-group col-md-10">
+                                                <input type="text" class="form-control People" name="Peoples@(i)" readonly="readonly" />
+                                                <div class="input-group-addon">人</div>
+                                                <input type="text" class="form-control" name="Days@(i)" readonly="readonly" />
+                                                <div class="input-group-addon">天</div>  
+                                            </div>
+                                        </div>
+
+                                        <hr />
+                                        <div class="modal fade choose@(i)" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-body">
+                                                        @{ 
+                                                            Html.RenderPartial("ChooseUser", i);
+                                                        }
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" name="BS" class="btn btn-primary" targetId="@(i)">确定</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    }
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-primary" id="View" >确定</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+          
+            <tr>
                 <td>出差住宿</td>
                 @if (flag)
                 {
@@ -179,11 +173,8 @@
                         </div>
                     </td>
                 }
-                
-                <td></td>
             </tr>
             <tr>
-                <td>8</td>
                 <td>其他内容</td>
                 @if (flag)
                 {
@@ -195,11 +186,8 @@
                         <input type="text" class="form-control col-md-10" name="Mark" value="@(Model.Mark)" />
                     </td>
                 }
-                
-                <td></td>
             </tr>
             <tr>
-                <td>9</td>
                 <td>其他金额</td>
                 @if (flag)
                 {
@@ -214,68 +202,6 @@
                         </div>
                     </td>
                 }
-               
-                <td></td>
-            </tr>
-            <tr>
-                <td>10</td>
-                <td>过路费</td>
-                @if (flag)
-                {
-                    <td class="text-center">@(Model.Toll) 元</td>
-                }
-                else
-                {
-                    <td>
-                        <div class="input-group col-md-10">
-                            <input type="text" class="form-control" name="Toll" value="@(Model.Toll)" />
-                            <div class="input-group-addon">元</div>
-                        </div>
-                    </td>
-                }
-               
-                <td>用车填写</td>
-            </tr>
-            <tr>
-                <td>11</td>
-                <td>出差人</td>
-                @if (flag)
-                {
-                    <td class="text-center">@(Model.Names)</td>
-                }
-                else
-                {
-                    <td>
-                        <div class="input-group col-md-10">
-                            <input type="text" class="form-control col-md-10" name="Names" value="@(Model.Names)" readonly="readonly" />
-                            <span class="input-group-btn">
-                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".choose">选择用户</button>
-                            </span>         
-                        </div>
-                        <div class="modal fade choose" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                            <div class="modal-dialog modal-lg" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                        <h4 class="modal-title">选择出差人</h4>
-                                    </div>
-                                    <div class="modal-body">
-                                        @{
-                                            Html.RenderPartial("ChooseUser");
-                                        }
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" id="BS" class="btn btn-primary" data-dismiss="modal">确定</button>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-
-                    </td>
-                }
-                
-                <td></td>
             </tr>
         </tbody>
     </table>
@@ -305,7 +231,6 @@
             var day_d2 = d2.getTime() / 1000 / 3600 / 24;
             $("[name='Days"+targetId+"']").val(day_d2 - day_d1+1);
         });
-
         function SumSubSidy() {
             var sum = 0;
             for (var i = 0; i < 3; i++) {
@@ -318,23 +243,50 @@
             }
             $("[name='SubSidy']").val(sum * 40);
         }
-
         $(".People").blur(function () {
             SumSubSidy();
         });
         $("input[name='SubSidy']").focus(function () {
             SumSubSidy();
         });
-
-        $("#BS").click(function () {
-            var chk_val = [];
-            var buiness = "";
-            $("[name='Businesser']:checked").each(function () {
-                chk_val.push($(this).val());
-                buiness += $(this).val()+";";
-            });
-            $("[name='Names']").val(buiness);
+        $("#View").click(function () {
+            SumSubSidy();
+            $(".ViewSubSidy").modal("hide");
         })
+        $("[name='BS']").click(function () {
+            var buiness = "";
+            var count = 0;
+            var id = $(this).attr("targetId");
+            $("[name='Businesser" + id + "']:checked").each(function () {
+                buiness += $(this).val() + ";";
+                count = count + 1;
+            });
+            $("[name='Users" + id + "']").val(buiness);
+            $("[name='Peoples" + id + "']").val(count);
+            $(".choose" + id + "").modal("hide");
+        })
+        //$("#BS").click(function () {
+        //    var chk_val = [];
+        //    var buiness = "";
+        //    $("[name='Businesser']:checked").each(function () {
+        //        chk_val.push($(this).val());
+        //        buiness += $(this).val() + ";";
+        //    });
+        //    $("[name='Names']").val(buiness);
+        //});
+        $("[name='Traffic']").click(function () {
+            var sum = 0;
+            $("[name='BusType']:checked").each(function () {
+                var type = $(this).val();
+                if (type != "Didi") {
+                    var val = $("[name='Cost" + type + "']").val();
+                    if (val != undefined && val != "undefined" && val != NaN && val != "") {
+                        sum += parseFloat(val);
+                    }
+                }
+            });
+            $(this).val(sum);
+        });
 
     })
 </script>

@@ -1,16 +1,42 @@
-﻿@using Ztop.Todo.ActiveDirectory;
+﻿@model int
+@using Ztop.Todo.ActiveDirectory;
 @{
     List<UserGroup> groups = ViewBag.Groups;
     List<User> allUsers = ViewBag.Users;
-    string CheckString = ViewBag.CheckString;
-    string[] checkeds = new string[1];
-    if (!string.IsNullOrEmpty(CheckString))
-    {
-        checkeds = CheckString.Split(';');
-    }
 }
 
-<div class="panel-group" id="Choose" role="tablist" aria-multiselectable="true">
+<div class="form-group">
+    @foreach(var group in groups.OrderByDescending(e => e.Order))
+    {
+        <table class="table">
+            <tr>
+                <th>@(group.Name)</th>
+            </tr>
+            @{ 
+                var table = allUsers.Where(e => e.GroupID == group.ID).OrderByDescending(e => e.Order).ToList().ListToTable(4);
+                foreach(var item in table)
+                {
+                    <tr>
+                        @foreach(var entry in item)
+                        {
+                            if (entry != null)
+                            {
+                                <td>
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" value="@(entry.DisplayName)" name="Businesser@(Model)" />@(entry.DisplayName)
+                                    </label>
+                                </td>
+                            }
+                        }
+                    </tr>
+                }
+            }
+        </table>
+    }
+</div>
+
+
+@*<div class="panel-group" id="Choose@(Model)" role="tablist" aria-multiselectable="true">
     @foreach (var group in groups.OrderByDescending(e => e.Order))
     {
         <div class="panel panel-default">
@@ -44,4 +70,4 @@
         </div>
       }
    
-</div>
+</div>*@

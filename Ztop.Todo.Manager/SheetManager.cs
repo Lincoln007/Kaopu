@@ -250,6 +250,11 @@ namespace Ztop.Todo.Manager
             }
             return query.ToList();
         }
+        public List<Sheet> GetSheets(string name)
+        {
+            var list = Core.VerifyManager.GetSheetID(name);
+            return list.Select(e => GetAllModel(e)).Where(e=>e.Deleted==false).ToList();
+        }
         public void Delete(int id)
         {
             using (var db = GetDbContext())

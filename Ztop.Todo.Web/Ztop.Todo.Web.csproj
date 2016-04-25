@@ -247,6 +247,7 @@
     <Content Include="Views\Report\Subitem.cshtml" />
     <Content Include="Views\Report\Errand.cshtml" />
     <Content Include="Views\Report\ChooseUser.cshtml" />
+    <Content Include="Views\Report\Sheeting.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
