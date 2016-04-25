@@ -95,14 +95,10 @@ CREATE TABLE IF NOT EXISTS `evections` (
   `Place` varchar(1023) DEFAULT NULL,
   `KiloMeters` double NOT NULL DEFAULT '0',
   `Traffic` double NOT NULL DEFAULT '0',
-  `Peoples` int(11) NOT NULL DEFAULT '0',
-  `Days` int(11) NOT NULL DEFAULT '0',
   `SubSidy` int(11) NOT NULL DEFAULT '0',
   `Hotel` double NOT NULL DEFAULT '0',
   `Mark` varchar(1023) DEFAULT NULL,
   `Other` double NOT NULL DEFAULT '0',
-  `Toll` double NOT NULL DEFAULT '0',
-  `Names` varchar(1023) DEFAULT NULL,
   `SID` int(11) NOT NULL DEFAULT '0',
   KEY `ID` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -222,6 +218,7 @@ CREATE TABLE IF NOT EXISTS `traffic` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `Type` bit(3) NOT NULL,
   `Cost` double NOT NULL,
+  `Toll` double NOT NULL,
   `Plate` varchar(255) DEFAULT NULL,
   `Times` int(11) NOT NULL DEFAULT '0',
   `EID` int(11) NOT NULL DEFAULT '0',
