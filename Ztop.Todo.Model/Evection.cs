@@ -63,6 +63,7 @@ namespace Ztop.Todo.Model
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
+        [Column(TypeName ="INT")]
         public BusType Type { get; set; }
         public double Cost { get; set; }
         /// <summary>
@@ -87,7 +88,7 @@ namespace Ztop.Todo.Model
         Bus,
         [Description("公司派车（油费）")]
         Company,
-        [Description("私家车")]
+        [Description("自备车")]
         Personal,
         [Description("企业滴滴")]
         Didi,

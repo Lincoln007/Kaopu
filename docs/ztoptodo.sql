@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS `errands` (
   `Days` int(11) NOT NULL DEFAULT '0',
   `EID` int(11) NOT NULL DEFAULT '0',
   `Users` varchar(1023) NOT NULL,
-  KEY `ID` (`ID`)
+  PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- 数据导出被取消选择。
@@ -100,7 +100,7 @@ CREATE TABLE IF NOT EXISTS `evections` (
   `Mark` varchar(1023) DEFAULT NULL,
   `Other` double NOT NULL DEFAULT '0',
   `SID` int(11) NOT NULL DEFAULT '0',
-  KEY `ID` (`ID`)
+  PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- 数据导出被取消选择。
@@ -116,6 +116,23 @@ CREATE TABLE IF NOT EXISTS `messages` (
   PRIMARY KEY (`ID`),
   KEY `Receiver` (`Receiver`(255)),
   KEY `Sender` (`Sender`(255))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- 数据导出被取消选择。
+
+
+-- 导出  表 ztoptodo.notification 结构
+CREATE TABLE IF NOT EXISTS `notification` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `ReceiverID` int(11) NOT NULL DEFAULT '0',
+  `SenderID` int(11) NOT NULL DEFAULT '0',
+  `InfoID` int(11) NOT NULL DEFAULT '0',
+  `InfoType` int(11) NOT NULL DEFAULT '0',
+  `HasRead` bit(1) NOT NULL DEFAULT b'0',
+  `CreateTime` datetime NOT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `UserID` (`ReceiverID`),
+  KEY `CreateTime` (`CreateTime`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- 数据导出被取消选择。
@@ -141,6 +158,7 @@ CREATE TABLE IF NOT EXISTS `serialnumbers` (
   `NumberExt` int(11) NOT NULL DEFAULT '0',
   `SID` int(11) NOT NULL DEFAULT '0',
   `Name` varchar(255) NOT NULL,
+  `Invoices` bit(3) NOT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -222,7 +240,7 @@ CREATE TABLE IF NOT EXISTS `traffic` (
   `Plate` varchar(255) DEFAULT NULL,
   `Times` int(11) NOT NULL DEFAULT '0',
   `EID` int(11) NOT NULL DEFAULT '0',
-  KEY `ID` (`ID`)
+  PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- 数据导出被取消选择。
@@ -325,20 +343,3 @@ Where user_task.Deleted = 0 ;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-
-
-CREATE TABLE `notification` (
-	`ID` INT(11) NOT NULL AUTO_INCREMENT,
-	`ReceiverID` INT(11) NOT NULL DEFAULT '0',
-	`SenderID` INT(11) NOT NULL DEFAULT '0',
-	`InfoID` INT(11) NOT NULL DEFAULT '0',
-	`InfoType` INT(11) NOT NULL DEFAULT '0',
-	`HasRead` BIT(1) NOT NULL DEFAULT b'0',
-	`CreateTime` DATETIME NOT NULL,
-	PRIMARY KEY (`ID`),
-	INDEX `UserID` (`ReceiverID`),
-	INDEX `CreateTime` (`CreateTime`)
-)
-COLLATE='utf8_general_ci'
-ENGINE=InnoDB
-;

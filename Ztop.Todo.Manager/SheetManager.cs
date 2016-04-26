@@ -56,6 +56,7 @@ namespace Ztop.Todo.Manager
                     {
                         model.Evection = db.Evections.FirstOrDefault(e => e.SID == id);//获取出差报销分项清单
                         model.Evection.Errands = db.Errands.Where(e => e.EID == model.Evection.ID).ToList();//获取出差人数列表
+                        model.Evection.TCosts = db.Traffics.Where(e => e.EID == model.Evection.ID).ToList();//获取用车类型列表
                     }
                     
                     model.Verifys = db.Verifys.Where(e => e.SID == id).OrderBy(e => e.ID).ToList();
@@ -117,23 +118,66 @@ namespace Ztop.Todo.Manager
                         sheet.Evection.ID = entry.ID;
                         db.Entry(entry).CurrentValues.SetValues(sheet.Evection);
                     }
+                    db.SaveChanges();
                     #endregion
 
                     #region  更新出差人数的列表
-                    var older = db.Errands.Where(e => e.EID == sheet.Evection.ID).ToList();
-                    if (older != null)
+                    if (sheet.Evection.Errands != null)
                     {
-                        db.Errands.RemoveRange(older);
+                        var older = db.Errands.Where(e => e.EID == sheet.Evection.ID).ToList();
+                        if (older != null)
+                        {
+                            db.Errands.RemoveRange(older);
+                            db.SaveChanges();
+                        }
+                        db.Errands.AddRange(sheet.Evection.Errands.Select(e => new Errand
+                        {
+                            StartTime = e.StartTime,
+                            EndTime = e.EndTime,
+                            Peoples = e.Peoples,
+                            Days = e.Days,
+                            Users=e.Users,
+                            EID = sheet.Evection.ID
+                        }));
                         db.SaveChanges();
+                       
                     }
-                    db.Errands.AddRange(sheet.Evection.Errands.Select(e => new Errand
+
+                    #endregion
+
+                    #region  更新交通费用列表
+
+                    if (sheet.Evection.TCosts != null)
                     {
-                        StartTime=e.StartTime,
-                        EndTime=e.EndTime,
-                        Peoples = e.Peoples,
-                        Days = e.Days,
-                        EID = sheet.Evection.ID
-                    }));
+                        var OLD = db.Traffics.Where(e => e.EID == sheet.Evection.ID).ToList();
+                        if (OLD != null&&OLD.Count!=0)
+                        {
+                            db.Traffics.RemoveRange(OLD);
+                            db.SaveChanges();
+                        }
+                        sheet.Evection.TCosts = sheet.Evection.TCosts.Select(e => new Traffic
+                        {
+                            Type = e.Type,
+                            Cost = e.Cost,
+                            Toll = e.Toll,
+                            Plate = e.Plate,
+                            Times = e.Times,
+                            EID = sheet.Evection.ID
+                        }).ToList();
+                        db.Traffics.AddRange(sheet.Evection.TCosts);
+                        db.SaveChanges();
+
+                        //db.Traffics.AddRange(sheet.Evection.TCosts.Select(e => new Traffic
+                        //{
+                        //    Type = e.Type,
+                        //    Cost = e.Cost,
+                        //    Toll = e.Toll,
+                        //    Plate = e.Plate,
+                        //    Times = e.Times,
+                        //    EID = sheet.Evection.ID
+                        //}));
+                    }
+                   
                     #endregion
                 }
 

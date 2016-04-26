@@ -3,6 +3,8 @@
 @{
     List<UserGroup> groups = ViewBag.Groups;
     List<User> allUsers = ViewBag.Users;
+    string users = ViewBag.UsersList;
+    var checks = users.Split(';');
 }
 
 <div class="form-group">
@@ -23,7 +25,7 @@
                             {
                                 <td>
                                     <label class="checkbox-inline">
-                                        <input type="checkbox" value="@(entry.DisplayName)" name="Businesser@(Model)" />@(entry.DisplayName)
+                                        <input type="checkbox" value="@(entry.DisplayName)" name="Businesser@(Model)" @(checks.Contains(entry.DisplayName)?"checked=checked":"") />@(entry.DisplayName)
                                     </label>
                                 </td>
                             }

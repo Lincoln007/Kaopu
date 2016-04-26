@@ -20,10 +20,15 @@ namespace Ztop.Todo.Model
         [DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
         /// <summary>
-        /// 单据编号  实例值
+        /// 单据编号  实例值  流水单据编号
         /// </summary>
         [NotMapped]
         public SerialNumber SerialNumber { get; set; }
+        /// <summary>
+        /// 单据编号  归档单据编号
+        /// </summary>
+        [NotMapped]
+        public SerialNumber SerialFiling { get; set; }
         /// <summary>
         /// 报销人
         /// </summary>
@@ -102,6 +107,8 @@ namespace Ztop.Todo.Model
         ExaminingManager,
         [Description("审核中-财务")]//财务审核
         ExaminingFinance,
+        [Description("报销归档")]
+        Filing,
         [Description("已完成")]//审核完成
         Examined,
         [Description("退回")]

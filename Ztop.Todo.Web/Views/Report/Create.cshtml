@@ -18,18 +18,16 @@
         @{ 
             Html.RenderPartial("SubmitButton");
         }
-        <button class="btn btn-success btn-sm" type="submit">
+        <button class="btn btn-success btn-lg" type="submit">
             <em class="glyphicon glyphicon-floppy-disk"></em> 保存返回
         </button>
-        <button class="btn btn-danger btn-sm" type="button">
-            <em class="glyphicon glyphicon-remove-circle"></em> 删除
-        </button>
-        <button class="btn btn-default btn-sm" type="button" onclick="javascript:window.print()">
-            <em class="glyphicon glyphicon-print"></em> 打印
-        </button>
-        <a class="btn btn-warning btn-sm" href="/Report">
-            <em class="glyphicon glyphicon-menu-left"></em> 返回
-        </a>
+        @if (sheet.ID != 0)
+        {
+            <button class="btn btn-danger btn-lg" type="button">
+                <em class="glyphicon glyphicon-remove-circle"></em> 删除
+            </button>
+        }
+       
     </div>
     <div class="col-md-8">
         <h3>基本信息</h3>
@@ -39,7 +37,7 @@
                     <td>单据编号</td>
                     <td>@(sheet.SerialNumber.Coding) </td>
                     <td>报销日期</td>
-                    <td><input type="text" id="datetimepicker2" class="form-control" value="@(sheet.Time.ToShortDateString())" name="Time" /></td>
+                    <td><input type="text"  class="form-control" value="@(DateTime.Now.ToString("yyyy-MM-dd"))" name="Time" readonly="readonly" /></td>
                 </tr>
                 <tr>
                     <td>报销人</td>
@@ -48,14 +46,7 @@
                     </td>
                     <td>报销金额合计</td>
                     <td>
-                        <input type="text" name="Money" value="@(sheet.Money)" class="form-control"  onclick="@(sheet.Type==SheetType.Errand?"SumErrand()":"SumDialy()")" />
-                        <div class="input-group">
-                            
-                            @*<span class="input-group-btn">
-                                <button type="button" class="btn btn-success" onclick="@(sheet.Type==SheetType.Errand?"SumErrand()":"SumDialy()")">合计</button>
-                            </span>*@
-                        </div>
-                        
+                        <input type="text" name="Money" value="@(sheet.Money)" class="form-control"  onclick="@(sheet.Type==SheetType.Errand?"SumErrand()":"SumDialy()")" />       
                     </td>
                 </tr>
                 <tr>
@@ -109,6 +100,21 @@
         </table>
 
     </div>
+    <div class="col-md-12">
+        @{
+            Html.RenderPartial("SubmitButton");
+        }
+        <button class="btn btn-success btn-lg" type="submit">
+            <em class="glyphicon glyphicon-floppy-disk"></em> 保存返回
+        </button>
+        @if (sheet.ID != 0)
+        {
+            <button class="btn btn-danger btn-lg" type="button">
+                <em class="glyphicon glyphicon-remove-circle"></em> 删除
+            </button>
+        }
+        
+    </div>
 </form>
 
 <table id="template" style="display:none">
@@ -150,7 +156,7 @@
             var val = parseFloat(a);
             sum += val;
         }
-        $("[name='Money']").val(sum);
+        $("[name='Money']").val(sum.toFixed(2));
         return false;
     }
 
@@ -166,7 +172,7 @@
                 
             }
         });
-        $("[name='Money']").val(sum);
+        $("[name='Money']").val(sum.toFixed(2));
         return false;
     }
     $(function () {

@@ -1,7 +1,10 @@
 ﻿@model Ztop.Todo.Model.Evection
     @{ 
         bool flag = ViewBag.Detail??false;
+        var costtypes = (Model.TCosts ?? new List<Traffic>()).ToDictionary(e => e.Type, e => e);
     }
+
+
 <h3>报销内容分项清单&nbsp;</h3>
 <div id="bill">
     <table class="table table-bordered">
@@ -37,7 +40,7 @@
                 {
                     <td>
                         <div class="input-group col-md-10">
-                            <input type="number" class="form-control" name="KiloMeters" value="@(Model.KiloMeters)" />
+                            <input type="text" class="form-control" name="KiloMeters" value="@(Model.KiloMeters)" />
                             <div class="input-group-addon">公里</div>
                         </div>
                     </td>
@@ -48,27 +51,69 @@
                 <td>交通费用</td>
                 @if (flag)
                 {
-                    @*<td class="text-center">@(Model.BusType.GetDescription())</td>*@
+                    <td class="text-center">
+                        小计：@(Model.Traffic) 元
+                        @if (Model.TCosts != null)
+                        {
+                            <table class="table table-striped">
+                                <tr>
+                                    <th class="text-center">交通工具</th>
+                                    <th class="text-center">金额（元）</th>
+                                    <th class="text-center">过路费/加油费（元）</th>
+                                    <th class="text-center">车牌</th>
+                                    <th class="text-center">次数</th>
+                                </tr>
+                                @foreach(var cost in Model.TCosts)
+                                {
+                                    <tr>
+                                        <td>@(cost.Type.GetDescription())</td>
+                                        <td>@(cost.Cost)</td>
+                                        @if (cost.Type == BusType.Company || cost.Type == BusType.Personal)
+                                        {
+                                            <td>@(cost.Toll) 元</td>
+                                            <td>@(cost.Plate)</td>
+                                            <td>/</td>
+                                        }
+                                        else if (cost.Type == BusType.Didi || cost.Type == BusType.Taxi)
+                                        {
+                                            <td>/</td>
+                                            <td>/</td>
+                                            <td>@(cost.Times) 次</td>
+                                        }
+                                        else
+                                        {
+                                            <td>/</td>
+                                            <td>/</td>
+                                            <td>/</td>
+                                        }
+                                    </tr>
+                                }
+                            </table>
+                        }
+                    </td>
                 }
                 else
                 {
                     <td>
                         @foreach (BusType type in Enum.GetValues(typeof(BusType)))
                         {
+                            var check = costtypes.ContainsKey(type);
+                            var values = check ? costtypes[type] : new Traffic();
                             <div class="input-group" style="margin-bottom:10px;">
                                 <span class="input-group-addon">
-                                    <input type="checkbox" name="BusType" value="@(type)" aria-label="" />@(type.GetDescription())
+                                    <input type="checkbox" name="BusType" value="@(type)" aria-label="" @(check?"checked=checked":"") />@(type.GetDescription())
                                 </span>
-                                <input type="number" class="form-control" name="Cost@(type)" aria-label="" placeholder="金额" />
+                                <input type="text" class="form-control" name="Cost@(type)" aria-label="" placeholder="金额" value="@(values.Cost)" />
                                 <div class="input-group-addon">元</div>
                                 @if (type == BusType.Company || type == BusType.Personal)
                                 {
-                                    <input type="number" class="form-control" name="Toll" placeholder="过路费/油费" />
+                                    <div class="input-group-addon">过路费/油费</div>
+                                    <input type="text" class="form-control" name="Toll" placeholder="过路费/油费" value="@(values.Toll)" />
                                     <div class="input-group-addon">元</div>
-                                    <input type="text" class="form-control" name="Plate" placeholder="车牌" />
+                                    <input type="text" class="form-control" name="Plate" placeholder="车牌" value="@(values.Plate)" />
                                 }else if (type == BusType.Didi||type==BusType.Taxi)
                                 {
-                                    <input type="number" class="form-control"  name="Times" placeholder=""/>
+                                    <input type="number" class="form-control"  name="Times" placeholder="" value="@(values.Times)"/>
                                     <div class="input-group-addon">次</div>
                                 }
                             </div>
@@ -76,7 +121,7 @@
                         <hr />
                         <div class="input-group">
                             <div class="input-group-addon">合计</div>
-                            <input type="number" class="form-control"  placeholder="合计" readonly="readonly" name="Traffic" value="@(Model.Traffic)"/>
+                            <input type="text" class="form-control"  placeholder="合计" readonly="readonly" name="Traffic" value="@(Model.Traffic)"/>
                             <div class="input-group-addon">元</div>
                             <span></span>
                         </div>   
@@ -85,77 +130,163 @@
             </tr>
             <tr>
                 <td>出差补贴</td>
-                <td >
-                    <div class="input-group">
-                        <input type="number" class="form-control" name="SubSidy" readonly="readonly" value="@(Model.SubSidy)" />
-                        <div class="input-group-addon">元</div>
-                        <span class="input-group-btn">
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".ViewSubSidy">出差人数详情</button>
-                        </span>
-                       
-                    </div>
-                    <div class="modal fade ViewSubSidy" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                        <div class="modal-dialog modal-lg" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    <h4 class="modal-title">出差详情</h4>
-                                </div>
-                                <div class="modal-body">
-                                    @for(var i = 0; i < 3; i++)
-                                    {
-                                        <div class="form-group">
-                                            <label class="control-label col-lg-2">时间：</label>
-                                            <div class="input-group col-md-10">
-                                                <input type="text" class="form-control datetimepicker" name="StartTime@(i)" targetId="@(i)" />
-                                                <div class="input-group-addon">至</div>
-                                                <input type="text" class="form-control datetimepicker" name="EndTime@(i)" targetId="@(i)" />
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="control-label col-md-2">人员：</label>
-                                            <div class="input-group col-md-10">
-                                                <input type="text" class="form-control" name="Users@(i)" targetId="@(i)" readonly="readonly" />
-                                                <span class="input-group-btn">
-                                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".choose@(i)">选择用户</button>
-                                                </span> 
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="control-label col-md-2">小计：</label>
-                                            <div class="input-group col-md-10">
-                                                <input type="number" class="form-control People" name="Peoples@(i)" readonly="readonly" />
-                                                <div class="input-group-addon">人</div>
-                                                <input type="number" class="form-control" name="Days@(i)" readonly="readonly" />
-                                                <div class="input-group-addon">天</div>  
-                                            </div>
-                                        </div>
+                @if (flag)
+                {
+                    <td class="text-center">
+                        小计： @(Model.SubSidy) 元
+                        @if (Model.Errands != null)
+                        {
+                            <table class="table table-striped">
+                                <tr>
+                                    <th class="text-center">起始时间</th>
+                                    <th class="text-center">结束时间</th>
+                                    <th class="text-center">人员</th>
+                                    <th class="text-center">天数（天）</th>
+                                    <th class="text-center">人数（人）</th>
+                                </tr>
+                                @foreach(var errand in Model.Errands)
+                                {
+                                    <tr>
+                                        <td>@(errand.StartTime.ToString("yyyy-MM-dd"))</td>
+                                        <td>@(errand.EndTime.ToString("yyyy-MM-dd"))</td>
+                                        <td>@(errand.Users)</td>
+                                        <td>@(errand.Days)</td>
+                                        <td>@(errand.Peoples)</td>
+                                    </tr>
+                                }
+                            </table>
+                        }
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="SubSidy" readonly="readonly" value="@(Model.SubSidy)" />
+                            <div class="input-group-addon">元</div>
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".ViewSubSidy">出差人数详情</button>
+                            </span>
 
-                                        <hr />
-                                        <div class="modal fade choose@(i)" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                                            <div class="modal-dialog" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-body">
-                                                        @{ 
-                                                            Html.RenderPartial("ChooseUser", i);
-                                                        }
+                        </div>
+                        <div class="modal fade ViewSubSidy" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                            <div class="modal-dialog modal-lg" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        <h4 class="modal-title">出差详情</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        @{
+                                            var serial = 0;
+                                            if (Model.Errands != null)
+                                            {
+                                                foreach (var errand in Model.Errands)
+                                                {
+                                                    <div class="form-group">
+                                                        <label class="control-label col-lg-2">时间：</label>
+                                                        <div class="input-group col-md-10">
+                                                            <input type="text" class="form-control datetimepicker" name="StartTime@(serial)" targetId="@(serial)" value="@(errand.StartTime.ToString("yyyy-MM-dd"))" />
+                                                            <div class="input-group-addon">至</div>
+                                                            <input type="text" class="form-control datetimepicker" name="EndTime@(serial)" targetId="@(serial)" value="@(errand.EndTime.ToString("yyyy-MM-dd"))" />
+                                                        </div>
                                                     </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" name="BS" class="btn btn-primary" targetId="@(i)">确定</button>
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-2">人员：</label>
+                                                        <div class="input-group col-md-10">
+                                                            <input type="text" class="form-control" name="Users@(serial)" targetId="@(serial)" readonly="readonly"  value="@(errand.Users)"/>
+                                                            <span class="input-group-btn">
+                                                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".choose@(serial)">选择用户</button>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-2">小计：</label>
+                                                        <div class="input-group col-md-10">
+                                                            <input type="number" class="form-control People" name="Peoples@(serial)" readonly="readonly" value="@(errand.Peoples)"/>
+                                                            <div class="input-group-addon">人</div>
+                                                            <input type="number" class="form-control" name="Days@(serial)" readonly="readonly" value="@(errand.Days)" />
+                                                            <div class="input-group-addon">天</div>
+                                                        </div>
+                                                    </div>
+                                                    <hr />
+                                                    <div class="modal fade choose@(serial)" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                                                        <div class="modal-dialog" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-body">
+                                                                    @{
+                                                                        ViewBag.UsersList = errand.Users;
+                                                                        Html.RenderPartial("ChooseUser", serial);
+                                                                    }
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" name="BS" class="btn btn-primary" targetId="@(serial)">确定</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                                                serial++;
+                                                                            }
+                                                                        }
+                                                                        for (var i = serial; i < 3; i++)
+                                                                        {
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-2">时间：</label>
+                                                    <div class="input-group col-md-10">
+                                                        <input type="text" class="form-control datetimepicker" name="StartTime@(i)" targetId="@(i)" />
+                                                        <div class="input-group-addon">至</div>
+                                                        <input type="text" class="form-control datetimepicker" name="EndTime@(i)" targetId="@(i)" />
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-2">人员：</label>
+                                                    <div class="input-group col-md-10">
+                                                        <input type="text" class="form-control" name="Users@(i)" targetId="@(i)" readonly="readonly" />
+                                                        <span class="input-group-btn">
+                                                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".choose@(i)">选择用户</button>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-2">小计：</label>
+                                                    <div class="input-group col-md-10">
+                                                        <input type="number" class="form-control People" name="Peoples@(i)" readonly="readonly" />
+                                                        <div class="input-group-addon">人</div>
+                                                        <input type="number" class="form-control" name="Days@(i)" readonly="readonly" />
+                                                        <div class="input-group-addon">天</div>
+                                                    </div>
+                                                </div>
 
-                                    }
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary" id="View" >确定</button>
+                                                <hr />
+                                                <div class="modal fade choose@(i)" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                                                    <div class="modal-dialog" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-body">
+                                                                @{
+                                                                    ViewBag.UsersList = "";
+                                                                    Html.RenderPartial("ChooseUser", i);
+                                                                }
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" name="BS" class="btn btn-primary" targetId="@(i)">确定</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                                    }
+
+                                        }
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary" id="View">确定</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </td>
+                    </td>
+                                                                }
+                
             </tr>
           
             <tr>
@@ -168,7 +299,7 @@
                 {
                     <td>
                         <div class="input-group col-md-10">
-                            <input type="number" class="form-control" name="Hotel" value="@(Model.Hotel)"  />
+                            <input type="text" class="form-control" name="Hotel" value="@(Model.Hotel)"  />
                             <div class="input-group-addon">元</div>
                         </div>
                     </td>
@@ -197,7 +328,7 @@
                 {
                     <td>
                         <div class="input-group col-md-10">
-                            <input type="number" class="form-control" name="Other" value="@(Model.Other)" />
+                            <input type="text" class="form-control" name="Other" value="@(Model.Other)" />
                             <div class="input-group-addon">元</div>
                         </div>
                     </td>
@@ -231,6 +362,7 @@
             var day_d2 = d2.getTime() / 1000 / 3600 / 24;
             $("[name='Days"+targetId+"']").val(day_d2 - day_d1+1);
         });
+        //统计出差补贴
         function SumSubSidy() {
             var sum = 0;
             for (var i = 0; i < 3; i++) {
@@ -243,16 +375,20 @@
             }
             $("[name='SubSidy']").val(sum * 40);
         }
-        $(".People").blur(function () {
-            SumSubSidy();
-        });
+
+
+        //$(".People").blur(function () {
+        //    SumSubSidy();
+        //});
+        //点击出差补贴输入框  统计出差补贴
         $("input[name='SubSidy']").focus(function () {
             SumSubSidy();
         });
-        $("#View").click(function () {
+        $("#View").click(function () {//统计出差补贴并隐藏窗口
             SumSubSidy();
             $(".ViewSubSidy").modal("hide");
         })
+        //出差详情中选择用户弹出按钮点击事件
         $("[name='BS']").click(function () {
             var buiness = "";
             var count = 0;
@@ -265,7 +401,7 @@
             $("[name='Peoples" + id + "']").val(count);
             $(".choose" + id + "").modal("hide");
         })
-        $("input[name='Traffic']").click(function () {
+        $("input[name='Traffic']").click(function () {//统计交通费用
             var sum = 0;
             $("[name='BusType']:checked").each(function () {
                 var type = $(this).val();
@@ -278,11 +414,21 @@
             });
             $(this).val(sum);
         }).change(function () {
-            SumErrand();
+            SumErrand();//自动统计金额
         });
+        //输入出差住宿  自动统计金额
         $("input[name='Hotel']").change(function () {
             SumErrand();
         });
+        //输入其他金额 自动统计金额
+        $("input[name='Other']").change(function () {
+            SumErrand();
+        });
+
+        //解决当出差人详情点击之后出现黑色块的问题
+        $(".ViewSubSidy").on("hidden.bs.modal", function (e) {
+            $(".modal-backdrop.fade.in").remove();
+        })
 
     })
 </script>

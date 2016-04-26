@@ -19,15 +19,12 @@
                 @{ 
                     Html.RenderPartial("SubmitButton");
                 }
-                <a href="/Report/Create?id=@(sheet.ID)" class="btn btn-primary btn-sm">
+                <a href="/Report/Create?id=@(sheet.ID)" class="btn btn-primary btn-lg">
                     <em class="glyphicon glyphicon-edit"></em>修改
                 </a>
-                <button type="button" class="btn btn-danger btn-sm btn-delete">
+                <button type="button" class="btn btn-danger btn-lg btn-delete">
                     <em class="glyphicon glyphicon-remove"></em>删除
                 </button>
-                <a class="btn btn-warning btn-sm" href="/Report">
-                    <em class="glyphicon glyphicon-menu-left"></em> 返回
-                </a>
             </form>
                     }
                     else if (sheet.Status == Status.ExaminingDirector||sheet.Status==Status.ExaminingManager||sheet.Status==Status.ExaminingFinance)//主管审核
@@ -35,30 +32,29 @@
                     {
                         if (sheet.Name == Identity.Name)//用户自己查看报销单时候
                         {
-                            <button type="button" class="btn btn-warning btn-sm"><i class="fa fa-refresh fa-spin"></i>审核中</button>
+                            <button type="button" class="btn btn-warning btn-lg"><i class="fa fa-refresh fa-spin"></i>审核中</button>
                             if (sheet.Controler == sheet.Checkers)
                             {
-                                <button type="button" class="btn btn-danger btn-sm" id="Revoke">
+                                <button type="button" class="btn btn-danger btn-lg" id="Revoke">
                                     <em class="glyphicon glyphicon-log-out"></em>撤回
                                 </button>
-                                @*<a class="btn btn-danger btn-sm" href="/Report/Revoke?id=@(sheet.ID)"><em class="glyphicon glyphicon-log-out"></em>撤回</a>*@
                             }
                         }
                         else if (sheet.Controler == Identity.Name)//主管  查看报销单
                         {
-                            <button type="button" class="btn btn-primary btn-sm btn-checked">
+                            <button type="button" class="btn btn-primary btn-lg btn-checked">
                                 <em class="glyphicon glyphicon-ok">审核通过</em>
                             </button>
                             {
                                 Html.RenderPartial("WithDrawal", sheet);
                             }
                         }
-                        <button class="btn btn-default btn-sm" type="button" onclick="javascript:Preview()">
-                            <em class="glyphicon glyphicon-print"></em> 打印
-                        </button>
-                            <a class="btn btn-warning btn-sm" href="/Report">
-                                <em class="glyphicon glyphicon-menu-left"></em> 返回
-                         </a>
+                        else if (sheet.Status == Status.ExaminingFinance)
+                        {
+                            <button class="btn btn-default btn-lg" type="button" onclick="javascript:Preview()">
+                                <em class="glyphicon glyphicon-print"></em> 打印
+                            </button>
+                        }
                     }else if (sheet.Status == Status.Examined)
                     {
                         <button type="button" class="btn btn-success btn-sm"><i class="fa fa-flag"></i>成功报销</button>
@@ -104,7 +100,7 @@
                     @if (sheet.Type == SheetType.Daily)
                     {
                         <h3>内容分项清单&nbsp;</h3>
-                        <table class="table table-bordered">
+                        <table class="table table-striped">
                             <thead>
                                 <tr>
                                     <th>#</th>

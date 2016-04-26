@@ -3,19 +3,19 @@
     int serial = 1;
 }
 <h3 class="col-md-11" style="margin-top:0px;">内容分项清单</h3>
-<table class="table table-bordered" id="SHEET">
+<table class="table table-striped" id="SHEET">
     <thead>
         <tr>
             <th>
                 #
             </th>
-            <th>
+            <th style="width:15%;">
                 分类
             </th>
             <th>
                 内容
             </th>
-            <th>
+            <th style="width:20%;">
                 金额(元)
             </th>
         </tr>
@@ -37,7 +37,7 @@
                         </select>
                     </td>
                     <td><input type="text" name="Detail" style="width:100%" value="@(subtance.Details)" class="form-control" /></td>
-                    <td><input type="number" name="Price" value="@(subtance.Price)" class="form-control" /></td>
+                    <td><input type="text" name="Price" value="@(subtance.Price)" class="form-control" /></td>
                 </tr>
             }
         }
@@ -55,7 +55,7 @@
                     </select>
                 </td>
                 <td><input type="text" name="Detail" style="width:100%" class="form-control" /></td>
-                <td><input type="number" name="Price" class="form-control" /></td>
+                <td><input type="text" name="Price" class="form-control" /></td>
             </tr>
         }
     </tbody>
@@ -84,7 +84,7 @@
             }
         }
         
-        $("input[name='Price']").focus(function () {
+        $("input[name='Price']").change(function () {
             var sum = 0;
             $("input[name='Price']").each(function () {
                 var str = $(this).val();
@@ -92,7 +92,7 @@
                     sum += parseFloat(str);
                 }
             });
-            $("input[name='Money']").val(sum);
+            $("input[name='Money']").val(sum.toFixed(2));
         })
     })
 </script>
