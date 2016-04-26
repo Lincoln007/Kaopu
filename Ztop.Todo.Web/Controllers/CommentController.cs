@@ -21,7 +21,7 @@ namespace Ztop.Todo.Web.Controllers
             Core.CommentManager.Save(new Model.Comment
             {
                 Content = content,
-                TaskID = taskId,
+                UserTaskID = taskId,
                 UserID = Identity.UserID
             });
             return SuccessJsonResult();

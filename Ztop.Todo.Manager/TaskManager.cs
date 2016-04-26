@@ -116,15 +116,18 @@ namespace Ztop.Todo.Manager
             }
         }
 
-        public List<UserTask> GetUserTasks(int id)
+        public List<UserTask> GetUserTasks(int taskId, bool getUserInfo = true)
         {
             using (var db = GetDbContext())
             {
-                var list = db.UserTasks.Where(e => e.TaskID == id).ToList();
-                var users = new List<User>();
-                foreach (var item in list)
+                var list = db.UserTasks.Where(e => e.TaskID == taskId).ToList();
+                if (getUserInfo)
                 {
-                    item.User = Core.UserManager.GetUser(item.UserID);
+                    var users = new List<User>();
+                    foreach (var item in list)
+                    {
+                        item.User = Core.UserManager.GetUser(item.UserID);
+                    }
                 }
                 return list;
             }

@@ -155,6 +155,7 @@ namespace Ztop.Todo.Web.Controllers
             {
                 throw new HttpException(401, "你没有权限查看该任务");
             }
+
             ViewBag.Comments = Core.CommentManager.GetList(model.ID);
             ViewBag.Attachments = Core.AttachmentManager.GetList(model.TaskID);
 
@@ -162,7 +163,11 @@ namespace Ztop.Todo.Web.Controllers
             if (model.UserID == Identity.UserID)
             {
                 Core.TaskManager.FlagUserTaskRead(model.ID, model.UserID);
-                Core.NotificationManager.FlagRead(model.TaskID, InfoType.Task);
+                Core.NotificationManager.FlagRead(model.ID, InfoType.Task);
+            }
+            else if(model.Task.CreatorID  == Identity.UserID)
+            {
+                Core.NotificationManager.FlagRead(model.ID, InfoType.Comment);
             }
             return View();
         }
@@ -177,12 +182,6 @@ namespace Ztop.Todo.Web.Controllers
         {
             Core.TaskManager.Delete(id, Identity.UserID);
             return SuccessJsonResult();
-        }
-
-        public ActionResult GetNotification()
-        {
-            var model = Core.NotificationManager.GetNewest(Identity.UserID);
-            return Json(model);
         }
 
         public ActionResult GetNewTask(DateTime lastGetTime)

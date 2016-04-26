@@ -24,7 +24,8 @@ namespace Ztop.Todo.Model
 
         public int UserID { get; set; }
 
-        public int TaskID { get; set; }
+        [Column("taskid")]
+        public int UserTaskID { get; set; }
 
         public DateTime CreateTime { get; set; }
 

@@ -85,7 +85,10 @@ namespace Ztop.Todo.WindowsClient
             this.Show();
             this.Activate();
             Size = _size;
-            WindowState = _state;
+            if(WindowState == FormWindowState.Minimized)
+            {
+                WindowState = _state;
+            }
         }
         private void CloseWindow()
         {

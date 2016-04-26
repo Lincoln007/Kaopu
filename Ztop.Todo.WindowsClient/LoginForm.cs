@@ -196,6 +196,8 @@ namespace Ztop.Todo.WindowsClient
         {
             timer2.Enabled = false;
             MShow();
+            btnLogin.Text = "登录";
+            btnLogin.Enabled = true;
         }
     }
 }

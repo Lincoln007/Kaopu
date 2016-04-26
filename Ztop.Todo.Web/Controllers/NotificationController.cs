@@ -10,7 +10,8 @@ namespace Ztop.Todo.Web.Controllers
     {
         public ActionResult GetNewest()
         {
-            return View();
+            var model = Core.NotificationManager.GetNewest(Identity.UserID);
+            return Content(Newtonsoft.Json.JsonConvert.SerializeObject(model));
         }
     }
 }

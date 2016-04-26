@@ -35,7 +35,7 @@ namespace Ztop.Todo.Manager
         {
             using (var db = GetDbContext())
             {
-                var list = db.Comments.Where(e => e.TaskID == taskId).ToList();
+                var list = db.Comments.Where(e => e.UserTaskID == taskId).ToList();
                 foreach (var item in list)
                 {
                     item.User = Core.UserManager.GetUser(item.UserID);
@@ -49,7 +49,9 @@ namespace Ztop.Todo.Manager
         {
             using (var db = GetDbContext())
             {
-                return db.Comments.FirstOrDefault(e => e.ID == id);
+                var model =  db.Comments.FirstOrDefault(e => e.ID == id);
+                model.User = Core.UserManager.GetUser(model.UserID);
+                return model;
             }
         }
 

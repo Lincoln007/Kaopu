@@ -17,6 +17,6 @@ namespace Ztop.Todo.WindowsClient
 
         public DateTime CreateTime { get; set; }
 
-        public string Path { get; internal set; }
+        public string Path { get; set; }
     }
 }

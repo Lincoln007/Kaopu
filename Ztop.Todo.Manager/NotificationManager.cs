@@ -20,17 +20,18 @@ namespace Ztop.Todo.Manager
                     {
                         case InfoType.Task:
                             {
-                                var task = Core.TaskManager.GetTask(model.InfoID);
-                                model.Description = task.Creator.DisplayName + " 下达了 " + task.Title;
-                                model.Path = "/Task/Detail/?id=" + task.ID;
+                                var userTask = Core.TaskManager.GetUserTask(model.InfoID);
+                                var sender = Core.UserManager.GetUser(model.SenderID);
+                                model.Description = sender.DisplayName + " 下达了 " + userTask.Task.Title;
+                                model.Path = "/Task/Detail/?id=" + userTask.ID;
                             }
                             break;
                         case InfoType.Comment:
                             {
-                                var comment = Core.CommentManager.GetModel(model.InfoID);
-                                var task = Core.TaskManager.GetTask(comment.TaskID);
-                                model.Description = comment.User.DisplayName + " 评论了 " + task.Title;
-                                model.Path = "/Task/Detail/?id=" + task.ID + "#comment-" + model.ID;
+                                var userTask = Core.TaskManager.GetUserTask(model.InfoID);
+                                var sender = Core.UserManager.GetUser(model.SenderID);
+                                model.Description = sender.DisplayName + " 评论了 " + userTask.Task.Title;
+                                model.Path = "/Task/Detail/?id=" + userTask.ID + "#comment-" + model.ID;
                             }
                             break;
                     }
@@ -54,26 +55,26 @@ namespace Ztop.Todo.Manager
 
         private void AddCommentNotification(Comment comment)
         {
-            var task = Core.TaskManager.GetTask(comment.TaskID);
+            var userTask = Core.TaskManager.GetUserTask(comment.UserTaskID);
             AddNotification(new Notification
             {
-                InfoID = comment.ID,
+                InfoID = userTask.ID,
                 InfoType = InfoType.Comment,
-                ReceiverID = task.CreatorID,
+                ReceiverID = userTask.Task.CreatorID,
                 SenderID = comment.UserID,
             });
         }
 
         private void AddTaskNotification(Model.Task task)
         {
-            var users = Core.TaskManager.GetTaskUsers(task.ID);
-            foreach (var user in users)
+            var userTasks = Core.TaskManager.GetUserTasks(task.ID, false);
+            foreach (var ut in userTasks)
             {
                 AddNotification(new Notification
                 {
-                    InfoID = task.ID,
-                    InfoType = InfoType.Comment,
-                    ReceiverID = user.ID,
+                    InfoID = ut.ID,
+                    InfoType = InfoType.Task,
+                    ReceiverID = ut.UserID,
                     SenderID = task.CreatorID,
                 });
             }
