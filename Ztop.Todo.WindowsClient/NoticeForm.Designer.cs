@@ -40,6 +40,7 @@
             this.txtContent.ForeColor = System.Drawing.Color.Crimson;
             this.txtContent.Location = new System.Drawing.Point(0, 0);
             this.txtContent.Name = "txtContent";
+            this.txtContent.Padding = new System.Windows.Forms.Padding(10);
             this.txtContent.Size = new System.Drawing.Size(206, 117);
             this.txtContent.TabIndex = 9;
             this.txtContent.Text = "郑良军  下达了  测试新的通知任务";
@@ -49,9 +50,10 @@
             // 
             this.txtTime.AutoSize = true;
             this.txtTime.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.txtTime.Location = new System.Drawing.Point(0, 97);
+            this.txtTime.Location = new System.Drawing.Point(0, 87);
             this.txtTime.Name = "txtTime";
-            this.txtTime.Size = new System.Drawing.Size(37, 20);
+            this.txtTime.Padding = new System.Windows.Forms.Padding(10, 0, 10, 10);
+            this.txtTime.Size = new System.Drawing.Size(57, 30);
             this.txtTime.TabIndex = 10;
             this.txtTime.Text = "时间";
             // 

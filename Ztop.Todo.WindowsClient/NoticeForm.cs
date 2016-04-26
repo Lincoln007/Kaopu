@@ -23,13 +23,20 @@ namespace Ztop.Todo.WindowsClient
 
         private void Timer1_Tick(object sender, EventArgs e)
         {
-
+            _duration--;
+            if (_duration == 0)
+            {
+                timer1.Stop();
+                timer1.Dispose();
+                this.Close();
+            }
         }
 
         public NoticeForm(Notification notification):this()
         {
             Notification = notification;
             txtContent.Text = notification.Description;
+            txtTime.Text = notification.CreateTime.ToString();
         }
 
         public Notification Notification { get; private set; }
