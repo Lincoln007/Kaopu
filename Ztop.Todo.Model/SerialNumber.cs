@@ -32,19 +32,9 @@ namespace Ztop.Todo.Model
                 return Number + NumberExt.ToString("0000");
             }
         }
-        [Column(TypeName ="INT")]
-        public Invoices Invoices { get; set; }
         /// <summary>
         /// 报销单  唯一编号
         /// </summary>
         public int SID { get; set; }
-    }
-
-    public enum Invoices
-    {
-        [Description("流水单据")]
-        Nullah,
-        [Description("归档单据")]
-        Filing
     }
 }

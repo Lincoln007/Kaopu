@@ -7,7 +7,7 @@
     GroupType groupType = ViewBag.GroupType;
 }
 
-<ul class="dropdown-menu" aria-labelledby="权限申请">
+<ul class="nav nav-second-level" aria-labelledby="权限申请">
     @if (groupType == GroupType.Administrator)
     {
         <li><a href="/Jurisdiction/Admin/UserList?IsActive=true"><i class="fa fa-user"></i>&nbsp;用户</a></li>

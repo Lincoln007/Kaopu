@@ -1,0 +1,112 @@
+﻿
+@{
+    ViewBag.Title = "报销归档";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .modal{
+        display:block;
+        position:static;
+        overflow:auto;
+    }
+</style>
+
+
+
+<div class="col-md-8 col-md-offset-2">
+    <br />
+    <h3 class="text-center">报销归档</h3>
+    <br />
+    <br />
+    <div class="form-group has-success has-feedback">
+        <input class="form-control" name="key" style="height:50px;" onkeyup="showFiling(this.value)" />
+    </div>
+    <div id="Result">
+
+    </div>
+   
+  
+</div>
+<div class="hidden" id="Text">
+    <div class="modal" id="{Index}">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">报销归档</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" action="">
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="control-label col-md-3">单据编号:</label>
+                                <div class="col-md-8">
+                                    <input name="" value="{Index}" readonly="readonly" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3">报销人:</label>
+                                <div class="col-md-8">
+                                    <input name="Name" value="{Name}" readonly="readonly" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3">报销总金额（元）:</label>
+                                <div class="col-md-8">
+                                    <input name="Money" value="{Money}" readonly="readonly" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3">报销时间:</label>
+                                <div class="col-md-8">
+                                    <input name="Time" value="{Time}" readonly="readonly" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" targetId="{Index}" name="Cancel">取消</button>
+                    <button type="button" class="btn btn-primary" targetId="{Index}" name="Filing">归档</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    var html = document.getElementById("Text").innerHTML;
+
+    function showFiling(key) {
+        if (key.length == 0||key.length!=10) {
+            $("#Result").empty();
+            return;
+        }
+        $.request("/Report/Search?key=" + key, null, function (json) {
+            var data = json;
+            var Result = "";
+            var temp = "";
+            for (var i = 0; i < data.length; i++) {
+                temp = html;
+                var a = data[i].Time.replace("/Date(","").replace(")/","");
+                var time = new Date();
+                time.setTime(a);
+                var timeString = time.getFullYear() + "-" + (time.getMonth() + 1) + "-" + time.getDate();
+                temp = temp.replace(/{Index}/g, data[i].SerialNumber.Coding).replace("{Name}", data[i].Name).replace("{Money}", data[i].Money).replace("{Time}", timeString);
+                Result += temp;
+            }
+            $("#Result").empty().append(Result);
+            $("button[name='Filing']").unbind("click").bind("click", function () {
+                var id = $(this).attr("targetId");
+                $("#" + id).remove();
+            });
+            $("button[name='Cancel']").unbind("click").bind("click", function () {
+                var id = $(this).attr("targetId");
+                $("#" + id).remove();
+            })
+        })
+    }
+</script>
+

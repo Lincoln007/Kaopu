@@ -159,6 +159,8 @@
     <Content Include="Content\jquery.autocomplete.css" />
     <Content Include="Content\logo.png" />
     <Content Include="Content\Print.css" />
+    <Content Include="Content\sb-admin-2.css" />
+    <Content Include="Content\sb-admin.css" />
     <Content Include="Content\token-input.css" />
     <Content Include="error.txt" />
     <Content Include="Content\jquery.datetimepicker.css" />
@@ -201,8 +203,10 @@
     <Content Include="Scripts\jquery-1.9.1.min.js" />
     <Content Include="Scripts\jquery.autocomplete.js" />
     <Content Include="Scripts\jquery.datetimepicker.js" />
+    <Content Include="Scripts\metisMenu.min.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\sb-admin-2.js" />
     <Content Include="Scripts\tree.jquery.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="SystemInfo.xml" />
@@ -249,6 +253,7 @@
     <Content Include="Views\Report\Errand.cshtml" />
     <Content Include="Views\Report\ChooseUser.cshtml" />
     <Content Include="Views\Report\Sheeting.cshtml" />
+    <Content Include="Views\Report\Filing.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

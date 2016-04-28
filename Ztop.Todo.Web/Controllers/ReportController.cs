@@ -21,7 +21,7 @@ namespace Ztop.Todo.Web.Controllers
             var list = Core.SheetManager.GetSheets(parameter);
             ViewBag.OutList = list.Where(e => e.Status == Status.OutLine).ToList();//草稿
             //未完成审核    提交 主管审核  申屠审核  财务审核  退回
-            ViewBag.ExaminingList = list.Where(e => e.Status == Status.ExaminingDirector || e.Status == Status.ExaminingFinance || e.Status == Status.ExaminingManager||e.Status==Status.RollBack).ToList();
+            ViewBag.ExaminingList = list.Where(e => e.Status == Status.ExaminingDirector || e.Status == Status.ExaminingFinance || e.Status == Status.ExaminingManager||e.Status==Status.RollBack||e.Status==Status.Filing).ToList();
             //  我提交的报销单  同时也
             ViewBag.ExaminList = list.Where(e => e.Status == Status.Examined).ToList();
             ViewBag.RollBackList = list.Where(e => e.Status == Status.RollBack).ToList();
@@ -44,7 +44,6 @@ namespace Ztop.Todo.Web.Controllers
             ViewBag.Users = Core.UserManager.GetAllUsers();
             return View();
         }
-
         private void Save(Sheet sheet,string DirectorVal)
         {
             sheet.Checkers = DirectorVal;
@@ -154,7 +153,6 @@ namespace Ztop.Todo.Web.Controllers
             throw new ArgumentException("参数错误，没有找到该报销单");
             
         }
-
         public ActionResult Revoke(int id)
         {
             var sheet = Core.SheetManager.GetAllModel(id);
@@ -180,8 +178,6 @@ namespace Ztop.Todo.Web.Controllers
             Core.VerifyManager.Save(sverify);
             return SuccessJsonResult();
         }
-
-
         /// <summary>
         /// 审核人  点击退回
         /// </summary>
@@ -244,11 +240,13 @@ namespace Ztop.Todo.Web.Controllers
                     sheet.Controler = XmlHelper.GetFinance();
                     sverify.Step = Step.Confirm;
                     break;
-                case Status.ExaminingFinance://财务审核通过
-                    sheet.Status = Status.Examined;
-                    sheet.Controler = Identity.Name;
+                case Status.ExaminingFinance://财务审核通过  财务审核通过之后  需要生成归档编号
+                    sheet.Status = Status.Filing;
+                    sheet.Controler = XmlHelper.GetManager();
                     sverify.Step = Step.Approved;
-
+                    break;
+                case Status.Filing:
+                    sheet.Status = Status.Examined;
                     break;
                 default:
                     break;
@@ -340,6 +338,17 @@ namespace Ztop.Todo.Web.Controllers
                 throw new ArgumentException("参数有误！");
             }
             return View();
+        }
+
+        public ActionResult Filing()
+        {
+            return View();
+        }
+
+        public ActionResult Search(string key)
+        {
+            var List = Core.SheetManager.GetSheetsByKey(key);
+            return Json(List,JsonRequestBehavior.AllowGet);
         }
     }
 }

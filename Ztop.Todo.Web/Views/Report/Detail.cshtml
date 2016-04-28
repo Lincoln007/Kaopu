@@ -1,4 +1,5 @@
 ﻿@using Ztop.Todo.Model;
+@using Ztop.Todo.ActiveDirectory;
 @{
     ViewBag.Title = "报销单";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -12,29 +13,32 @@
 {
     <div class="col-md-12 noprint">
         <h3>报销单详情</h3>
-        @if (sheet.Status == Status.OutLine||sheet.Status==Status.RollBack)//草稿  或者退回
+        
+        @if (sheet.Status == Status.OutLine || sheet.Status == Status.RollBack)//草稿  或者退回
         {
-            <form method="post" class="form-horizontal col-md-12" action="" id="form-Check">
-                <input type="text" name="ID" value="@(sheet.ID)" style="display:none" />
-                @{ 
-                    Html.RenderPartial("SubmitButton");
-                }
-                <a href="/Report/Create?id=@(sheet.ID)" class="btn btn-primary btn-lg">
-                    <em class="glyphicon glyphicon-edit"></em>修改
-                </a>
-                <button type="button" class="btn btn-danger btn-lg btn-delete">
-                    <em class="glyphicon glyphicon-remove"></em>删除
-                </button>
-            </form>
+            if (Identity.Name == sheet.Name)
+            {
+                <form method="post" class="form-horizontal col-md-12" action="" id="form-Check">
+                    <input type="text" name="ID" value="@(sheet.ID)" style="display:none" />
+                    @{
+                        Html.RenderPartial("SubmitButton");
                     }
-                    else if (sheet.Status == Status.ExaminingDirector||sheet.Status==Status.ExaminingManager||sheet.Status==Status.ExaminingFinance)//主管审核
+                    <a href="/Report/Create?id=@(sheet.ID)" class="btn btn-primary btn-lg">
+                        <em class="glyphicon glyphicon-edit"></em>修改
+                    </a>
+                    <button type="button" class="btn btn-danger btn-lg btn-delete">
+                        <em class="glyphicon glyphicon-remove"></em>删除
+                    </button>
+                </form>
+                            }
 
-                    {
-                        if (sheet.Name == Identity.Name)//用户自己查看报销单时候
+                        }
+                        else if (sheet.Status == Status.ExaminingDirector || sheet.Status == Status.ExaminingManager || sheet.Status == Status.ExaminingFinance)//主管审核
                         {
-                            <button type="button" class="btn btn-warning btn-lg"><i class="fa fa-refresh fa-spin"></i>审核中</button>
-                            if (sheet.Controler == sheet.Checkers)
+                            if (sheet.Name == Identity.Name)//用户自己查看报销单时候
                             {
+                                if (sheet.Controler == sheet.Checkers)
+                                {
                                 <button type="button" class="btn btn-danger btn-lg" id="Revoke">
                                     <em class="glyphicon glyphicon-log-out"></em>撤回
                                 </button>
@@ -45,18 +49,19 @@
                             <button type="button" class="btn btn-primary btn-lg btn-checked">
                                 <em class="glyphicon glyphicon-ok">审核通过</em>
                             </button>
-                            {
-                                Html.RenderPartial("WithDrawal", sheet);
+                                if (Identity.Name == XmlHelper.GetFinance())
+                                {
+                                    <button class="btn btn-default btn-lg" type="button" onclick="javascript: Preview()">
+                                        <em class="glyphicon glyphicon-print"></em> 打印
+                                    </button>
+                                }
+                                {
+                                    Html.RenderPartial("WithDrawal", sheet);
+                                }
                             }
                         }
-                        else if (sheet.Status == Status.ExaminingFinance)
+                        else if (sheet.Status == Status.Examined)
                         {
-                            <button class="btn btn-default btn-lg" type="button" onclick="javascript:Preview()">
-                                <em class="glyphicon glyphicon-print"></em> 打印
-                            </button>
-                        }
-                    }else if (sheet.Status == Status.Examined)
-                    {
                         <button type="button" class="btn btn-success btn-sm"><i class="fa fa-flag"></i>成功报销</button>
                         <button class="btn btn-default btn-sm" type="button" onclick="javascript:Preview()">
                             <em class="glyphicon glyphicon-print"></em> 打印
@@ -64,10 +69,14 @@
                         <a class="btn btn-warning btn-sm" href="/Report">
                             <em class="glyphicon glyphicon-menu-left"></em> 返回
                         </a>
+                    }else if (sheet.Status == Status.Filing&&Identity.Name==XmlHelper.GetFinance())
+                    {
+                       
                     }
     </div>
    
                 <div class="col-md-8" id="Print">
+                    
                     <h3>基本信息&nbsp;</h3>
                     <div id="Main">
                         <table class="table table-bordered">
@@ -75,20 +84,24 @@
                                 <tr>
                                     <td>单据编号</td>
                                     <td>@(sheet.SerialNumber.Coding)</td>
-                                    <td>报销日期</td>
-                                    <td>@(sheet.Time.ToLongDateString())</td>
+                                    <td>条形码</td>
+                                    <td></td>
                                 </tr>
                                 <tr>
                                     <td>报销人</td>
                                     <td>@(sheet.Name)</td>
-                                    <td>报销金额合计(元)</td>
-                                    <td>@(sheet.Money)</td>
+                                    <td>报销日期</td>
+                                    <td>@(sheet.Time.ToLongDateString())</td>
                                 </tr>
                                 <tr>
+                                    <td>报销金额合计(元)</td>
+                                    <td>@(sheet.Money)</td>
                                     <td>发票张数</td>
                                     <td>@(sheet.Count)</td>
+                                </tr>
+                                <tr>
                                     <td>备注</td>
-                                    <td>
+                                    <td colspan="3">
                                         @(sheet.Remarks)
                                     </td>
                                 </tr>
@@ -135,6 +148,78 @@
                     </div>
                 </div>
                 <div class="col-md-4 noprint">
+                  
+                    <h3>审核进度</h3>
+                    <div class="progress">
+                        @if (sheet.Status == Status.OutLine)
+                        {
+                            <div class="progress-bar progress-bar-success progress-bar-striped active" style="width:20%;min-width:2em;">
+                                @(sheet.Status.GetDescription())
+                            </div>
+                        }
+                        else if (sheet.Status == Status.ExaminingDirector)
+                        {
+                            <div class="progress-bar progress-bar-success" style="width:20%;min-width:2em;">
+                                报销填单
+                            </div>
+                            <div class="progress-bar progress-bar-warning progress-bar-striped active" style="width:20%;min-width:2em;">
+                                @(sheet.Status.GetDescription())
+                            </div>
+                        }
+                        else if (sheet.Status == Status.ExaminingManager)
+                        {
+                            <div class="progress-bar progress-bar-success" style="width:20%;min-width:2em;">
+                                报销填单
+                            </div>
+                            <div class="progress-bar progress-bar-warning" style="width:20%;min-width:2em;">
+                                主管通过
+                            </div>
+                            <div class="progress-bar progress-bar-info progress-bar-striped active" style="width:20%;min-width:2em;">
+                                @(sheet.Status.GetDescription())
+                            </div>
+                        }
+                        else if (sheet.Status == Status.ExaminingFinance)
+                        {
+                            <div class="progress-bar progress-bar-success" style="width:20%;min-width:2em;">
+                                报销填单
+                            </div>
+                            <div class="progress-bar progress-bar-warning" style="width:20%;min-width:2em;">
+                                主管通过
+                            </div>
+                            <div class="progress-bar progress-bar-info" style="width:20%;min-width:2em;">
+                                总经理通过
+                            </div>
+                            <div class="progress-bar progress-bar-striped active" style="width:20%;min-width:2em;">
+                                @(sheet.Status.GetDescription())
+                            </div>
+                        }
+                        else if (sheet.Status == Status.Filing)
+                        {
+                            <div class="progress-bar progress-bar-success" style="width:20%;min-width:2em;">
+                                报销填单
+                            </div>
+                            <div class="progress-bar progress-bar-warning" style="width:20%;min-width:2em;">
+                                主管通过
+                            </div>
+                            <div class="progress-bar progress-bar-info" style="width:20%;min-width:2em;">
+                                总经理通过
+                            </div>
+                            <div class="progress-bar" style="width:20%;min-width:2em;">
+                                财务通过
+                            </div>
+                            <div class="progress-bar progress-bar-success progress-bar-striped active" style="width:20%;min-width:2em;">
+                                @(sheet.Status.GetDescription())
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="progress-bar progress-bar-danger progress-bar-striped active" style="width:100%;min-width:2em;">
+                                退回
+                            </div>
+                        }
+
+                    </div>
+
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h3 class="panel-title">
@@ -160,11 +245,12 @@
                                         <tr>
                                             <td>  @(verify.Step.GetDescription())</td>
                                             <td>@(verify.Name)</td>
-                                            @if (verify.Position==Position.Check)
+                                            @if (verify.Position == Position.Check)
                                             {
                                                 <td>@(verify.Time.ToLongDateString())</td>
                                                 <td><i class="fa fa-check-square"></i></td>
-                                            }else if (verify.Position==Position.RollBack)
+                                            }
+                                            else if (verify.Position == Position.RollBack)
                                             {
                                                 <td>@(verify.Time.ToLongDateString())</td>
                                                 <td><i class="fa fa-ambulance"></i></td>

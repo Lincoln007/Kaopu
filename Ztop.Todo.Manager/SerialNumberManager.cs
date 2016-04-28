@@ -42,7 +42,8 @@ namespace Ztop.Todo.Manager
         {
             using (var db = GetDbContext())
             {
-                var entry = db.SerialNumbers.FirstOrDefault(e => e.ID == serialNumber.ID && e.Number == serialNumber.Number && e.NumberExt == serialNumber.NumberExt);
+                //var entry = db.SerialNumbers.FirstOrDefault(e => e.ID == serialNumber.ID && e.Number == serialNumber.Number && e.NumberExt == serialNumber.NumberExt&&e.Invoices==serialNumber.Invoices);
+                var entry = db.SerialNumbers.Find(serialNumber.ID);
                 if (entry != null)
                 {
                     db.Entry(entry).CurrentValues.SetValues(serialNumber);

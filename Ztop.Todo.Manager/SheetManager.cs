@@ -47,6 +47,7 @@ namespace Ztop.Todo.Manager
                 var model = db.Sheets.FirstOrDefault(e => e.ID == id);
                 if (model != null)
                 {
+                    //获取流水单据编号
                     model.SerialNumber = db.SerialNumbers.FirstOrDefault(e => e.SID == model.ID);
                     if (model.Type == SheetType.Daily)
                     {
@@ -230,6 +231,13 @@ namespace Ztop.Todo.Manager
                 query = query.Where(e => e.Status == parameter.Status.Value);
             }
             return query.ToList();
+        }
+
+        public List<Sheet> GetSheetsByKey(string key)
+        {
+            if (string.IsNullOrEmpty(key))
+                return null;
+            return GetSheets(new SheetQueryParameter() { Status = Status.Filing }).Where(e => e.SerialNumber.Coding.Contains(key)).ToList();
         }
         public List<Sheet> GetSheets(QueryParameter parameter,string name)
         {

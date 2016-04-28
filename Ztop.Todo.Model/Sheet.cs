@@ -25,11 +25,6 @@ namespace Ztop.Todo.Model
         [NotMapped]
         public SerialNumber SerialNumber { get; set; }
         /// <summary>
-        /// 单据编号  归档单据编号
-        /// </summary>
-        [NotMapped]
-        public SerialNumber SerialFiling { get; set; }
-        /// <summary>
         /// 报销人
         /// </summary>
         public string Name { get; set; }
