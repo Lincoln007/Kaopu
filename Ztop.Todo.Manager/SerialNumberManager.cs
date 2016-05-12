@@ -32,9 +32,11 @@ namespace Ztop.Todo.Manager
                         count = entry.NumberExt;
                     }
                     serialNumber.NumberExt = count + 1;
+                    serialNumber.BarCode = BarCode.GetBarCodePath(serialNumber.Coding);
                     db.SerialNumbers.Add(serialNumber);
                     db.SaveChanges();
                 }
+                
                 return serialNumber;
             }
         }

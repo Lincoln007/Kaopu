@@ -1,0 +1,18 @@
+﻿
+@{
+    ViewBag.Title = "银行对账单";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    Bank bank = ViewBag.Bank;
+}
+
+<h2 class="text-center">杭州智拓@(bank.Company==Company.Evaluation?"房地产土地评估":"土地规划设计")咨询有限公司@(bank.Year)年@(bank.Month)月银行对账单</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th></th>
+        </tr>
+    </thead>
+</table>
+
+

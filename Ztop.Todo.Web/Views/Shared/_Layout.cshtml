@@ -37,13 +37,12 @@
         .sidebar ul li a:hover{
             color:#2380BF;
         }
-        /*body{
-            margin-top:0px;
+        .sidebar{
+            width:200px;
         }
-        .side-nav{
-            background-color:#2380BF;
-            border-color:#166194;
-        }*/
+        #page-wrapper{
+            margin-left:200px;
+        }
     </style>
 </head>
 <body>
@@ -80,41 +79,81 @@
                 </ul>
 
                 @if (Identity.IsAuthenticated)
-            {
+                {
                     <div class="navbar-default sidebar" role="navigation">
                         <div class="sidebar-nav navbar-collapse">
                             <ul class="nav" id="side-menu">
-                                <li><a href="/Home/Index"><i class="fa fa-desktop"></i> 欢迎页</a></li>
-                                <li><a href="/task/edit"><i class="fa fa-plus"></i> 创建任务</a></li>
-                                <li><a href="/task/Index"><i class="fa fa-search"></i> 查询任务</a></li>
+                                <li>
+                                    <a href="#"><i class="glyphicon glyphicon-leaf"></i> 任务系统<span class="fa arrow"></span></a>
+                                    <ul class="nav nav-second-level">
+                                        <li><a href="/Home/Index"><i class="fa fa-desktop"></i> 欢迎页</a></li>
+                                        <li><a href="/task/edit"><i class="fa fa-plus"></i> 创建任务</a></li>
+                                        <li><a href="/task/Index"><i class="fa fa-search"></i> 查询任务</a></li>
+                                    </ul>
+                                </li>
                                 <li>
                                     <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>权限管理<span class="fa arrow"></span></a>
                                     @Html.Partial("_Authority")
                                 </li>
-                                <li><a href="/Home/Resources"><i class="fa fa-cloud-download"></i>资源下载</a></li>
-                                <li><a href="/Report/Index"><i class="fa fa-credit-card"></i>报销系统</a></li>
                                 <li>
-                                    <a href="#"><i class="fa fa-money"></i>报销<span class="fa arrow"></span></a>
+                                    <a href="#"><i class="fa fa-credit-card"></i>报销系统<span class="fa arrow"></span></a>
                                     <ul class="nav nav-second-level">
-                                        <li><a href="/Report/Create?type=@(SheetType.Daily)"><i class="fa fa-map-o"></i>日常报销</a></li>
-                                        <li><a href="/Report/Create?type=@(SheetType.Errand)"><i class="fa fa-plane"></i>出差报销</a></li>
+                                        <li><a href="/Report/Index"><i class="fa fa-desktop"></i>欢迎页</a></li>
+                                        <li>
+                                            <a href="#"><i class="glyphicon glyphicon-piggy-bank"></i> 报销<span class="fa arrow"></span></a>
+                                            <ul class="nav nav-third-level">
+                                                <li><a href="/Report/Create?type=@(SheetType.Daily)"><i class="fa fa-map-o"></i>日常报销</a></li>
+                                                <li><a href="/Report/Create?type=@(SheetType.Errand)"><i class="fa fa-plane"></i>出差报销</a></li>
+                                            </ul>
+                                        </li>
                                         @if (Identity.Name == "申屠杜平")
                                         {
                                             <li><a href="/Report/Filing"><i class="fa fa-anchor"></i>报销归档</a></li>
                                         }
+                                        <li>
+                                            <a href="#"><i class="fa fa-area-chart"></i> 我的报销<span class="fa arrow"></span></a>
+                                            <ul class="nav nav-third-level">
+                                                <li><a href="/Report/List?Position=草稿"><i class="fa fa-spinner fa-pulse"></i> 报销单草稿</a></li>
+                                                <li><a href="/Report/List?Position=未审核"><i class="fa fa-check-circle-o"></i> 已提交报销</a></li>
+                                                <li><a href="/Report/List?Position=已审核"><i class="fa fa-check-circle"></i> 已完成报销</a></li>
+                                                <li class="divider">
+                                                @*<li><a href="/Report/Statistic"><i class="fa fa-area-chart"></i> 报销统计</a></li>*@
+                                            </ul>
+                                        </li>
+                                       
                                     </ul>
+                                   
                                 </li>
-                                <li>
-                                    <a href="#"><i class="fa fa-area-chart"></i> 我的报销<span class="fa arrow"></span></a>
+                                @if (Identity.Name == "靳小阳")
+                                {
+                                    <li>
+                                        <a href="#"><i class="glyphicon glyphicon-calendar"></i>对账系统<span class="fa arrow"></span></a>
+                                        <ul class="nav nav-third-level">
+                                            <li><a href="/Bank/Index"><i class="fa fa-desktop"></i>欢迎页</a></li>
+                                            <li>
+                                                <a href="#"><i class="fa fa-bank"></i>银行对账<span class="fa arrow"></span></a>
+                                                <ul class="nav nav-second-level">
+                                                    <li><a href="/Bank/Create?company=@(Company.Evaluation)"><i class="fa fa-balance-scale"></i>房地产评估</a></li>
+                                                    <li><a href="/Bank/Create?company=@(Company.Projection)"><i class="fa fa-mortar-board"></i>土地规划设计</a></li>
+                                                </ul>
+                                            </li>
+                                           
+                                            <li><a href="/Report/Summary"><i class="glyphicon glyphicon-book"></i>汇总列表</a></li>
+                                            <li><a href="/Report/CreateSummary"><i class="glyphicon glyphicon-pencil"></i>填写月汇总</a></li>
+                                        </ul>
+                                    </li>
+                                }
+                                <li><a href="/Home/Resources"><i class="fa fa-cloud-download"></i>资源下载</a></li>
+                              
+                                @*<li>
+                                    <a href="#"><i class="fa fa-credit-card"></i>汇总<span class="fa arrow"></span></a>
                                     <ul class="nav nav-second-level">
-                                        <li><a href="/Report/List"><i class="fa fa-spinner fa-pulse"></i> 报销单草稿</a></li>
-                                        <li><a href="#"><i class="fa fa-check-circle-o"></i> 已提交报销</a></li>
-                                        <li><a href="#"><i class="fa fa-check-circle"></i> 已完成报销</a></li>
-                                        <li class="divider">
-                                        <li><a href="/Report/Statistic"><i class="fa fa-area-chart"></i> 报销统计</a></li>
+                                        <li><a href=""><i class=""></i></a></li>
+                                        <li><a href="/Report/Summary"></a></li>
                                     </ul>
-                                </li>
-                                <li>
+                                </li>*@
+                              
+                                @*<li>
                                     <a href="#"><i class="fa fa-arrows"></i> 报销审核<span class="fa arrow"></span></a>
                                     <ul class="nav nav-second-level">
                                         <li>
@@ -124,7 +163,7 @@
                                             <a href="/Report/Sheeting?position=@(Ztop.Todo.Model.StatusPosition.已审核)"><i class="fa fa-check-square-o"></i>已审核报销</a>
                                         </li>
                                     </ul>
-                                </li>
+                                </li>*@
                             </ul>
                         </div>
                     </div>

@@ -8,19 +8,23 @@
 
 <form method="post" id="form-Create" action="/Report/Save" class="form-horizontal" enctype="multipart/form-data">
     <h2>报销单</h2>
-    <input type="text" name="SNID" value="@(sheet.SerialNumber.ID)" style="display:none" />
-    <input type="text" name="Number" value="@(sheet.SerialNumber.Number)" style="display:none" />
-    <input type="text" name="NumberExt" value="@(sheet.SerialNumber.NumberExt)" style="display:none" />
-    <input type="text"  name="Name" value="@(Identity.Name)" style="display:none" />
-    <input type="text" name="ID" value="@(sheet.ID)" style="display:none" />
+    <input type="hidden" name="SNID" value="@(sheet.SerialNumber.ID)" />
+    <input type="hidden" name="Number" value="@(sheet.SerialNumber.Number)"  />
+    <input type="hidden" name="NumberExt" value="@(sheet.SerialNumber.NumberExt)" />
+    <input type="hidden" name="BarCode" value="@(sheet.SerialNumber.BarCode)" />
+    <input type="hidden"  name="Name" value="@(Identity.Name)" />
+    <input type="hidden" name="ID" value="@(sheet.ID)" />
     <input type="hidden" name="Type" value="@(sheet.Type)" />
+    
     <div class="col-md-12">
         @{ 
             Html.RenderPartial("SubmitButton");
         }
+       
         <button class="btn btn-success btn-lg" type="submit">
             <em class="glyphicon glyphicon-floppy-disk"></em> 保存返回
         </button>
+        <button type="button" class="btn btn-default btn-lg" onclick="history.back();"><em class="glyphicon glyphicon-arrow-left"></em> 返回</button>
         @if (sheet.ID != 0)
         {
             <button class="btn btn-danger btn-lg" type="button">

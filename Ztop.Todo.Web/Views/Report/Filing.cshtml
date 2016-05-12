@@ -20,7 +20,7 @@
     <br />
     <br />
     <div class="form-group has-success has-feedback">
-        <input class="form-control" name="key" style="height:50px;" onkeyup="showFiling(this.value)" />
+        <input class="form-control" name="key" style="height:50px;" onkeyup="showFiling(this.value)"  />
     </div>
     <div id="Result">
 
@@ -35,9 +35,16 @@
                 <div class="modal-header">
                     <h4 class="modal-title">报销归档</h4>
                 </div>
-                <div class="modal-body">
-                    <form class="form-horizontal" action="">
+                <form class="form-horizontal" method="post" id="Form{Index}">
+                    <div class="modal-body">
+                        <input type="hidden" name="ID" value="{ID}" />
                         <div class="row">
+                            <div class="form-group">
+                                <label class="control-label col-md-3">条形码:</label>
+                                <div class="col-md-8">
+                                    <img src="/{Path}" />
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label class="control-label col-md-3">单据编号:</label>
                                 <div class="col-md-8">
@@ -56,20 +63,25 @@
                                     <input name="Money" value="{Money}" readonly="readonly" class="form-control" />
                                 </div>
                             </div>
-                            <div class="form-group">
+                            @*<div class="form-group">
                                 <label class="control-label col-md-3">报销时间:</label>
                                 <div class="col-md-8">
                                     <input name="Time" value="{Time}" readonly="readonly" class="form-control" />
                                 </div>
+                            </div>*@
+                            <div class="form-group">
+                                <label class="control-label col-md-3">财务确认时间：</label>
+                                <div class="col-md-8">
+                                    <input name="CheckTime" value="{CheckTime}" readonly="readonly" class="form-control" />
+                                </div>
                             </div>
                         </div>
-
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" targetId="{Index}" name="Cancel">取消</button>
-                    <button type="button" class="btn btn-primary" targetId="{Index}" name="Filing">归档</button>
-                </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" targetId="{Index}" name="Cancel">取消</button>
+                        <button type="button" class="btn btn-primary" targetId="{Index}" name="Filing">归档</button>
+                    </div>
+                </form>      
             </div>
         </div>
     </div>
@@ -84,29 +96,93 @@
             $("#Result").empty();
             return;
         }
-        $.request("/Report/Search?key=" + key, null, function (json) {
+
+        $.getJSON("/Report/Search?key=" + key, function (json) {
             var data = json;
             var Result = "";
             var temp = "";
             for (var i = 0; i < data.length; i++) {
                 temp = html;
-                var a = data[i].Time.replace("/Date(","").replace(")/","");
+                var a = data[i].CheckTime.replace("/Date(", "").replace(")/", "");
+                
                 var time = new Date();
                 time.setTime(a);
                 var timeString = time.getFullYear() + "-" + (time.getMonth() + 1) + "-" + time.getDate();
-                temp = temp.replace(/{Index}/g, data[i].SerialNumber.Coding).replace("{Name}", data[i].Name).replace("{Money}", data[i].Money).replace("{Time}", timeString);
+                temp = temp.replace(/{Index}/g, data[i].SerialNumber.Coding).replace("{ID}", data[i].ID).replace("{Path}", data[i].SerialNumber.BarCode).replace("{Name}", data[i].Name).replace("{Money}", data[i].Money).replace("{CheckTime}", timeString);
                 Result += temp;
             }
             $("#Result").empty().append(Result);
+            //$("button[name='Filing']").unbind("submit").bind("submit", function () {
+            //    var id = $(this).attr("targetId");
+            //    var data = $("#Form" + id).serialize();
+            //    $.request("/Report/Check", data, function (json) {
+            //        alert("成功归档报销");
+            //        $("#" + id).remove();
+            //        return false;
+            //    });
+            //    return false;
+            //});
+
             $("button[name='Filing']").unbind("click").bind("click", function () {
                 var id = $(this).attr("targetId");
-                $("#" + id).remove();
-            });
+                var data = $("#Form" + id).serialize();
+                $.request("/Report/Check", data, function (json) {
+                    alert("成功归档报销");
+                    $("#" + id).remove();
+                    $("[name='key']").val("").focus();
+                    return false;
+                });
+                return false;
+            })
             $("button[name='Cancel']").unbind("click").bind("click", function () {
                 var id = $(this).attr("targetId");
                 $("#" + id).remove();
-            })
-        })
+            });
+
+            $("[name='key']").val();
+
+        });
+
+        //$("button[name='Filing']").submit(function () {
+        //        var id = $(this).attr("targetId");
+        //        var data = $("#Form" + id).serialize();
+        //        $.request("/Report/Check", data, function (json) {
+        //            alert("成功归档报销");
+        //            $("#" + id).remove();
+        //            return false;
+        //        });
+        //        return false;
+
+        //})
+
+        //$.request("/Report/Search", key, function (json) {
+        //    var data = json;
+        //    var Result = "";
+        //    var temp = "";
+        //    for (var i = 0; i < data.length; i++) {
+        //        temp = html;
+        //        var a = data[i].Time.replace("/Date(","").replace(")/","");
+        //        var time = new Date();
+        //        time.setTime(a);
+        //        var timeString = time.getFullYear() + "-" + (time.getMonth() + 1) + "-" + time.getDate();
+        //        temp = temp.replace(/{Index}/g, data[i].SerialNumber.Coding).replace("{ID}",data[i].ID).replace("{Path}",data[i].SerialNumber.BarCode).replace("{Name}", data[i].Name).replace("{Money}", data[i].Money).replace("{Time}", timeString);
+        //        Result += temp;
+        //    }
+        //    $("#Result").empty().append(Result);
+        //    $("button[name='Filing']").unbind("submit").bind("submit", function () {
+        //        var id = $(this).attr("targetId");
+        //        var data = $("#Form" + id).serialize();
+        //        $.request("/Report/Check", data, function (json) {
+        //            alert("成功归档报销");
+        //            $("#" + id).remove();
+        //        });
+               
+        //    });
+        //    $("button[name='Cancel']").unbind("click").bind("click", function () {
+        //        var id = $(this).attr("targetId");
+        //        $("#" + id).remove();
+        //    })
+        //})
     }
 </script>
 

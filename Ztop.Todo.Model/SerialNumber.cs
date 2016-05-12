@@ -33,6 +33,10 @@ namespace Ztop.Todo.Model
             }
         }
         /// <summary>
+        /// 条形码
+        /// </summary>
+        public string BarCode { get; set; }
+        /// <summary>
         /// 报销单  唯一编号
         /// </summary>
         public int SID { get; set; }

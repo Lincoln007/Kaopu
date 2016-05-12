@@ -57,6 +57,8 @@ namespace Ztop.Todo.Model
         Confirm,
         [Description("财务负责人核准")]//财务
         Approved,
+        [Description("报销归档")]//申屠报销归档
+        Filing,
         [Description("撤回")]
         Roll
     }

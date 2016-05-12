@@ -31,6 +31,7 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.panel1 = new System.Windows.Forms.Panel();
+            this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.webControl1 = new Awesomium.Windows.Forms.WebControl(this.components);
@@ -39,7 +40,6 @@
             this.注销ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.退出ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.label3 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -53,8 +53,16 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panel1.Location = new System.Drawing.Point(0, 573);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(800, 27);
+            this.panel1.Size = new System.Drawing.Size(850, 27);
             this.panel1.TabIndex = 1;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(176, 7);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(0, 12);
+            this.label3.TabIndex = 2;
             // 
             // label2
             // 
@@ -77,7 +85,7 @@
             // 
             this.webControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.webControl1.Location = new System.Drawing.Point(0, 0);
-            this.webControl1.Size = new System.Drawing.Size(800, 573);
+            this.webControl1.Size = new System.Drawing.Size(850, 573);
             this.webControl1.TabIndex = 2;
             // 
             // notifyIcon1
@@ -110,23 +118,15 @@
             this.退出ToolStripMenuItem.Text = "退出";
             this.退出ToolStripMenuItem.Click += new System.EventHandler(this.退出ToolStripMenuItem_Click);
             // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(176, 7);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(0, 12);
-            this.label3.TabIndex = 2;
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 600);
+            this.ClientSize = new System.Drawing.Size(1070, 600);
             this.Controls.Add(this.webControl1);
             this.Controls.Add(this.panel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(800, 600);
+            this.MinimumSize = new System.Drawing.Size(1070, 600);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "智拓TODO 客户端";

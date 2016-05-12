@@ -134,6 +134,7 @@
     <Compile Include="Common\UserRoleAttribute.cs" />
     <Compile Include="Common\WebUtility.cs" />
     <Compile Include="Controllers\AttachmentController.cs" />
+    <Compile Include="Controllers\BankController.cs" />
     <Compile Include="Controllers\CommentController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\AuthorityController.cs" />
@@ -209,7 +210,9 @@
     <Content Include="Scripts\sb-admin-2.js" />
     <Content Include="Scripts\tree.jquery.js" />
     <Content Include="Scripts\_references.js" />
-    <Content Include="SystemInfo.xml" />
+    <Content Include="SystemInfo.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -254,11 +257,18 @@
     <Content Include="Views\Report\ChooseUser.cshtml" />
     <Content Include="Views\Report\Sheeting.cshtml" />
     <Content Include="Views\Report\Filing.cshtml" />
+    <Content Include="Views\Report\Summary.cshtml" />
+    <Content Include="Views\Report\CreateSummary.cshtml" />
+    <Content Include="Views\Bank\Index.cshtml" />
+    <Content Include="Views\Bank\Create.cshtml" />
+    <Content Include="Views\Bank\Detail.cshtml" />
+    <Content Include="Views\Bank\Collect.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Jurisdiction\Models\" />
     <Folder Include="Areas\Jurisdiction\Views\JurisdictionControllerBase\" />
+    <Folder Include="BarCodes\" />
     <Folder Include="Models\" />
     <Folder Include="Views\Attachment\" />
     <Folder Include="Views\Comment\" />

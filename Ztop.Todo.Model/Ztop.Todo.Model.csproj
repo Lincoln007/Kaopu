@@ -49,6 +49,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -58,6 +59,8 @@
   <ItemGroup>
     <Compile Include="Attachment.cs" />
     <Compile Include="Authorize.cs" />
+    <Compile Include="Code128.cs" />
+    <Compile Include="Collect.cs" />
     <Compile Include="Comment.cs" />
     <Compile Include="COPYDATASTRUCT.cs" />
     <Compile Include="DataBook.cs" />

@@ -2,7 +2,120 @@
 @{ 
     int serial = 1;
 }
-<h3 class="col-md-11" style="margin-top:0px;">内容分项清单</h3>
+<h3 class="col-md-12" style="margin-top:0px;">
+    内容分项清单
+    @*<button type="button" class="btn btn-success btn-xs" style="float:right;" data-toggle="modal" data-target="#Help">
+        报销说明
+    </button>*@ 
+
+    
+</h3>
+<div class="modal fade" id="Help" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">日常报销分类说明</h4>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th class="text-center">大类名称</th>
+                                <th class="text-center">分类名称</th>
+                                <th class="text-center">说明</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td rowspan="3">办公费</td>
+                                <td>办公用品费</td>
+                                <td>行政机关部门的日常办公用品费（教学、科研日常办公费请归入下面的“专用材料费”大类）</td>
+                            </tr>
+                            <tr>
+                                <td>报刊资料费</td>
+                                <td>行政机关部门的书、报、杂志订购费（教学、科研日常办公费请归入下面的“专用材料费”大类）</td>
+                            </tr>
+                            <tr>
+                                <td>其他办公费用</td>
+                                <td>行政机关部门的其他办公费用（教学、科研日常办公费请归入下面的“专用材料费”大类）</td>
+                            </tr>
+                            <tr>
+                                <td rowspan="3">专用材料费</td>
+                                <td>专用材料费</td>
+                                <td>教学、科研各种办公用品、实验用材料、耗材、试剂及低值易耗品等</td>
+                            </tr>
+                            <tr>
+                                <td>体育用品</td>
+                                <td>各类文体用品及器材</td>
+                            </tr>
+                            <tr>
+                                <td>测试加工费</td>
+                                <td>各类材料、仪器等的测试和加工费用（单价5000元以上需附报告）</td>
+                            </tr>
+                            <tr>
+                                <td rowspan="2">固定资产</td>
+                                <td>办公家具</td>
+                                <td>单位购入纳入固定资产核算范围的办公家具的支出</td>
+                            </tr>
+                            <tr>
+                                <td>其他固定资产</td>
+                                <td>其他固定资产购置费</td>
+                            </tr>
+                            <tr>
+                                <td rowspan="4">交通费</td>
+                                <td>汽油费等</td>
+                                <td>交通工具的租用费、燃料费、路桥费、停车费、维修费、报销费、养路费等</td>
+                            </tr>
+                            <tr>
+                                <td>市内交通费</td>
+                                <td>市内公交车费、出租车费等</td>
+                            </tr>
+                            <tr>
+                                <td>道闸停车费</td>
+                                <td>学校保卫处管理的校内道闸停车费支出业务</td>
+                            </tr>
+                            <tr>
+                                <td>配套交通费</td>
+                                <td>科研配套活动交通费预算</td>
+                            </tr>
+                            <tr>
+                                <td rowspan="3">燃料动力费</td>
+                                <td>水费</td>
+                                <td>教学、科研、行政管理、后勤等水费</td>
+                            </tr>
+                            <tr>
+                                <td>电费</td>
+                                <td>教学、科研、行政管理、后勤等电费</td>
+                            </tr>
+                            <tr>
+                                <td>燃料费</td>
+                                <td>课题研究过程中相关大型设备、专用科学装置等运行发生的可以单独计价的水、电、气、燃料消耗</td>
+                            </tr>
+                            <tr>
+                                <td rowspan="7">维修费</td>
+                                <td>办公设备维修费</td>
+                                <td>行政设备的经常保养及维修费</td>
+                            </tr>
+                            <tr>
+                                <td>仪器设备维修费</td>
+                                <td>教学科研等仪器设备的经常保养及维修费</td>
+                            </tr>
+                            <tr>
+                                <td>房屋建筑物维修费</td>
+                                <td>各种房屋建筑</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <table class="table table-striped" id="SHEET">
     <thead>
         <tr>

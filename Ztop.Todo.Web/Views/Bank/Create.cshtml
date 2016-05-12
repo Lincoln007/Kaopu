@@ -1,0 +1,119 @@
+﻿
+@{
+    ViewBag.Title = "银行对账";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    Company company = ViewBag.Company;
+    
+}
+
+<form class="form-horizontal" method="post" action="" id="Data">
+    <h2 class="text-center">
+        杭州智拓
+        <select name="Year">
+            @for(var i = DateTime.Now.Year; i > 2010; i--)
+            {
+                <option value="@(i)">@(i)</option>
+            }
+        </select>
+        年
+        <select name="Month">
+            @for(var i = 1; i < 12; i++)
+            {
+                <option value="@(i)" @(i==(DateTime.Now.Month-1)?"selected=selected":"")>@(i)</option>            
+            }
+        </select>
+        月银行对账清单
+    </h2>
+    <div class="col-md-12">
+        <h3 class="text-center">@(company==Company.Evaluation?"房地产评估咨询有限公司":"土地规划设计咨询有限公司") </h3>
+        <button class="btn btn-success" type="button" name="Save"><i class="glyphicon glyphicon-upload" ></i> 保存</button>
+        <button type="button" class="btn btn-primary" TargetName="@(company.ToString())" name="Plus"><i class="glyphicon glyphicon-plus"></i>添加</button>
+        <input type="hidden" name="Company" value="@(company)" />
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th class="text-center">编号</th>
+                    <th>交易日期</th>
+                    <th>交易类型（收入/支出）</th>
+                    <th>金额（元）</th>
+                    <th class="text-center">对方账号</th>
+                    <th>
+                        摘要/备注
+                       
+                    </th>
+                    <td>
+                       
+                    </td>
+                </tr>
+            </thead>
+            <tbody id="@(company.ToString())">
+
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-6 col-md-offset-6">
+        
+    </div>
+    
+</form>
+
+
+<div style="display:none">
+    <table >
+        <tbody id="add">
+            <tr>
+                <td><input type="text" name="Coding" class="form-control" placeholder="编号" /></td>
+                <td><input type="text" name="Time" class="form-control" placeholder="交易日期" /></td>
+                <td>
+                    <select name="Budget" class="form-control">
+                        @foreach (Budget budget in Enum.GetValues(typeof(Budget)))
+                        {
+                            <option value="@(budget)">@(budget.GetDescription())</option>
+                        }
+                    </select>
+                </td>
+                <td><input type="text" name="Money" class="form-control" placeholder="金额" /></td>
+                <td><input type="text" name="Account" class="form-control" placeholder="银行账号" /></td>
+                <td><input type="text" name="Summary" class="form-control" placeholder="备注/摘要" /></td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-xs btn-remove" style="float:right;"><i class="glyphicon glyphicon-remove"></i></button>
+                </td>
+            </tr>
+        </tbody>
+       
+    </table>
+</div>
+
+<script>
+    var addhtml = $("#add").html();
+    $(function () {
+
+        $("button[name='Plus']").click(function () {
+            var Targetname = $(this).attr("TargetName");
+            $("#" + Targetname).append(addhtml);
+            $("input[name='Time']").datetimepicker({
+                timepicker: false,
+                format: 'Y-m-d',
+                maxDate: '@(DateTime.Today.ToString("yyyy-MM-dd"))'
+            });
+            $(".btn-remove").unbind("click").bind("click", function () {
+                $(this).parent().parent().remove();
+            })
+        });
+
+        $("button[name='Save']").click(function () {
+            var data = $("#Data").serialize();
+            $.request("/Bank/Save", data, function (json) {
+                alert("Success");
+            })
+        });
+
+        $("input[name='Time']").datetimepicker({
+            timepicker: false,
+            format: 'Y-m-d',
+            maxDate: '@(DateTime.Today.ToString("yyyy-MM-dd"))'
+        });
+
+    })
+</script>
+

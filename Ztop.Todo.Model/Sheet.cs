@@ -80,6 +80,10 @@ namespace Ztop.Todo.Model
         /// 审核人  直接上级领导  点击提交的第一人领导
         /// </summary>
         public string Checkers { get; set; }
+        /// <summary>
+        /// 财务审核通过时间
+        /// </summary>
+        public DateTime? CheckTime { get; set; }
 
     }
     public enum SheetType

@@ -1,0 +1,74 @@
+﻿
+@{
+    ViewBag.Title = "收支汇总";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int year = ViewBag.Year;
+    int month = ViewBag.Month;
+}
+
+<h2 class="text-center">杭州智拓@(year)年@(month)月收支汇总</h2>
+
+<div class="col-md-6">
+    <h3 class="text-center">房地产土地估价咨询有限公司</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>摘要</th>
+                <th>收入（元）</th>
+                <th>支出（元）</th>
+                <th>备注</th>
+                <th>
+                    <button type="button" class="btn btn-success btn-xs" name="Plus" TargetName="Evaluation" style="float:right;"><i class="glyphicon glyphicon-plus"></i>添加</button>
+                </th>
+            </tr>
+        </thead>
+        <tbody id="Evaluation">
+
+        </tbody>
+    </table>
+</div>
+<div class="col-md-6">
+    <h3 class="text-center">土地规划设计咨询有限公司</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>摘要</th>
+                <th>收入（元）</th>
+                <th>支出（元）</th>
+                <th>备注</th>
+                <th>
+                    <button type="button" class="btn btn-success btn-xs" name="Plus" TargetName="Projection" style="float:right;"><i class="glyphicon glyphicon-plus"></i>添加</button>
+                </th>
+                
+            </tr>
+        </thead>
+        <tbody id="Projection">
+
+        </tbody>
+    </table>
+</div>
+
+
+<div style="display:none;">
+    <table>
+        <tbody id="Add">
+            <tr>
+                <td><input type="text" name="" class="form-control" /></td>
+                <td><input type="text" name="" class="form-control" /></td>
+                <td><input type="text" name="" class="form-control" /></td>
+                <td><input type="text" name="" class="form-control" /></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    var addhtml = $("#Add").html();
+    $(function () {
+        $("button[name='Plus']").click(function () {
+            var targetName = $(this).attr("TargetName");
+            $("#" + targetName).append(addhtml);
+        })
+    });
+</script>
+

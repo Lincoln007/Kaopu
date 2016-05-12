@@ -44,5 +44,10 @@ namespace Ztop.Todo.Manager
         public DbSet<Evection> Evections { get; set; }
         public DbSet<Errand> Errands { get; set; }
         public DbSet<Traffic> Traffics { get; set; }
+        public DbSet<Bank> Banks { get; set; }
+        public DbSet<Bill> Bills { get; set; }
+        //public DbSet<Collect> Collects { get; set; }
+        //public DbSet<Gather> Gathers { get; set; }
+        //public DbSet<Aggregation> Aggregations { get; set; }
     }
 }

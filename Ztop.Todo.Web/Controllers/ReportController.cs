@@ -18,13 +18,13 @@ namespace Ztop.Todo.Web.Controllers
                 Name = Identity.Name,
                 Deleted=false
             };
-            var list = Core.SheetManager.GetSheets(parameter);
-            ViewBag.OutList = list.Where(e => e.Status == Status.OutLine).ToList();//草稿
+            var list = Core.SheetManager.GetSheets(parameter).OrderByDescending(e=>e.Time);
+            ViewBag.OutList = list.Where(e => e.Status == Status.OutLine).Take(10).ToList();//草稿
             //未完成审核    提交 主管审核  申屠审核  财务审核  退回
-            ViewBag.ExaminingList = list.Where(e => e.Status == Status.ExaminingDirector || e.Status == Status.ExaminingFinance || e.Status == Status.ExaminingManager||e.Status==Status.RollBack||e.Status==Status.Filing).ToList();
+            ViewBag.ExaminingList = list.Where(e => e.Status == Status.ExaminingDirector || e.Status == Status.ExaminingFinance || e.Status == Status.ExaminingManager||e.Status==Status.RollBack||e.Status==Status.Filing).Take(10).ToList();
             //  我提交的报销单  同时也
-            ViewBag.ExaminList = list.Where(e => e.Status == Status.Examined).ToList();
-            ViewBag.RollBackList = list.Where(e => e.Status == Status.RollBack).ToList();
+            ViewBag.ExaminList = list.Where(e => e.Status == Status.Examined).Take(10).ToList();
+            ViewBag.RollBackList = list.Where(e => e.Status == Status.RollBack).Take(10).ToList();
             if (Directors.Contains(Identity.Name))
             {
                 ViewBag.WaitForMe = Core.SheetManager.GetSheets(new SheetQueryParameter { Deleted = false, Controler = Identity.Name }).Where(e => e.Status != Status.Examined && e.Status != Status.OutLine).ToList();
@@ -240,13 +240,16 @@ namespace Ztop.Todo.Web.Controllers
                     sheet.Controler = XmlHelper.GetFinance();
                     sverify.Step = Step.Confirm;
                     break;
-                case Status.ExaminingFinance://财务审核通过  财务审核通过之后  需要生成归档编号
+                case Status.ExaminingFinance://财务审核通过  财务审核通过之后  需要生成归档编号并且生成条形码
                     sheet.Status = Status.Filing;
                     sheet.Controler = XmlHelper.GetManager();
+                    sheet.CheckTime = DateTime.Now;
                     sverify.Step = Step.Approved;
                     break;
                 case Status.Filing:
                     sheet.Status = Status.Examined;
+                    sheet.Controler = sheet.Name;
+                    sverify.Step = Step.Filing;
                     break;
                 default:
                     break;
@@ -256,7 +259,7 @@ namespace Ztop.Todo.Web.Controllers
         }
         public ActionResult Check(int id)
         {
-            var sheet = Core.SheetManager.GetModel(id);
+            var sheet = Core.SheetManager.GetAllModel(id);
             if (sheet == null)
             {
                 throw new ArgumentException("参数错误，未找到相关报销单");
@@ -291,6 +294,11 @@ namespace Ztop.Todo.Web.Controllers
             ViewBag.List = Core.SheetManager.GetSheets(queryParameter, Identity.Name);
             ViewBag.Parameter = queryParameter;
             ViewBag.Page = queryParameter.Page;
+            return View();
+        }
+
+        public ActionResult Search()
+        {
             return View();
         }
         public ActionResult Statistic()
@@ -345,10 +353,40 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
 
+        [HttpPost]
+        public ActionResult Filing(int id)
+        {
+            var sheet = Core.SheetManager.GetAllModel(id);
+            if (sheet == null)
+            {
+                throw new ArgumentException("参数错误，未找到相关报销单");
+            }
+            Check(sheet);
+            return SuccessJsonResult();
+        }
+
+        [HttpGet]
         public ActionResult Search(string key)
         {
             var List = Core.SheetManager.GetSheetsByKey(key);
             return Json(List,JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult Summary()
+        {
+            return View();
+        }
+
+        public ActionResult CreateSummary()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult CreateSummary(int year,int month)
+        {
+            var aggregation = Core.AggregationManager.Gain(HttpContext, year, month);
+            return SuccessJsonResult();
         }
     }
 }

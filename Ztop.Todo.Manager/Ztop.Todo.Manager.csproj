@@ -58,8 +58,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AggregationManager.cs" />
     <Compile Include="AttachmentManager.cs" />
     <Compile Include="AuthorizeManager.cs" />
+    <Compile Include="BillManager.cs" />
     <Compile Include="CommentManager.cs" />
     <Compile Include="DataBookManager.cs" />
     <Compile Include="DataContext.cs" />
