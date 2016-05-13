@@ -4,71 +4,269 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     int year = ViewBag.Year;
     int month = ViewBag.Month;
+    Bank Evaluation = ViewBag.Evaluation;
+    Bank Projection = ViewBag.Projection;
 }
 
-<h2 class="text-center">杭州智拓@(year)年@(month)月收支汇总</h2>
+<script src='http://10.22.102.3:8001/CLodopfuncs.js'></script>
+<script src="~/Scripts/CLodopfuncs.js?priority=1"></script>
 
-<div class="col-md-6">
-    <h3 class="text-center">房地产土地估价咨询有限公司</h3>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>摘要</th>
-                <th>收入（元）</th>
-                <th>支出（元）</th>
-                <th>备注</th>
-                <th>
-                    <button type="button" class="btn btn-success btn-xs" name="Plus" TargetName="Evaluation" style="float:right;"><i class="glyphicon glyphicon-plus"></i>添加</button>
-                </th>
-            </tr>
-        </thead>
-        <tbody id="Evaluation">
+<style type="text/css" media="print">
+    .noprint {
+        display: none;
+    }
+</style>
+<div class="row">
+    <div id="Print">
+        <h2 class="text-center">杭州智拓@(year)年@(month)月收支汇总</h2>
+        <div class="col-md-6 col-xs-6">
+            <h3 class="text-center">房地产评估咨询有限公司</h3>
+            @if (Evaluation != null)
+            {
+                <a href="/Bank/Detail?id=@(Evaluation.ID)" class="btn btn-primary noprint"><i class="glyphicon glyphicon-share"></i>月账单详情</a>
+                if (Evaluation.Bills != null)
+                {
+                    var listIncome = Evaluation.Bills.Where(e => e.Budget == Budget.Income).ToList();
+                    var listExpense = Evaluation.Bills.Where(e => e.Budget == Budget.Expense).ToList();
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>摘要</th>
+                                <th>收入（元）</th>
+                                <th>支出（元）</th>
+                                <th>备注</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in listIncome.Where(e => e.Cost == Cost.Other))
+                            {
+                                <tr>
+                                    <td>@(item.Summary)</td>
+                                    <td>@(item.Money)</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            }
+                            @foreach (var item in listIncome.Where(e => e.Cost != Cost.Other).GroupBy(e => e.Cost).Select(e => new Bill() { Money = e.Sum(k => k.Money), Cost = e.Key }))
+                            {
+                                <tr>
+                                    <td>@(item.Cost.GetDescription())</td>
+                                    <td>@(item.Money)</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            }
+                            @foreach (var item in listExpense.Where(e => e.Cost == Cost.Other))
+                            {
+                                <tr>
+                                    <td>@(item.Summary)</td>
+                                    <td></td>
+                                    <td>@(item.Money)</td>
+                                    <td></td>
+                                </tr>
+                            }
 
-        </tbody>
-    </table>
+                            @foreach (var item in listExpense.Where(e => e.Cost != Cost.Other).GroupBy(e => e.Cost).Select(e => new Bill() { Money = e.Sum(k => k.Money), Cost = e.Key }))
+                            {
+                                <tr>
+                                    <td>@(item.Cost.GetDescription())</td>
+                                    <td></td>
+                                    <td>@(item.Money)</td>
+                                    <td></td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td>合计</td>
+                                <td>@(listIncome.Sum(e => e.Money))</td>
+                                <td>@(listExpense.Sum(e => e.Money))</td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                }
+                else
+                {
+                    <p class="text-danger">当前未查询到银行对账记录为空</p>
+                }
+            }
+            else
+            {
+                <p class="text-danger">当前未查询到银行对账信息</p>
+            }
+        </div>
+        <div class="col-md-6 col-xs-6">
+            <h3 class="text-center">土地规划设计咨询有限公司</h3>
+            @if (Projection != null)
+            {
+                <a href="/Bank/Detail?id=@(Projection.ID)" class="btn btn-primary noprint"><i class="glyphicon glyphicon-share"></i>月账单详情</a>
+                if (Projection.Bills != null)
+                {
+                    var listIncome = Projection.Bills.Where(e => e.Budget == Budget.Income).ToList();
+                    var listExpense = Projection.Bills.Where(e => e.Budget == Budget.Expense).ToList();
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>摘要</th>
+                                <th>收入（元）</th>
+                                <th>支出（元）</th>
+                                <th>备注</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in listIncome.Where(e => e.Cost == Cost.Other))
+                    {
+                                <tr>
+                                    <td>@(item.Summary)</td>
+                                    <td>@(item.Money)</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            }
+                            @foreach (var item in listIncome.Where(e => e.Cost != Cost.Other).GroupBy(e => e.Cost).Select(e => new Bill() { Money = e.Sum(k => k.Money), Cost = e.Key }))
+                    {
+                                <tr>
+                                    <td>@(item.Cost.GetDescription())</td>
+                                    <td>@(item.Money)</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            }
+                            @foreach (var item in listExpense.Where(e => e.Cost == Cost.Other))
+                    {
+                                <tr>
+                                    <td>@(item.Summary)</td>
+                                    <td></td>
+                                    <td>@(item.Money)</td>
+                                    <td></td>
+                                </tr>
+                            }
+
+                            @foreach (var item in listExpense.Where(e => e.Cost != Cost.Other).GroupBy(e => e.Cost).Select(e => new Bill() { Money = e.Sum(k => k.Money), Cost = e.Key }))
+                    {
+                                <tr>
+                                    <td>@(item.Cost.GetDescription())</td>
+                                    <td></td>
+                                    <td>@(item.Money)</td>
+                                    <td></td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td>合计</td>
+                                <td>@(listIncome.Sum(e => e.Money))</td>
+                                <td>@(listExpense.Sum(e => e.Money))</td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                }
+                else
+                {
+                    <p class="text-danger">当前未查询到银行对账记录为空</p>
+                }
+            }
+            else
+            {
+                <p class="text-danger">当前未查询到银行对账信息</p>
+            }
+        </div>
+
+        <div class="col-md-12 col-xs-12">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th colspan="7" class="text-center">汇总</th>
+                    </tr>
+                    <tr>
+                        <td>公司名称/类别</td>
+                        <td>收入（元）</td>
+                        <td>保证金收入（元）</td>
+                        <td>支出（元）</td>
+                        <td>保证金支出（元）</td>
+                        <td>转账（元）</td>
+                        <td>备用金（元）</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>评估</td>
+                        @if (Evaluation != null && Evaluation.Bills != null)
+                        {
+                            <td>@(Evaluation.Bills.Where(e => e.Budget == Budget.Income && e.Cost != Cost.Margin).Sum(e => e.Money))</td>
+                            <td>@(Evaluation.Bills.Where(e => e.Budget == Budget.Income && e.Cost == Cost.Margin).Sum(e => e.Money))</td>
+                            <td>@(Evaluation.Bills.Where(e => e.Budget == Budget.Expense && e.Cost != Cost.Margin && e.Cost != Cost.Transfer && e.Cost != Cost.Petty).Sum(e => e.Money))</td>
+                            <td>@(Evaluation.Bills.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.Margin).Sum(e => e.Money))</td>
+                            <td>@(Evaluation.Bills.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.Transfer).Sum(e => e.Money))</td>
+                            <td>@(Evaluation.Bills.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.Petty).Sum(e => e.Money))</td>
+                        }
+                        else
+                        {
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        }
+
+                    </tr>
+                    <tr>
+                        <td>规划</td>
+                        @if (Projection != null && Projection.Bills != null)
+                        {
+                            <td>@(Projection.Bills.Where(e => e.Budget == Budget.Income && e.Cost != Cost.Margin).Sum(e => e.Money))</td>
+                            <td>@(Projection.Bills.Where(e => e.Budget == Budget.Income && e.Cost == Cost.Margin).Sum(e => e.Money))</td>
+                            <td>@(Projection.Bills.Where(e => e.Budget == Budget.Expense && e.Cost != Cost.Margin && e.Cost != Cost.Transfer && e.Cost != Cost.Petty).Sum(e => e.Money))</td>
+                            <td>@(Projection.Bills.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.Margin).Sum(e => e.Money))</td>
+                            <td>@(Projection.Bills.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.Transfer).Sum(e => e.Money))</td>
+                            <td>@(Projection.Bills.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.Petty).Sum(e => e.Money))</td>
+                        }
+                        else
+                        {
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        }
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
-<div class="col-md-6">
-    <h3 class="text-center">土地规划设计咨询有限公司</h3>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>摘要</th>
-                <th>收入（元）</th>
-                <th>支出（元）</th>
-                <th>备注</th>
-                <th>
-                    <button type="button" class="btn btn-success btn-xs" name="Plus" TargetName="Projection" style="float:right;"><i class="glyphicon glyphicon-plus"></i>添加</button>
-                </th>
-                
-            </tr>
-        </thead>
-        <tbody id="Projection">
-
-        </tbody>
-    </table>
-</div>
 
 
-<div style="display:none;">
-    <table>
-        <tbody id="Add">
-            <tr>
-                <td><input type="text" name="" class="form-control" /></td>
-                <td><input type="text" name="" class="form-control" /></td>
-                <td><input type="text" name="" class="form-control" /></td>
-                <td><input type="text" name="" class="form-control" /></td>
-            </tr>
-        </tbody>
-    </table>
+<div class="row">
+    <button type="button" class="btn btn-default" onclick="javascript:Preview()">打印</button>
 </div>
 
 <script>
-    var addhtml = $("#Add").html();
+    function Preview() {
+        var LODOP = getCLodop();
+        var strStyle = "<link href='/Content/bootstrap.min.css' type='text/css' rel='stylesheet' /> <style> .noprint{display:none;} th,td{border:solid 1px #000;} </style> ";
+        var strHTML = strStyle + "<body>" + document.getElementById("Print").innerHTML + "</body>";
+        LODOP.PRINT_INITA(1, 1, 770, 660, "打印报销单");
+        LODOP.ADD_PRINT_HTM(0, 0, "100%", "80%", strHTML);
+        LODOP.SET_PRINT_PAGESIZE(1, 0, 0, "A4");
+        LODOP.SET_PREVIEW_WINDOW(0, 0, 0, 760, 540, "");
+        LODOP.PREVIEW();
+    }
+
     $(function () {
-        $("button[name='Plus']").click(function () {
-            var targetName = $(this).attr("TargetName");
-            $("#" + targetName).append(addhtml);
+        $("#btn-Print").click(function () {
+            document.body.innerHTML = document.getElementById("Print").innerHTML;
+            window.print();
         })
-    });
+    })
 </script>
+
+
+
+
 

@@ -3,16 +3,220 @@
     ViewBag.Title = "银行对账单";
     Layout = "~/Views/Shared/_Layout.cshtml";
     Bank bank = ViewBag.Bank;
+    if (bank.Bills == null)
+    {
+        bank.Bills = new List<Bill>();
+    }
+    bool EditFlag = ViewBag.EditFlag;
 }
 
 <h2 class="text-center">杭州智拓@(bank.Company==Company.Evaluation?"房地产土地评估":"土地规划设计")咨询有限公司@(bank.Year)年@(bank.Month)月银行对账单</h2>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th></th>
-        </tr>
-    </thead>
-</table>
 
 
+@*<button type="button" class="btn btn-success" data-toggle="modal" data-target="#AddOne"><i class="glyphicon glyphicon-plus"></i>增加</button>*@
+<div class="modal fade" id="AddOne" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">增加银行对账记录</h4>
+            </div>
+            <form class="form-horizontal">
+                <div class="modal-body">
+                   
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th class="text-center">编号</th>
+                                <th>交易日期</th>
+                                <th>交易类型（收入/支出）</th>
+                                <th>金额（元）</th>
+                                <th class="text-center">对方账号</th>
+                                <th>类别&nbsp;</th>
+                                <th>
+                                    摘要/备注
+                                </th>
+                            </tr>
+                        </thead>
+                        
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary">添加</button>
+                </div>
+            </form>     
+        </div>
+    </div>
+</div>
+<form class="form-horizontal" id="Data" method="post">
+    @if (!EditFlag)
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th colspan="6" class="text-center">汇总</th>
+                </tr>
+                <tr>
+                    <td>收入</td>
+                    <td>保证金收入</td>
+                    <td>支出</td>
+                    <td>保证金支出</td>
+                    <td>转账</td>
+                    <td>备用金</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@(bank.Bills.Where(e => e.Budget == Budget.Income && e.Cost != Cost.Margin).Sum(e => e.Money))</td>
+                    <td>@(bank.Bills.Where(e => e.Budget == Budget.Income && e.Cost == Cost.Margin).Sum(e => e.Money))</td>
+                    <td>@(bank.Bills.Where(e => e.Budget == Budget.Expense && e.Cost != Cost.Margin && e.Cost != Cost.Transfer && e.Cost != Cost.Petty).Sum(e => e.Money))</td>
+                    <td>@(bank.Bills.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.Margin).Sum(e => e.Money))</td>
+                    <td>@(bank.Bills.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.Transfer).Sum(e => e.Money))</td>
+                    <td>@(bank.Bills.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.Petty).Sum(e => e.Money))</td>
+                </tr>
+            </tbody>
+        </table>
+        <a href="/Bank/Detail?id=@(bank.ID)&&edit=true" class="btn btn-primary"><i class="glyphicon glyphicon-edit"></i>编辑</a>
+        <a href="#" class="btn btn-success"><i class="glyphicon glyphicon-download"></i>导出</a>
+    }
+    else
+    {
+        <button type="button" class="btn btn-success" name="Plus" TargetName="@(bank.Company.ToString())"><i class="glyphicon glyphicon-plus"></i>添加</button>
+        <button type="button" class="btn btn-primary" name="Save"><i class="glyphicon glyphicon-save"></i>保存</button>
+    }
+    <button type="button" class="btn btn-default" onclick="history.back();"><em class="glyphicon glyphicon-arrow-left"></em> 返回</button>
+    <input type="hidden" name="Year" value="@(bank.Year)" />
+    <input type="hidden" name="Month" value="@(bank.Month)" />
+    <input type="hidden" name="Company" value="@(bank.Company)" />
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th class="text-center">编号</th>
+                <th>交易日期</th>
+                <th>交易类型（收入/支出）</th>
+                <th>金额（元）</th>
+                <th class="text-center">对方账号</th>
+                <th>类别</th>
+                <th>
+                    摘要/备注
+                </th>
+            </tr>
+        </thead>
+        @if (!EditFlag)
+        {
+            <tbody>
+                @foreach (var item in bank.Bills)
+                {
+                    <tr>
+                        <td>@(item.Coding)</td>
+                        <td>@(item.Time.ToString("yyyy-MM-dd"))</td>
+                        <td>@(item.Budget.GetDescription())</td>
+                        <td>@(item.Money)</td>
+                        <td>@(item.Account)</td>
+                        <td>@(item.Cost.GetDescription())</td>
+                        <td>@(item.Summary)</td>
+                    </tr>
+                }
+            </tbody>
+        }
+        else
+        {
+            <tbody id="@(bank.Company.ToString())">
+                @foreach(var item in bank.Bills)
+                {
+                    <tr>
+                        <td><input type="text" name="Coding" class="form-control" value="@(item.Coding)" /></td>
+                        <td><input type="text" name="Time" class="form-control" value="@(item.Time.ToString("yyyy-MM-dd"))" /></td>
+                        <td>
+                            <select name="Budget" class="form-control">
+                                @foreach(Budget budget in Enum.GetValues(typeof(Budget)))
+                                {
+                                    <option value="@(budget)" @(budget==item.Budget?"selected=selected":"")>@(budget.GetDescription())</option>
+                                }
+                            </select>
+                        </td>
+                        <td><input type="text" name="Money" class="form-control" value="@(item.Money)" /></td>
+                        <td><input type="text" name="Account" class="form-control" value="@(item.Account)" /></td>
+                        <td>
+                            <select name="Cost" class="form-control">
+                                @foreach(Cost cost in Enum.GetValues(typeof(Cost)))
+                                {
+                                    <option value="@(cost)" @(cost==item.Cost?"selected=selected":"")>@(cost.GetDescription())</option>
+                                }
+                            </select>
+                        </td>
+                        <td><input type="text" name="Summary" class="form-control" value="@(item.Summary)" /></td>
+                    </tr>
+                }
+               
+            </tbody>
+        }
+
+
+    </table>
+    @if (EditFlag)
+    {
+        <button type="button" class="btn btn-success" name="Plus" TargetName="@(bank.Company.ToString())"><i class="glyphicon glyphicon-plus"></i>添加</button>
+        <button type="button" class="btn btn-primary" name="Save"><i class="glyphicon glyphicon-save"></i>保存</button>
+    }
+</form>
+
+
+
+<div style="display:none">
+    <table>
+        <tbody id="add">
+            <tr>
+                <td><input type="text" name="Coding" class="form-control" placeholder="编号" /></td>
+                <td><input type="text" name="Time" class="form-control" placeholder="交易日期" /></td>
+                <td>
+                    <select name="Budget" class="form-control">
+                        @foreach (Budget budget in Enum.GetValues(typeof(Budget)))
+                        {
+                            <option value="@(budget)">@(budget.GetDescription())</option>
+                        }
+                    </select>
+                </td>
+                <td><input type="text" name="Money" class="form-control" placeholder="金额" /></td>
+                <td><input type="text" name="Account" class="form-control" placeholder="银行账号" /></td>
+                <td>
+                    <select name="Cost" class="form-control">
+                        @foreach (Cost cost in Enum.GetValues(typeof(Cost)))
+                        {
+                            <option value="@(cost)">@(cost.GetDescription())</option>
+                        }
+                    </select>
+                </td>
+                <td><input type="text" name="Summary" class="form-control" placeholder="备注/摘要" /></td>
+            </tr>
+        </tbody>
+
+    </table>
+</div>
+
+
+<script>
+    var addhtml = $("#add").html();
+    $(function () {
+        $("button[name='Plus']").click(function () {
+            var Targetname = $(this).attr("TargetName");
+            $("#" + Targetname).append(addhtml);
+            $("input[name='Time']").datetimepicker({
+                timepicker: false,
+                format: 'Y-m-d',
+                maxDate: '@(DateTime.Today.ToString("yyyy-MM-dd"))'
+            });
+        });
+
+        $("button[name='Save']").click(function () {
+        
+            var data = $("#Data").serialize();
+            $.request("/Bank/Save", data, function (json) {
+                alert("成功完成编辑");
+                window.location = "/Bank/Detail?id=" + json.data.ID;
+            })
+        });
+    })
+</script>

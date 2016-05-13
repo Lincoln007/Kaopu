@@ -372,21 +372,5 @@ namespace Ztop.Todo.Web.Controllers
             return Json(List,JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult Summary()
-        {
-            return View();
-        }
-
-        public ActionResult CreateSummary()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public ActionResult CreateSummary(int year,int month)
-        {
-            var aggregation = Core.AggregationManager.Gain(HttpContext, year, month);
-            return SuccessJsonResult();
-        }
     }
 }

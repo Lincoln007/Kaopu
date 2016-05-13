@@ -37,9 +37,9 @@
                     <th>交易类型（收入/支出）</th>
                     <th>金额（元）</th>
                     <th class="text-center">对方账号</th>
+                    <th>类别</th>
                     <th>
                         摘要/备注
-                       
                     </th>
                     <td>
                        
@@ -74,6 +74,14 @@
                 </td>
                 <td><input type="text" name="Money" class="form-control" placeholder="金额" /></td>
                 <td><input type="text" name="Account" class="form-control" placeholder="银行账号" /></td>
+                <td>
+                    <select name="Cost" class="form-control">
+                        @foreach(Cost cost in Enum.GetValues(typeof(Cost)))
+                        {
+                            <option value="@(cost)">@(cost.GetDescription())</option>
+                        }
+                    </select>
+                </td>
                 <td><input type="text" name="Summary" class="form-control" placeholder="备注/摘要" /></td>
                 <td>
                     <button type="button" class="btn btn-danger btn-xs btn-remove" style="float:right;"><i class="glyphicon glyphicon-remove"></i></button>
@@ -104,7 +112,9 @@
         $("button[name='Save']").click(function () {
             var data = $("#Data").serialize();
             $.request("/Bank/Save", data, function (json) {
-                alert("Success");
+                window.location = "/Bank/Detail?id=" + json.data.ID;
+                //window.location="/Bank/Detail?id="
+                //alert("Success");
             })
         });
 

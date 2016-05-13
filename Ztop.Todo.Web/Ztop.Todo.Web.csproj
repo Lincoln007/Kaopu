@@ -257,8 +257,6 @@
     <Content Include="Views\Report\ChooseUser.cshtml" />
     <Content Include="Views\Report\Sheeting.cshtml" />
     <Content Include="Views\Report\Filing.cshtml" />
-    <Content Include="Views\Report\Summary.cshtml" />
-    <Content Include="Views\Report\CreateSummary.cshtml" />
     <Content Include="Views\Bank\Index.cshtml" />
     <Content Include="Views\Bank\Create.cshtml" />
     <Content Include="Views\Bank\Detail.cshtml" />

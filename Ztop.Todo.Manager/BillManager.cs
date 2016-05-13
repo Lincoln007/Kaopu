@@ -10,7 +10,7 @@ namespace Ztop.Todo.Manager
 {
     public class BillManager:ManagerBase
     {
-        public List<Bill> GetBills(int bid,string[] coding,DateTime[] time,Budget[] budget,double[] money,string[] account,string[] summary)
+        public List<Bill> GetBills(int bid,string[] coding,DateTime[] time,Budget[] budget,double[] money,string[] account,string[] summary,Cost[] cost)
         {
             if (coding == null)
             {
@@ -29,6 +29,7 @@ namespace Ztop.Todo.Manager
                     Account = account[i],
                     Budget = budget[i],
                     Summary = summary[i],
+                    Cost=cost[i],
                     BID = bid
                 });
             }
@@ -66,6 +67,18 @@ namespace Ztop.Todo.Manager
                 return entry;
             }
         }
+        public Bank GetAllModelBank(int year,int month,Company company)
+        {
+            using (var db = GetDbContext())
+            {
+                var entry = db.Banks.FirstOrDefault(e => e.Year == year && e.Month == month && e.Company == company);
+                if (entry != null)
+                {
+                    entry.Bills = db.Bills.Where(e => e.BID == entry.ID).ToList();
+                }
+                return entry;
+            }
+        }
         public void UpDateBills(List<Bill> list,int bid)
         {
             using (var db = GetDbContext())
@@ -85,6 +98,14 @@ namespace Ztop.Todo.Manager
             using (var db = GetDbContext())
             {
                 return db.Banks.Where(e => e.Company == company).ToList();
+            }
+        }
+
+        public List<string> GetYearMonth()
+        {
+            using (var db = GetDbContext())
+            {
+                return db.Banks.ToList().Select(e=>e.YearMonth).Distinct().ToList();
             }
         }
 

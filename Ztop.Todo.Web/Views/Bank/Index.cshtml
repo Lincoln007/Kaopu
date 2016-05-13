@@ -4,6 +4,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     List<Bank> evaluations = ViewBag.Evaluations;
     List<Bank> projections = ViewBag.Projections;
+    List<string> Districts = ViewBag.Districts;
 }
 
 <div class="col-md-12">
@@ -60,59 +61,21 @@
             </div>
         </div>
         <div class="panel panel-body">
-            <button type="button"  class="btn btn-danger" data-toggle="modal" data-target="#NewCollect"><i class="glyphicon glyphicon-plus"></i> 新建汇总</button>
+            <table class="table table-striped">
+                @foreach (var item in Districts)
+                {
+                    var query = item.Replace("年", ",").Replace("月", "").Split(',');
+                    var year = int.Parse(query[0]);
+                    var month = int.Parse(query[1]);
+                    <tr>
+                        <td><a href="/Bank/Collect?year=@(year)&&month=@(month)">@(item)</a></td>
+                    </tr>
 
+                }
+            </table>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="NewCollect" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">新建汇总</h4>
-            </div>
-            <form class="form-horizontal" method="post" action="">
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label class="control-label col-md-3">年份：</label>
-                        <div class="col-md-8">
-                            <select name="Year" class="form-control">
-                                @for(var i = DateTime.Today.Year; i > 2010; i--)
-                                {
-                                    <option value="@(i)">@(i)</option>
-                                }
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-md-3">月份:</label>
-                        <div class="col-md-8">
-                            <select name="Month" class="form-control">
-                                @for(var i = 1; i < 13; i++)
-                                {
-                                    <option value="@(i)" @(i==(DateTime.Today.Month-1)?"selected=selected":"")>@(i)</option>
-                                }
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                    <button type="button" class="btn btn-primary" id="New">新建</button>
-                </div>
-            </form>
-           
-        </div>
-    </div>
-</div>
 
-<script>
-    $(function () {
-        $("#New").click(function () {
-            window.location.href = "/Bank/Collect?year=" + $("[name='Year']").val() + "&&month=" + $("[name='Month']").val();
-        });
-    });
-</script>
 

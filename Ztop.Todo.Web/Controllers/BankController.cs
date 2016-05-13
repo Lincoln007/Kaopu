@@ -14,6 +14,7 @@ namespace Ztop.Todo.Web.Controllers
         {
             ViewBag.Evaluations = Core.BillManager.GetBanks(Company.Evaluation);
             ViewBag.Projections = Core.BillManager.GetBanks(Company.Projection);
+            ViewBag.Districts = Core.BillManager.GetYearMonth();
             return View();
         }
 
@@ -24,10 +25,10 @@ namespace Ztop.Todo.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult Save(int year,int month,Company company,string[] Coding,DateTime[] Time,double[] Money,string[] Account,string[] Summary,Budget[] Budget)
+        public ActionResult Save(int year,int month,Company company,string[] Coding,DateTime[] Time,double[] Money,string[] Account,string[] Summary,Budget[] Budget,Cost[] Cost)
         {
             var bank = Core.BillManager.GetBank(year, month, company);
-            var bills = Core.BillManager.GetBills(bank.ID, Coding, Time, Budget, Money, Account, Summary);
+            var bills = Core.BillManager.GetBills(bank.ID, Coding, Time, Budget, Money, Account, Summary,Cost);
             try
             {
                 Core.BillManager.UpDateBills(bills, bank.ID);
@@ -37,12 +38,13 @@ namespace Ztop.Todo.Web.Controllers
                 return ErrorJsonResult(ex.ToString());
             }
            
-            return SuccessJsonResult();
+            return SuccessJsonResult(bank);
         }
 
-        public ActionResult Detail(int id)
+        public ActionResult Detail(int id,bool edit=false)
         {
             ViewBag.Bank = Core.BillManager.GetBank(id);
+            ViewBag.EditFlag = edit;
             return View();
         }
 
@@ -50,6 +52,8 @@ namespace Ztop.Todo.Web.Controllers
         {
             ViewBag.Year = year;
             ViewBag.Month = month;
+            ViewBag.Evaluation = Core.BillManager.GetAllModelBank(year, month, Company.Evaluation);
+            ViewBag.Projection = Core.BillManager.GetAllModelBank(year, month, Company.Projection);
             return View();
         }
     }

@@ -112,6 +112,14 @@ namespace Ztop.Todo.Model
         public Company Company { get; set; }
         [NotMapped]
         public List<Bill> Bills { get; set; }
+        [NotMapped]
+        public string YearMonth
+        {
+            get
+            {
+                return string.Format("{0}年{1}月", Year, Month);
+            }
+        }
     }
 
 
@@ -122,15 +130,15 @@ namespace Ztop.Todo.Model
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
         /// <summary>
-        /// 到账编号
+        /// 交易编号
         /// </summary>
         public string Coding { get; set; }
         /// <summary>
-        /// 到账时间
+        /// 交易时间
         /// </summary>
         public DateTime Time { get; set; }
         /// <summary>
-        /// 金额
+        /// 交易金额
         /// </summary>
         public double Money { get; set; }
         /// <summary>
@@ -142,10 +150,32 @@ namespace Ztop.Todo.Model
         /// </summary>
         [Column(TypeName ="int")]
         public Budget Budget { get; set; }
+        [Column(TypeName ="int")]
+        public Cost Cost { get; set; }
         /// <summary>
         /// 摘要
         /// </summary>
         public string Summary { get; set; }
         public int BID { get; set; }
+    }
+
+    public enum Cost
+    {
+        [Description("工资")]
+        Salary,
+        [Description("杂费")]
+        Extras,
+        [Description("税")]
+        Tax,
+        [Description("电话费")]
+        Phone,
+        [Description("备用金")]
+        Petty,
+        [Description("保证金")]
+        Margin,
+        [Description("转账")]
+        Transfer,
+        [Description("其他")]
+        Other
     }
 }
