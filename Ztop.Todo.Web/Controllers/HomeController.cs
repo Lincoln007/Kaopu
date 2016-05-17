@@ -91,5 +91,10 @@ namespace Ztop.Todo.Web.Controllers
         {
             return View();
         }
+
+        public ActionResult Daily()
+        {
+            return View();
+        }
     }
 }

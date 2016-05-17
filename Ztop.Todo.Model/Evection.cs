@@ -67,15 +67,24 @@ namespace Ztop.Todo.Model
         public BusType Type { get; set; }
         public double Cost { get; set; }
         /// <summary>
-        /// 公司派车或者私家车使用时  填写  过路费/油费 车牌
+        /// 公司派车或者私家车使用时  填写  过路费 车牌
         /// </summary>
         public double Toll { get; set; }
+        /// <summary>
+        /// 油费
+        /// </summary>
+        public double Petrol { get; set; }
         public string Plate { get; set; }
         /// <summary>
         /// 企业滴滴或者出租车填写的时候  填写次数
         /// </summary>
         public int Times { get; set; }
         public int EID { get; set; }
+    }
+
+    public enum Driver
+    {
+        无,宋学云,李海军,孙海杰
     }
 
     public enum BusType
@@ -86,7 +95,7 @@ namespace Ztop.Todo.Model
         Train,
         [Description("客运大巴")]
         Bus,
-        [Description("公司派车（油费）")]
+        [Description("公司车")]
         Company,
         [Description("自备车")]
         Personal,

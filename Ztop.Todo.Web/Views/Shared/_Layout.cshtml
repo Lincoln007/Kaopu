@@ -93,16 +93,15 @@
                                     @Html.Partial("_Authority")
                                 </li>
                                 <li>
-                                    <a href="#"><i class="fa fa-credit-card"></i>报销系统<span class="fa arrow"></span></a>
+                                    <a href="#"><i class="fa fa-credit-card"></i>报销系统（内测）<span class="fa arrow"></span></a>
                                     <ul class="nav nav-second-level">
                                         <li><a href="/Report/Index"><i class="fa fa-desktop"></i>欢迎页</a></li>
-                                        <li>
-                                            <a href="#"><i class="glyphicon glyphicon-piggy-bank"></i> 报销<span class="fa arrow"></span></a>
-                                            <ul class="nav nav-third-level">
-                                                <li><a href="/Report/Create?type=@(SheetType.Daily)"><i class="fa fa-map-o"></i>日常报销</a></li>
-                                                <li><a href="/Report/Create?type=@(SheetType.Errand)"><i class="fa fa-plane"></i>出差报销</a></li>
-                                            </ul>
-                                        </li>
+                                        <li role="separator" class="divider"></li>
+                                        <li><a href="/Report/Create?type=@(SheetType.Daily)"><i class="fa fa-map-o"></i>日常报销</a></li>
+                                        <li><a href="/Report/Create?type=@(SheetType.Errand)"><i class="fa fa-plane"></i>出差报销</a></li>
+                                        <li role="separator" class="divider"></li>
+
+                  
                                         @if (Identity.Name == "申屠杜平")
                                         {
                                             <li><a href="/Report/Filing"><i class="fa fa-anchor"></i>报销归档</a></li>
@@ -138,7 +137,12 @@
                                     </li>
                                 }
                                 <li><a href="/Home/Resources"><i class="fa fa-cloud-download"></i>资源下载</a></li>
-                              
+                                @if (Identity.Name == "汪建龙")
+                                {
+                                    <li><a href="/Home/Daily"><i class="glyphicon glyphicon-eye-open"></i>更新日志</a></li>
+                                }
+
+
                                 @*<li>
                                     <a href="#"><i class="fa fa-credit-card"></i>汇总<span class="fa arrow"></span></a>
                                     <ul class="nav nav-second-level">

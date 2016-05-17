@@ -161,6 +161,7 @@ namespace Ztop.Todo.Manager
                             Type = e.Type,
                             Cost = e.Cost,
                             Toll = e.Toll,
+                            Petrol=e.Petrol,
                             Plate = e.Plate,
                             Times = e.Times,
                             EID = sheet.Evection.ID
@@ -209,6 +210,25 @@ namespace Ztop.Todo.Manager
                 sheet.SerialNumber = GetSerialNumber(sheet.ID);
             }
             return list;
+        }
+
+        /// <summary>
+        /// 统计某年某月的报销金额
+        /// </summary>
+        /// <param name="year"></param>
+        /// <param name="month"></param>
+        /// <returns></returns>
+        public double Collect(int year,int month)
+        {
+            using(var db = GetDbContext())
+            {
+                var query = db.Sheets.Where(e => e.CheckTime.Value.Year == year && e.CheckTime.Value.Month == month).AsQueryable();
+                if (query.Count()==0)
+                {
+                    return .0;
+                }
+                return query.Sum(e => e.Money);
+            }
         }
         public List<Sheet> GetSheets(SheetQueryParameter parameter)
         {

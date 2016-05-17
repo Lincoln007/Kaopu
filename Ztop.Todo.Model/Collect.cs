@@ -9,20 +9,62 @@ using System.Threading.Tasks;
 
 namespace Ztop.Todo.Model
 {
-    [Table("collects")]
     public class Collect
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int ID { get; set; }
-        public string Summary { get; set; }
-        public double Expenses { get; set; }
+        /// <summary>
+        /// 收入
+        /// </summary>
         public double Income { get; set; }
-        [Column(TypeName ="int")]
-        public Company Company { get; set; }
-        public int AID { get; set; }
+        /// <summary>
+        /// 保证金收入
+        /// </summary>
+        public double MarginIncome { get; set; }
+        /// <summary>
+        /// 支出
+        /// </summary>
+        public double Pay { get; set; }
+        /// <summary>
+        /// 保证金支出
+        /// </summary>
+        public double MarginPay { get; set; }
+        /// <summary>
+        /// 转账
+        /// </summary>
+        public double Transfer { get; set; }
+        /// <summary>
+        /// 备用金
+        /// </summary>
+        public double Petty { get; set; }
+
+        public static Collect operator +(Collect c1,Collect c2)
+        {
+            return new Collect()
+            {
+                Income = c1.Income + c2.Income,
+                MarginIncome = c1.MarginIncome + c2.MarginIncome,
+                Pay = c1.Pay + c2.Pay,
+                MarginPay = c1.MarginPay + c2.MarginPay,
+                Transfer = c1.Transfer + c2.Transfer,
+                Petty = c1.Petty + c2.Petty
+            };
+        }
     }
 
+    public static class CollectHelper
+    {
+        public static Collect GetCollect(List<Bill> list)
+        {
+            return new Collect()
+            {
+                Income = list.Where(e => e.Budget == Budget.Income && e.Cost != Cost.Margin).Sum(e => e.Money),
+                MarginIncome = list.Where(e => e.Budget == Budget.Income && e.Cost == Cost.Margin).Sum(e => e.Money),
+                Pay = list.Where(e => e.Budget == Budget.Expense && e.Cost != Cost.Margin && e.Cost != Cost.Transfer && e.Cost != Cost.Petty).Sum(e => e.Money),
+                MarginPay = list.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.Margin).Sum(e => e.Money),
+                Transfer = list.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.Transfer).Sum(e => e.Money),
+                Petty = list.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.Petty).Sum(e => e.Money)
+            };
+        }
+    }
     public enum Company
     {
         [Description("评估")]
@@ -41,62 +83,6 @@ namespace Ztop.Todo.Model
         [Description("支出")]
         Expense
     }
-    [Table("gathers")]
-    public class Gather
-    {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int ID { get; set; }
-        [Column(TypeName ="int")]
-        public Company Company { get; set; }
-        public double Income { get; set; }
-        public double MarginIncome { get; set; }
-        public double Pay { get; set; }
-        public double MarginPay { get; set; }
-        public double Transfer { get; set; }
-        public double Petty { get; set; }
-        public int AID { get; set; }
-    }
-
-    [Table("aggregations")]
-    public class Aggregation
-    {
-        public Aggregation()
-        {
-            Time = DateTime.Now;
-        }
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int ID { get; set; }
-        public int Year { get; set; }
-        public int Month { get; set; }
-        public DateTime Time { get; set; }
-        /// <summary>
-        /// 房地产土地评估支出合计
-        /// </summary>
-        public double SubstalEE { get; set; }
-        /// <summary>
-        /// 房地产土地评估收入合计
-        /// </summary>
-        public double SubstalIE { get; set; }
-        /// <summary>
-        /// 土地规划设计支出合计
-        /// </summary>
-        public double SubstalEP { get; set; }
-        /// <summary>
-        /// 推动规划设计收入合计
-        /// </summary>
-        public double SubstalIP { get; set; }
-        [NotMapped]
-        public List<Gather> Gathers { get; set; }
-        [NotMapped]
-        public List<Collect> EvaluationCollects { get; set; }
-        [NotMapped]
-        public List<Collect> ProjectionCollects { get; set; }
-
-    }
-
-
     /// <summary>
     /// 银行对账单
     /// </summary>
@@ -121,8 +107,6 @@ namespace Ztop.Todo.Model
             }
         }
     }
-
-
     [Table("bills")]
     public class Bill
     {
@@ -158,7 +142,6 @@ namespace Ztop.Todo.Model
         public string Summary { get; set; }
         public int BID { get; set; }
     }
-
     public enum Cost
     {
         [Description("工资")]

@@ -16,7 +16,7 @@
     <input type="hidden" name="ID" value="@(sheet.ID)" />
     <input type="hidden" name="Type" value="@(sheet.Type)" />
     
-    <div class="col-md-12">
+    <div class="col-md-12 col-xs-12 col-sm-12">
         @{ 
             Html.RenderPartial("SubmitButton");
         }
@@ -33,7 +33,7 @@
         }
        
     </div>
-    <div class="col-md-8">
+    <div class="col-md-10 col-xs-12 col-sm-12">
         <h3>基本信息</h3>
         <table class="table table-bordered">
             <tbody>
@@ -55,9 +55,9 @@
                 </tr>
                 <tr>
                     <td>发票张数</td>
-                    <td><input type="number" name="Count" value="@(sheet.Count)" class="form-control" /></td>
+                    <td><input type="number" name="Count" value="@(sheet.Count)" class="form-control" min="0" /></td>
                     <td>备注</td>
-                    <td><input type="text" name="Remarks" style="width:100%" value="@(sheet.Remarks)" class="form-control" /></td>
+                    <td><input type="text" name="Remarks" style="width:100%" value="@(sheet.Remarks)" class="form-control"  /></td>
                 </tr>
             </tbody>
         </table>
@@ -70,28 +70,28 @@
             Html.RenderPartial("Errand", sheet.Evection);
         }
     </div>
-    <div class="col-md-4">
-        <h3>
-            审核信息
-        </h3>
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>
-                        步骤
-                    </th>
-                    <th>
-                        姓名
-                    </th>
-                    <th>
-                        时间
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (sheet.Verifys != null)
-                {
-                    foreach(var verify in sheet.Verifys)
+    @*@if (sheet.Verifys != null)
+    {
+        <div class="col-md-3">
+            <h3>
+                审核信息
+            </h3>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>
+                            步骤
+                        </th>
+                        <th>
+                            姓名
+                        </th>
+                        <th>
+                            时间
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var verify in sheet.Verifys)
                     {
                         <tr>
                             <td>@(verify.Step.GetDescription())</td>
@@ -99,11 +99,12 @@
                             <td>@(verify.Time.ToShortDateString())</td>
                         </tr>
                     }
-                }
-            </tbody>
-        </table>
+                </tbody>
+            </table>
 
-    </div>
+        </div>
+    }*@
+   
     <div class="col-md-12">
         @{
             Html.RenderPartial("SubmitButton");

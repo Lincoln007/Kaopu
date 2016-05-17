@@ -6,81 +6,41 @@
     QueryParameter parameter = ViewBag.Parameter;
     int serial = 1;
 }
-<div class="col-md-3">
-    <table style="border:none;width:100%">
-        <tr>
-            <td style="width:180px;vertical-align:top;padding:9px;" class="well">
-                <fieldset>
-                    <legend>查询设置</legend>
-                    <form id="" style="margin-bottom:5px;" method="get">
-                        <input type="hidden" name="Creater"  value="@(parameter.Creater.ToString())"/>
-                        <input type="hidden" name="Position"  value="@(parameter.Status.ToString())" />
-                        <input type="hidden" name="CurrentTime"  value="@(parameter.Time.ToString())" />
-                        <input type="hidden" name="Checker"  value="@(parameter.Checker.ToString())" />
-                        @*<div class="form-group">
-                            <label class="control-label">表单创建人</label>
-                            <div class="input-group">
-                                <div class="input-group-btn">
-                                    @foreach(Operator creater in Enum.GetValues(typeof(Operator)))
-                                    {
-                                        <button type="button" class="btn btn-@(parameter.Creater==creater?"primary":"default")" name="Ower">@(creater.ToString())</button>
-                                    }
-                                </div>
-                                <input type="text" class="form-control" placeholder="创建人" aria-describedby="sizing-addon2"  name="Custom" />
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label">状态</label>
-                            <div class="input-group">
-                                <div class="input-group-btn">
-                                    @foreach(StatusPosition status in Enum.GetValues(typeof(StatusPosition)))
-                                    {
-                                        <button type="button" class="btn btn-@(parameter.Status==status?"primary":"default")" name="Status">@(status.ToString())</button>
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label">审核人</label>
-                            <div class="input-group">
-                                <div class="input-group-btn">
-                                    @foreach(Operator checker in Enum.GetValues(typeof(Operator)))
-                                    {
-                                        <button type="button" class="btn btn-@(parameter.Checker==checker?"primary":"default")" name="Check">@(checker.ToString())</button>
-                                    }
-                                </div>
-                                <input type="text" class="form-control" placeholder="审核人" aria-describedby="sizing-addon2" name="Checker2" />
-                            </div>
-                        </div>*@
-                        <div class="form-group">
-                            <label class="control-label">时间</label>
-                            <div class="input-group">
-                                <div class="input-group-btn">
+<div class="col-md-3  well">
+    <fieldset>
+        <legend>查询设置</legend>
+    </fieldset>
+    <form id="" style="margin-bottom:5px;" method="get">
+        <input type="hidden" name="Creater" value="@(parameter.Creater.ToString())" />
+        <input type="hidden" name="Position" value="@(parameter.Status.ToString())" />
+        <input type="hidden" name="CurrentTime" value="@(parameter.Time.ToString())" />
+        <input type="hidden" name="Checker" value="@(parameter.Checker.ToString())" />
+        <div class="form-group">
+            <label class="control-label">时间</label>
+            <div class="col-md-12">
+                <div class="btn-group" role="group">
+                    @foreach (Time time in Enum.GetValues(typeof(Time)))
+                    {
+                        <button type="button" class="btn btn-@(parameter.Time==time?"primary":"default")" name="Time">@(time.ToString())</button>
+                    }
+                </div>
+            </div>
+          
+        </div>
+        <div class="form-group">
+            <label class="control-label">排序</label>
+            <select name="Order" class="form-control">
+                @foreach (Order order in Enum.GetValues(typeof(Order)))
+                {
+                    <option value="@(order)" @(parameter.Order == order ? "Selected=selected" : "")>@(order.GetDescription())</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-success">立即查询</button>
+        </div>
+    </form>
 
-                                    @foreach(Time time in Enum.GetValues(typeof(Time)))
-                                    {
-                                        <button type="button" class="btn btn-@(parameter.Time==time?"primary":"default")" name="Time">@(time.ToString())</button>
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label">排序</label>
-                            <select name="Order" class="form-control">
-                                @foreach(Order order in Enum.GetValues(typeof(Order)))
-                                {
-                                    <option value="@(order)" @(parameter.Order==order?"Selected=selected":"")>@(order.GetDescription())</option>
-                                }
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-success">立即查询</button>
-                        </div>
-                    </form>
-                </fieldset>
-            </td>
-        </tr>
-    </table>
 </div>
 <div class="col-md-9">
     <h3>报销列表</h3>

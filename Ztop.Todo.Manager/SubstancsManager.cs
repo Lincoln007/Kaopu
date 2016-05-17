@@ -76,6 +76,7 @@ namespace Ztop.Todo.Manager
             var times = context.Request.Form["Times"].Split(',');
             var plates = context.Request.Form["Plate"].Split(',');
             var tolls = context.Request.Form["Toll"].Split(',');
+            var petrol = context.Request.Form["Petrol"].Split(',');
             foreach(var type in busTypes)
             {
                 var traffic = new Traffic()
@@ -87,10 +88,12 @@ namespace Ztop.Todo.Manager
                 {
                     case BusType.Company:
                         traffic.Toll = double.TryParse(tolls[0], out a) ? a : .0;
+                        traffic.Petrol = double.TryParse(petrol[0], out a) ? a : .0;
                         traffic.Plate = plates[0];
                         break;
                     case BusType.Personal:
                         traffic.Toll = double.TryParse(tolls[1], out a) ? a : .0;
+                        traffic.Petrol = double.TryParse(petrol[1], out a) ? a : .0;
                         traffic.Plate = plates[1];
                         break;
                     case BusType.Didi:

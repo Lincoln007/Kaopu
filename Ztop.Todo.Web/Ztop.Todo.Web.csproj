@@ -261,6 +261,7 @@
     <Content Include="Views\Bank\Create.cshtml" />
     <Content Include="Views\Bank\Detail.cshtml" />
     <Content Include="Views\Bank\Collect.cshtml" />
+    <Content Include="Views\Home\Daily.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

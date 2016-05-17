@@ -11,7 +11,7 @@
         <thead>
             <tr>
                 <th class="text-center">分类</th>
-                <th style="width:70%;" class="text-center">内容</th>
+                <th style="width:80%;" class="text-center">内容</th>
             </tr>
         </thead>
         <tbody>
@@ -44,7 +44,7 @@
                             <div class="input-group-addon">公里</div>
                         </div>
                     </td>
-                    
+
                 }
             </tr>
             <tr>
@@ -59,23 +59,26 @@
                                 <tr>
                                     <th class="text-center">交通工具</th>
                                     <th class="text-center">金额（元）</th>
-                                    <th class="text-center">过路费/加油费（元）</th>
+                                    <th class="text-center">过路费（元）</th>
+                                    <th class="text-center">油费（元）</th>
                                     <th class="text-center">车牌</th>
                                     <th class="text-center">次数</th>
                                 </tr>
-                                @foreach(var cost in Model.TCosts)
+                                @foreach (var cost in Model.TCosts)
                                 {
                                     <tr>
                                         <td>@(cost.Type.GetDescription())</td>
                                         <td>@(cost.Cost)</td>
                                         @if (cost.Type == BusType.Company || cost.Type == BusType.Personal)
                                         {
-                                            <td>@(cost.Toll) 元</td>
+                                            <td>@(cost.Toll)</td>
+                                            <td>@(cost.Petrol)</td>
                                             <td>@(cost.Plate)</td>
                                             <td>/</td>
                                         }
                                         else if (cost.Type == BusType.Didi || cost.Type == BusType.Taxi)
                                         {
+                                            <td>/</td>
                                             <td>/</td>
                                             <td>/</td>
                                             <td>@(cost.Times) 次</td>
@@ -85,49 +88,101 @@
                                             <td>/</td>
                                             <td>/</td>
                                             <td>/</td>
+                                            <td>/</td>
                                         }
                                     </tr>
                                 }
                             </table>
                         }
                     </td>
+
                 }
                 else
                 {
                     <td>
-                        @foreach (BusType type in Enum.GetValues(typeof(BusType)))
-                        {
-                            var check = costtypes.ContainsKey(type);
-                            var values = check ? costtypes[type] : new Traffic();
-                            <div class="input-group" style="margin-bottom:10px;">
-                                <span class="input-group-addon">
-                                    <input type="checkbox" name="BusType" value="@(type)" aria-label="" @(check?"checked=checked":"") />@(type.GetDescription())
-                                </span>
-                                <input type="text" class="form-control" name="Cost@(type)" aria-label="" placeholder="金额" value="@(values.Cost)" />
-                                <div class="input-group-addon">元</div>
-                                @if (type == BusType.Company || type == BusType.Personal)
-                                {
-                                    <div class="input-group-addon">过路费/油费</div>
-                                    <input type="text" class="form-control" name="Toll" placeholder="过路费/油费" value="@(values.Toll)" />
-                                    <div class="input-group-addon">元</div>
-                                    <input type="text" class="form-control" name="Plate" placeholder="车牌" value="@(values.Plate)" />
-                                }else if (type == BusType.Didi||type==BusType.Taxi)
-                                {
-                                    <input type="number" class="form-control"  name="Times" placeholder="" value="@(values.Times)"/>
-                                    <div class="input-group-addon">次</div>
-                                }
-                            </div>
-                        } 
-                        <hr />
                         <div class="input-group">
-                            <div class="input-group-addon">合计</div>
-                            <input type="text" class="form-control"  placeholder="合计" readonly="readonly" name="Traffic" value="@(Model.Traffic)"/>
+                            <input type="text" class="form-control" placeholder="合计" readonly="readonly" name="Traffic" value="@(Model.Traffic)" />
                             <div class="input-group-addon">元</div>
-                            <span></span>
-                        </div>   
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-success" data-toggle="modal" data-target=".ViewTraffic">交通费用详情</button>
+                            </span>
+                        </div>
+                        <div class="modal fade ViewTraffic" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                            <div class="modal-dialog modal-lg" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        <h4 class="modal-title">交通费用详情</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <ul class="list-group">
+                                            @foreach (BusType type in Enum.GetValues(typeof(BusType)))
+                                            {
+                                                <li class="list-group-item">
+                                                    @{
+                                                        var check = costtypes.ContainsKey(type);
+                                                        var values = check ? costtypes[type] : new Traffic();
+                                                        <div class="input-group" >
+                                                            <span class="input-group-addon">
+                                                                <input type="checkbox" name="BusType" value="@(type)" aria-label="" @(check ? "checked=checked" : "") />@(type.GetDescription())
+                                                            </span>
+                                                            <input type="text" class="form-control" name="Cost@(type)" aria-label="" placeholder="金额" value="@(values.Cost)" @(type==BusType.Personal||type==BusType.Company?"readonly=readonly":"") />
+                                                            <div class="input-group-addon">元</div>
+                                                            @if (type == BusType.Didi || type == BusType.Taxi)
+                                                            {
+                                                                <input type="number" class="form-control" name="Times" placeholder="" value="@(values.Times)" min="0" />
+                                                                <div class="input-group-addon">次</div>
+                                                            }
+                                                        </div>
+                                                        if (type == BusType.Company)
+                                                        {
+                                                            <div class="input-group" style="margin-top:10px; ">
+                                                                <div class="input-group-addon">过路费</div>
+                                                                <input type="text" class="form-control" name="Toll" placeholder="过路费" value="@(values.Toll)" />
+                                                                <div class="input-group-addon">元</div>
+                                                                <div class="input-group-addon">油费</div>
+                                                                <input type="text" class="form-control" name="Petrol" placeholder="油费" value="@(values.Petrol)" />
+                                                                <div class="input-group-addon">元</div>
+                                                                
+                                                            </div>
+                                                            <div class="input-group" style="margin-top:10px;">
+                                                                <select name="Driver" class="form-control">
+                                                                    @foreach(Driver driver in Enum.GetValues(typeof(Driver)))
+                                                                    {
+                                                                        <option value="@(driver)">@(driver)</option>
+                                                                    }
+                                                                </select>
+                                                                <div class="input-group-addon">司机</div>
+                                                                <input type="text" class="form-control" name="" />
+                                                                <div class="input-group-addon">元</div>
+                                                                <input type="text" class="form-control" name="Plate" placeholder="车牌" value="@(values.Plate)" />
+                                                            </div>
+                                                        }
+                                                        else if (type == BusType.Personal)
+                                                        {
+                                                            <div class="input-group" style="margin-top:10px;">
+                                                                <div class="input-group-addon">过路费</div>
+                                                                <input type="text" class="form-control" name="Toll" placeholder="过路费" value="@(values.Toll)" />
+                                                                <div class="input-group-addon">元</div>
+                                                                <input type="text" class="form-control" name="Plate" placeholder="车牌" value="@(values.Plate)" />
+                                                            </div>
+                                                        }
+                                                    }
+                                                </li>
+                                            }
+                                        </ul>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" name="BT" class="btn btn-primary" targetId="">确定</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </td>
+
                 }
             </tr>
+       
             <tr>
                 <td>出差补贴</td>
                 @if (flag)
@@ -165,7 +220,7 @@
                             <input type="text" class="form-control" name="SubSidy" readonly="readonly" value="@(Model.SubSidy)" />
                             <div class="input-group-addon">元</div>
                             <span class="input-group-btn">
-                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".ViewSubSidy">出差人数详情</button>
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".ViewSubSidy">出差补贴详情</button>
                             </span>
 
                         </div>
@@ -174,7 +229,7 @@
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                        <h4 class="modal-title">出差详情</h4>
+                                        <h4 class="modal-title">出差补贴详情</h4>
                                     </div>
                                     <div class="modal-body">
                                         @{
@@ -374,12 +429,9 @@
                 sum += parseInt(peoples) * parseInt(days);
             }
             $("[name='SubSidy']").val(sum * 40);
+            SumErrand();
         }
 
-
-        //$(".People").blur(function () {
-        //    SumSubSidy();
-        //});
         //点击出差补贴输入框  统计出差补贴
         $("input[name='SubSidy']").focus(function () {
             SumSubSidy();
@@ -400,8 +452,10 @@
             $("[name='Users" + id + "']").val(buiness);
             $("[name='Peoples" + id + "']").val(count);
             $(".choose" + id + "").modal("hide");
-        })
-        $("input[name='Traffic']").click(function () {//统计交通费用
+        });
+
+        //统计交通总费用并赋值
+        function SumTraffic() {
             var sum = 0;
             $("[name='BusType']:checked").each(function () {
                 var type = $(this).val();
@@ -412,9 +466,16 @@
                     }
                 }
             });
-            $(this).val(sum);
-        }).change(function () {
-            SumErrand();//自动统计金额
+            $("input[name='Traffic']").val(sum);
+            SumErrand();
+        }
+
+        $("button[name='BT']").click(function () {
+            SumTraffic();
+            $(".ViewTraffic").modal("hide");
+        });
+        $("input[name='Traffic']").click(function () {//统计交通费用
+            SumTraffic();
         });
         //输入出差住宿  自动统计金额
         $("input[name='Hotel']").change(function () {
@@ -429,6 +490,38 @@
         $(".ViewSubSidy").on("hidden.bs.modal", function (e) {
             $(".modal-backdrop.fade.in").remove();
         })
+
+        function GetKile() {
+            var val = .0;
+            var kile = $("input[name='KiloMeters']").val();
+            if (kile != undefined && kile != NaN && kile != "undefined" && kile != "NaN") {
+                val = parseFloat(kile);
+            }
+            return val;
+        }
+
+        $("input[name='BusType']").click(function () {
+            var bustype = $(this).val();
+            if (bustype == "Company") {
+                var kile = GetKile();
+                if (isNaN(kile)) {
+                    alert("无法获取公里数！");
+                    return;
+                }
+                $("input[name='CostCompany']").val(kile * 0.2);
+            } else if (bustype == "Personal") {
+                var kile = GetKile();
+                if (isNaN(kile)) {
+                    alert("无法获取公里数！");
+                    return;
+                }
+                $("input[name='CostPersonal']").val(kile * 1.5);
+            }
+        });
+
+        $("select[name='Driver']").change(function () {
+            var val = $(this).val();
+        });
 
     })
 </script>

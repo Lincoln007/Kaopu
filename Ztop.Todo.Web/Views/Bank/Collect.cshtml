@@ -6,6 +6,9 @@
     int month = ViewBag.Month;
     Bank Evaluation = ViewBag.Evaluation;
     Bank Projection = ViewBag.Projection;
+    double Cash = ViewBag.Cash;
+    var sum = new Collect();
+    sum.Pay += Cash;
 }
 
 <script src='http://10.22.102.3:8001/CLodopfuncs.js'></script>
@@ -34,7 +37,6 @@
                                 <th>摘要</th>
                                 <th>收入（元）</th>
                                 <th>支出（元）</th>
-                                <th>备注</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -44,15 +46,13 @@
                                     <td>@(item.Summary)</td>
                                     <td>@(item.Money)</td>
                                     <td></td>
-                                    <td></td>
                                 </tr>
                             }
-                            @foreach (var item in listIncome.Where(e => e.Cost != Cost.Other).GroupBy(e => e.Cost).Select(e => new Bill() { Money = e.Sum(k => k.Money), Cost = e.Key }))
+                            @foreach (var item in listIncome.Where(e => e.Cost != Cost.Other).GroupBy(e => e.Cost).Select(e => new Bill() { Money = e.Sum(k => k.Money), Cost = e.Key,Summary=string.Join(";",e.Select(k=>k.Summary).Take(3).ToArray()) }))
                             {
                                 <tr>
-                                    <td>@(item.Cost.GetDescription())</td>
+                                    <td>@(item.Cost.GetDescription())@(!string.IsNullOrEmpty(item.Summary)?"("+item.Summary+")":"")</td>
                                     <td>@(item.Money)</td>
-                                    <td></td>
                                     <td></td>
                                 </tr>
                             }
@@ -62,17 +62,15 @@
                                     <td>@(item.Summary)</td>
                                     <td></td>
                                     <td>@(item.Money)</td>
-                                    <td></td>
                                 </tr>
                             }
 
-                            @foreach (var item in listExpense.Where(e => e.Cost != Cost.Other).GroupBy(e => e.Cost).Select(e => new Bill() { Money = e.Sum(k => k.Money), Cost = e.Key }))
+                            @foreach (var item in listExpense.Where(e => e.Cost != Cost.Other).GroupBy(e => e.Cost).Select(e => new Bill() { Money = e.Sum(k => k.Money), Cost = e.Key,Summary=string.Join(";",e.Select(k=>k.Summary).Take(3).ToArray()) }))
                             {
                                 <tr>
-                                    <td>@(item.Cost.GetDescription())</td>
+                                    <td>@(item.Cost.GetDescription())@(!string.IsNullOrEmpty(item.Summary)?"("+item.Summary+")":"")</td>
                                     <td></td>
                                     <td>@(item.Money)</td>
-                                    <td></td>
                                 </tr>
                             }
                         </tbody>
@@ -81,7 +79,6 @@
                                 <td>合计</td>
                                 <td>@(listIncome.Sum(e => e.Money))</td>
                                 <td>@(listExpense.Sum(e => e.Money))</td>
-                                <td></td>
                             </tr>
                         </tfoot>
                     </table>
@@ -111,7 +108,6 @@
                                 <th>摘要</th>
                                 <th>收入（元）</th>
                                 <th>支出（元）</th>
-                                <th>备注</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -121,15 +117,13 @@
                                     <td>@(item.Summary)</td>
                                     <td>@(item.Money)</td>
                                     <td></td>
-                                    <td></td>
                                 </tr>
                             }
-                            @foreach (var item in listIncome.Where(e => e.Cost != Cost.Other).GroupBy(e => e.Cost).Select(e => new Bill() { Money = e.Sum(k => k.Money), Cost = e.Key }))
+                            @foreach (var item in listIncome.Where(e => e.Cost != Cost.Other).GroupBy(e => e.Cost).Select(e => new Bill() { Money = e.Sum(k => k.Money), Cost = e.Key,Summary=string.Join(";",e.Select(k=>k.Summary).Take(3).ToArray()) }))
                     {
                                 <tr>
-                                    <td>@(item.Cost.GetDescription())</td>
+                                    <td>@(item.Cost.GetDescription()) @(!string.IsNullOrEmpty(item.Summary)?"("+item.Summary+")":"")</td>
                                     <td>@(item.Money)</td>
-                                    <td></td>
                                     <td></td>
                                 </tr>
                             }
@@ -139,17 +133,15 @@
                                     <td>@(item.Summary)</td>
                                     <td></td>
                                     <td>@(item.Money)</td>
-                                    <td></td>
                                 </tr>
                             }
 
-                            @foreach (var item in listExpense.Where(e => e.Cost != Cost.Other).GroupBy(e => e.Cost).Select(e => new Bill() { Money = e.Sum(k => k.Money), Cost = e.Key }))
+                            @foreach (var item in listExpense.Where(e => e.Cost != Cost.Other).GroupBy(e => e.Cost).Select(e => new Bill() { Money = e.Sum(k => k.Money), Cost = e.Key,Summary=string.Join(";",e.Select(k=>k.Summary).Take(3).ToArray()) }))
                     {
                                 <tr>
-                                    <td>@(item.Cost.GetDescription())</td>
+                                    <td>@(item.Cost.GetDescription()) @(!string.IsNullOrEmpty(item.Summary)?"("+item.Summary+")":"")</td>
                                     <td></td>
                                     <td>@(item.Money)</td>
-                                    <td></td>
                                 </tr>
                             }
                         </tbody>
@@ -158,7 +150,6 @@
                                 <td>合计</td>
                                 <td>@(listIncome.Sum(e => e.Money))</td>
                                 <td>@(listExpense.Sum(e => e.Money))</td>
-                                <td></td>
                             </tr>
                         </tfoot>
                     </table>
@@ -195,12 +186,15 @@
                         <td>评估</td>
                         @if (Evaluation != null && Evaluation.Bills != null)
                         {
-                            <td>@(Evaluation.Bills.Where(e => e.Budget == Budget.Income && e.Cost != Cost.Margin).Sum(e => e.Money))</td>
-                            <td>@(Evaluation.Bills.Where(e => e.Budget == Budget.Income && e.Cost == Cost.Margin).Sum(e => e.Money))</td>
-                            <td>@(Evaluation.Bills.Where(e => e.Budget == Budget.Expense && e.Cost != Cost.Margin && e.Cost != Cost.Transfer && e.Cost != Cost.Petty).Sum(e => e.Money))</td>
-                            <td>@(Evaluation.Bills.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.Margin).Sum(e => e.Money))</td>
-                            <td>@(Evaluation.Bills.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.Transfer).Sum(e => e.Money))</td>
-                            <td>@(Evaluation.Bills.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.Petty).Sum(e => e.Money))</td>
+                            var val = CollectHelper.GetCollect(Evaluation.Bills);
+                            sum += val;
+                            
+                            <td>@(val.Income)</td>
+                            <td>@(val.MarginIncome)</td>
+                            <td>@(val.Pay)</td>
+                            <td>@(val.MarginPay)</td>
+                            <td>@(val.Transfer)</td>
+                            <td>@(val.Petty)</td>
                         }
                         else
                         {
@@ -217,12 +211,14 @@
                         <td>规划</td>
                         @if (Projection != null && Projection.Bills != null)
                         {
-                            <td>@(Projection.Bills.Where(e => e.Budget == Budget.Income && e.Cost != Cost.Margin).Sum(e => e.Money))</td>
-                            <td>@(Projection.Bills.Where(e => e.Budget == Budget.Income && e.Cost == Cost.Margin).Sum(e => e.Money))</td>
-                            <td>@(Projection.Bills.Where(e => e.Budget == Budget.Expense && e.Cost != Cost.Margin && e.Cost != Cost.Transfer && e.Cost != Cost.Petty).Sum(e => e.Money))</td>
-                            <td>@(Projection.Bills.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.Margin).Sum(e => e.Money))</td>
-                            <td>@(Projection.Bills.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.Transfer).Sum(e => e.Money))</td>
-                            <td>@(Projection.Bills.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.Petty).Sum(e => e.Money))</td>
+                            var val = CollectHelper.GetCollect(Projection.Bills);
+                            sum += val;
+                            <td>@(val.Income)</td>
+                            <td>@(val.MarginIncome)</td>
+                            <td>@(val.Pay)</td>
+                            <td>@(val.MarginPay)</td>
+                            <td>@(val.Transfer)</td>
+                            <td>@(val.Petty)</td>
                         }
                         else
                         {
@@ -234,6 +230,24 @@
                             <td></td>
                         }
 
+                    </tr>
+                    <tr>
+                        <td>现金</td>
+                        <td></td>
+                        <td></td>
+                        <td>@(Cash)</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>合计</td>
+                        <td>@(sum.Income)</td>
+                        <td>@(sum.MarginIncome)</td>
+                        <td>@(sum.Pay)</td>
+                        <td>@(sum.MarginPay)</td>
+                        <td>@(sum.Transfer)</td>
+                        <td>@(sum.Petty)</td>
                     </tr>
                 </tbody>
             </table>
