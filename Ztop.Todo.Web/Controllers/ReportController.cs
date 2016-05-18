@@ -80,7 +80,7 @@ namespace Ztop.Todo.Web.Controllers
         /// <param name="DirectorVal"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult Save(SerialNumber serialNumber,Sheet sheet,int snid,string DirectorVal,Evection evection,string[] busType)
+        public ActionResult Save(SerialNumber serialNumber,Sheet sheet,int snid,string DirectorVal,Evection evection,string[] busType,double CarPetty=.0,Driver driver=Driver.无)
         {
             if (snid == 0)
             {
@@ -95,7 +95,7 @@ namespace Ztop.Todo.Web.Controllers
             else//出差报销
             {
                 evection.Errands = Core.SubstanceManager.GetErrands(HttpContext);
-                evection.TCosts = Core.SubstanceManager.GetTraffic(HttpContext, busType);
+                evection.TCosts = Core.SubstanceManager.GetTraffic(HttpContext, busType,driver,CarPetty);
                 sheet.Evection = evection;
                 sum = evection.Traffic + evection.SubSidy + evection.Hotel + evection.Other;
             }

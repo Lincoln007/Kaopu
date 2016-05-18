@@ -33,7 +33,7 @@
         }
        
     </div>
-    <div class="col-md-10 col-xs-12 col-sm-12">
+    <div class="col-md-12 col-xs-12 col-sm-12">
         <h3>基本信息</h3>
         <table class="table table-bordered">
             <tbody>
@@ -50,7 +50,7 @@
                     </td>
                     <td>报销金额合计</td>
                     <td>
-                        <input type="text" name="Money" value="@(sheet.Money)" class="form-control"  onclick="@(sheet.Type==SheetType.Errand?"SumErrand()":"SumDialy()")" />       
+                        <input type="text" name="Money" value="@(sheet.Money)" class="form-control"  onclick="@(sheet.Type==SheetType.Errand?"SumErrand()":"SumDialy()")"  readonly="readonly"/>       
                     </td>
                 </tr>
                 <tr>
@@ -112,6 +112,7 @@
         <button class="btn btn-success btn-lg" type="submit">
             <em class="glyphicon glyphicon-floppy-disk"></em> 保存返回
         </button>
+        <button type="button" class="btn btn-default btn-lg" onclick="history.back();"><em class="glyphicon glyphicon-arrow-left"></em> 返回</button>
         @if (sheet.ID != 0)
         {
             <button class="btn btn-danger btn-lg" type="button">
@@ -150,6 +151,7 @@
 <script>
     
 
+    //出差报销金额合计
     function SumErrand() {
         var fields=["Traffic","SubSidy","Hotel","Other"];
         var sum = 0;
@@ -165,6 +167,7 @@
         return false;
     }
 
+    //日常报销金额合计
     function SumDialy() {
         var sum=0;
         $("[name='Price']").each(function(){
@@ -203,7 +206,15 @@
             });
             return false;
            
-        });    
+        });  
+        
+        //出差报销-出差住宿发生改变，自动计算金额
+        $("input[name='Hotel']").change(SumErrand);
+        //出差报销——其他金额发生改变 自动计算金额
+        $("input[name='Other']").change(SumErrand);
+
+        $("input[name='Price']").change(SumDialy);
+
     })
 </script>
 

@@ -197,15 +197,6 @@
             }
         }
         
-        $("input[name='Price']").change(function () {
-            var sum = 0;
-            $("input[name='Price']").each(function () {
-                var str = $(this).val();
-                if (str != NaN && str != undefined && str != "undefined" && str != "") {
-                    sum += parseFloat(str);
-                }
-            });
-            $("input[name='Money']").val(sum.toFixed(2));
-        })
+        //$("input[name='Price']").change(SumDial)
     })
 </script>

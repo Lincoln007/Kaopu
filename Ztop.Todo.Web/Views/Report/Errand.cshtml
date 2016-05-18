@@ -61,6 +61,8 @@
                                     <th class="text-center">金额（元）</th>
                                     <th class="text-center">过路费（元）</th>
                                     <th class="text-center">油费（元）</th>
+                                    <th class="text-center">司机</th>
+                                    <th class="text-center">车补（元）</th>
                                     <th class="text-center">车牌</th>
                                     <th class="text-center">次数</th>
                                 </tr>
@@ -69,10 +71,21 @@
                                     <tr>
                                         <td>@(cost.Type.GetDescription())</td>
                                         <td>@(cost.Cost)</td>
-                                        @if (cost.Type == BusType.Company || cost.Type == BusType.Personal)
+                                        @if (cost.Type == BusType.Company)
                                         {
                                             <td>@(cost.Toll)</td>
                                             <td>@(cost.Petrol)</td>
+                                            <td>@(cost.Driver)</td>
+                                            <td>@(cost.CarPetty)</td>
+                                            <td>@(cost.Plate)</td>
+                                            <td>/</td>
+                                        }
+                                        else if (cost.Type == BusType.Personal)
+                                        {
+                                            <td>@(cost.Toll)</td>
+                                            <td>@(cost.Petrol)</td>
+                                            <td>/</td>
+                                            <td>/</td>
                                             <td>@(cost.Plate)</td>
                                             <td>/</td>
                                         }
@@ -81,10 +94,14 @@
                                             <td>/</td>
                                             <td>/</td>
                                             <td>/</td>
+                                            <td>/</td>
+                                            <td>/</td>
                                             <td>@(cost.Times) 次</td>
                                         }
                                         else
                                         {
+                                            <td>/</td>
+                                            <td>/</td>
                                             <td>/</td>
                                             <td>/</td>
                                             <td>/</td>
@@ -138,7 +155,7 @@
                                                         {
                                                             <div class="input-group" style="margin-top:10px; ">
                                                                 <div class="input-group-addon">过路费</div>
-                                                                <input type="text" class="form-control" name="Toll" placeholder="过路费" value="@(values.Toll)" />
+                                                                <input type="text" class="form-control" name="Toll" placeholder="过路费" value="@(values.Toll)" targetType="Company" />
                                                                 <div class="input-group-addon">元</div>
                                                                 <div class="input-group-addon">油费</div>
                                                                 <input type="text" class="form-control" name="Petrol" placeholder="油费" value="@(values.Petrol)" />
@@ -149,11 +166,11 @@
                                                                 <select name="Driver" class="form-control">
                                                                     @foreach(Driver driver in Enum.GetValues(typeof(Driver)))
                                                                     {
-                                                                        <option value="@(driver)">@(driver)</option>
+                                                                        <option value="@(driver)" @(values.Driver==driver?"selected=selected":"")>@(driver)</option>
                                                                     }
                                                                 </select>
                                                                 <div class="input-group-addon">司机</div>
-                                                                <input type="text" class="form-control" name="" />
+                                                                <input type="text" class="form-control" name="CarPetty" placeholder="车补" value="@(values.CarPetty)"  readonly="readonly"/>
                                                                 <div class="input-group-addon">元</div>
                                                                 <input type="text" class="form-control" name="Plate" placeholder="车牌" value="@(values.Plate)" />
                                                             </div>
@@ -162,7 +179,7 @@
                                                         {
                                                             <div class="input-group" style="margin-top:10px;">
                                                                 <div class="input-group-addon">过路费</div>
-                                                                <input type="text" class="form-control" name="Toll" placeholder="过路费" value="@(values.Toll)" />
+                                                                <input type="text" class="form-control" name="Toll" placeholder="过路费" value="@(values.Toll)" targetType="Personal"/>
                                                                 <div class="input-group-addon">元</div>
                                                                 <input type="text" class="form-control" name="Plate" placeholder="车牌" value="@(values.Plate)" />
                                                             </div>
@@ -173,6 +190,7 @@
                                         </ul>
                                     </div>
                                     <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                                         <button type="button" name="BT" class="btn btn-primary" targetId="">确定</button>
                                     </div>
                                 </div>
@@ -431,7 +449,6 @@
             $("[name='SubSidy']").val(sum * 40);
             SumErrand();
         }
-
         //点击出差补贴输入框  统计出差补贴
         $("input[name='SubSidy']").focus(function () {
             SumSubSidy();
@@ -453,7 +470,6 @@
             $("[name='Peoples" + id + "']").val(count);
             $(".choose" + id + "").modal("hide");
         });
-
         //统计交通总费用并赋值
         function SumTraffic() {
             var sum = 0;
@@ -469,7 +485,6 @@
             $("input[name='Traffic']").val(sum);
             SumErrand();
         }
-
         $("button[name='BT']").click(function () {
             SumTraffic();
             $(".ViewTraffic").modal("hide");
@@ -485,12 +500,11 @@
         $("input[name='Other']").change(function () {
             SumErrand();
         });
-
         //解决当出差人详情点击之后出现黑色块的问题
         $(".ViewSubSidy").on("hidden.bs.modal", function (e) {
             $(".modal-backdrop.fade.in").remove();
         })
-
+        //获取公里数
         function GetKile() {
             var val = .0;
             var kile = $("input[name='KiloMeters']").val();
@@ -500,6 +514,63 @@
             return val;
         }
 
+        //计算公司派车合计金额
+        function StatisticCompany() {
+            var sum = .0;
+            var val = $("input[name='CarPetty']").val();
+            if (val != undefined && val != NaN && val != "") {
+                sum += parseFloat(val);
+            }
+            val = $("input[name='Petrol']").val();
+            if (val != undefined && val != NaN && val != "") {
+                sum += parseFloat(val);
+            }
+            val = $("input[name='Toll']")[0].value;
+            if (val != undefined && val != NaN && val != "") {
+                sum += parseFloat(val);
+            }
+            $("input[name='CostCompany']").val(sum);
+        };
+        //计算自备车车补金额
+        function StatisticPersonal() {
+            var kile = GetKile();
+            if (isNaN(kile)) {
+                alert("未获取公里数！");
+                return;
+            }
+            $("input[name='CostPersonal']").val(kile * 1.5);
+        }
+        //在公司派车中选择司机 自动计算车补
+        $("select[name='Driver']").change(function () {
+            var val = $(this).val();
+            var money = .0;
+            var kile = GetKile();
+            if (isNaN(kile)) {
+                alert("未获取公里数！");
+                return;
+            }
+            if (val == "无") {
+                money = 0;
+            } else if (val == "孙海杰") {
+                money = kile * 0.5;
+            } else {
+                money = kile * 0.2;
+            }
+            $("input[name='CarPetty']").val(money);
+            StatisticCompany();
+        });
+        //修改公司车过路费栏  自动统计计算金额
+        $("input[name='Toll']").change(function () {
+            var targetType = $(this).attr("targetType");
+            if (targetType == "Company") {
+                StatisticCompany();
+            }
+        });
+
+        $("input[name='Petrol']").change(StatisticCompany);
+
+
+        //用户点击公司车和自备车  自动计算金额
         $("input[name='BusType']").click(function () {
             var bustype = $(this).val();
             if (bustype == "Company") {
@@ -508,20 +579,13 @@
                     alert("无法获取公里数！");
                     return;
                 }
-                $("input[name='CostCompany']").val(kile * 0.2);
+                StatisticCompany();
             } else if (bustype == "Personal") {
-                var kile = GetKile();
-                if (isNaN(kile)) {
-                    alert("无法获取公里数！");
-                    return;
-                }
-                $("input[name='CostPersonal']").val(kile * 1.5);
+                StatisticPersonal();
             }
         });
 
-        $("select[name='Driver']").change(function () {
-            var val = $(this).val();
-        });
+      
 
     })
 </script>

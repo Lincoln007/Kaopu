@@ -162,22 +162,14 @@ namespace Ztop.Todo.Manager
                             Cost = e.Cost,
                             Toll = e.Toll,
                             Petrol=e.Petrol,
+                            Driver=e.Driver,
+                            CarPetty=e.CarPetty,
                             Plate = e.Plate,
                             Times = e.Times,
                             EID = sheet.Evection.ID
                         }).ToList();
                         db.Traffics.AddRange(sheet.Evection.TCosts);
                         db.SaveChanges();
-
-                        //db.Traffics.AddRange(sheet.Evection.TCosts.Select(e => new Traffic
-                        //{
-                        //    Type = e.Type,
-                        //    Cost = e.Cost,
-                        //    Toll = e.Toll,
-                        //    Plate = e.Plate,
-                        //    Times = e.Times,
-                        //    EID = sheet.Evection.ID
-                        //}));
                     }
                    
                     #endregion

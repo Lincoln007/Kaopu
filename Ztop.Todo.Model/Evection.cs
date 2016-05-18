@@ -71,9 +71,12 @@ namespace Ztop.Todo.Model
         /// </summary>
         public double Toll { get; set; }
         /// <summary>
-        /// 油费
+        /// 油费 公司车
         /// </summary>
         public double Petrol { get; set; }
+        [Column(TypeName ="INT")]
+        public Driver Driver { get; set; }
+        public double CarPetty { get; set; }
         public string Plate { get; set; }
         /// <summary>
         /// 企业滴滴或者出租车填写的时候  填写次数
