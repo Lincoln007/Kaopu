@@ -117,7 +117,7 @@
                 else
                 {
                     <td>
-                        <div class="input-group">
+                        <div class="input-group col-md-10">
                             <input type="text" class="form-control" placeholder="合计" readonly="readonly" name="Traffic" value="@(Model.Traffic)" />
                             <div class="input-group-addon">元</div>
                             <span class="input-group-btn">
@@ -234,7 +234,7 @@
                 else
                 {
                     <td>
-                        <div class="input-group">
+                        <div class="input-group col-md-10">
                             <input type="text" class="form-control" name="SubSidy" readonly="readonly" value="@(Model.SubSidy)" />
                             <div class="input-group-addon">元</div>
                             <span class="input-group-btn">
@@ -257,7 +257,7 @@
                                                 foreach (var errand in Model.Errands)
                                                 {
                                                     <div class="form-group">
-                                                        <label class="control-label col-lg-2">时间：</label>
+                                                        <label class="control-label col-md-2">时间：</label>
                                                         <div class="input-group col-md-10">
                                                             <input type="text" class="form-control datetimepicker" name="StartTime@(serial)" targetId="@(serial)" value="@(errand.StartTime.ToString("yyyy-MM-dd"))" />
                                                             <div class="input-group-addon">至</div>
@@ -387,7 +387,10 @@
                 else
                 {
                     <td>
-                        <input type="text" class="form-control col-md-10" name="Mark" value="@(Model.Mark)" />
+                        <div class="input-group col-md-10">
+                            <input type="text" class="form-control " name="Mark" value="@(Model.Mark)" />
+                        </div>
+                       
                     </td>
                 }
             </tr>

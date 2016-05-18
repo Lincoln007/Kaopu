@@ -255,6 +255,7 @@ namespace Ztop.Todo.Manager
         {
             var list = GetSerialNumberSheets();
             var query = list.AsQueryable();
+            query = query.Where(e => e.Deleted == false);
             if (parameter.Type.HasValue)
             {
                 query = query.Where(e => e.Type == parameter.Type.Value);

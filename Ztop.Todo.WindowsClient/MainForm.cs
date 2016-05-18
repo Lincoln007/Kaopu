@@ -13,6 +13,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.IO;
 using Ztop.Todo.Common;
+using Microsoft.Win32;
 
 namespace Ztop.Todo.WindowsClient
 {
@@ -212,6 +213,34 @@ namespace Ztop.Todo.WindowsClient
             var thread = new Thread(TODOFTP.Start);
             thread.IsBackground = false;
             thread.Start();
+        }
+
+        private void 右键修复ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var exePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, AppDomain.CurrentDomain.FriendlyName);
+            #region  注册鼠标右键
+            using (RegistryKey classesroot = Registry.ClassesRoot)
+            {
+                using (RegistryKey star = classesroot.OpenSubKey("*"))
+                {
+                    using (RegistryKey Shell = star.OpenSubKey("Shell", true))
+                    {
+                        using (RegistryKey TODO = Shell.CreateSubKey("TODO"))
+                        {
+                            using (RegistryKey command = TODO.CreateSubKey("Command"))
+                            {
+                                command.SetValue(null, string.Format("{0} %1", exePath));
+                                command.Close();
+                            }
+                            TODO.Close();
+                        }
+                        Shell.Close();
+                    }
+                    star.Close();
+                }
+                classesroot.Close();
+            }
+            #endregion
         }
     }
 }

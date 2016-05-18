@@ -37,6 +37,7 @@
             this.webControl1 = new Awesomium.Windows.Forms.WebControl(this.components);
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.右键修复ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.注销ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.退出ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
@@ -53,7 +54,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panel1.Location = new System.Drawing.Point(0, 573);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(850, 27);
+            this.panel1.Size = new System.Drawing.Size(1070, 27);
             this.panel1.TabIndex = 1;
             // 
             // label3
@@ -85,7 +86,7 @@
             // 
             this.webControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.webControl1.Location = new System.Drawing.Point(0, 0);
-            this.webControl1.Size = new System.Drawing.Size(850, 573);
+            this.webControl1.Size = new System.Drawing.Size(1070, 573);
             this.webControl1.TabIndex = 2;
             // 
             // notifyIcon1
@@ -99,22 +100,30 @@
             // contextMenuStrip1
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.右键修复ToolStripMenuItem,
             this.注销ToolStripMenuItem,
             this.退出ToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(101, 48);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(153, 92);
+            // 
+            // 右键修复ToolStripMenuItem
+            // 
+            this.右键修复ToolStripMenuItem.Name = "右键修复ToolStripMenuItem";
+            this.右键修复ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.右键修复ToolStripMenuItem.Text = "右键修复";
+            this.右键修复ToolStripMenuItem.Click += new System.EventHandler(this.右键修复ToolStripMenuItem_Click);
             // 
             // 注销ToolStripMenuItem
             // 
             this.注销ToolStripMenuItem.Name = "注销ToolStripMenuItem";
-            this.注销ToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.注销ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.注销ToolStripMenuItem.Text = "注销";
             this.注销ToolStripMenuItem.Click += new System.EventHandler(this.注销ToolStripMenuItem_Click);
             // 
             // 退出ToolStripMenuItem
             // 
             this.退出ToolStripMenuItem.Name = "退出ToolStripMenuItem";
-            this.退出ToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.退出ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.退出ToolStripMenuItem.Text = "退出";
             this.退出ToolStripMenuItem.Click += new System.EventHandler(this.退出ToolStripMenuItem_Click);
             // 
@@ -152,6 +161,7 @@
         private System.Windows.Forms.ToolStripMenuItem 退出ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 注销ToolStripMenuItem;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ToolStripMenuItem 右键修复ToolStripMenuItem;
     }
 }
 
