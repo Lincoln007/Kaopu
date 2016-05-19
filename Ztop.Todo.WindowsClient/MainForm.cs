@@ -217,30 +217,46 @@ namespace Ztop.Todo.WindowsClient
 
         private void 右键修复ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var exePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, AppDomain.CurrentDomain.FriendlyName);
-            #region  注册鼠标右键
-            using (RegistryKey classesroot = Registry.ClassesRoot)
+
+            System.Security.Principal.WindowsIdentity identity = System.Security.Principal.WindowsIdentity.GetCurrent();
+            System.Security.Principal.WindowsPrincipal principal = new System.Security.Principal.WindowsPrincipal(identity);
+            if (principal.IsInRole(System.Security.Principal.WindowsBuiltInRole.Administrator))
             {
-                using (RegistryKey star = classesroot.OpenSubKey("*"))
+
+                //var exePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, AppDomain.CurrentDomain.FriendlyName);
+                var exePath = Application.ExecutablePath;
+                #region  注册鼠标右键
+                using (RegistryKey classesroot = Registry.ClassesRoot)
                 {
-                    using (RegistryKey Shell = star.OpenSubKey("Shell", true))
+                    using (RegistryKey star = classesroot.OpenSubKey("*"))
                     {
-                        using (RegistryKey TODO = Shell.CreateSubKey("TODO"))
+                        using (RegistryKey Shell = star.OpenSubKey("Shell", true))
                         {
-                            using (RegistryKey command = TODO.CreateSubKey("Command"))
+                            using (RegistryKey TODO = Shell.CreateSubKey("TODO"))
                             {
-                                command.SetValue(null, string.Format("{0} %1", exePath));
-                                command.Close();
+                                using (RegistryKey command = TODO.CreateSubKey("Command"))
+                                {
+                                    command.SetValue(null, string.Format("{0} %1", exePath));
+                                    command.Close();
+                                }
+                                TODO.Close();
                             }
-                            TODO.Close();
+                            Shell.Close();
                         }
-                        Shell.Close();
+                        star.Close();
                     }
-                    star.Close();
+                    classesroot.Close();
                 }
-                classesroot.Close();
+                #endregion
             }
-            #endregion
+            else
+            {
+                MessageBox.Show("右键上传文件修复需要管理员权限，请用管理员权限运行本程序修复");
+                return;
+            }
+
+
+
         }
     }
 }

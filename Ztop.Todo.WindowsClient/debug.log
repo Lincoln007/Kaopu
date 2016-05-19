@@ -1,0 +1,7 @@
+[0519/085855:INFO:(0)] WebCore is now online.
+[0519/085855:INFO:(0)] Running Awesomium 1.7.5.0
+[0519/085910:ERROR:ipc_channel_win.cc(360)] pipe error: 232
+[0519/085910:WARNING:Awesomium.NET(0)] System.ComponentModel.InvalidAsynchronousStateException: 调用方法时发生错误。  目标线程不再存在。
+   在 System.Windows.Forms.WindowsFormsSynchronizationContext.Send(SendOrPostCallback d, Object state)
+   在 Awesomium.Core.WebCore.SwoYrDtsHvuLJUY08ID(Object , Object , Object )
+   在 Awesomium.Core.WebCore.wQrBKtHAGh()

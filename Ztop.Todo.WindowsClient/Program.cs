@@ -28,7 +28,7 @@ namespace Ztop.Todo.WindowsClient
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
             var filePath = string.Join(" ", args ?? new string[] { });
-            if (WJLHasInstance())
+            if (HasInstance())
             {
                 
                 if (!string.IsNullOrEmpty(filePath))
