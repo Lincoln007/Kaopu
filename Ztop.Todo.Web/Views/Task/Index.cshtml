@@ -11,128 +11,243 @@
         queryId = -1;
     }
 }
-<table style="border:none;width:100%;">
-    <tr>
-        <td style="width:210px;vertical-align:top;padding:9px;" class="well">
-            <fieldset>
-                <legend>
-                    新建查询
-                </legend>
-                <form id="form-query" style="margin-bottom:5px;" method="get">
-                    <div class="form-group">
-                        <label>关键词</label>
-                        <input type="text" class="form-control input-sm" placeholder="任务名称或接收人姓名" name="keyword" value="@(parameter.SearchKey)">
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">下达人</label>
-                        <div class="input-group btn-group btn-group-sm">
-                            <input type="hidden" name="IsCreator" value="@(parameter.IsCreator.ToString())" />
-                            <button type="button" class="btn btn-@(parameter.IsCreator ? "primary" : "default")" value="true" targetId="IsCreator">我下达的</button>
-                            <button type="button" class="btn btn-@(parameter.IsCreator ? "default" : "primary")" value="false" targetId="IsCreator">我接收的</button>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>状态</label>
-                        <div class="input-group btn-group btn-group-sm">
-                            <input type="hidden" name="IsCompleted" value="@(parameter.IsCompleted.HasValue?parameter.IsCompleted.Value.ToString():null)" />
-                            <button type="button" class="btn btn-@(parameter.IsCompleted == null  ? "primary" : "default")" value="" targetId="IsCompleted">全部</button>
-                            <button type="button" class="btn btn-@(parameter.IsCompleted == false ? "primary" : "default")" value="false" targetId="IsCompleted">未完成</button>
-                            <button type="button" class="btn btn-@(parameter.IsCompleted == true ? "primary" : "default")" value="true" targetId="IsCompleted">已完成</button>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">排序</label>
-                        <div class="input-group btn-group btn-group-sm">
-                            <input type="hidden" name="Order" value="@(parameter.Order)"  />
-                            <button type="button" class="btn btn-@(parameter.Order == UserTaskOrder.CreateTime  ? "primary" : "default")" value="0" targetId="Order">创建时间</button>
-                            <button type="button" class="btn btn-@(parameter.Order == UserTaskOrder.ScheduleTime  ? "primary" : "default")" value="1" targetId="Order">完成时间</button>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">时间范围</label>
-                        <div class="input-group btn-group btn-group-sm">
-                            <input type="hidden" name="Days"  value="@(parameter.Days.ToString())" />
-                            <button type="button" class="btn btn-@(parameter.Days == 0  ? "primary" : "default")" value="0" targetId="Days">不限</button>
-                            <button type="button" class="btn btn-@(parameter.Days == 1  ? "primary" : "default")" value="1" targetId="Days">一天</button>
-                            <button type="button" class="btn btn-@(parameter.Days == 7  ? "primary" : "default")" value="7" targetId="Days">一周</button>
-                            <button type="button" class="btn btn-@(parameter.Days == 30  ? "primary" : "default")" value="30" targetId="Days">一月</button>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <input type="hidden" name="queryId" value="-1" />
-                        <button type="submit" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-search"></i> 立即查询</button>
-                    </div>
-                    <div class="form-group">
-                        <label>查询名称</label>
-                        <input type="text" name="Name" class="form-control input-sm" value="@(Request.QueryString["name"])" />
-                    </div>
-                    <div class="form-group">
-                        <button type="submit" id="btn-save" class="btn btn-success btn-sm"><i class="glyphicon glyphicon-save"></i> 保存查询</button>
-                    </div>
-                </form>
-            </fieldset>
-        </td>
-        <td style="vertical-align:top;padding-left:10px;">
-            <fieldset>
-                <legend>我的查询 @(currentQuery == null ? "" : "：" + currentQuery.Name)</legend>
-                <div class="alert">
-                    @foreach (var query in queries)
-                    {
-                        <span class="btn-group btn-group-sm">
-                            <a class="btn btn-primary" href="/task?queryId=@(query.ID)">@(query.Name)</a>
-                            @if (query.UserID == Identity.UserID)
-                            {
-                                <a href="/query/delete?queryId=@(query.ID)" class="btn btn-default btn-delete-task"><i class="glyphicon glyphicon-remove"></i></a>
-                            }
-                        </span>
-                    }
-                </div>
-                @if (list != null)
+@if (Request.Browser.IsMobileDevice)
+{
+    <fieldset>
+        <legend>我的查询 @(currentQuery == null ? "" : "：" + currentQuery.Name)</legend>
+        @if (queries.Count != 0)
+        {
+            <div class="well">
+                @foreach (var query in queries)
                 {
-                    <table class="table table-hover">
-                        <tr>
-                            <th>任务标题</th>
-                            <th class="col-lg-2">计划完成时间</th>
-                            @if (parameter.IsCompleted == true)
-                            {
-                                <th class="col-lg-2">任务完成时间</th>
-                            }
-                            <th class="col-lg-1">@(parameter.IsCreator ? "接收人" : "创建者")</th>
-                            <th class="col-lg-2">创建时间</th>
-                            <th class="col-lg-1">操作</th>
-                        </tr>
-                        @foreach (var item in list)
+                    <span class="btn-group btn-group-sm" style="">
+                        <a class="btn btn-primary" href="/task?queryId=@(query.ID)">@(query.Name)</a>
+                        @if (query.UserID == Identity.UserID)
                         {
+                            <a href="/query/delete?queryId=@(query.ID)" class="btn btn-default btn-delete-task"><i class="glyphicon glyphicon-remove"></i></a>
+                        }
+                    </span>
+                }
+            </div>
+        }
+       
+        @if (list != null)
+        {
+            <table class="table table-hover">
+                <tr>
+                    <th>任务标题</th>
+                    <th class="col-xs-2">计划完成时间</th>
+                    @if (parameter.IsCompleted == true)
+                    {
+                        <th class="col-lg-2">任务完成时间</th>
+                    }
+                    <th class="col-xs-1">@(parameter.IsCreator ? "接收人" : "创建者")</th>
+                    <th class="col-xs-2">创建时间</th>
+                </tr>
+                @foreach (var item in list)
+                {
+                    <tr>
+                        <td><a href="/task/detail?id=@(item.ID)">@(item.Title)</a> </td>
+                        <td>@(item.ScheduledTime.HasValue ? item.ScheduledTime.Value.ToShortDateString() : "不限")</td>
+                        @if (parameter.IsCompleted == true)
+                        {
+                            <td><span class="@(item.CompletedTime.Value>item.ScheduledTime.Value?"text-danger":"text-default")">@(item.CompletedTime.Value.ToShortDateString())</span></td>
+                        }
+                        <td>@(!parameter.IsCreator ? item.Creator.DisplayName : item.Receiver.DisplayName)</td>
+                        <td>@(item.CreateTime.ToString("yyyy-MM-dd HH:mm"))</td>
+                    </tr>
+                }
+            </table>
+        }
+    </fieldset>
+   <form id="form-query" method="get" class="well">
+       <fieldset>
+           <legend>我的查询 @(currentQuery == null ? "" : "：" + currentQuery.Name)</legend>
+       </fieldset>
+      
+       <div class="form-group">
+           <label>关键词</label>
+           <input type="text" class="form-control input-sm" placeholder="任务名称或接收人姓名" name="keyword" value="@(parameter.SearchKey)">
+       </div>
+       <div class="form-group">
+           <label class="control-label">下达人</label>
+           <div class="input-group btn-group btn-group-sm">
+               <input type="hidden" name="IsCreator" value="@(parameter.IsCreator.ToString())" />
+               <button type="button" class="btn btn-@(parameter.IsCreator ? "primary" : "default")" value="true" targetId="IsCreator">我下达的</button>
+               <button type="button" class="btn btn-@(parameter.IsCreator ? "default" : "primary")" value="false" targetId="IsCreator">我接收的</button>
+           </div>
+       </div>
+       <div class="form-group">
+           <label>状态</label>
+           <div class="input-group btn-group btn-group-sm">
+               <input type="hidden" name="IsCompleted" value="@(parameter.IsCompleted.HasValue?parameter.IsCompleted.Value.ToString():null)" />
+               <button type="button" class="btn btn-@(parameter.IsCompleted == null  ? "primary" : "default")" value="" targetId="IsCompleted">全部</button>
+               <button type="button" class="btn btn-@(parameter.IsCompleted == false ? "primary" : "default")" value="false" targetId="IsCompleted">未完成</button>
+               <button type="button" class="btn btn-@(parameter.IsCompleted == true ? "primary" : "default")" value="true" targetId="IsCompleted">已完成</button>
+           </div>
+       </div>
+       <div class="form-group">
+           <label class="control-label">排序</label>
+           <div class="input-group btn-group btn-group-sm">
+               <input type="hidden" name="Order" value="@(parameter.Order)" />
+               <button type="button" class="btn btn-@(parameter.Order == UserTaskOrder.CreateTime  ? "primary" : "default")" value="0" targetId="Order">创建时间</button>
+               <button type="button" class="btn btn-@(parameter.Order == UserTaskOrder.ScheduleTime  ? "primary" : "default")" value="1" targetId="Order">完成时间</button>
+           </div>
+       </div>
+       <div class="form-group">
+           <label class="control-label">时间范围</label>
+           <div class="input-group btn-group btn-group-sm">
+               <input type="hidden" name="Days" value="@(parameter.Days.ToString())" />
+               <button type="button" class="btn btn-@(parameter.Days == 0  ? "primary" : "default")" value="0" targetId="Days">不限</button>
+               <button type="button" class="btn btn-@(parameter.Days == 1  ? "primary" : "default")" value="1" targetId="Days">一天</button>
+               <button type="button" class="btn btn-@(parameter.Days == 7  ? "primary" : "default")" value="7" targetId="Days">一周</button>
+               <button type="button" class="btn btn-@(parameter.Days == 30  ? "primary" : "default")" value="30" targetId="Days">一月</button>
+           </div>
+       </div>
+       <div class="form-group">
+           <input type="hidden" name="queryId" value="-1" />
+           <button type="submit" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-search"></i> 立即查询</button>
+       </div>
+       <div class="form-group">
+           <label>查询名称</label>
+           <input type="text" name="Name" class="form-control input-sm" value="@(Request.QueryString["name"])" />
+       </div>
+       <div class="form-group">
+           <button type="submit" id="btn-save" class="btn btn-success btn-sm"><i class="glyphicon glyphicon-save"></i> 保存查询</button>
+       </div>
+   </form>
+   
+}
+else
+{
+    <table style="border:none;width:100%;">
+        <tr>
+            <td style="width:210px;vertical-align:top;padding:9px;" class="well">
+                <fieldset>
+                    <legend>
+                        新建查询
+                    </legend>
+                    <form id="form-query" style="margin-bottom:5px;" method="get">
+                        <div class="form-group">
+                            <label>关键词</label>
+                            <input type="text" class="form-control input-sm" placeholder="任务名称或接收人姓名" name="keyword" value="@(parameter.SearchKey)">
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">下达人</label>
+                            <div class="input-group btn-group btn-group-sm">
+                                <input type="hidden" name="IsCreator" value="@(parameter.IsCreator.ToString())" />
+                                <button type="button" class="btn btn-@(parameter.IsCreator ? "primary" : "default")" value="true" targetId="IsCreator">我下达的</button>
+                                <button type="button" class="btn btn-@(parameter.IsCreator ? "default" : "primary")" value="false" targetId="IsCreator">我接收的</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>状态</label>
+                            <div class="input-group btn-group btn-group-sm">
+                                <input type="hidden" name="IsCompleted" value="@(parameter.IsCompleted.HasValue?parameter.IsCompleted.Value.ToString():null)" />
+                                <button type="button" class="btn btn-@(parameter.IsCompleted == null  ? "primary" : "default")" value="" targetId="IsCompleted">全部</button>
+                                <button type="button" class="btn btn-@(parameter.IsCompleted == false ? "primary" : "default")" value="false" targetId="IsCompleted">未完成</button>
+                                <button type="button" class="btn btn-@(parameter.IsCompleted == true ? "primary" : "default")" value="true" targetId="IsCompleted">已完成</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">排序</label>
+                            <div class="input-group btn-group btn-group-sm">
+                                <input type="hidden" name="Order" value="@(parameter.Order)" />
+                                <button type="button" class="btn btn-@(parameter.Order == UserTaskOrder.CreateTime  ? "primary" : "default")" value="0" targetId="Order">创建时间</button>
+                                <button type="button" class="btn btn-@(parameter.Order == UserTaskOrder.ScheduleTime  ? "primary" : "default")" value="1" targetId="Order">完成时间</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">时间范围</label>
+                            <div class="input-group btn-group btn-group-sm">
+                                <input type="hidden" name="Days" value="@(parameter.Days.ToString())" />
+                                <button type="button" class="btn btn-@(parameter.Days == 0  ? "primary" : "default")" value="0" targetId="Days">不限</button>
+                                <button type="button" class="btn btn-@(parameter.Days == 1  ? "primary" : "default")" value="1" targetId="Days">一天</button>
+                                <button type="button" class="btn btn-@(parameter.Days == 7  ? "primary" : "default")" value="7" targetId="Days">一周</button>
+                                <button type="button" class="btn btn-@(parameter.Days == 30  ? "primary" : "default")" value="30" targetId="Days">一月</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <input type="hidden" name="queryId" value="-1" />
+                            <button type="submit" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-search"></i> 立即查询</button>
+                        </div>
+                        <div class="form-group">
+                            <label>查询名称</label>
+                            <input type="text" name="Name" class="form-control input-sm" value="@(Request.QueryString["name"])" />
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" id="btn-save" class="btn btn-success btn-sm"><i class="glyphicon glyphicon-save"></i> 保存查询</button>
+                        </div>
+                    </form>
+                </fieldset>
+            </td>
+            <td style="vertical-align:top;padding-left:10px;">
+                <fieldset>
+                    <legend>我的查询 @(currentQuery == null ? "" : "：" + currentQuery.Name)</legend>
+                    <div class="alert">
+                        @foreach (var query in queries)
+                        {
+                            <span class="btn-group btn-group-sm">
+                                <a class="btn btn-primary" href="/task?queryId=@(query.ID)">@(query.Name)</a>
+                                @if (query.UserID == Identity.UserID)
+                                {
+                                    <a href="/query/delete?queryId=@(query.ID)" class="btn btn-default btn-delete-task"><i class="glyphicon glyphicon-remove"></i></a>
+                                }
+                            </span>
+                        }
+                    </div>
+                    @if (list != null)
+                {
+                        <table class="table table-hover">
                             <tr>
-                                <td><a href="/task/detail?id=@(item.ID)">@(item.Title)</a> </td>
-                                <td>@(item.ScheduledTime.HasValue ? item.ScheduledTime.Value.ToShortDateString() : "不限")</td>
+                                <th>任务标题</th>
+                                <th class="col-lg-2">计划完成时间</th>
                                 @if (parameter.IsCompleted == true)
                                 {
-                                    <td><span class="@(item.CompletedTime.Value>item.ScheduledTime.Value?"text-danger":"text-default")">@(item.CompletedTime.Value.ToShortDateString())</span></td>
+                                    <th class="col-lg-2">任务完成时间</th>
                                 }
-                               <td>@(!parameter.IsCreator ? item.Creator.DisplayName : item.Receiver.DisplayName)</td>
-                                <td>@(item.CreateTime.ToString("yyyy-MM-dd HH:mm"))</td>
-                                <th>
-                                    @if (item.Completed)
-                                    {
-                                        <span class="label label-success"><i class="fa fa-check"></i> 已完成</span>
-                                    }
-                                    else if (item.Receiver.ID == Identity.UserID || item.CreatorID == Identity.UserID)
-                                    {
-                                        <a href="/task/complete?id=@(item.ID)" class="btn btn-completed btn-xs btn-default"><i class="fa fa-check"></i> 标记为完成</a>
-                                    }
-                                </th>
+                                <th class="col-lg-1">@(parameter.IsCreator ? "接收人" : "创建者")</th>
+                                <th class="col-lg-2">创建时间</th>
+                                <th class="col-lg-1">操作</th>
                             </tr>
-                        }
-                    </table>
-                }
-            </fieldset>
-        </td>
-    </tr>
-</table>
+                            @foreach (var item in list)
+                            {
+                                <tr>
+                                    <td><a href="/task/detail?id=@(item.ID)">@(item.Title)</a> </td>
+                                    <td>@(item.ScheduledTime.HasValue ? item.ScheduledTime.Value.ToShortDateString() : "不限")</td>
+                                    @if (parameter.IsCompleted == true)
+                                    {
+                                        <td><span class="@(item.CompletedTime.Value>item.ScheduledTime.Value?"text-danger":"text-default")">@(item.CompletedTime.Value.ToShortDateString())</span></td>
+                                    }
+                                    <td>@(!parameter.IsCreator ? item.Creator.DisplayName : item.Receiver.DisplayName)</td>
+                                    <td>@(item.CreateTime.ToString("yyyy-MM-dd HH:mm"))</td>
+                                    <th>
+                                        @if (item.Completed)
+                                        {
+                                            <span class="label label-success"><i class="fa fa-check"></i> 已完成</span>
+                                        }
+                                        else if (item.Receiver.ID == Identity.UserID || item.CreatorID == Identity.UserID)
+                                        {
+                                            <a href="/task/complete?id=@(item.ID)" class="btn btn-completed btn-xs btn-default"><i class="fa fa-check"></i> 标记为完成</a>
+                                        }
+                                    </th>
+                                </tr>
+                            }
+                        </table>
+                    }
+                </fieldset>
+            </td>
+        </tr>
+    </table>
 
+
+   
+}
 
 @Html.Partial("_pagination", ViewBag.Page as object)
+
+
+
 <script>
     $(function () {
         $("#form-query .input-group button").click(function () {

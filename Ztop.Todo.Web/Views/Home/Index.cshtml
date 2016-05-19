@@ -5,99 +5,189 @@
     List<UserTaskView> CreatedDoneTasks = ViewBag.CreateDoneTasks;
     List<UserTaskView> CreatedUndoneTasks = ViewBag.CreateUndoneTasks;
 }
-<h3>
-    欢迎页&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-primary" href="/task/edit"><i class="fa fa-plus"></i> 创建任务</a>
 
-</h3>
+@if (Request.Browser.IsMobileDevice)
+{
+    <h3>欢迎页&nbsp;&nbsp;&nbsp;&nbsp;</h3>
+    <a class="btn btn-primary" href="/task/edit"><i class="fa fa-plus"></i> 创建任务</a>
 
-<table class="table">
-    <tr>
-        <td style="width:50%;">
-            <h4 class="text-primary">
-                最新接收的任务
-            </h4>
-            <ul class="list-group">
-                @foreach (var item in ReceiveNewTasks)
+    <h4 class="text-primary">
+        最新接收的任务
+    </h4>
+    <ul class="list-group">
+                    @foreach (var item in ReceiveNewTasks)
                 {
-                    <li class="list-group-item">
-                        <a href="/task/detail?id=@(item.ID)">@(item.Title)</a>
-                        <p style="margin-bottom:0px;">
-                            <span class="badge">
-                                @(item.Creator.DisplayName)
-                            </span>
-                            <span class="badge">
-                                @(item.ScheduledTime.HasValue ? item.ScheduledTime.Value.ToShortDateString() : "不限")
-                            </span>
-                        </p>
-                       
-                    </li>
-                }
-            </ul>
-        </td>
-        <td style="width:50%;">
-            <h4 class="text-danger">
-                最近需要完成的任务
-            </h4>
-            <ul class="list-group">
-                @foreach (var item in ReceiveUndoneTasks)
+                        <li class="list-group-item">
+                            <a href="/task/detail?id=@(item.ID)">@(item.Title)</a>
+                            <p style="margin-bottom:0px;">
+                                <span class="badge">
+                                    @(item.Creator.DisplayName)
+                                </span>
+                                <span class="badge">
+                                    @(item.ScheduledTime.HasValue ? item.ScheduledTime.Value.ToShortDateString() : "不限")
+                                </span>
+                            </p>
+
+                        </li>
+                    }
+                </ul>
+
+    <h4 class="text-danger">
+                    最近需要完成的任务
+    </h4>
+    <ul class="list-group">
+                    @foreach (var item in ReceiveUndoneTasks)
                 {
-                    <li class="list-group-item">
-                        <a href="/task/detail?id=@(item.ID)">@(item.Title)</a>
-                        <p style="margin-bottom:0px;">
-                            <span class="badge">
-                                @(item.Creator.DisplayName)
-                            </span>
-                            <span class="badge">
-                                @(item.ScheduledTime.HasValue ? item.ScheduledTime.Value.ToShortDateString() : "不限")
-                            </span>
-                        </p>
-                       
-                      
-                   </li>
-                }
-            </ul>
-        </td>
-    </tr>
-    <tr>
-        <td style="width:50%;">
-            <h4>
-                下达未完成的任务
-            </h4>
-            <ul class="list-group">
-                @foreach (var item in CreatedUndoneTasks)
+                        <li class="list-group-item">
+                            <a href="/task/detail?id=@(item.ID)">@(item.Title)</a>
+                            <p style="margin-bottom:0px;">
+                                <span class="badge">
+                                    @(item.Creator.DisplayName)
+                                </span>
+                                <span class="badge">
+                                    @(item.ScheduledTime.HasValue ? item.ScheduledTime.Value.ToShortDateString() : "不限")
+                                </span>
+                            </p>
+
+
+                        </li>
+                    }
+                </ul>
+
+                <h4>
+                    下达未完成的任务
+                </h4>
+                <ul class="list-group">
+                    @foreach (var item in CreatedUndoneTasks)
                 {
-                    <li class="list-group-item">
-                        <a href="/task/detail?id=@(item.ID)">@(item.Title)</a>
-                        <p style="margin-bottom:0px;">
-                            <span class="badge">
-                                @(item.Receiver.DisplayName)
-                            </span>
-                        </p>
-                      
-                    </li>
-                }
-            </ul>
-        </td>
-        <td style="width:50%;">
-            <h4>
-                下达已完成的任务
-            </h4>
-            <ul class="list-group">
-                @foreach (var item in CreatedDoneTasks)
+                        <li class="list-group-item">
+                            <a href="/task/detail?id=@(item.ID)">@(item.Title)</a>
+                            <p style="margin-bottom:0px;">
+                                <span class="badge">
+                                    @(item.Receiver.DisplayName)
+                                </span>
+                            </p>
+
+                        </li>
+                    }
+                </ul>
+
+                <h4>
+                    下达已完成的任务
+                </h4>
+                <ul class="list-group">
+                    @foreach (var item in CreatedDoneTasks)
                 {
-                    <li class="list-group-item">
-                        <a href="/task/detail?id=@(item.ID)">@(item.Title)</a>
-                        <p style="margin-bottom:0px;">
-                            <span class="badge">
-                                @(item.Receiver.DisplayName)
-                            </span>
-                            <span class="badge">
-                                @(item.CompletedTime.Value.ToShortDateString())
-                            </span>
-                        </p>
-                    </li>
-                }
-            </ul>
-        </td>
-    </tr>
-</table>
+                        <li class="list-group-item">
+                            <a href="/task/detail?id=@(item.ID)">@(item.Title)</a>
+                            <p style="margin-bottom:0px;">
+                                <span class="badge">
+                                    @(item.Receiver.DisplayName)
+                                </span>
+                                <span class="badge">
+                                    @(item.CompletedTime.Value.ToShortDateString())
+                                </span>
+                            </p>
+                        </li>
+                    }
+                </ul>
+}
+else
+{
+    <h3>
+        欢迎页&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-primary" href="/task/edit"><i class="fa fa-plus"></i> 创建任务</a>
+
+    </h3>
+
+    <table class="table">
+        <tr>
+            <td style="width:50%;">
+                <h4 class="text-primary">
+                    最新接收的任务
+                </h4>
+                <ul class="list-group">
+                    @foreach (var item in ReceiveNewTasks)
+                {
+                        <li class="list-group-item">
+                            <a href="/task/detail?id=@(item.ID)">@(item.Title)</a>
+                            <p style="margin-bottom:0px;">
+                                <span class="badge">
+                                    @(item.Creator.DisplayName)
+                                </span>
+                                <span class="badge">
+                                    @(item.ScheduledTime.HasValue ? item.ScheduledTime.Value.ToShortDateString() : "不限")
+                                </span>
+                            </p>
+
+                        </li>
+                    }
+                </ul>
+            </td>
+            <td style="width:50%;">
+                <h4 class="text-danger">
+                    最近需要完成的任务
+                </h4>
+                <ul class="list-group">
+                    @foreach (var item in ReceiveUndoneTasks)
+                {
+                        <li class="list-group-item">
+                            <a href="/task/detail?id=@(item.ID)">@(item.Title)</a>
+                            <p style="margin-bottom:0px;">
+                                <span class="badge">
+                                    @(item.Creator.DisplayName)
+                                </span>
+                                <span class="badge">
+                                    @(item.ScheduledTime.HasValue ? item.ScheduledTime.Value.ToShortDateString() : "不限")
+                                </span>
+                            </p>
+
+
+                        </li>
+                    }
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td style="width:50%;">
+                <h4>
+                    下达未完成的任务
+                </h4>
+                <ul class="list-group">
+                    @foreach (var item in CreatedUndoneTasks)
+                {
+                        <li class="list-group-item">
+                            <a href="/task/detail?id=@(item.ID)">@(item.Title)</a>
+                            <p style="margin-bottom:0px;">
+                                <span class="badge">
+                                    @(item.Receiver.DisplayName)
+                                </span>
+                            </p>
+
+                        </li>
+                    }
+                </ul>
+            </td>
+            <td style="width:50%;">
+                <h4>
+                    下达已完成的任务
+                </h4>
+                <ul class="list-group">
+                    @foreach (var item in CreatedDoneTasks)
+                {
+                        <li class="list-group-item">
+                            <a href="/task/detail?id=@(item.ID)">@(item.Title)</a>
+                            <p style="margin-bottom:0px;">
+                                <span class="badge">
+                                    @(item.Receiver.DisplayName)
+                                </span>
+                                <span class="badge">
+                                    @(item.CompletedTime.Value.ToShortDateString())
+                                </span>
+                            </p>
+                        </li>
+                    }
+                </ul>
+            </td>
+        </tr>
+    </table>
+}

@@ -5,24 +5,54 @@
     List<Ztop.Todo.Model.DataBook> List = ViewBag.List;
     int SerialNumber = 1;
 }
-<div style="overflow:hidden;margin-bottom:10px;float:right;">
-    <form class="form-inline" style="float:right;">
-        <div class="input-group">
-            <div class="input-group-btn">
-                <select name="status" class="form-control">
-                    <option value="3">全部</option>
-                    <option value="0" @(Request.QueryString["status"] == "0" ? "selected=selected" : "")>等待审核</option>
-                    <option value="1" @(Request.QueryString["status"] == "1" ? "selected=selected" : "")>同意</option>
-                    <option value="2" @(Request.QueryString["status"] == "2" ? "selected=selected" : "")>不同意</option>
-                </select>
-            </div>
-            <div class="input-group-btn">
-                <button type="submit" class="btn btn-primary">过滤</button>
-            </div>
-        </div>
 
-    </form>
-</div>
+<!--电脑与手机区别-->
+@if (Request.Browser.IsMobileDevice)
+{
+    <div style="overflow:hidden;margin-bottom:10px;" class="well">
+        <fieldset>
+            <legend>查询</legend>
+        </fieldset>
+        <form class="form-inline">
+            <div class="input-group">
+                <div class="input-group-btn">
+                    <select name="status" class="form-control">
+                        <option value="3">全部</option>
+                        <option value="0" @(Request.QueryString["status"] == "0" ? "selected=selected" : "")>等待审核</option>
+                        <option value="1" @(Request.QueryString["status"] == "1" ? "selected=selected" : "")>同意</option>
+                        <option value="2" @(Request.QueryString["status"] == "2" ? "selected=selected" : "")>不同意</option>
+                    </select>
+                </div>
+                <div class="input-group-btn">
+                    <button type="submit" class="btn btn-primary">过滤</button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+}
+else
+{
+    <div style="overflow:hidden;margin-bottom:10px;float:right;">
+        <form class="form-inline" style="float:right;">
+            <div class="input-group">
+                <div class="input-group-btn">
+                    <select name="status" class="form-control">
+                        <option value="3">全部</option>
+                        <option value="0" @(Request.QueryString["status"] == "0" ? "selected=selected" : "")>等待审核</option>
+                        <option value="1" @(Request.QueryString["status"] == "1" ? "selected=selected" : "")>同意</option>
+                        <option value="2" @(Request.QueryString["status"] == "2" ? "selected=selected" : "")>不同意</option>
+                    </select>
+                </div>
+                <div class="input-group-btn">
+                    <button type="submit" class="btn btn-primary">过滤</button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+}
+
 <table class="table table-bordered">
     <tr>
         <th>序号</th>

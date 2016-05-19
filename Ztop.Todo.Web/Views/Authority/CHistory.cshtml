@@ -11,62 +11,128 @@
     GroupType groupType = ViewBag.GroupType;
 }
 
-
-<div style="overflow:hidden;margin-bottom:10px;float:right">
-    <form class="form-inline" style="float:right;">
-        <div class="form-group">
-            <label for="">申请人：</label>
-            <select name="Name" class="form-control">
-                <option value="">全部</option>
-                @foreach (var item in NList)
-                {
-                    <option value="@(item)" @(Request.QueryString["Name"] == item ? "selected=selected" : "")>@(item)</option>
-                }
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="">组名：</label>
-            <select name="GroupName" class="form-control">
-                <option value="">全部</option>
-                @foreach (var item in GList)
-                {
-                    <option value="@(item)" @(Request.QueryString["GroupName"] == item ? "selected=selected" : "")>@(item)</option>
-                }
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="">申请状态：</label>
-            <select name="status" class="form-control">
-                <option value="3">全部</option>
-                <option value="1" @(Request.QueryString["status"] == "1" ? "selected=selected" : "")>同意</option>
-                <option value="2" @(Request.QueryString["status"] == "2" ? "selected=selected" : "")>不同意</option>
-            </select>
-        </div>
-        @if (groupType == GroupType.Administrator)
-        {
+<!--电脑与手机区别-->
+@if (Request.Browser.IsMobileDevice)
+{
+    <div style="overflow:hidden;margin-bottom:10px;" class="well">
+        <fieldset>
+            <legend>查询</legend>
+        </fieldset>
+        <form class="form-inline">
             <div class="form-group">
-                <label for="">审核人：</label>
-                <select name="Checker" class="form-control">
+                <label for="">申请人：</label>
+                <select name="Name" class="form-control">
                     <option value="">全部</option>
-                    @foreach (var item in CList)
+                    @foreach (var item in NList)
                 {
-                        <option value="@(item)" @(Request.QueryString["Checker"] == item ? "selected=selected" : "")>@(item)</option>
+                        <option value="@(item)" @(Request.QueryString["Name"] == item ? "selected=selected" : "")>@(item)</option>
                     }
                 </select>
             </div>
-        }
-        
-        <div class="form-group">
-            <label for="">是否过期：</label>
-            <select name="Label" class="form-control">
-                <option value="null">全部</option>
-                <option value="false" @(Request.QueryString["Label"] == "false" ? "selected=selected" : "")>有效</option>
-                <option value="true" @(Request.QueryString["Label"] == "true" ? "selected=selected" : "")>过期</option>
-            </select>
-        </div>
-        <button type="submit" class="btn btn-primary">过滤</button>
-    </form>
-</div>
+            <div class="form-group">
+                <label for="">组名：</label>
+                <select name="GroupName" class="form-control">
+                    <option value="">全部</option>
+                    @foreach (var item in GList)
+                {
+                        <option value="@(item)" @(Request.QueryString["GroupName"] == item ? "selected=selected" : "")>@(item)</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="">申请状态：</label>
+                <select name="status" class="form-control">
+                    <option value="3">全部</option>
+                    <option value="1" @(Request.QueryString["status"] == "1" ? "selected=selected" : "")>同意</option>
+                    <option value="2" @(Request.QueryString["status"] == "2" ? "selected=selected" : "")>不同意</option>
+                </select>
+            </div>
+            @if (groupType == GroupType.Administrator)
+            {
+                <div class="form-group">
+                    <label for="">审核人：</label>
+                    <select name="Checker" class="form-control">
+                        <option value="">全部</option>
+                        @foreach (var item in CList)
+                        {
+                            <option value="@(item)" @(Request.QueryString["Checker"] == item ? "selected=selected" : "")>@(item)</option>
+                        }
+                    </select>
+                </div>
+            }
+
+            <div class="form-group">
+                <label for="">是否过期：</label>
+                <select name="Label" class="form-control">
+                    <option value="null">全部</option>
+                    <option value="false" @(Request.QueryString["Label"] == "false" ? "selected=selected" : "")>有效</option>
+                    <option value="true" @(Request.QueryString["Label"] == "true" ? "selected=selected" : "")>过期</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">过滤</button>
+        </form>
+    </div>
+}
+else
+{
+    <div style="overflow:hidden;margin-bottom:10px;float:right">
+        <form class="form-inline" style="float:right;">
+            <div class="form-group">
+                <label for="">申请人：</label>
+                <select name="Name" class="form-control">
+                    <option value="">全部</option>
+                    @foreach (var item in NList)
+                {
+                        <option value="@(item)" @(Request.QueryString["Name"] == item ? "selected=selected" : "")>@(item)</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="">组名：</label>
+                <select name="GroupName" class="form-control">
+                    <option value="">全部</option>
+                    @foreach (var item in GList)
+                {
+                        <option value="@(item)" @(Request.QueryString["GroupName"] == item ? "selected=selected" : "")>@(item)</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="">申请状态：</label>
+                <select name="status" class="form-control">
+                    <option value="3">全部</option>
+                    <option value="1" @(Request.QueryString["status"] == "1" ? "selected=selected" : "")>同意</option>
+                    <option value="2" @(Request.QueryString["status"] == "2" ? "selected=selected" : "")>不同意</option>
+                </select>
+            </div>
+            @if (groupType == GroupType.Administrator)
+            {
+                <div class="form-group">
+                    <label for="">审核人：</label>
+                    <select name="Checker" class="form-control">
+                        <option value="">全部</option>
+                        @foreach (var item in CList)
+                        {
+                            <option value="@(item)" @(Request.QueryString["Checker"] == item ? "selected=selected" : "")>@(item)</option>
+                        }
+                    </select>
+                </div>
+            }
+
+            <div class="form-group">
+                <label for="">是否过期：</label>
+                <select name="Label" class="form-control">
+                    <option value="null">全部</option>
+                    <option value="false" @(Request.QueryString["Label"] == "false" ? "selected=selected" : "")>有效</option>
+                    <option value="true" @(Request.QueryString["Label"] == "true" ? "selected=selected" : "")>过期</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">过滤</button>
+        </form>
+    </div>
+}
+
+
 
 <table class="table table-bordered">
     <tr>
