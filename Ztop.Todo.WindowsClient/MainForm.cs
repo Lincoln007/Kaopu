@@ -1,19 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using Awesomium;
 using Awesomium.Core;
 using System.Threading;
-using System.Net;
-using System.Net.Sockets;
-using System.IO;
 using Ztop.Todo.Common;
 using Microsoft.Win32;
+using System.Diagnostics;
+using Ztop.Todo.WebService;
 
 namespace Ztop.Todo.WindowsClient
 {
@@ -30,7 +26,6 @@ namespace Ztop.Todo.WindowsClient
                 WebCore.ResourceInterceptor = new ResourceInterceptor();
             }
         }
-
         public MainForm(List<string> files) : this()
         {
             Control.CheckForIllegalCrossThreadCalls = false;
@@ -40,7 +35,6 @@ namespace Ztop.Todo.WindowsClient
                 UploadFile(files);
             }
         }
-
         private void Timer1_Tick(object sender, EventArgs e)
         {
             var notification = ServerHelper.GetNotification();
@@ -65,7 +59,6 @@ namespace Ztop.Todo.WindowsClient
                 form.Show();
             }
         }
-
         public void OpenTask(string UriPath)
         {
             var url = ServerHelper.GetServerUrl() + UriPath;
@@ -98,11 +91,8 @@ namespace Ztop.Todo.WindowsClient
             this.WindowState = FormWindowState.Minimized;
             this.Hide();
         }
-
-
         private FormWindowState _state;
         private Size _size;
-
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             Console.WriteLine(e.CloseReason.ToString());
@@ -113,7 +103,6 @@ namespace Ztop.Todo.WindowsClient
             }
             
         }
-
         private void notifyIcon1_Click(object sender, EventArgs e)
         {
             var e1 = e as MouseEventArgs;
@@ -129,7 +118,6 @@ namespace Ztop.Todo.WindowsClient
                 }
             }
         }
-
         private void Stop()
         {
             webControl1.Dispose();
@@ -137,14 +125,12 @@ namespace Ztop.Todo.WindowsClient
             timer1.Stop();
             timer1.Dispose();
         }
-
         private void 退出ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Stop();
             this.Close();
             _loginForm.Close();
         }
-
         private void Start()
         {
             timer1.Tick += Timer1_Tick;
@@ -156,7 +142,6 @@ namespace Ztop.Todo.WindowsClient
             Start();
             _loginForm = this.Owner as LoginForm;
         }
-
         private delegate void FlushClient(string files);
         public void ThreadFunction(string files)
         {
@@ -175,8 +160,6 @@ namespace Ztop.Todo.WindowsClient
         {
             MessageBox.Show(error);      
         }
-
-
         private void 注销ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             
@@ -189,12 +172,10 @@ namespace Ztop.Todo.WindowsClient
             _loginForm.WindowState = FormWindowState.Normal;
             _loginForm.Show();
         }
-
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
 
         }
-
         public void UploadFile(List<string> files)
         {
             var dict = files.GetUniqueDict();
@@ -214,7 +195,6 @@ namespace Ztop.Todo.WindowsClient
             thread.IsBackground = false;
             thread.Start();
         }
-
         private void 右键修复ToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
@@ -257,6 +237,32 @@ namespace Ztop.Todo.WindowsClient
 
 
 
+        }
+        private void 检查更新ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                IniClass ini = new IniClass(System.IO.Path.Combine(Application.StartupPath, "Update.ini"));
+                Service service = new Service();
+                string clientVersion = ini.IniReadValue("update", "version");//客户端版本
+                string serviceVersion = service.GetVersion();//服务端版本
+                if (clientVersion != serviceVersion)
+                {
+                    DialogResult dialogResult = MessageBox.Show("有新版本，是否更新？", "升级", MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
+                    if (dialogResult == DialogResult.OK)
+                    {
+                        Application.Exit();
+                        Process.Start("Update.exe");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("已更新至最新版本！");
+                }
+            }catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }
