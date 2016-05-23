@@ -20,16 +20,33 @@ namespace Ztop.Todo.Model
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
-
+        /// <summary>
+        /// 接收者ID
+        /// </summary>
         public int ReceiverID { get; set; }
+        /// <summary>
+        /// 发送者ID
+        /// </summary>
 
         public int SenderID { get; set; }
+        /// <summary>
+        /// 信息ID
+        /// </summary>
 
         public int InfoID { get; set; }
+        /// <summary>
+        /// 信息类型
+        /// </summary>
 
         public InfoType InfoType { get; set; }
+        /// <summary>
+        /// 是否阅读
+        /// </summary>
 
         public bool HasRead { get; set; }
+        /// <summary>
+        /// 创建时间
+        /// </summary>
 
         public DateTime CreateTime { get; set; }
 

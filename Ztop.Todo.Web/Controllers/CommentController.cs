@@ -8,9 +8,9 @@ namespace Ztop.Todo.Web.Controllers
 {
     public class CommentController : ControllerBase
     {
-        public ActionResult Save(int taskId, string content)
+        public ActionResult Save(int userTaskId, string content)
         {
-            if (taskId == 0)
+            if (userTaskId == 0)
             {
                 throw new ArgumentException("参数错误");
             }
@@ -21,7 +21,7 @@ namespace Ztop.Todo.Web.Controllers
             Core.CommentManager.Save(new Model.Comment
             {
                 Content = content,
-                UserTaskID = taskId,
+                UserTaskID = userTaskId,
                 UserID = Identity.UserID
             });
             return SuccessJsonResult();

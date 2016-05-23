@@ -27,6 +27,9 @@ namespace Ztop.Todo.Manager
 
         public DbSet<TaskQuery> TaskQueries { get; set; }
 
+        /// <summary>
+        /// 评论
+        /// </summary>
         public DbSet<Comment> Comments { get; set; }
 
         public DbSet<Notification> Notifications { get; set; }
