@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Net;
 using System.Text;
 using System.Windows.Forms;
-using Ztop.Todo.WebService;
+using Ztop.Todo.Update.UPDATE;
 
 namespace Ztop.Todo.Update
 {
@@ -50,6 +50,30 @@ namespace Ztop.Todo.Update
         }
         
 
+        private void FrmUpdate_closeProgress()
+        {
+
+            if (this.InvokeRequired)
+            {
+
+            }
+            else
+            {
+                if (WC != null)
+                {
+                    WC.Dispose();
+                }
+                if (Zips.Length > 0)
+                {
+                    MessageBox.Show("升级成功!");
+                }
+                else
+                {
+                    MessageBox.Show("未找到升级包！");
+                }
+
+            }
+        }
 
 
         private void Download()
