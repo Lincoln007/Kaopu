@@ -27,7 +27,7 @@ namespace Ztop.Todo.WindowsClient
 
             var request = WebRequest.Create(url);
 
-            request.Headers.Add("token", LoginHelper.GetToken());
+            request.Headers.Add("token", LoginHelper.GetOAToken());
 
             using (var response = request.GetResponse())
             {

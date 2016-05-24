@@ -37,6 +37,8 @@
             this.webControl1 = new Awesomium.Windows.Forms.WebControl(this.components);
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.报销系统ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.任务系统ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.检查更新ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.右键修复ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.注销ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -101,12 +103,28 @@
             // contextMenuStrip1
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.报销系统ToolStripMenuItem,
+            this.任务系统ToolStripMenuItem,
             this.检查更新ToolStripMenuItem,
             this.右键修复ToolStripMenuItem,
             this.注销ToolStripMenuItem,
             this.退出ToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(153, 114);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(153, 158);
+            // 
+            // 报销系统ToolStripMenuItem
+            // 
+            this.报销系统ToolStripMenuItem.Name = "报销系统ToolStripMenuItem";
+            this.报销系统ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.报销系统ToolStripMenuItem.Text = "报销系统";
+            this.报销系统ToolStripMenuItem.Click += new System.EventHandler(this.报销系统ToolStripMenuItem_Click);
+            // 
+            // 任务系统ToolStripMenuItem
+            // 
+            this.任务系统ToolStripMenuItem.Name = "任务系统ToolStripMenuItem";
+            this.任务系统ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.任务系统ToolStripMenuItem.Text = "任务系统";
+            this.任务系统ToolStripMenuItem.Click += new System.EventHandler(this.任务系统ToolStripMenuItem_Click);
             // 
             // 检查更新ToolStripMenuItem
             // 
@@ -172,6 +190,8 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ToolStripMenuItem 右键修复ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 检查更新ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 任务系统ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 报销系统ToolStripMenuItem;
     }
 }
 

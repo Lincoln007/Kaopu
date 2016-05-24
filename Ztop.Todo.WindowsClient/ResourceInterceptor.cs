@@ -9,6 +9,11 @@ namespace Ztop.Todo.WindowsClient
 {
     public class ResourceInterceptor : IResourceInterceptor
     {
+        private string _token { get; set; }
+        public ResourceInterceptor(string token)
+        {
+            _token = token;
+        }
         public bool OnFilterNavigation(NavigationRequest request)
         {
             return false;
@@ -16,7 +21,7 @@ namespace Ztop.Todo.WindowsClient
 
         public ResourceResponse OnRequest(ResourceRequest request)
         {
-            request.AppendExtraHeader("token", LoginHelper.GetToken());
+            request.AppendExtraHeader("token", _token);
             return null;
         }
     }

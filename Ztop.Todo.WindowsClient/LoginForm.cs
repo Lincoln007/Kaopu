@@ -62,10 +62,13 @@ namespace Ztop.Todo.WindowsClient
 
             new Thread(() =>
             {
-                var token = LoginHelper.Login(txtUsername.Text, txtPassword.Text);
+                //任务系统登录
+                var token = LoginHelper.OALogin(txtUsername.Text, txtPassword.Text);
+                //报销系统登录
+                var stoken = LoginHelper.ReimburseLogin(txtUsername.Text, txtPassword.Text);
                 btnLogin.BeginInvoke(new Action(() =>
                 {
-                    if (string.IsNullOrEmpty(token))
+                    if (string.IsNullOrEmpty(token)||string.IsNullOrEmpty(stoken))
                     {
                         btnLogin.Enabled = true;
                         btnLogin.Text = "登录";
@@ -75,7 +78,11 @@ namespace Ztop.Todo.WindowsClient
 
                     if (cbxAutoLogin.Checked)
                     {
-                        LoginHelper.Remeber(token);
+                        LoginHelper.Remeber(token,stoken);
+                    }
+                    else
+                    {
+                        LoginHelper.Logout();
                     }
                     MShow();
                     btnLogin.Text = "登陆";
@@ -125,8 +132,11 @@ namespace Ztop.Todo.WindowsClient
         {
             if (_mainForm == null)
             {
-                var token = LoginHelper.GetToken();
-                if (!string.IsNullOrEmpty(token))
+                //获取任务系统登录信息
+                var token = LoginHelper.GetOAToken();
+                //获取报销系统登录信息
+                var stoken = LoginHelper.GetReToken();
+                if (!string.IsNullOrEmpty(token)&&!string.IsNullOrEmpty(stoken))
                 {
                     this.btnLogin.Text = "正在登陆......";
                     this.btnLogin.Enabled = false;

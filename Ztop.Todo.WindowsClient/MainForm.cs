@@ -23,7 +23,7 @@ namespace Ztop.Todo.WindowsClient
             if (!WebCore.IsInitialized)
             {
                 WebCore.Initialize(WebConfig.Default, true);
-                WebCore.ResourceInterceptor = new ResourceInterceptor();
+                WebCore.ResourceInterceptor = new ResourceInterceptor(LoginHelper.GetOAToken());
             }
         }
         public MainForm(List<string> files) : this()
@@ -62,7 +62,10 @@ namespace Ztop.Todo.WindowsClient
         public void OpenTask(string UriPath)
         {
             var url = ServerHelper.GetServerUrl() + UriPath;
-            //this.label3.Text = url;
+            OpenUrl(url);
+        }
+        private void OpenUrl(string url)
+        {
             webControl1.Source = new Uri(url);
             if (this.WindowState == FormWindowState.Minimized)
             {
@@ -263,6 +266,21 @@ namespace Ztop.Todo.WindowsClient
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        private void 任务系统ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //WebCore.Initialize(WebConfig.Default, true);
+            WebCore.ResourceInterceptor = new ResourceInterceptor(LoginHelper.GetOAToken());
+            OpenUrl(System.Configuration.ConfigurationManager.AppSettings["Server"]);
+        }
+
+        private void 报销系统ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //WebCore.Initialize(WebConfig.Default, true);
+            WebCore.ResourceInterceptor = new ResourceInterceptor(LoginHelper.GetReToken());
+            OpenUrl(System.Configuration.ConfigurationManager.AppSettings["SServer"]);
+           
         }
     }
 }
