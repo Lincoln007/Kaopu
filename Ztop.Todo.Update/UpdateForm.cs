@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 using Ztop.Todo.Update.UPDATE;
 
@@ -45,7 +46,16 @@ namespace Ztop.Todo.Update
         public UpdateForm()
         {
             InitializeComponent();
-            Service = new Service();
+            try
+            {
+                Service = new Service();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.ToString() + ex.Message);
+                Application.Exit();
+            }
+           
             Url = Service.GetUrl();
             Zips = Service.GetZips();
         }
@@ -80,7 +90,12 @@ namespace Ztop.Todo.Update
                 string serviceVersion = Service.GetVersion();//服务端版本
                 ini.IniWriteValue("update", "version", serviceVersion);//更新成功后将版本写入配置文件
                 Application.Exit();
-                Process.Start(System.Configuration.ConfigurationManager.ConnectionStrings["MAIN"].ConnectionString);
+                var mainexe = System.Configuration.ConfigurationManager.ConnectionStrings["MAIN"].ConnectionString;
+                if (string.IsNullOrEmpty(mainexe))
+                {
+                    mainexe = "ZtopTodo.exe";
+                }
+                Process.Start(mainexe);
             }
         }
 
@@ -97,7 +112,7 @@ namespace Ztop.Todo.Update
             }
             else
             {
-                if (ZipsIndex < Zip.Length)
+                if (ZipsIndex < Zips.Length)
                 {
                     label1.Text = string.Format("正在下载自解压缩包{0}（{1}/{2})", Zips[ZipsIndex], (ZipsIndex + 1).ToString(), Zips.Length);
                     progressBar1.Maximum = 100;
@@ -189,6 +204,19 @@ namespace Ztop.Todo.Update
         {
             this.Text = ((CurrentBytes - PreBytes) / 1024).ToString() + "kb/s";
             PreBytes = CurrentBytes;
+        }
+
+        private void UpdateForm_Load(object sender, EventArgs e)
+        {
+            try
+            {
+                Thread t = new Thread(new ThreadStart(Download));
+                t.IsBackground = true;
+                t.Start();
+            }catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }

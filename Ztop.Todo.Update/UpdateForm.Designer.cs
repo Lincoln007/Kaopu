@@ -62,6 +62,7 @@
             this.Controls.Add(this.progressBar1);
             this.Name = "UpdateForm";
             this.Text = "智拓TODO升级更新程序";
+            this.Load += new System.EventHandler(this.UpdateForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -12,6 +13,7 @@ using System.Windows.Forms;
 using Ztop.Todo.ActiveDirectory;
 using Ztop.Todo.Common;
 using Ztop.Todo.Model;
+using Ztop.Todo.Update.UPDATE;
 
 namespace Ztop.Todo.WindowsClient
 {
@@ -150,7 +152,7 @@ namespace Ztop.Todo.WindowsClient
 
         private void LoginForm_Load(object sender, EventArgs e)
         {
-
+           
         }
 
         private void LoginForm_Activated(object sender, EventArgs e)

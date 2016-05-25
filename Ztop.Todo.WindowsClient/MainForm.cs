@@ -9,13 +9,12 @@ using System.Threading;
 using Ztop.Todo.Common;
 using Microsoft.Win32;
 using System.Diagnostics;
-using Ztop.Todo.WebService;
+using Ztop.Todo.Update.UPDATE;
 
 namespace Ztop.Todo.WindowsClient
 {
     public partial class MainForm : Form
     {
-        private Thread thread { get; set; }
         private LoginForm _loginForm { get; set; }
         public MainForm()
         {
@@ -245,7 +244,14 @@ namespace Ztop.Todo.WindowsClient
         {
             try
             {
-                IniClass ini = new IniClass(System.IO.Path.Combine(Application.StartupPath, "Update.ini"));
+                var iniPath = System.Configuration.ConfigurationManager.ConnectionStrings["WUPDATE"].ConnectionString;
+                //var iniPath = System.Configuration.ConfigurationManager.AppSettings["WUPDATE"];
+                if (string.IsNullOrEmpty(iniPath))
+                {
+                    iniPath = "Update.ini";
+                }
+                var filePath = System.IO.Path.Combine(Application.StartupPath, iniPath);
+                IniClass ini = new IniClass(filePath);
                 Service service = new Service();
                 string clientVersion = ini.IniReadValue("update", "version");//客户端版本
                 string serviceVersion = service.GetVersion();//服务端版本
@@ -254,8 +260,21 @@ namespace Ztop.Todo.WindowsClient
                     DialogResult dialogResult = MessageBox.Show("有新版本，是否更新？", "升级", MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
                     if (dialogResult == DialogResult.OK)
                     {
-                        Application.Exit();
-                        Process.Start("Update.exe");
+                        Stop();
+                        this.Close();
+                        _loginForm.Close();
+                        //Application.Exit();
+                        //Application.ExitThread();
+                        var updateExe = System.Configuration.ConfigurationManager.ConnectionStrings["UPDATEEXE"].ConnectionString;
+                        if (string.IsNullOrEmpty(updateExe))
+                        {
+                            updateExe = "Ztop.Todo.Update.exe";
+                        }
+                        Process.Start(updateExe);
+                    }
+                    else
+                    {
+                        return;
                     }
                 }
                 else
@@ -270,14 +289,12 @@ namespace Ztop.Todo.WindowsClient
 
         private void 任务系统ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //WebCore.Initialize(WebConfig.Default, true);
             WebCore.ResourceInterceptor = new ResourceInterceptor(LoginHelper.GetOAToken());
             OpenUrl(System.Configuration.ConfigurationManager.AppSettings["Server"]);
         }
 
         private void 报销系统ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //WebCore.Initialize(WebConfig.Default, true);
             WebCore.ResourceInterceptor = new ResourceInterceptor(LoginHelper.GetReToken());
             OpenUrl(System.Configuration.ConfigurationManager.AppSettings["SServer"]);
            
