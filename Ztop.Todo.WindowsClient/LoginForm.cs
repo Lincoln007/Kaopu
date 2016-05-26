@@ -13,7 +13,6 @@ using System.Windows.Forms;
 using Ztop.Todo.ActiveDirectory;
 using Ztop.Todo.Common;
 using Ztop.Todo.Model;
-using Ztop.Todo.Update.UPDATE;
 
 namespace Ztop.Todo.WindowsClient
 {

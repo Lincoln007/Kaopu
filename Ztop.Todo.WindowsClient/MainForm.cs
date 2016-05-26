@@ -9,7 +9,6 @@ using System.Threading;
 using Ztop.Todo.Common;
 using Microsoft.Win32;
 using System.Diagnostics;
-using Ztop.Todo.Update.UPDATE;
 
 namespace Ztop.Todo.WindowsClient
 {
@@ -252,9 +251,11 @@ namespace Ztop.Todo.WindowsClient
                 }
                 var filePath = System.IO.Path.Combine(Application.StartupPath, iniPath);
                 IniClass ini = new IniClass(filePath);
-                Service service = new Service();
+                Ztop.Todo.WindowsClient.WindowsClientUpdate.ServiceSoapClient one = new WindowsClientUpdate.ServiceSoapClient("ServiceSoap","http://10.22.102.3:8060/Service.asmx");
+                //Service service = new Service();
                 string clientVersion = ini.IniReadValue("update", "version");//客户端版本
-                string serviceVersion = service.GetVersion();//服务端版本
+                string serviceVersion = one.GetVersion();
+                //string serviceVersion = service.GetVersion();//服务端版本
                 if (clientVersion != serviceVersion)
                 {
                     DialogResult dialogResult = MessageBox.Show("有新版本，是否更新？", "升级", MessageBoxButtons.OKCancel, MessageBoxIcon.Information);

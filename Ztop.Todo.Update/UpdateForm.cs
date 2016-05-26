@@ -85,8 +85,12 @@ namespace Ztop.Todo.Update
                 {
                     MessageBox.Show("未找到升级包！");
                 }
-
-                IniClass ini = new IniClass(System.IO.Path.Combine(Application.StartupPath, System.Configuration.ConfigurationManager.ConnectionStrings["UPDATE"].ConnectionString));
+                string updateini = System.Configuration.ConfigurationManager.ConnectionStrings["UPDATE"].ConnectionString;
+                if (string.IsNullOrEmpty(updateini))
+                {
+                    updateini = "Update.ini";
+                }
+                IniClass ini = new IniClass(System.IO.Path.Combine(Application.StartupPath, updateini));
                 string serviceVersion = Service.GetVersion();//服务端版本
                 ini.IniWriteValue("update", "version", serviceVersion);//更新成功后将版本写入配置文件
                 Application.Exit();

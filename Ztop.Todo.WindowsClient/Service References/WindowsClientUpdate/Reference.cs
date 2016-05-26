@@ -8,11 +8,11 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Ztop.Todo.WindowsClient.UPDATE {
+namespace Ztop.Todo.WindowsClient.WindowsClientUpdate {
     
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    [System.ServiceModel.ServiceContractAttribute(Namespace="http://microsoft.com/webservices/", ConfigurationName="UPDATE.ServiceSoap")]
+    [System.ServiceModel.ServiceContractAttribute(Namespace="http://microsoft.com/webservices/", ConfigurationName="WindowsClientUpdate.ServiceSoap")]
     public interface ServiceSoap {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://microsoft.com/webservices/HelloWorld", ReplyAction="*")]
@@ -45,12 +45,12 @@ namespace Ztop.Todo.WindowsClient.UPDATE {
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public interface ServiceSoapChannel : Ztop.Todo.WindowsClient.UPDATE.ServiceSoap, System.ServiceModel.IClientChannel {
+    public interface ServiceSoapChannel : Ztop.Todo.WindowsClient.WindowsClientUpdate.ServiceSoap, System.ServiceModel.IClientChannel {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class ServiceSoapClient : System.ServiceModel.ClientBase<Ztop.Todo.WindowsClient.UPDATE.ServiceSoap>, Ztop.Todo.WindowsClient.UPDATE.ServiceSoap {
+    public partial class ServiceSoapClient : System.ServiceModel.ClientBase<Ztop.Todo.WindowsClient.WindowsClientUpdate.ServiceSoap>, Ztop.Todo.WindowsClient.WindowsClientUpdate.ServiceSoap {
         
         public ServiceSoapClient() {
         }
