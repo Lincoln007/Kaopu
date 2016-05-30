@@ -48,7 +48,7 @@ namespace Ztop.Todo.WindowsClient
                 if (form is MainForm)
                 {
                     form.Show();
-                    ((MainForm)form).OpenTask(Notification);
+                    ((MainForm)form).OpenTask(Notification,Model.OASystemClass.TaskSystem);
                 }
             }
         }

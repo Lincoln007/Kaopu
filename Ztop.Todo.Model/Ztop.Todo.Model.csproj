@@ -78,6 +78,7 @@
     <Compile Include="Sheet.cs" />
     <Compile Include="SheetQueryParameter.cs" />
     <Compile Include="Substancs.cs" />
+    <Compile Include="SystemClass.cs" />
     <Compile Include="Task.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TaskQuery.cs" />

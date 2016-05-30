@@ -9,6 +9,7 @@ using System.Threading;
 using Ztop.Todo.Common;
 using Microsoft.Win32;
 using System.Diagnostics;
+using Ztop.Todo.Model;
 
 namespace Ztop.Todo.WindowsClient
 {
@@ -60,18 +61,26 @@ namespace Ztop.Todo.WindowsClient
         public void OpenTask(string UriPath)
         {
             var url = ServerHelper.GetServerUrl() + UriPath;
-            OpenUrl(url);
+            OpenUrl(url,OASystemClass.TaskSystem);
         }
-        private void OpenUrl(string url)
+        private void OpenUrl(string url,OASystemClass oasysystemClass)
         {
+            string token = oasysystemClass == OASystemClass.TaskSystem ? LoginHelper.GetOAToken() : LoginHelper.GetReToken();
+            WebCore.ResourceInterceptor = new ResourceInterceptor(token);
             webControl1.Source = new Uri(url);
             if (this.WindowState == FormWindowState.Minimized)
             {
                 OpenWindow();
             }
         }
-        public void OpenTask(Notification model)
+        /// <summary>
+        /// 打开任务
+        /// </summary>
+        /// <param name="model"></param>
+        public void OpenTask(Notification model,OASystemClass oasystemClass)
         {
+            string token = oasystemClass == OASystemClass.TaskSystem ? LoginHelper.GetOAToken() : LoginHelper.GetReToken();
+            WebCore.ResourceInterceptor = new ResourceInterceptor(token);
             webControl1.Source = new Uri(ServerHelper.GetNotificationUrl(model));
             OpenWindow();
         }
@@ -290,14 +299,12 @@ namespace Ztop.Todo.WindowsClient
 
         private void 任务系统ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            WebCore.ResourceInterceptor = new ResourceInterceptor(LoginHelper.GetOAToken());
-            OpenUrl(System.Configuration.ConfigurationManager.AppSettings["Server"]);
+            OpenUrl(System.Configuration.ConfigurationManager.AppSettings["Server"],OASystemClass.TaskSystem);
         }
 
         private void 报销系统ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            WebCore.ResourceInterceptor = new ResourceInterceptor(LoginHelper.GetReToken());
-            OpenUrl(System.Configuration.ConfigurationManager.AppSettings["SServer"]);
+            OpenUrl(System.Configuration.ConfigurationManager.AppSettings["SServer"],OASystemClass.ReimburseSystem);
            
         }
     }
