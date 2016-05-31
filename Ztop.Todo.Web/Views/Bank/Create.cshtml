@@ -65,7 +65,7 @@
                 <td><input type="text" name="Coding" class="form-control" placeholder="编号" /></td>
                 <td><input type="text" name="Time" class="form-control" placeholder="交易日期" /></td>
                 <td>
-                    <select name="Budget" class="form-control">
+                    <select name="Budget" class="form-control" targetIndex="{Index}">
                         @foreach (Budget budget in Enum.GetValues(typeof(Budget)))
                         {
                             <option value="@(budget)">@(budget.GetDescription())</option>
@@ -73,11 +73,15 @@
                     </select>
                 </td>
                 <td><input type="text" name="Money" class="form-control" placeholder="金额" /></td>
-                <td><input type="text" name="Account" class="form-control" placeholder="银行账号" /></td>
+                <td><input type="text" name="Account" class="form-control" placeholder="账号" /></td>
                 <td>
-                    <select name="Cost" class="form-control">
+                    <select name="Cost" class="form-control" id="Cost{Index}">
                         @foreach(Cost cost in Enum.GetValues(typeof(Cost)))
                         {
+                            if (cost == Cost.Posting)
+                            {
+                                break;
+                            }
                             <option value="@(cost)">@(cost.GetDescription())</option>
                         }
                     </select>
@@ -90,15 +94,41 @@
         </tbody>
        
     </table>
+    <select name="Cost" class="form-control" id="Income">
+        @foreach (Cost cost in Enum.GetValues(typeof(Cost)))
+            {
+                if (cost == Cost.Posting)
+                {
+                    break;
+                }
+                <option value="@(cost)">@(cost.GetDescription())</option>
+        }
+    </select>
+    <select name="Cost" class="form-control" id="Pay">
+        @foreach (Cost cost in Enum.GetValues(typeof(Cost)))
+        {
+            var index = (int)cost;
+            if (index > 2)
+            {
+                <option value="@(cost)">@(cost.GetDescription())</option>
+            }
+
+        }
+    </select>  
 </div>
 
 <script>
     var addhtml = $("#add").html();
+    var incomehtml = $("#Income").html();
+    var payhtml = $("#Pay").html();
     $(function () {
 
+        var currentnumber=0;
         $("button[name='Plus']").click(function () {
             var Targetname = $(this).attr("TargetName");
-            $("#" + Targetname).append(addhtml);
+            var appendhtml = addhtml.replace(/{Index}/g, currentnumber);
+            currentnumber++;
+            $("#" + Targetname).append(appendhtml);
             $("input[name='Time']").datetimepicker({
                 timepicker: false,
                 format: 'Y-m-d',
@@ -106,15 +136,25 @@
             });
             $(".btn-remove").unbind("click").bind("click", function () {
                 $(this).parent().parent().remove();
-            })
+            });
+
+            $("[name='Budget']").unbind("change").bind("change", function () {
+                var targetIndex = $(this).attr("targetIndex");
+                var buget = $(this).val();
+                var replacehtml = buget == "Income" ? incomehtml : payhtml;
+                $("#Cost" + targetIndex).empty().append(replacehtml);
+            });
         });
 
         $("button[name='Save']").click(function () {
             var data = $("#Data").serialize();
             $.request("/Bank/Save", data, function (json) {
-                window.location = "/Bank/Detail?id=" + json.data.ID;
-                //window.location="/Bank/Detail?id="
-                //alert("Success");
+                if (json.result == 0) {
+                    alert(json.content);
+                    return false;
+                } else {
+                    window.location = "/Bank/Detail?id=" + json.data.ID;
+                }
             })
         });
 
@@ -123,7 +163,6 @@
             format: 'Y-m-d',
             maxDate: '@(DateTime.Today.ToString("yyyy-MM-dd"))'
         });
-
     })
 </script>
 

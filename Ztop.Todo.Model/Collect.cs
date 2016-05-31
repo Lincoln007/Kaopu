@@ -52,18 +52,18 @@ namespace Ztop.Todo.Model
 
     public static class CollectHelper
     {
-        public static Collect GetCollect(List<Bill> list)
-        {
-            return new Collect()
-            {
-                Income = list.Where(e => e.Budget == Budget.Income && e.Cost != Cost.Margin).Sum(e => e.Money),
-                MarginIncome = list.Where(e => e.Budget == Budget.Income && e.Cost == Cost.Margin).Sum(e => e.Money),
-                Pay = list.Where(e => e.Budget == Budget.Expense && e.Cost != Cost.Margin && e.Cost != Cost.Transfer && e.Cost != Cost.Petty).Sum(e => e.Money),
-                MarginPay = list.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.Margin).Sum(e => e.Money),
-                Transfer = list.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.Transfer).Sum(e => e.Money),
-                Petty = list.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.Petty).Sum(e => e.Money)
-            };
-        }
+        //public static Collect GetCollect(List<Bill> list)
+        //{
+        //    return new Collect()
+        //    {
+        //        Income = list.Where(e => e.Budget == Budget.Income && e.Cost != Cost.Margin).Sum(e => e.Money),
+        //        MarginIncome = list.Where(e => e.Budget == Budget.Income && e.Cost == Cost.Margin).Sum(e => e.Money),
+        //        Pay = list.Where(e => e.Budget == Budget.Expense && e.Cost != Cost.Margin && e.Cost != Cost.Transfer && e.Cost != Cost.Petty).Sum(e => e.Money),
+        //        MarginPay = list.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.Margin).Sum(e => e.Money),
+        //        Transfer = list.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.Transfer).Sum(e => e.Money),
+        //        Petty = list.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.Petty).Sum(e => e.Money)
+        //    };
+        //}
     }
     public enum Company
     {
@@ -142,23 +142,49 @@ namespace Ztop.Todo.Model
         public string Summary { get; set; }
         public int BID { get; set; }
     }
+    //public enum Cost
+    //{
+    //    [Description("工资")]
+    //    Salary,
+    //    [Description("杂费")]
+    //    Extras,
+    //    [Description("税")]
+    //    Tax,
+    //    [Description("电话费")]
+    //    Phone,
+    //    [Description("备用金")]
+    //    Petty,
+    //    [Description("保证金")]
+    //    Margin,
+    //    [Description("转账")]
+    //    Transfer,
+    //    [Description("其他")]
+    //    Other,
+    //    [Description("实际收入")]
+    //    RealIncome,
+    //    [Description("还款")]
+    //    Repayment,
+    //    [Description("借款")]
+    //    Load
+    //}
+
     public enum Cost
     {
-        [Description("工资")]
-        Salary,
-        [Description("杂费")]
-        Extras,
-        [Description("税")]
-        Tax,
-        [Description("电话费")]
-        Phone,
+        [Description("实际收入")]
+        RealIncome,
+        [Description("还款")]
+        Repayment,
+        [Description("保证金退款")]
+        MarginIncome,
+        [Description("过账")]
+        Posting,
+        [Description("借款")]
+        Load,
+        [Description("保障金支出")]
+        MarginPay,
+        [Description("实际支出")]
+        RealPay,
         [Description("备用金")]
-        Petty,
-        [Description("保证金")]
-        Margin,
-        [Description("转账")]
-        Transfer,
-        [Description("其他")]
-        Other
+        Petty
     }
 }

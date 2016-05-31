@@ -30,7 +30,7 @@ namespace Ztop.Todo.Model
 
         public int SenderID { get; set; }
         /// <summary>
-        /// 信息ID
+        /// 信息ID(任务ID)
         /// </summary>
 
         public int InfoID { get; set; }

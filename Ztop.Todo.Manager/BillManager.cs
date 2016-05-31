@@ -36,6 +36,15 @@ namespace Ztop.Todo.Manager
             return list;
         }
 
+        public bool Exist(int year,int month,Company company)
+        {
+            using (var db = GetDbContext())
+            {
+                var entry = db.Banks.FirstOrDefault(e => e.Year == year && e.Company == company && e.Month == month);
+                return entry != null;
+            }
+        }
+
         public Bank GetBank(int year,int month,Company company)
         {
             using (var db = GetDbContext())

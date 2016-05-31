@@ -163,11 +163,11 @@ namespace Ztop.Todo.Web.Controllers
             if (model.UserID == Identity.UserID)
             {
                 Core.TaskManager.FlagUserTaskRead(model.ID, model.UserID);
-                Core.NotificationManager.FlagRead(model.ID, InfoType.Task);
+                Core.NotificationManager.FlagRead(model.ID,Identity.UserID);
             }
             else if(model.Task.CreatorID  == Identity.UserID)
             {
-                Core.NotificationManager.FlagRead(model.ID, InfoType.Comment);
+                Core.NotificationManager.FlagRead(model.ID,Identity.UserID);
             }
             return View();
         }

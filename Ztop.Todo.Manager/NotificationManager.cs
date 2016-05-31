@@ -44,25 +44,42 @@ namespace Ztop.Todo.Manager
         {
             using (var db = GetDbContext())
             {
-                var entity = db.Notifications.FirstOrDefault(e => e.ReceiverID == model.ReceiverID && e.InfoID == model.InfoID);
-                if (entity == null)
-                {
-                    db.Notifications.Add(model);
-                    db.SaveChanges();
-                }
+                db.Notifications.Add(model);
+                db.SaveChanges();
+                //var entity = db.Notifications.FirstOrDefault(e => e.ReceiverID == model.ReceiverID && e.InfoID == model.InfoID);
+                //if (entity == null)
+                //{
+                //    db.Notifications.Add(model);
+                //    db.SaveChanges();
+                //}
             }
         }
 
         private void AddCommentNotification(Comment comment)
         {
             var userTask = Core.TaskManager.GetUserTask(comment.UserTaskID);
-            AddNotification(new Notification
+            var userIDs = Core.TaskManager.GetUserTasks(userTask.TaskID).Where(e => e.UserID != comment.UserID).Select(e => e.UserID).ToList();
+            if (!userIDs.Contains(userTask.Task.CreatorID))
             {
-                InfoID = userTask.ID,
-                InfoType = InfoType.Comment,
-                ReceiverID = userTask.Task.CreatorID,
-                SenderID = comment.UserID,
-            });
+                userIDs.Add(userTask.Task.CreatorID);
+            }
+            foreach(var userid in userIDs)
+            {
+                AddNotification(new Notification
+                {
+                    InfoID = userTask.ID,
+                    InfoType = InfoType.Comment,
+                    ReceiverID = userid,
+                    SenderID = comment.UserID
+                });
+            }
+            //AddNotification(new Notification
+            //{
+            //    InfoID = userTask.ID,
+            //    InfoType = InfoType.Comment,
+            //    ReceiverID = userTask.Task.CreatorID,
+            //    SenderID = comment.UserID,
+            //});
         }
 
         private void AddTaskNotification(Model.Task task)
@@ -75,7 +92,7 @@ namespace Ztop.Todo.Manager
                     InfoID = ut.ID,
                     InfoType = InfoType.Task,
                     ReceiverID = ut.UserID,
-                    SenderID = task.CreatorID,
+                    SenderID = task.CreatorID
                 });
             }
         }
@@ -95,16 +112,24 @@ namespace Ztop.Todo.Manager
             }
         }
 
-        public void FlagRead(int infoId, InfoType infoType)
+        public void FlagRead(int infoId, int receiverID)
         {
             using (var db = GetDbContext())
             {
-                var entity = db.Notifications.FirstOrDefault(e => e.InfoID == infoId && e.InfoType == infoType);
-                if (entity != null)
+                var entitys = db.Notifications.Where(e => e.InfoID == infoId&&e.ReceiverID==receiverID&&!e.HasRead);
+                foreach(var entity in entitys)
                 {
                     entity.HasRead = true;
-                    db.SaveChanges();
                 }
+
+                db.SaveChanges();
+
+                //var entity = db.Notifications.FirstOrDefault(e => e.InfoID == infoId && e.InfoType == infoType);
+                //if (entity != null)
+                //{
+                //    entity.HasRead = true;
+                //    db.SaveChanges();
+                //}
             }
         }
     }

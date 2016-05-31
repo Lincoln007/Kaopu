@@ -196,13 +196,13 @@
             var val = "";
             switch (days) {
                 case 1:
-                    val = "@(DateTime.Today.AddDays(1).ToShortDateString())";
+                    val = "@(DateTime.Today.AddDays(0).ToShortDateString())";
                     break;
                 case 3:
-                    val = "@(DateTime.Today.AddDays(3).ToShortDateString())";
+                    val = "@(DateTime.Today.AddDays(2).ToShortDateString())";
                     break;
                 case 7:
-                    val = "@(DateTime.Today.AddDays(7).ToShortDateString())";
+                    val = "@(DateTime.Today.AddDays(6).ToShortDateString())";
                     break;
                 case 30:
                     val = "@(DateTime.Today.AddMonths(1).ToShortDateString())";
