@@ -1,9 +1,11 @@
-﻿using System;
+﻿using NPOI.SS.UserModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using Ztop.Todo.Common;
 using Ztop.Todo.Model;
 
 namespace Ztop.Todo.Manager
@@ -116,6 +118,70 @@ namespace Ztop.Todo.Manager
             {
                 return db.Banks.ToList().Select(e=>e.YearMonth).Distinct().ToList();
             }
+        }
+
+        public IWorkbook GetWorkbook(int year,int month,Company company)
+        {
+            var bank = GetAllModelBank(year, month, company);
+            if (bank == null)
+            {
+                throw new Exception(string.Format("未找到{0}年{1}月的{2}公司银行对账单清单列表", year, month, company.GetDescription()));
+            }
+
+            IWorkbook workbook = ExcelClass.GetAbsolutePath(System.Configuration.ConfigurationManager.AppSettings["BANK"].ToString()).OpenExcel();
+            if (workbook != null)
+            {
+                ISheet sheet = workbook.GetSheetAt(0);
+                if (sheet != null)
+                {
+                    var title = string.Format("杭州智拓{0}咨询有限公司{1}年{2}月银行对账单", company == Company.Evaluation ? "房地产土地评估" : "土地规划设计", year, month);
+                    IRow row = sheet.GetRow(0);
+                    if (row == null)
+                    {
+                        row = sheet.CreateRow(0);
+                    }
+                    ICell cell = ExcelClass.GetCell(row, 0);
+                    cell.SetCellValue(title);
+                    if (bank.Bills != null&&bank.Bills.Count!=0)
+                    {
+                        row = sheet.GetRow(7);
+                        ExcelClass.GetCell(row, 0).SetCellValue(bank.Bills.Where(e => e.Budget == Budget.Income).Sum(e => e.Money));
+                        ExcelClass.GetCell(row, 1).SetCellValue(bank.Bills.Where(e => e.Budget == Budget.Income && e.Cost == Cost.RealIncome).Sum(e => e.Money));
+                        ExcelClass.GetCell(row, 2).SetCellValue(bank.Bills.Where(e => e.Budget == Budget.Income && e.Cost == Cost.Repayment).Sum(e => e.Money));
+                        ExcelClass.GetCell(row, 3).SetCellValue(bank.Bills.Where(e => e.Budget == Budget.Income && e.Cost == Cost.MarginIncome).Sum(e => e.Money));
+                        ExcelClass.GetCell(row, 4).SetCellValue(bank.Bills.Where(e => e.Budget == Budget.Expense).Sum(e => e.Money));
+                        ExcelClass.GetCell(row, 5).SetCellValue(bank.Bills.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.Posting).Sum(e => e.Money));
+                        ExcelClass.GetCell(row, 6).SetCellValue(bank.Bills.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.Load).Sum(e => e.Money));
+                        ExcelClass.GetCell(row, 7).SetCellValue(bank.Bills.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.MarginPay).Sum(e => e.Money));
+                        ExcelClass.GetCell(row, 8).SetCellValue(bank.Bills.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.RealPay).Sum(e => e.Money));
+                        ExcelClass.GetCell(row, 9).SetCellValue(bank.Bills.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.Petty).Sum(e => e.Money));
+
+                        var line = 11;
+                        var modelRow = sheet.GetRow(line);
+                        var serial = 1;
+                        foreach(var bill in bank.Bills)
+                        {
+                            row = sheet.GetRow(line);
+                            if (row == null)
+                            {
+                                row = sheet.CreateRow(line);
+                            }
+                            line++;
+                            cell = ExcelClass.GetCell(row, 0, modelRow);
+                            cell.SetCellValue(serial++);
+                            ExcelClass.GetCell(row, 1, modelRow).SetCellValue(bill.Time.ToShortDateString());
+                            ExcelClass.GetCell(row, 2, modelRow).SetCellValue(bill.Budget.GetDescription());
+                            ExcelClass.GetCell(row, 3, modelRow).SetCellValue(bill.Money);
+                            ExcelClass.GetCell(row, 4, modelRow).SetCellValue(bill.Account);
+                            ExcelClass.GetCell(row, 5, modelRow).SetCellValue(bill.Cost.GetDescription());
+                            ExcelClass.GetCell(row, 6, modelRow).SetCellValue(bill.Summary);
+                        }
+                    }
+                   
+                }
+            }
+
+            return workbook;
         }
 
         

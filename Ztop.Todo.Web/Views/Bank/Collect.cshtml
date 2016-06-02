@@ -131,17 +131,26 @@
             }
         </div>
 
+        <div class="col-md-6 col-xs-6">
+            <h3 class="text-center">现金</h3>
+
+        </div>
+
         <div class="col-md-12 col-xs-12">
             <table class="table table-striped table-bordered">
                 <thead>
                     <tr>
                         <th colspan="9" class="text-center">汇总</th>
                     </tr>
+                
+                </thead>
+                <tbody>
                     <tr>
                         <td rowspan="2" class="text-center">公司名称/类别</td>
                         <td colspan="3" class="text-center">收入</td>
                         <td colspan="5" class="text-center">支出</td>
                     </tr>
+                  
                     <tr>
                         <td>实际收入</td>
                         <td>还款</td>
@@ -152,8 +161,7 @@
                         <td>实际支出</td>
                         <td>备用金</td>
                     </tr>
-                </thead>
-                <tbody>
+                   
                     <tr>
                         <td>@(Evaluation.Company.GetDescription())</td>
                         <td>@(Evaluation.Bills.Where(e=>e.Budget==Budget.Income&&e.Cost==Cost.RealIncome).Sum(e=>e.Money))</td>
@@ -176,7 +184,11 @@
                         <td>@(Projection.Bills.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.RealPay).Sum(e => e.Money))</td>
                         <td>@(Projection.Bills.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.Petty).Sum(e => e.Money))</td>
                     </tr>
-           
+                    <tr>
+                        <td>现金</td>
+                        <td colspan="3"></td>
+                        <td colspan="5">@(Cash)</td>
+                    </tr>
                 </tbody>
             </table>
         </div>

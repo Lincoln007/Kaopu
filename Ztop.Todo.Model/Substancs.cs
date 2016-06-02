@@ -48,18 +48,18 @@ namespace Ztop.Todo.Model
         Bus,
         [Description("评审费用")]
         Evaluate,
-        [Description("会议费用")]
-        Meeting,
         [Description("印刷装订")]
         Print,
         [Description("福利费用")]
         Welfare,
-        [Description("快递电通信等")]
+        [Description("快递通信")]
         Express,
         [Description("财务费用")]
         Financial,
-        [Description("标书")]
+        [Description("投标费用")]
         Bidding,
+        [Description("活动费用")]
+        Events,
         [Description("其他")]
         Other
 

@@ -1,5 +1,7 @@
-﻿using System;
+﻿using NPOI.SS.UserModel;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -61,6 +63,16 @@ namespace Ztop.Todo.Web.Controllers
             ViewBag.Projection = Core.BillManager.GetAllModelBank(year, month, Company.Projection);
             ViewBag.Cash = Core.SheetManager.Collect(year, month);
             return View();
+        }
+
+        public ActionResult Download(int year,int month,Company company)
+        {
+            IWorkbook workbook = Core.BillManager.GetWorkbook(year, month, company);
+            MemoryStream ms = new MemoryStream();
+            workbook.Write(ms);
+            ms.Flush();
+            byte[] fileContents = ms.ToArray();
+            return File(fileContents, "application/ms-excel", string.Format("杭州智拓{0}咨询有限公司{1}年{2}月银行对账单.xls", company == Company.Evaluation ? "房地产土地评估" : "土地规划设计", year, month));
         }
     }
 }

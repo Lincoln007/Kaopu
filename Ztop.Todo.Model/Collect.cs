@@ -180,7 +180,7 @@ namespace Ztop.Todo.Model
         Posting,
         [Description("借款")]
         Load,
-        [Description("保障金支出")]
+        [Description("保证金支出")]
         MarginPay,
         [Description("实际支出")]
         RealPay,
