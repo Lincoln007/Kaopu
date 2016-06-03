@@ -372,5 +372,11 @@ namespace Ztop.Todo.Web.Controllers
             return Json(List,JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult Collect(int year,int month)
+        {
+            ViewBag.Sheets = Core.SheetManager.GetSheets(year, month);
+            return View();
+        }
+
     }
 }

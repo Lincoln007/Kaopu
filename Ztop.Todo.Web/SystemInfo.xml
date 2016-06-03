@@ -16,6 +16,9 @@
     <Director Name="靳小阳"></Director>
     <Manager Name="申屠杜平"></Manager>
     <Finance Name="靳小阳"></Finance>
+    <Bank Name="袁洋"></Bank>
+    <Bank Name="申屠杜平"></Bank>
+    <Bank Name="靳小阳"></Bank>
   </Directors>
   <Organizations>
     <Organization Name="000ALL"></Organization>

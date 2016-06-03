@@ -53,7 +53,7 @@
                         <span class="icon-bar"></span>
                     </button>
                     <a href="/" class="navbar-brand logo">智拓TODO</a>
-                    <a href="/"class="navbar-brand">任务系统</a>
+                    <a href="/"class="navbar-brand">报销系统</a>
                 </div>
                 <ul class="navbar-right nav navbar-nav">
                     @if (!string.IsNullOrEmpty(Identity.Name))
@@ -114,6 +114,10 @@
                                         <li><a href="/Report/List?Position=已审核"><i class="fa fa-check-circle"></i> 已完成报销</a></li>
                                     </ul>
                                 </li>
+                                @if (Identity.Name == "袁洋" || Identity.Name == "申屠杜平")
+                                {
+                                    <li><a href="/Bank/Index"><i class="glyphicon glyphicon-calendar"></i>银行对账</a></li>
+                                }
                                 @if(Identity.Name== "靳小阳")
                                 {
                                     <li>

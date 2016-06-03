@@ -4,6 +4,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     List<Bank> evaluations = ViewBag.Evaluations;
     List<Bank> projections = ViewBag.Projections;
+    List<Sheet> sheets = ViewBag.Sheets;
     List<string> Districts = ViewBag.Districts;
 }
 
@@ -12,7 +13,7 @@
 </div>
 
 
-<div class="col-md-4">
+<div class="col-md-3">
     <div class="panel panel-green">
         <div class="panel panel-heading">
             <h3 class="panel-title">
@@ -21,14 +22,16 @@
            
         </div>
         <div class="panel panel-body">
-          
-           
             <table class="table table-striped">
-                <tr>
-                    <td>
-                        <a href="/Bank/Create?Company=@(Company.Evaluation)" class="btn btn-sm"><i class="glyphicon glyphicon-plus"></i>添加</a>
-                    </td>
-                </tr>
+                @if (Identity.Name == "靳小阳")
+                {
+                    <tr>
+                        <td>
+                            <a href="/Bank/Create?Company=@(Company.Evaluation)" class="btn btn-sm"><i class="glyphicon glyphicon-plus"></i>添加</a>
+                        </td>
+                    </tr>
+                }
+              
                 @foreach (var bank in evaluations)
                 {
                     <tr>
@@ -41,7 +44,7 @@
     </div>
 </div>
 
-<div class="col-md-4">
+<div class="col-md-3">
     <div class="panel panel-yellow">
         <div class="panel panel-heading">
             <h3 class="panel-title">
@@ -50,11 +53,15 @@
         </div>
         <div class="panel panel-body">
             <table class="table table-striped">
-                <tr>
-                    <td>
-                        <a href="/Bank/Create?Company=@(Company.Projection)" class="btn btn-sm"><i class="glyphicon glyphicon-plus"></i>添加</a>
-                    </td>
-                </tr>
+                @if (Identity.Name == "靳小阳")
+                {
+                    <tr>
+                        <td>
+                            <a href="/Bank/Create?Company=@(Company.Projection)" class="btn btn-sm"><i class="glyphicon glyphicon-plus"></i>添加</a>
+                        </td>
+                    </tr>
+                }
+               
                 @foreach (var bank in projections)
                 {
                     <tr>
@@ -66,7 +73,29 @@
         </div>
     </div>
 </div>
-<div class="col-md-4">
+<div class="col-md-3">
+    <div class="panel panel-primary">
+        <div class="panel panel-heading">
+            <h3 class="panel-title">
+                现金收支
+            </h3>
+        </div>
+        <div class="panel panel-body">
+            <table class="table table-striped">
+                @foreach(var item in sheets.Select(e=>string.Format("{0}年{1}月",e.CheckTime.Value.Year,e.CheckTime.Value.Month)).Distinct())
+                {
+                    var query = item.Replace("年", ",").Replace("月", "").Split(',');
+                    var year = int.Parse(query[0]);
+                    var month = int.Parse(query[1]);
+                    <tr>
+                        <td><a href="/Report/Collect/?year=@(year)&&month=@(month)">@(item)</a> </td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+</div>
+<div class="col-md-3">
     <div class="panel panel-red">
         <div class="panel panel-heading">
             <div class="panel-title">

@@ -51,5 +51,10 @@ namespace Ztop.Todo.ActiveDirectory
         {
             return Get("/Composes/Directors/Finance");
         }
+
+        public static List<string> GetBanks()
+        {
+            return InitConfig("/Composes/Directors/Bank");
+        }
     }
 }

@@ -18,6 +18,7 @@ namespace Ztop.Todo.Web.Controllers
             ViewBag.Evaluations = Core.BillManager.GetBanks(Company.Evaluation);
             ViewBag.Projections = Core.BillManager.GetBanks(Company.Projection);
             ViewBag.Districts = Core.BillManager.GetYearMonth();
+            ViewBag.Sheets = Core.SheetManager.Collect();
             return View();
         }
 
@@ -61,7 +62,7 @@ namespace Ztop.Todo.Web.Controllers
             ViewBag.Month = month;
             ViewBag.Evaluation = Core.BillManager.GetAllModelBank(year, month, Company.Evaluation);
             ViewBag.Projection = Core.BillManager.GetAllModelBank(year, month, Company.Projection);
-            ViewBag.Cash = Core.SheetManager.Collect(year, month);
+            ViewBag.Cash = Core.SheetManager.Sum(year, month);
             return View();
         }
 

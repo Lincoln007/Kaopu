@@ -204,22 +204,47 @@ namespace Ztop.Todo.Manager
             return list;
         }
 
+        public List<Sheet> GetSheets(int year,int month)
+        {
+            var list = new List<Sheet>();
+            var query = Collect(year, month).Select(e=>e.ID).ToList();
+            foreach(var id in query)
+            {
+                list.Add(GetAllModel(id));
+            }
+            return list;
+        }
+
         /// <summary>
         /// 统计某年某月的报销金额
         /// </summary>
         /// <param name="year"></param>
         /// <param name="month"></param>
         /// <returns></returns>
-        public double Collect(int year,int month)
+        public double Sum(int year,int month)
         {
-            using(var db = GetDbContext())
+            var query = Collect(year, month);
+            if (query.Count() == 0)
             {
-                var query = db.Sheets.Where(e => e.CheckTime.Value.Year == year && e.CheckTime.Value.Month == month).AsQueryable();
-                if (query.Count()==0)
-                {
-                    return .0;
-                }
-                return query.Sum(e => e.Money);
+                return .0;
+            }
+            return query.Sum(e => e.Money);
+        }
+
+
+        public List<Sheet> Collect(int year,int month)
+        {
+            using (var db = GetDbContext())
+            {
+                return db.Sheets.Where(e => e.CheckTime.HasValue).Where(e => e.CheckTime.Value.Year == year && e.CheckTime.Value.Month == month).ToList();
+            }
+        }
+
+        public List<Sheet> Collect()
+        {
+            using (var db = GetDbContext())
+            {
+                return db.Sheets.Where(e => e.Status == Status.Examined || e.Status == Status.Filing).Where(e => e.CheckTime.HasValue).ToList();
             }
         }
         public List<Sheet> GetSheets(SheetQueryParameter parameter)

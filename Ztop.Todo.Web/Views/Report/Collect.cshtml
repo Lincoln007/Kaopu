@@ -1,0 +1,125 @@
+﻿
+@{
+    ViewBag.Title = "报销汇总";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<Sheet> sheets = ViewBag.Sheets;
+    List<Sheet> Dailys = sheets.Where(e => e.Type == SheetType.Daily).ToList();//日常报销
+    List<Sheet> Errands = sheets.Where(e => e.Type == SheetType.Errand).ToList();//差旅报销
+    //Dailys.Select(e=>e.Substances).Join()
+    var str = Request.Path;
+}
+
+
+<h3>@(string.Format("{0}年{1}月杭州智拓财务报销清单",Request.QueryString["year"],Request.QueryString["month"]))</h3>
+
+
+<div class="panel panel-green">
+    <div class="panel panel-heading">
+        <h3 class="panel-title">
+            汇总
+        </h3>
+    </div>
+    <div class="panel panel-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>类别</th>
+                    <th>合计金额（元）</th>
+                </tr>
+            </thead>
+            @{ 
+                var list = new List<Substancs>();
+                foreach(var item in Dailys.Select(e => e.Substances))
+                {
+                    foreach(var entry in item)
+                    {
+                        list.Add(entry);
+                    }
+                }
+
+                foreach(var entry in list.GroupBy(e => e.Category).ToDictionary(e => e.Key, e => e.Sum(k => k.Price)))
+                {
+                    <tr>
+                        <td>@(entry.Key.GetDescription())</td>
+                        <td>@(entry.Value)</td>
+                    </tr>
+                }
+            }
+            <tr>
+                <td>差旅</td>
+                <td>@(Errands.Sum(e=>e.Money))</td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+
+<div class="panel panel-default">
+    <div class="panel panel-heading">
+        <h3 class="panel-title">
+            清单
+        </h3>
+    </div>
+    <div class="panel panel-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>单据编号</th>
+                    <th>报销人</th>
+                    <th>报销金额（元）</th>
+                    <th>报销确认时间</th>
+                    <th>报销类型</th>
+                    <th style="width:200px;">备注</th>
+                </tr>
+            </thead>
+            @foreach(var item in Dailys)
+            {
+                <tr>
+                    <td>@(item.SerialNumber.Coding)</td>
+                    <td>@(item.Name)</td>
+                    <td>@(item.Money)</td>
+                    <td>@(item.CheckTime.HasValue?item.CheckTime.Value.ToString("yyyy-MM-dd"):"")</td>
+                    <td>@(item.Type.GetDescription())</td>
+                    <td>
+
+                        <a class="btn btn-default btn-xs" role="button" data-toggle="collapse" href="#collapseExample@(item.SerialNumber.Coding)" aria-expanded="false" aria-controls="collapseExample">
+                            详情
+                        </a>
+                        <div class="collapse" id="collapseExample@(item.SerialNumber.Coding)">
+                            <table class="table table-bordered">
+                                @foreach (var entry in item.Substances)
+                                {
+                                    <tr>
+                                        <td>@(entry.Category.GetDescription())</td>
+                                        <td>@(entry.Price)</td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            }
+
+            @foreach(var item in Errands)
+            {
+                <tr>
+                    <td>@(item.SerialNumber.Coding)</td>
+                    <td>@(item.Name)</td>
+                    <td>@(item.Money)</td>
+                    <td>@(item.CheckTime.HasValue?item.CheckTime.Value.ToString("yyyy-MM-dd"):"")</td>
+                    <td>@(item.Type.GetDescription())</td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>
+
+
+<script>
+    $(function () {
+        $("[data-toggle='popover']").popover();
+    })
+</script>
+
+
+
