@@ -123,8 +123,9 @@
                 #
             </th>
             <th style="width:15%;">
-                分类
+                一级分类
             </th>
+            <th>二级分类</th>
             <th>
                 内容
             </th>
@@ -141,12 +142,17 @@
                 <tr>
                     <td>@(serial++)</td>
                     <td>
-                        <select name="Category" class="form-control">
+                        <select name="Category" class="form-control" targetIndex="@(serial)">
                             <option value="">请选择</option>
                             @foreach (Category category in Enum.GetValues(typeof(Category)))
                             {
                                 <option value="@(category)" @(subtance.Category == category ? "selected=selected" : "")>@(category.GetDescription())</option>
                             }
+                        </select>
+                    </td>
+                    <td>
+                        <select name="SecondCategory" class="form-control">
+                            
                         </select>
                     </td>
                     <td><input type="text" name="Detail" style="width:100%" value="@(subtance.Details)" class="form-control" /></td>
@@ -162,7 +168,7 @@
                     <select name="Category" class="form-control">
                         <option value="">请选择</option>
                         @foreach (Category category in Enum.GetValues(typeof(Category)))
-                {
+                        {
                             <option value="@(category)">@(category.GetDescription())</option>
                         }
                     </select>
@@ -172,8 +178,46 @@
             </tr>
         }
     </tbody>
-
 </table>
+
+<div style="display:none">
+    <select  id="FixedAsssets">
+        @foreach(SecondCategory category in Enum.GetValues(typeof(SecondCategory)))
+        {
+            if (((int)category) < 2)
+            {
+                <option value="@(category)">@(category.GetDescription())</option>
+            }
+        }
+        <option value="Other">其他</option>
+    </select>
+    <select id="Equipment">
+        @foreach (SecondCategory category in Enum.GetValues(typeof(SecondCategory)))
+        {
+            if (((int)category) > 1)
+            {
+                if (((int)category) < 5)
+                {
+                    <option value="@(category)">@(category.GetDescription())</option>
+                }
+            }
+        }
+        <option value="Other">其他</option>
+    </select>
+    <select id="">
+        @foreach (SecondCategory category in Enum.GetValues(typeof(SecondCategory)))
+        {
+            if (((int)category) > 4)
+            {
+                if (((int)category) < 7)
+                {
+                    <option value="@(category)">@(category.GetDescription())</option>
+                }
+            }
+        }
+        <option value="Other">其他</option>
+    </select>
+</div>
 
 
 <script>
@@ -196,6 +240,10 @@
                 return false;
             }
         }
+
+        $("[name='Category']").change(function () {
+
+        })
         
         //$("input[name='Price']").change(SumDial)
     })

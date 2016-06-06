@@ -30,7 +30,7 @@
                     </td>
                 }
             </tr>
-            <tr>
+            @*<tr>
                 <td>公里数</td>
                 @if (flag)
                 {
@@ -46,13 +46,13 @@
                     </td>
 
                 }
-            </tr>
+            </tr>*@
             <tr>
                 <td>交通费用</td>
                 @if (flag)
                 {
                     <td class="text-center">
-                        小计：@(Model.Traffic) 元
+                        公里数：@(Model.KiloMeters)  公里  小计：@(Model.Traffic) 元
                         @if (Model.TCosts != null)
                         {
                             <table class="table table-striped">
@@ -131,63 +131,148 @@
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                         <h4 class="modal-title">交通费用详情</h4>
                                     </div>
-                                    <div class="modal-body">
-                                        <ul class="list-group">
-                                            @foreach (BusType type in Enum.GetValues(typeof(BusType)))
+                                    <div class="modal-body container-fluid">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-1">公里数</label>
+                                            <div class="input-group col-md-11">
+                                                <input type="text" class="form-control" name="KiloMeters" value="@(Model.KiloMeters)" />
+                                                <div class="input-group-addon">公里</div>
+                                            </div>
+                                            
+                                        </div>
+                                        @foreach (BusType type in Enum.GetValues(typeof(BusType)))
+                                        {
+                                            var check = costtypes.ContainsKey(type);
+                                            var values = check ? costtypes[type] : new Traffic();
+                                            if (type == BusType.Company || type == BusType.Personal)
                                             {
-                                                <li class="list-group-item">
-                                                    @{
-                                                        var check = costtypes.ContainsKey(type);
-                                                        var values = check ? costtypes[type] : new Traffic();
-                                                        <div class="input-group" >
-                                                            <span class="input-group-addon">
-                                                                <input type="checkbox" name="BusType" value="@(type)" aria-label="" @(check ? "checked=checked" : "") />@(type.GetDescription())
-                                                            </span>
-                                                            <input type="text" class="form-control" name="Cost@(type)" aria-label="" placeholder="金额" value="@(values.Cost)" @(type==BusType.Personal||type==BusType.Company?"readonly=readonly":"") />
+                                                <div class="col-md-12 well" style="padding:10px;margin-top:5px;margin-bottom:5px;">
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon">
+                                                            <input type="checkbox" name="BusType" value="@(type)" aria-label="" @(check ? "checked=checked" : "") />@(type.GetDescription())
+                                                        </span>
+                                                        <input type="text" class="form-control" name="Cost@(type)" aria-label="" placeholder="金额" value="@(values.Cost)" @(type == BusType.Personal || type == BusType.Company ? "readonly=readonly" : "") />
+                                                        <div class="input-group-addon">元</div>
+                                                        @if (type == BusType.Didi || type == BusType.Taxi)
+                                                        {
+                                                            <input type="number" class="form-control" name="Times" placeholder="" value="@(values.Times)" min="0" />
+                                                                    <div class="input-group-addon">次</div>
+                                                        }
+                                                    </div>
+                                                    @if (type == BusType.Company)
+                                                    {
+                                                        <div class="input-group" style="margin-top:10px; ">
+                                                            <div class="input-group-addon">过路费</div>
+                                                            <input type="text" class="form-control" name="Toll" placeholder="过路费" value="@(values.Toll)" targetType="Company" />
                                                             <div class="input-group-addon">元</div>
-                                                            @if (type == BusType.Didi || type == BusType.Taxi)
-                                                            {
-                                                                <input type="number" class="form-control" name="Times" placeholder="" value="@(values.Times)" min="0" />
-                                                                <div class="input-group-addon">次</div>
-                                                            }
+                                                            <div class="input-group-addon">油费</div>
+                                                            <input type="text" class="form-control" name="Petrol" placeholder="油费" value="@(values.Petrol)" />
+                                                            <div class="input-group-addon">元</div>
+
                                                         </div>
-                                                        if (type == BusType.Company)
-                                                        {
-                                                            <div class="input-group" style="margin-top:10px; ">
-                                                                <div class="input-group-addon">过路费</div>
-                                                                <input type="text" class="form-control" name="Toll" placeholder="过路费" value="@(values.Toll)" targetType="Company" />
-                                                                <div class="input-group-addon">元</div>
-                                                                <div class="input-group-addon">油费</div>
-                                                                <input type="text" class="form-control" name="Petrol" placeholder="油费" value="@(values.Petrol)" />
-                                                                <div class="input-group-addon">元</div>
-                                                                
-                                                            </div>
-                                                            <div class="input-group" style="margin-top:10px;">
-                                                                <select name="Driver" class="form-control">
-                                                                    @foreach(Driver driver in Enum.GetValues(typeof(Driver)))
-                                                                    {
-                                                                        <option value="@(driver)" @(values.Driver==driver?"selected=selected":"")>@(driver)</option>
-                                                                    }
-                                                                </select>
-                                                                <div class="input-group-addon">司机</div>
-                                                                <input type="text" class="form-control" name="CarPetty" placeholder="车补" value="@(values.CarPetty)"  readonly="readonly"/>
-                                                                <div class="input-group-addon">元</div>
-                                                                <input type="text" class="form-control" name="Plate" placeholder="车牌" value="@(values.Plate)" />
-                                                            </div>
-                                                        }
-                                                        else if (type == BusType.Personal)
-                                                        {
-                                                            <div class="input-group" style="margin-top:10px;">
-                                                                <div class="input-group-addon">过路费</div>
-                                                                <input type="text" class="form-control" name="Toll" placeholder="过路费" value="@(values.Toll)" targetType="Personal"/>
-                                                                <div class="input-group-addon">元</div>
-                                                                <input type="text" class="form-control" name="Plate" placeholder="车牌" value="@(values.Plate)" />
-                                                            </div>
-                                                        }
+                                                        <div class="input-group" style="margin-top:10px;">
+                                                                    <select name="Driver" class="form-control">
+                                                                        @foreach (Driver driver in Enum.GetValues(typeof(Driver)))
+                                                                        {
+                                                                            <option value="@(driver)" @(values.Driver == driver ? "selected=selected" : "")>@(driver)</option>
+                                                                        }
+                                                                    </select>
+                                                                    <div class="input-group-addon">司机</div>
+                                                                    <input type="text" class="form-control" name="CarPetty" placeholder="车补" value="@(values.CarPetty)" readonly="readonly" />
+                                                                    <div class="input-group-addon">元</div>
+                                                                    <input type="text" class="form-control" name="Plate" placeholder="车牌" value="@(values.Plate)" />
+                                                                </div>
                                                     }
-                                                </li>
+                                                    else if (type == BusType.Personal)
+                                                    {
+                                                        <div class="input-group" style="margin-top:10px;">
+                                                            <div class="input-group-addon">过路费</div>
+                                                            <input type="text" class="form-control" name="Toll" placeholder="过路费" value="@(values.Toll)" targetType="Personal" />
+                                                            <div class="input-group-addon">元</div>
+                                                            <input type="text" class="form-control" name="Plate" placeholder="车牌" value="@(values.Plate)" />
+                                                        </div>
+                                                    }
+                                                </div>
                                             }
-                                        </ul>
+                                            else
+                                            {
+                                                <div class="col-md-6 well" style="padding:10px;margin-bottom:5px;margin-top:5px;">
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon">
+                                                            <input type="checkbox" name="BusType" value="@(type)" aria-label="" @(check ? "checked=checked" : "") />@(type.GetDescription())
+                                                        </span>
+                                                        <input type="text" class="form-control" name="Cost@(type)" aria-label="" placeholder="金额" value="@(values.Cost)" @(type == BusType.Personal || type == BusType.Company ? "readonly=readonly" : "") />
+                                                        <div class="input-group-addon">元</div>
+                                                        @if (type == BusType.Didi || type == BusType.Taxi)
+                                                        {
+                                                            <input type="number" class="form-control" name="Times" placeholder="" value="@(values.Times)" min="0" />
+                                                            <div class="input-group-addon">次</div>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            }
+                                        }
+                           
+                                     
+
+
+                                            @*<ul class="list-group">
+                                                @foreach (BusType type in Enum.GetValues(typeof(BusType)))
+                                                {
+                                                    <li class="list-group-item">
+                                                        @{
+                                                            var check = costtypes.ContainsKey(type);
+                                                            var values = check ? costtypes[type] : new Traffic();
+                                                            <div class="input-group">
+                                                                <span class="input-group-addon">
+                                                                    <input type="checkbox" name="BusType" value="@(type)" aria-label="" @(check ? "checked=checked" : "") />@(type.GetDescription())
+                                                                </span>
+                                                                <input type="text" class="form-control" name="Cost@(type)" aria-label="" placeholder="金额" value="@(values.Cost)" @(type == BusType.Personal || type == BusType.Company ? "readonly=readonly" : "") />
+                                                                <div class="input-group-addon">元</div>
+                                                                @if (type == BusType.Didi || type == BusType.Taxi)
+                                                                {
+                                                                    <input type="number" class="form-control" name="Times" placeholder="" value="@(values.Times)" min="0" />
+                                                                    <div class="input-group-addon">次</div>
+                                                                }
+                                                            </div>
+                                                            if (type == BusType.Company)
+                                                            {
+                                                                <div class="input-group" style="margin-top:10px; ">
+                                                                    <div class="input-group-addon">过路费</div>
+                                                                    <input type="text" class="form-control" name="Toll" placeholder="过路费" value="@(values.Toll)" targetType="Company" />
+                                                                    <div class="input-group-addon">元</div>
+                                                                    <div class="input-group-addon">油费</div>
+                                                                    <input type="text" class="form-control" name="Petrol" placeholder="油费" value="@(values.Petrol)" />
+                                                                    <div class="input-group-addon">元</div>
+
+                                                                </div>
+                                                                <div class="input-group" style="margin-top:10px;">
+                                                                    <select name="Driver" class="form-control">
+                                                                        @foreach (Driver driver in Enum.GetValues(typeof(Driver)))
+                                                                        {
+                                                                            <option value="@(driver)" @(values.Driver == driver ? "selected=selected" : "")>@(driver)</option>
+                                                                        }
+                                                                    </select>
+                                                                    <div class="input-group-addon">司机</div>
+                                                                    <input type="text" class="form-control" name="CarPetty" placeholder="车补" value="@(values.CarPetty)" readonly="readonly" />
+                                                                    <div class="input-group-addon">元</div>
+                                                                    <input type="text" class="form-control" name="Plate" placeholder="车牌" value="@(values.Plate)" />
+                                                                </div>
+                                                            }
+                                                            else if (type == BusType.Personal)
+                                                            {
+                                                                <div class="input-group" style="margin-top:10px;">
+                                                                    <div class="input-group-addon">过路费</div>
+                                                                    <input type="text" class="form-control" name="Toll" placeholder="过路费" value="@(values.Toll)" targetType="Personal" />
+                                                                    <div class="input-group-addon">元</div>
+                                                                    <input type="text" class="form-control" name="Plate" placeholder="车牌" value="@(values.Plate)" />
+                                                                </div>
+                                                            }
+                                                        }
+                                                    </li>
+                                                }
+                                            </ul>*@
+                                      
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>

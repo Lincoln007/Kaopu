@@ -96,12 +96,12 @@ namespace Ztop.Todo.Model
         Plane,
         [Description("火车")]
         Train,
-        [Description("客运大巴")]
-        Bus,
         [Description("公司车")]
         Company,
         [Description("自备车")]
         Personal,
+        [Description("客运大巴")]
+        Bus,
         [Description("企业滴滴")]
         Didi,
         [Description("公共交通")]

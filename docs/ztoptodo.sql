@@ -1,7 +1,7 @@
 -- --------------------------------------------------------
--- 主机:                           10.22.102.3
+-- 主机:                           10.22.102.90
 -- 服务器版本:                        5.1.73-community - MySQL Community Server (GPL)
--- 服务器操作系统:                      Win64
+-- 服务器操作系统:                      Win32
 -- HeidiSQL 版本:                  9.3.0.4984
 -- --------------------------------------------------------
 
@@ -160,6 +160,7 @@ CREATE TABLE IF NOT EXISTS `notification` (
   `InfoType` int(11) NOT NULL DEFAULT '0',
   `HasRead` bit(1) NOT NULL DEFAULT b'0',
   `CreateTime` datetime NOT NULL,
+  `ContentID` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`ID`),
   KEY `UserID` (`ReceiverID`),
   KEY `CreateTime` (`CreateTime`)
@@ -220,6 +221,7 @@ CREATE TABLE IF NOT EXISTS `sheets` (
 CREATE TABLE IF NOT EXISTS `substancs` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `Category` int(2) NOT NULL DEFAULT '0',
+  `SecondCategory` int(2) NOT NULL DEFAULT '0',
   `Details` varchar(1023) DEFAULT '0',
   `Price` double DEFAULT '0',
   `SID` int(11) NOT NULL DEFAULT '0',
