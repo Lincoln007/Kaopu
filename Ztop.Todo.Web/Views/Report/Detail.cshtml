@@ -54,7 +54,7 @@
                    {
                         <button class="btn btn-default btn-lg" type="button" onclick="javascript: Preview()">
                                         <em class="glyphicon glyphicon-print"></em> 打印
-                                    </button>
+                        </button>
                    }
                    {
                         Html.RenderPartial("WithDrawal", sheet);
@@ -68,15 +68,11 @@
          }
          else if (sheet.Status == Status.Filing&&Identity.Name==XmlHelper.GetFinance())
          {
+                <button class="btn btn-default btn-lg" type="button" onclick="javascript: Preview()">
+                      <em class="glyphicon glyphicon-print"></em> 打印
+                </button>
                 <button type="button" class="btn btn-default btn-lg" onclick="history.back();"><em class="glyphicon glyphicon-arrow-left"></em> 返回</button>
          }
-
-        @*@if (Identity.Name == "汪建龙")
-        {
-            <button class="btn btn-default btn-lg" type="button" onclick="javascript: Preview()">
-                <em class="glyphicon glyphicon-print"></em> 打印
-            </button>
-        }*@
 
     </div>
 
@@ -137,7 +133,7 @@
                             {
                                 <tr>
                                     <td>@(Serial++)</td>
-                                    <td>@(substances.Category.GetDescription())</td>
+                                    <td>@(substances.Category.GetDescription()) @(substances.SecondCategory.HasValue?"-"+substances.SecondCategory.Value.GetDescription():"") </td>
                                     <td class="text-center">@(substances.Details)</td>
                                     <td>@(substances.Price)</td>
                                 </tr>

@@ -27,7 +27,7 @@ namespace Ztop.Todo.Model
         /// 二级分类
         /// </summary>
         [Column(TypeName ="int")]
-        public SecondCategory SecondCategory { get; set; }
+        public SecondCategory? SecondCategory { get; set; }
         /// <summary>
         /// 内容
         /// </summary>

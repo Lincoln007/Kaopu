@@ -137,6 +137,11 @@ namespace Ztop.Todo.Model
         [Column(TypeName ="int")]
         public Cost Cost { get; set; }
         /// <summary>
+        /// 支出 的时候 选择实际支出 选择分类
+        /// </summary>
+        [Column(TypeName ="int")]
+        public Category? Category { get; set; }
+        /// <summary>
         /// 摘要
         /// </summary>
         public string Summary { get; set; }

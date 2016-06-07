@@ -13,6 +13,7 @@ namespace Ztop.Todo.Manager
         public List<Substancs> GetSubstances(HttpContextBase context)
         {
             var categorys = context.Request.Form["Category"].ToString().Split(',');
+            var secondCategorys = context.Request.Form["SecondCategory"].ToString().Split(',');
             var details = context.Request.Form["Detail"].Split(',');
             var prices = context.Request.Form["Price"].Split(',');
             if (categorys.Count() != 10 || details.Count() != 10 || prices.Count() != 10)
@@ -21,19 +22,36 @@ namespace Ztop.Todo.Manager
             }
             var list = new List<Substancs>();
             double temp = .0;
+            var j = 0;
             for(var i = 0; i < 10; i++)
             {
                 if (string.IsNullOrEmpty(categorys[i]) || string.IsNullOrEmpty(details[i]) || string.IsNullOrEmpty(prices[i]))
                 {
                     break;
                 }
-
-                list.Add(new Substancs
+                var entry = new Substancs()
                 {
-                    Category = (Category)Enum.Parse(typeof(Category),categorys[i]),
+                    Category = (Category)Enum.Parse(typeof(Category), categorys[i]),
                     Details = details[i],
                     Price = double.TryParse(prices[i], out temp) ? temp : .0
-                });
+                };
+
+                switch (entry.Category)
+                {
+                    case Category.FixedAsssets://固定资产
+                    case Category.Equipment://耗材
+                    case Category.Traffic://交通费
+                    case Category.Express://邮电费
+                    case Category.Print://印刷装订
+                    case Category.Welfare://福利费
+                    case Category.Bidding://招投标费
+                        entry.SecondCategory = (SecondCategory)Enum.Parse(typeof(SecondCategory), secondCategorys[j++]);
+                        break;
+                    default:
+                        break;
+                }
+
+                list.Add(entry);
             }
             return list;
         }

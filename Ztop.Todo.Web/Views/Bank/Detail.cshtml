@@ -33,10 +33,10 @@
                                 <th>交易日期</th>
                                 <th>交易类型（收入/支出）</th>
                                 <th>金额（元）</th>
-                                <th class="text-center">对方账号</th>
+                                <th class="text-center">对方单位</th>
                                 <th>类别&nbsp;</th>
                                 <th>
-                                    摘要/备注
+                                    摘要
                                 </th>
                             </tr>
                         </thead>
@@ -111,10 +111,10 @@
                 <th>交易日期</th>
                 <th>交易类型（收入/支出）</th>
                 <th>金额（元）</th>
-                <th class="text-center">对方账号</th>
-                <th>类别</th>
+                <th class="text-center">对方单位</th>
+                <th style="width:20%;" class="text-center">类别</th>
                 <th colspan="2">
-                    摘要/备注
+                    摘要
                 </th>
             </tr>
         </thead>
@@ -128,8 +128,8 @@
                         <td>@(item.Time.ToString("yyyy-MM-dd"))</td>
                         <td>@(item.Budget.GetDescription())</td>
                         <td>@(item.Money)</td>
-                        <td>@(item.Account)</td>
-                        <td>@(item.Cost.GetDescription())</td>
+                        <td>@(item.Account) </td>
+                        <td>@(item.Cost.GetDescription()) @(item.Category.HasValue ? "-" + item.Category.Value.GetDescription() : "")</td>
                         <td colspan="2">@(item.Summary)</td>
                     </tr>
                 }
@@ -154,29 +154,44 @@
                         <td><input type="text" name="Money" class="form-control" value="@(item.Money)" /></td>
                         <td><input type="text" name="Account" class="form-control" value="@(item.Account)" /></td>
                         <td>
-                            <select name="Cost" class="form-control" id="Cost@(currentNumber++)">
-                                @foreach (Cost cost in Enum.GetValues(typeof(Cost)))
-                                {
-                                    if (item.Budget == Budget.Income)
+                            <div class="col-md-6" style="padding:0px;">
+                                <select name="Cost" class="form-control" id="Cost@(currentNumber++)">
+                                    @foreach (Cost cost in Enum.GetValues(typeof(Cost)))
                                     {
-                                        if (cost == Cost.Posting)
+                                        if (item.Budget == Budget.Income)
                                         {
-                                            break;
-                                        }
-                                        <option value="@(cost)" @(cost == item.Cost ? "selected=selected" : "")>@(cost.GetDescription())</option>
-                                    }
-                                    else
-                                    {
-                                        var index = (int)cost;
-
-                                        if (index > 2)
-                                        {
+                                            if (cost == Cost.Posting)
+                                            {
+                                                break;
+                                            }
                                             <option value="@(cost)" @(cost == item.Cost ? "selected=selected" : "")>@(cost.GetDescription())</option>
                                         }
+                                        else
+                                        {
+                                            var index = (int)cost;
+
+                                            if (index > 2)
+                                            {
+                                                <option value="@(cost)" @(cost == item.Cost ? "selected=selected" : "")>@(cost.GetDescription())</option>
+                                            }
+                                        }
+
                                     }
+                                </select>
+                            </div>
+                            <div class="col-md-6" style="padding:0px;" id="Append{Index}">
+                                @if (item.Category.HasValue)
+                                {
+                                    <select name="Category" class="form-control">
+                                        @foreach (Category category in Enum.GetValues(typeof(Category)))
+                                        {
+                                            <option value="@(category)" @(item.Category.Value == category ? "selected=selected" : "")>@(category.GetDescription())</option>
+                                        }
+                                    </select>
 
                                 }
-                            </select>
+                            </div>
+                           
                         </td>
                         <td>
                             <input type="text" name="Summary" class="form-control" value="@(item.Summary)" />
@@ -219,16 +234,21 @@
                 <td><input type="text" name="Money" class="form-control" placeholder="金额" /></td>
                 <td><input type="text" name="Account" class="form-control" placeholder="银行账号" /></td>
                 <td>
-                    <select name="Cost" class="form-control" id="Cost{Index}">
-                        @foreach (Cost cost in Enum.GetValues(typeof(Cost)))
-                        {
-                            if (cost == Cost.Posting)
+                    <div class="col-md-6" style="padding:0px;">
+                        <select name="Cost" class="form-control" id="Cost{Index}">
+                            @foreach (Cost cost in Enum.GetValues(typeof(Cost)))
                             {
-                                break;
+                                if (cost == Cost.Posting)
+                                {
+                                    break;
+                                }
+                                <option value="@(cost)">@(cost.GetDescription())</option>
                             }
-                            <option value="@(cost)">@(cost.GetDescription())</option>
-                        }
-                    </select>
+                        </select>
+                    </div>
+                   <div class="col-md-6" style="padding:0px;" id="Append{Index}">
+
+                   </div>
                 </td>
                 <td>
                     <input type="text" name="Summary" class="form-control" placeholder="备注/摘要" />
@@ -262,6 +282,15 @@
 
         }
     </select>  
+
+    <div id="AppendCategory">
+        <select class="form-control" name="Category">
+            @foreach (Category category in Enum.GetValues(typeof(Category)))
+            {
+                <option value="@(category)">@(category.GetDescription())</option>
+            }
+        </select>
+    </div>
 </div>
 
 
@@ -269,6 +298,7 @@
     var addhtml = $("#add").html();
     var incomehtml = $("#Income").html();
     var payhtml = $("#Pay").html();
+    var appendCategoryhtml=$("#AppendCategory").html();
     $(function () {
 
         var indexnumber=@(currentNumber);
@@ -293,6 +323,18 @@
                 var replacehtml=budget=="Income"?incomehtml:payhtml;
                 $("#Cost"+targetIndex).empty().append(replacehtml);
             });
+
+            $("[name='Cost']").unbind("change").bind("change",function(){
+                var index=$(this).attr("id").replace("Cost","");
+                var cost=$(this).val();
+                if(cost!=undefined&&cost!=""){
+                    if (cost == "RealPay") {
+                        $("#Append" + index).empty().append(appendCategoryhtml);
+                    } else {
+                        $("#Append" + index).empty();
+                    }
+                }
+            });
         });
 
         $("[name='Budget']").change(function(){
@@ -302,6 +344,17 @@
             $("#Cost"+targetIndex).empty().append(replacehtml);
         });
 
+        $("[name='Cost']").change(function(){
+            var index=$(this).attr("id").replace("Cost","");
+            var cost=$(this).val();
+            if(cost!=undefined&&cost!=""){
+                if (cost == "RealPay") {
+                    $("#Append" + index).empty().append(appendCategoryhtml);
+                } else {
+                    $("#Append" + index).empty();
+                }
+            }
+        });
 
         $(".btn-remove").click(function () {
             $(this).parent().parent().remove();

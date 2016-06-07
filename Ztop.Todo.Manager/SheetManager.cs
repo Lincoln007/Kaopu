@@ -99,6 +99,7 @@ namespace Ztop.Todo.Manager
                     db.Substances.AddRange(sheet.Substances.OrderBy(e => e.ID).Select(e => new Substancs
                     {
                         Category = e.Category,
+                        SecondCategory=e.SecondCategory,
                         Details = e.Details,
                         Price = e.Price,
                         SID = sheet.ID

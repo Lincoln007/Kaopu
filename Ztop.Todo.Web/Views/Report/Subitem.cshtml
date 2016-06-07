@@ -122,10 +122,9 @@
             <th>
                 #
             </th>
-            <th style="width:15%;">
-                一级分类
+            <th style="width:20%;" class="text-center">
+                分类
             </th>
-            <th>二级分类</th>
             <th>
                 内容
             </th>
@@ -142,18 +141,77 @@
                 <tr>
                     <td>@(serial++)</td>
                     <td>
-                        <select name="Category" class="form-control" targetIndex="@(serial)">
-                            <option value="">请选择</option>
-                            @foreach (Category category in Enum.GetValues(typeof(Category)))
-                            {
-                                <option value="@(category)" @(subtance.Category == category ? "selected=selected" : "")>@(category.GetDescription())</option>
-                            }
-                        </select>
-                    </td>
-                    <td>
-                        <select name="SecondCategory" class="form-control">
-                            
-                        </select>
+                        <div class="col-md-6" style="padding:0px;">
+                            <select name="Category" class="form-control" targetIndex="@(serial-1)">
+                                <option value="">请选择</option>
+                                @foreach (Category category in Enum.GetValues(typeof(Category)))
+                                {
+                                    <option value="@(category)" @(subtance.Category == category ? "selected=selected" : "")>@(category.GetDescription())</option>
+                                }
+                            </select>
+                        </div>
+                        @if (subtance.SecondCategory.HasValue)
+                        {
+                            <div class="col-md-6" style="padding:0px;" id="@(serial-1)">
+                                <select name="SecondCategory" class="form-control">
+                                    @foreach (SecondCategory secondCategory in Enum.GetValues(typeof(SecondCategory)))
+                                    {
+                                        if (subtance.Category == Category.FixedAsssets)
+                                        {
+                                            if (((int)secondCategory) < 2)
+                                            {
+                                                <option value="@(secondCategory)" @(subtance.SecondCategory.Value==secondCategory?"selected=selected":"")>@(secondCategory.GetDescription())</option>
+                                            }
+                                        }
+                                        else if (subtance.Category == Category.Equipment)
+                                        {
+                                            if (((int)secondCategory) > 1 && ((int)secondCategory) < 5)
+                                            {
+                                                <option value="@(secondCategory)" @(subtance.SecondCategory.Value == secondCategory ? "selected=selected" : "")>@(secondCategory.GetDescription())</option>
+                                            }
+                                        }
+                                        else if (subtance.Category == Category.Traffic)
+                                        {
+                                            if (((int)secondCategory) > 4 && ((int)secondCategory) < 7)
+                                            {
+                                                <option value="@secondCategory)" @(subtance.SecondCategory.Value == secondCategory ? "selected=selected" : "")>@(secondCategory.GetDescription())</option>
+                                            }
+                                        }
+                                        else if (subtance.Category == Category.Express)
+                                        {
+                                            if (((int)secondCategory) > 6 && ((int)secondCategory) < 9)
+                                            {
+                                                <option value="@(secondCategory)" @(subtance.SecondCategory.Value == secondCategory ? "selected=selected" : "")>@(secondCategory.GetDescription())</option>
+                                            }
+                                        }
+                                        else if (subtance.Category == Category.Print)
+                                        {
+                                            if (((int)secondCategory) > 8 && ((int)secondCategory) < 12)
+                                            {
+                                                <option value="@(secondCategory)" @(subtance.SecondCategory.Value == secondCategory ? "selected=selected" : "")>@(secondCategory.GetDescription())</option>
+                                            }
+                                        }
+                                        else if (subtance.Category == Category.Welfare)
+                                        {
+                                            if (((int)secondCategory) > 11 && ((int)secondCategory) < 14)
+                                            {
+                                                <option value="@(secondCategory)" @(subtance.SecondCategory.Value == secondCategory ? "selected=selected" : "")>@(secondCategory.GetDescription())</option>
+                                            }
+                                        }
+                                        else if (subtance.Category == Category.Bidding)
+                                        {
+                                            if (((int)secondCategory) > 13 && ((int)secondCategory) < 17)
+                                            {
+                                                <option value="@(secondCategory)" @(subtance.SecondCategory.Value == secondCategory ? "selected=selected" : "")>@(secondCategory.GetDescription())</option>
+                                            }
+                                        }
+                                    }
+                                    <option value="@(SecondCategory.Other)" @(subtance.SecondCategory.Value == SecondCategory.Other ? "selected=selected" : "")>@(SecondCategory.Other.GetDescription())</option>
+                                </select>
+                            </div>
+                        }
+                       
+                       
                     </td>
                     <td><input type="text" name="Detail" style="width:100%" value="@(subtance.Details)" class="form-control" /></td>
                     <td><input type="text" name="Price" value="@(subtance.Price)" class="form-control" /></td>
@@ -164,14 +222,19 @@
         {
             <tr>
                 <td>@(i + 1)</td>
-                <td>
-                    <select name="Category" class="form-control">
-                        <option value="">请选择</option>
-                        @foreach (Category category in Enum.GetValues(typeof(Category)))
-                        {
-                            <option value="@(category)">@(category.GetDescription())</option>
-                        }
-                    </select>
+                <td> 
+                    <div class="col-md-6" style="padding:0px;">
+                        <select class="form-control" name="Category" targetIndex="@(i+1)">
+                            <option value="">请选择</option>
+                            @foreach (Category category in Enum.GetValues(typeof(Category)))
+                            {
+                                <option value="@(category)">@(category.GetDescription())</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-6" style="padding:0px;" id="@(i+1)">
+                      
+                    </div>
                 </td>
                 <td><input type="text" name="Detail" style="width:100%" class="form-control" /></td>
                 <td><input type="text" name="Price" class="form-control" /></td>
@@ -181,46 +244,118 @@
 </table>
 
 <div style="display:none">
-    <select  id="FixedAsssets">
-        @foreach(SecondCategory category in Enum.GetValues(typeof(SecondCategory)))
-        {
-            if (((int)category) < 2)
+   <div id="FixedAsssets">
+        <select name="SecondCategory" class="form-control">
+            @foreach (SecondCategory category in Enum.GetValues(typeof(SecondCategory)))
             {
-                <option value="@(category)">@(category.GetDescription())</option>
-            }
-        }
-        <option value="Other">其他</option>
-    </select>
-    <select id="Equipment">
-        @foreach (SecondCategory category in Enum.GetValues(typeof(SecondCategory)))
-        {
-            if (((int)category) > 1)
-            {
-                if (((int)category) < 5)
+                if (((int)category) < 2)
                 {
                     <option value="@(category)">@(category.GetDescription())</option>
                 }
             }
-        }
-        <option value="Other">其他</option>
-    </select>
-    <select id="">
-        @foreach (SecondCategory category in Enum.GetValues(typeof(SecondCategory)))
-        {
-            if (((int)category) > 4)
+            <option value="Other">其他</option>
+        </select>
+    </div>
+   <div id="Equipment">
+        <select name="SecondCategory" class="form-control">
+            @foreach (SecondCategory category in Enum.GetValues(typeof(SecondCategory)))
             {
-                if (((int)category) < 7)
+                if (((int)category) > 1)
                 {
-                    <option value="@(category)">@(category.GetDescription())</option>
+                    if (((int)category) < 5)
+                    {
+                        <option value="@(category)">@(category.GetDescription())</option>
+                    }
                 }
             }
-        }
-        <option value="Other">其他</option>
-    </select>
+            <option value="Other">其他</option>
+        </select>
+    </div>
+   <div id="Traffic">
+       <select name="SecondCategory" class="form-control">
+           @foreach (SecondCategory category in Enum.GetValues(typeof(SecondCategory)))
+           {
+               if (((int)category) > 4)
+               {
+                   if (((int)category) < 7)
+                   {
+                       <option value="@(category)">@(category.GetDescription())</option>
+                   }
+               }
+           }
+           <option value="Other">其他</option>
+       </select>
+   </div>
+   <div id="Express">
+       <select name="SecondCategory" class="form-control">
+           @foreach (SecondCategory category in Enum.GetValues(typeof(SecondCategory)))
+           {
+               if (((int)category) > 6)
+               {
+                   if (((int)category) < 9)
+                   {
+                       <option value="@(category)">@(category.GetDescription())</option>
+                   }
+               }
+           }
+           <option value="Other">其他</option>
+       </select>
+   </div>
+   <div id="Print">
+       <select name="SecondCategory" class="form-control">
+           @foreach (SecondCategory category in Enum.GetValues(typeof(SecondCategory)))
+           {
+               if (((int)category) > 8)
+               {
+                   if (((int)category) < 12)
+                   {
+                       <option value="@(category)">@(category.GetDescription())</option>
+                   }
+               }
+           }
+           <option value="Other">其他</option>
+       </select>
+   </div>
+   <div id="Welfare">
+       <select name="SecondCategory" class="form-control">
+           @foreach (SecondCategory category in Enum.GetValues(typeof(SecondCategory)))
+           {
+               if (((int)category) > 11)
+               {
+                   if (((int)category) < 14)
+                   {
+                       <option value="@(category)">@(category.GetDescription())</option>
+                   }
+               }
+           }
+           <option value="Other">其他</option>
+       </select>
+   </div>
+   <div id="Bidding">
+       <select name="SecondCategory" class="form-control">
+           @foreach (SecondCategory category in Enum.GetValues(typeof(SecondCategory)))
+           {
+               if (((int)category) > 13)
+               {
+                   <option value="@(category)">@(category.GetDescription())</option>
+               }
+           }
+
+       </select>
+   </div>
+    
 </div>
 
 
 <script>
+
+    var FixedAsssetshtml = $("#FixedAsssets").html();
+    var Equirementhtml=$("#Equipment").html();
+    var Traffichtml=$("#Traffic").html();
+    var Expresshtml=$("#Express").html();
+    var Printhtml=$("#Print").html();
+    var Welfarehtml=$("#Welfare").html();
+    var Biddinghtml=$("#Bidding").html();
     $(function () {
         function checkMoney() {
             var sum = parseInt($("input[name='Money']").val());
@@ -242,9 +377,27 @@
         }
 
         $("[name='Category']").change(function () {
-
-        })
-        
-        //$("input[name='Price']").change(SumDial)
+            var targetIndex = $(this).attr("targetIndex");
+            var val = $(this).val();
+            if (val != undefined && val != "请选择") {
+                if (val == "FixedAsssets") {
+                    $("#" + targetIndex).empty().append(FixedAsssetshtml);
+                } else if (val == "Equipment") {
+                    $("#" + targetIndex).empty().append(Equirementhtml);
+                } else if (val == "Traffic") {
+                    $("#" + targetIndex).empty().append(Traffichtml);
+                } else if (val == "Express") {
+                    $("#" + targetIndex).empty().append(Expresshtml);
+                } else if (val == "Print") {
+                    $("#" + targetIndex).empty().append(Printhtml);
+                } else if (val == "Welfare") {
+                    $("#" + targetIndex).empty().append(Welfarehtml);
+                } else if (val == "Bidding") {
+                    $("#" + targetIndex).empty().append(Biddinghtml);
+                } else {
+                    $("#" + targetIndex).empty();
+                }
+            }
+        });
     })
 </script>
