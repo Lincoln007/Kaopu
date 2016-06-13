@@ -87,7 +87,7 @@ namespace Ztop.Todo.Model
 
     public enum Driver
     {
-        无,宋学云,李海军,孙海杰
+        无,宋学云,李海君,孙海杰
     }
 
     public enum BusType
