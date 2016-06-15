@@ -48,5 +48,7 @@ namespace Ztop.Todo.Manager
         public SubstancsManager SubstanceManager { get; private set; }
         public VerifyManager VerifyManager { get; private set; }
         public BillManager BillManager { get; private set; }
+        public ContractManager ContractManager { get; private set; }
+        public InvoiceManager InvoiceManager { get; private set; }
     }
 }

@@ -65,10 +65,12 @@
     <Compile Include="Code128.cs" />
     <Compile Include="Collect.cs" />
     <Compile Include="Comment.cs" />
+    <Compile Include="Contract.cs" />
     <Compile Include="COPYDATASTRUCT.cs" />
     <Compile Include="DataBook.cs" />
     <Compile Include="Errand.cs" />
     <Compile Include="Evection.cs" />
+    <Compile Include="Invoice.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="Notification.cs" />
     <Compile Include="PageParameter.cs" />

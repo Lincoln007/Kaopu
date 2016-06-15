@@ -82,8 +82,10 @@
     <Compile Include="AuthorizeManager.cs" />
     <Compile Include="BillManager.cs" />
     <Compile Include="CommentManager.cs" />
+    <Compile Include="ContractManager.cs" />
     <Compile Include="DataBookManager.cs" />
     <Compile Include="DataContext.cs" />
+    <Compile Include="InvoiceManager.cs" />
     <Compile Include="ManagerBase.cs" />
     <Compile Include="ManagerCore.cs" />
     <Compile Include="MessageManager.cs" />

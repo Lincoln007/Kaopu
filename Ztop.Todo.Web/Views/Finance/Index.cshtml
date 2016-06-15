@@ -1,0 +1,63 @@
+﻿
+@{
+    ViewBag.Title = "项目财务跟踪系统";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<Contract> list = ViewBag.List;
+}
+
+
+
+<h2 class="text-center">杭州智拓项目合同清单列表</h2>
+<div class="col-md-6">
+    <div class="panel panel-yellow">
+        <div class="panel panel-heading">
+            <h3 class="panel-title text-center">@(ZtopCompany.Evaluation.GetDescription())</h3>
+        </div>
+        <div class="panel panel-body">
+            <table class="table table-bordered">
+                <tr>
+                    <th>合同编号</th>
+                    <th>合同名称</th>
+                    <th>对方单位</th>
+                </tr>
+                @foreach(var contract in list.Where(e => e.ZtopCompany == ZtopCompany.Evaluation))
+                {
+                    <tr>
+                        <td><a href="/Finance/Detail?id=@(contract.ID)">@(contract.Coding)</a> </td>
+                        <td>@(contract.Name)</td>
+                        <td>@(contract.Company)</td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<div class="col-md-6">
+    <div class="panel panel-red">
+        <div class="panel panel-heading">
+            <h3 class="panel-title text-center">@(ZtopCompany.Projection.GetDescription())</h3>
+        </div>
+        <div class="panel panel-body">
+            <table class="table table-bordered">
+                <tr>
+                    <th>合同编号</th>
+                    <th>合同名称</th>
+                    <th>对方单位</th>
+                </tr>
+                @foreach (var contract in list.Where(e => e.ZtopCompany == ZtopCompany.Projection))
+                {
+                    <tr>
+                        <td><a href="/Finance/Detail?id=@(contract.ID)">@(contract.Coding)</a> </td>
+                        <td>@(contract.Name)</td>
+                        <td>@(contract.Company)</td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+</div>
+
+
+

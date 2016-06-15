@@ -50,21 +50,7 @@ namespace Ztop.Todo.Model
         }
     }
 
-    public static class CollectHelper
-    {
-        //public static Collect GetCollect(List<Bill> list)
-        //{
-        //    return new Collect()
-        //    {
-        //        Income = list.Where(e => e.Budget == Budget.Income && e.Cost != Cost.Margin).Sum(e => e.Money),
-        //        MarginIncome = list.Where(e => e.Budget == Budget.Income && e.Cost == Cost.Margin).Sum(e => e.Money),
-        //        Pay = list.Where(e => e.Budget == Budget.Expense && e.Cost != Cost.Margin && e.Cost != Cost.Transfer && e.Cost != Cost.Petty).Sum(e => e.Money),
-        //        MarginPay = list.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.Margin).Sum(e => e.Money),
-        //        Transfer = list.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.Transfer).Sum(e => e.Money),
-        //        Petty = list.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.Petty).Sum(e => e.Money)
-        //    };
-        //}
-    }
+
     public enum Company
     {
         [Description("评估")]

@@ -1,0 +1,253 @@
+﻿
+@{
+    ViewBag.Title = "查看项目合同";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    Contract contract = ViewBag.Contract;
+}
+
+<hr />
+
+
+<button type="button" class="btn btn-success" data-toggle="modal" data-target="#Apply"><i class="glyphicon glyphicon-pencil"></i> 申请开具发票</button>
+<div class="modal fade" id="Apply" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">申请开具发票</h4>
+            </div>
+            <form class="form-horizontal" method="post" action="/Finance/SaveInvoice" id="from-invoice">
+                <div class="modal-body">
+                    <input type="hidden" name="Applicant" value="@(Identity.Name)" />
+                    <input type="hidden" name="CID" value="@(contract.ID)" />
+                    <div class="form-group">
+                        <label class="control-label col-md-3">开票单位:</label>
+                        <div class="col-md-8">
+                            <select name="ZtopCompany" class="form-control">
+                                @foreach (ZtopCompany company in Enum.GetValues(typeof(ZtopCompany)))
+                                {
+                                    <option value="@(company)">@(company.GetDescription())</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">对方单位:</label>
+                        <div class="col-md-8">
+                            <input type="text" class="form-control" name="OtherSideCompany" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">发票金额：</label>
+                        <div class="col-md-8">
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="Money" />
+                                <span class="input-group-addon">元</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-3">发票内容：</label>
+                        <div class="col-md-8">
+                            <input type="text" class="form-control" name="Content" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="form-group">
+                        <div class="col-md-8 col-lg-offset-3">
+                            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove"></i> 取消</button>
+                            <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i> 申请</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+<hr />
+<div class="alert alert-success alert-dismissable" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <table class="table table-bordered">
+        <tr>
+            <th>合同编号</th>
+            <td>@(contract.Coding)</td>
+            <th>合同名称</th>
+            <td>@(contract.Name)</td>
+        </tr>
+        <tr>
+            <th>对方单位</th>
+            <td>@(contract.Company)</td>
+            <th>签署单位</th>
+            <td>@(contract.ZtopCompany.GetDescription())</td>
+        </tr>
+    </table>
+</div>
+
+<hr />
+
+@if (contract.Invoices != null && contract.Invoices.Count != 0)
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>开票编号</th>
+                <th>开票申请人</th>
+                <th>申请时间</th>
+                <th>开票单位</th>
+                <th>对方单位</th>
+                <th>发票金额（元）</th>
+                <th>发票内容</th>
+                <th>发票状态</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var invoice in contract.Invoices)
+            {
+                <tr>
+                    <td>
+                        @(invoice.Coding)   
+                    </td>
+                    <td>@(invoice.Applicant)</td>
+                    <td>@(invoice.Time.ToLongDateString()) @(invoice.Time.ToLongTimeString())</td>
+                    <td>@(invoice.ZtopCompany.GetDescription())</td>
+                    <td>@(invoice.OtherSideCompany)</td>
+                    <td>@(invoice.Money)</td>
+                    <td>@(invoice.Content)</td>
+                    <td>@(invoice.State.HasValue ? invoice.State.Value.GetDescription() : "申请中")</td>
+                    <td>
+                        @if (invoice.State.HasValue)
+                        {
+                            <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#Edit@(invoice.Coding)"><i class="glyphicon glyphicon-edit"></i>修改信息</a>
+                            <div class="modal fade" id="Edit@(invoice.Coding)" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                            <h4 class="modal-title">编辑发票信息</h4>
+                                        </div>
+                                        <form class="form-horizontal" action="" method="post" name="Edit">
+                                            <div class="modal-body">
+                                                <input type="hidden" name="ID" value="@(invoice.ID)" />
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-3">发票编号</label>
+                                                    <div class="col-md-8">
+                                                        <input type="text" class="form-control" name="Number" value="@(invoice.Number)" />
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-3">发票状态：</label>
+                                                    <div class="col-md-8">
+                                                        @foreach(InvoiceState state in Enum.GetValues(typeof(InvoiceState)))
+                                                        {
+                                                            <label class="radio-inline">
+                                                                <input type="radio" name="State" value="@(state)" @(invoice.State==state?"checked=checked":"") />@(state.GetDescription())
+                                                            </label>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <div class="form-group">
+                                                    <div class="col-md-8 col-lg-offset-3">
+                                                        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove"></i> 取消</button>
+                                                        <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i> 补充</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <a href="#" class="btn btn-success" data-toggle="modal" data-target="#Add@(invoice.Coding)"><i class="glyphicon glyphicon-plus"></i>补充信息</a>
+                            <div class="modal fade" id="Add@(invoice.Coding)" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                            <h4 class="modal-title">@(invoice.Coding) 发票信息录入</h4>
+                                        </div>
+                                        <form class="form-horizontal" action="/Finance/ImproveInvoice" method="post" name="Plus">
+                                            <div class="modal-body">
+                                                <input type="hidden" name="ID" value="@(invoice.ID)" />
+                                                <input type="hidden" name="State" value="@(InvoiceState.Have)" />
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-3">发票时间：</label>
+                                                    <div class="col-md-8">
+                                                        <input type="text" class="form-control" name="FillTime" />
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-3">发票编号：</label>
+                                                    <div class="col-md-8">
+                                                        <input type="text" class="form-control" name="Number" />
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-3">备注：</label>
+                                                    <div class="col-md-8">
+                                                        <textarea class="form-control" name="Remark" rows="3"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <div class="form-group">
+                                                    <div class="col-md-8 col-lg-offset-3">
+                                                        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove"></i> 取消</button>
+                                                        <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i> 补充</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                      
+                       
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+<script>
+    $(function () {
+        $("#from-invoice").submit(function () {
+            var data = $(this).serialize();
+            $.request("/Finance/SaveInvoice", data, function (json) {
+                alert(json.content);
+                if (json.result == 1) {
+                    location.href = "/Finance/Detail?id=" + json.data;
+                }
+                return false;
+            });
+            return false;
+        });
+
+        $("input[name='FillTime']").datetimepicker({
+            timepicker: false,
+            format: 'Y-m-d'
+        });
+
+        $("[name='Plus']").submit(function () {
+            var data = $(this).serialize();
+            $.request("/Finance/ImproveInvoice", data, function (json) {
+                alert(json.content);
+                if (json.result == 1) {
+                    location.href = "/Finance/Detail?id=" + @(contract.ID);
+                }
+                return false;
+            });
+            return false;
+        });
+    })
+</script>
+
