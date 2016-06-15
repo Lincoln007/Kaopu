@@ -48,7 +48,7 @@ namespace Ztop.Todo.Model
         /// <summary>
         /// 发票开出时间
         /// </summary>
-        public DateTime FillTime { get; set; }
+        public DateTime? FillTime { get; set; }
         /// <summary>
         /// 发票编号
         /// </summary>

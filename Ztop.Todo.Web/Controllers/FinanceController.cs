@@ -47,10 +47,37 @@ namespace Ztop.Todo.Web.Controllers
             return SuccessJsonResult(invoice.CID);
         }
 
+
+        /// <summary>
+        /// 补充发票信息
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="fillTime"></param>
+        /// <param name="number"></param>
+        /// <param name="remark"></param>
+        /// <param name="state"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult ImproveInvoice(int id,DateTime fillTime,string number,string remark,InvoiceState state)
         {
             return Core.InvoiceManager.Improve(id, fillTime, number, remark,state) ? SuccessJsonResult() : ErrorJsonResult("补充信息失败");
+        }
+
+        /// <summary>
+        /// 修改发票状态
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="state"></param>
+        /// <returns></returns>
+        public ActionResult Change(int id,InvoiceState state)
+        {
+            return Core.InvoiceManager.Change(id, state)? SuccessJsonResult() : ErrorJsonResult("修改发票状态失败！");
+        }
+
+
+        public ActionResult CreateEntry()
+        {
+            return View();
         }
 
 

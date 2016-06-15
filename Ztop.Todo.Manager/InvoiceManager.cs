@@ -59,5 +59,20 @@ namespace Ztop.Todo.Manager
                 return true;
             }
         }
+        public bool Change(int id,InvoiceState state)
+        {
+            using (var db = GetDbContext())
+            {
+                var invoice = db.Invoices.Find(id);
+                if (invoice == null)
+                {
+                    return false;
+                }
+
+                invoice.State = state;
+                db.SaveChanges();
+                return true;
+            }
+        }
     }
 }

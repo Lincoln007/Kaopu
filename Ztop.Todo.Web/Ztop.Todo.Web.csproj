@@ -288,6 +288,7 @@
     <Content Include="Views\Finance\CreateContract.cshtml" />
     <Content Include="Views\Finance\Index.cshtml" />
     <Content Include="Views\Finance\Detail.cshtml" />
+    <Content Include="Views\Finance\CreateEntry.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
