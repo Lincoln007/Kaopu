@@ -13,6 +13,7 @@ namespace Ztop.Todo.Web.Controllers
         public ActionResult Index()
         {
             ViewBag.List = Core.ContractManager.Get();
+            ViewBag.Bills = Core.BillManager.Search();
             return View();
         }
 

@@ -264,7 +264,7 @@
                                 </div>
                             </div>
 
-                            <a href="/Finance/DeleteInvoice?id=@(invoice.ID)" class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i>删除</a>
+                            <a href="javascript:void(0)" class="btn btn-danger btn-remove" Index="@(invoice.ID)"><i class="glyphicon glyphicon-remove"></i>删除</a>
                         }
                       
                        
@@ -326,6 +326,22 @@
                 }
                 return false;
             });
+            return false;
+        });
+
+        $(".btn-remove").click(function(){
+            var index=$(this).attr("Index");
+            if(index!=undefined&&index!=""&&index!="undefined"){
+                $.request("/Finance/DeleteInvoice?id="+index,null,function(json){
+                    alert(json.content);
+                    if(json.result==1){
+                        location.href="/Finance/Detail?id="+@(contract.ID);
+                    }
+                    return false;
+                });
+                
+            }
+
             return false;
         });
     })
