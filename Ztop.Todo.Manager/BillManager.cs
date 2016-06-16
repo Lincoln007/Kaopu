@@ -197,6 +197,24 @@ namespace Ztop.Todo.Manager
             return workbook;
         }
 
+        public int Save(Bill bill)
+        {
+            using (var db = GetDbContext())
+            {
+                db.Bills.Add(bill);
+                db.SaveChanges();
+                return bill.ID;
+            }
+        }
+
+        public List<Bill> Search()
+        {
+            using (var db = GetDbContext())
+            {
+                return db.Bills.ToList();
+            }
+        }
+
         
     }
 }

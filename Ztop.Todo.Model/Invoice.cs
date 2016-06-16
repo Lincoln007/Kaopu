@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Ztop.Todo.Model
 {
+    /// <summary>
+    /// 发票信息
+    /// </summary>
     [Table("invoices")]
     public class Invoice
     {
@@ -66,18 +70,15 @@ namespace Ztop.Todo.Model
         /// 合同ID
         /// </summary>
         public int CID { get; set; }
+        public bool Deleted { get; set; }
+
         [NotMapped]
-        public string[] Numbers
-        {
-            get
-            {
-                if (!string.IsNullOrEmpty(Number))
-                {
-                    return Number.Split(';');
-                }
-                return null;
-            }
-        }
+        public Contract Contract { get; set; }
+        /// <summary>
+        /// 到账信息
+        /// </summary>
+        [NotMapped]
+        public List<InvoiceBill> InvoiceBills { get; set; }
 
     }
 

@@ -30,7 +30,7 @@ namespace Ztop.Todo.Manager
             }
             using (var db = GetDbContext())
             {
-                return db.Invoices.Where(e => e.CID == cid).ToList();
+                return db.Invoices.Where(e => e.CID == cid&&e.Deleted==false).ToList();
             }
         }
         public Invoice Get(int id)
@@ -40,8 +40,6 @@ namespace Ztop.Todo.Manager
                 return db.Invoices.Find(id);
             }
         }
-
-
         public bool Improve(int id,DateTime fillTime,string number,string remark,InvoiceState state)
         {
             using (var db = GetDbContext())
@@ -74,5 +72,65 @@ namespace Ztop.Todo.Manager
                 return true;
             }
         }
+
+       public List<Invoice> Search()
+        {
+            using (var db = GetDbContext())
+            {
+                var list = db.Invoices.ToList();
+                foreach(var invoice in list)
+                {
+                    invoice.Contract = db.Contracts.Find(invoice.CID);
+                    invoice.InvoiceBills = db.InvoiceBills.Where(e => e.IID == invoice.ID).ToList();
+                }
+                return list;
+            }
+        }
+
+        public bool Delete(int id)
+        {
+            if (id == 0)
+            {
+                return false;
+            }
+
+            using (var db = GetDbContext())
+            {
+                var invoice = db.Invoices.Find(id);
+                if (invoice == null)
+                {
+                    return false;
+                }
+                if (invoice.State.HasValue)
+                {
+                    return false;
+                }
+                invoice.Deleted = true;
+                db.SaveChanges();
+                return true;
+            }
+        }
+        public bool Edit(int id,ZtopCompany ztopcompany,string othersidecompany,double money,string content)
+        {
+            if (id == 0)
+            {
+                return false;
+            }
+            using (var db = GetDbContext())
+            {
+                var entry = db.Invoices.Find(id);
+                if (entry == null||entry.State.HasValue)
+                {
+                    return false;
+                }
+                entry.ZtopCompany = ztopcompany;
+                entry.OtherSideCompany = othersidecompany;
+                entry.Money = money;
+                entry.Content = content;
+                db.SaveChanges();
+                return true;
+            }
+        }
+
     }
 }

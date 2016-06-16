@@ -75,9 +75,52 @@ namespace Ztop.Todo.Web.Controllers
         }
 
 
+        /// <summary>
+        /// 创建到账信息
+        /// </summary>
+        /// <returns></returns>
         public ActionResult CreateEntry()
         {
+            var dict = Core.InvoiceManager.Search().Where(e => Math.Abs(e.Money - e.InvoiceBills.Sum(k => k.Price)) > 0.01).GroupBy(e => e.Contract.Name).ToDictionary(e => e.Key, e => e.ToList());
+            ViewBag.Invoices = dict;
             return View();
+        }
+
+        /// <summary>
+        /// 删除开具发票申请
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult DeleteInvoice(int id)
+        {
+            return Core.InvoiceManager.Delete(id) ? SuccessJsonResult() : ErrorJsonResult("删除失败！可能已经通过财务审核，请刷新");
+        }
+
+        [HttpPost]
+        public ActionResult EditInvoice(int id,ZtopCompany ztopcompany,string othersidecompany,double money,string content)
+        {
+            return Core.InvoiceManager.Edit(id, ztopcompany, othersidecompany, money, content) ? SuccessJsonResult() : ErrorJsonResult("编辑失败！可能已经用过财务审核，请刷新查看！");
+        }
+
+        [HttpPost]
+        public ActionResult SaveInvoiceBill(Bill bill,int[] iid,double[] price)
+        {
+            if (Math.Abs(bill.Money - price.Sum()) > 0.001)
+            {
+                return ErrorJsonResult("到账金额不等于发票总金额！，请核对");
+            }
+            if (iid==null||price==null)
+            {
+                return ErrorJsonResult("未关联发票！,请核实！");
+            }
+            bill.Budget = Budget.Income;
+            bill.Coding = DateTime.Now.Ticks.ToString();
+            bill.Cost = Cost.RealIncome;
+            bill.Summary = string.Format("{0}录入的到账信息", Identity.Name);
+            var bid = Core.BillManager.Save(bill);
+            var list = Core.InvoiceBillManager.Get(iid, price, bid);
+            Core.InvoiceBillManager.Save(list);
+            return SuccessJsonResult();
         }
 
 

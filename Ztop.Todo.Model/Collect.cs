@@ -112,7 +112,7 @@ namespace Ztop.Todo.Model
         /// </summary>
         public double Money { get; set; }
         /// <summary>
-        /// 对方银行账户
+        /// 对方 单位 /户名
         /// </summary>
         public string Account { get; set; }
         /// <summary>
@@ -131,6 +131,10 @@ namespace Ztop.Todo.Model
         /// 摘要
         /// </summary>
         public string Summary { get; set; }
+        /// <summary>
+        /// 备注
+        /// </summary>
+        public string Remark { get; set; }
         public int BID { get; set; }
     }
     //public enum Cost

@@ -125,8 +125,8 @@
                     <td>
                         @if (invoice.State.HasValue)
                         {
-                            <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#Edit@(invoice.Coding)"><i class="glyphicon glyphicon-edit"></i>修改发票状态</a>
-                            <div class="modal fade" id="Edit@(invoice.Coding)" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                            <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#Change@(invoice.Coding)"><i class="glyphicon glyphicon-edit"></i>修改发票状态</a>
+                            <div class="modal fade" id="Change@(invoice.Coding)" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
@@ -207,6 +207,64 @@
                                     </div>
                                 </div>
                             </div>
+                            <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#Edit@(invoice.Coding)"><i class="glyphicon glyphicon-edit"></i>编辑</a>
+                            <div class="modal fade" id="Edit@(invoice.Coding)" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                            <h4 class="modal-title">@(invoice.Coding) 编辑</h4>
+                                        </div>
+                                        <form class="form-horizontal" action="/Finance/EditInvoice" method="post" name="Edit">
+                                            <div  class="modal-body">
+                                                <input type="hidden" name="ID" value="@(invoice.ID)" />
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-3">开票单位：</label>
+                                                    <div class="col-md-8">
+                                                        <select name="ZtopCompany" class="form-control">
+                                                            @foreach(ZtopCompany company in Enum.GetValues(typeof(ZtopCompany)))
+                                                            {
+                                                                <option value="@(company)" @(company==invoice.ZtopCompany?"selected=selected":"")>@(company.GetDescription())</option>
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-3">对方单位：</label>
+                                                    <div class="col-md-8">
+                                                        <input type="text" class="form-control" name="OtherSideCompany" value="@(invoice.OtherSideCompany)" />
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-3">发票金额：</label>
+                                                    <div class="col-md-8">
+                                                        <div class="input-group">
+                                                            <input type="text" class="form-control" name="Money" value="@(invoice.Money)" />
+                                                            <span class="input-group-addon">元</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-3">发票内容：</label>
+                                                    <div class="col-md-8">
+                                                        <input type="text" name="Content" class="form-control" value="@(invoice.Content)"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <div class="form-group">
+                                                    <div class="col-md-8 col-md-offset-3">
+                                                        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove"></i> 取消</button>
+                                                        <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i> 编辑</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <a href="/Finance/DeleteInvoice?id=@(invoice.ID)" class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i>删除</a>
                         }
                       
                        
@@ -250,6 +308,18 @@
         $("[name='Change']").submit(function(){
             var data=$(this).serialize();
             $.request("/Finance/Change",data,function(json){
+                alert(json.content);
+                if(json.result==1){
+                    location.href="/Finance/Detail?id="+@(contract.ID);
+                }
+                return false;
+            });
+            return false;
+        });
+
+        $("[name='Edit']").submit(function(){
+            var data=$(this).serialize();
+            $.request("/Finance/EditInvoice",data,function(json){
                 alert(json.content);
                 if(json.result==1){
                     location.href="/Finance/Detail?id="+@(contract.ID);

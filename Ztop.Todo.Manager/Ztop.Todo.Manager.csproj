@@ -85,6 +85,7 @@
     <Compile Include="ContractManager.cs" />
     <Compile Include="DataBookManager.cs" />
     <Compile Include="DataContext.cs" />
+    <Compile Include="InvoiceBillManager.cs" />
     <Compile Include="InvoiceManager.cs" />
     <Compile Include="ManagerBase.cs" />
     <Compile Include="ManagerCore.cs" />
