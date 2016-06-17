@@ -1,0 +1,163 @@
+﻿
+@{
+    ViewBag.Title = "发票查询";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<string> department = ViewBag.Department;
+    List<Invoice> results = ViewBag.Results;
+    InvoiceParameter parameter = ViewBag.Parameter;
+}
+
+
+<div class="col-md-3 well" style="padding:0px;">
+    <fieldset><legend>查询设置</legend></fieldset>
+    <form method="get">
+        <input type="hidden" name="Department" value="@(parameter.Department)" />
+        <input type="hidden" name="Status" value="@(parameter.Status.HasValue?parameter.Status.Value.GetDescription():"")" />
+        <input type="hidden" name="Money" value="@(parameter.Money)" />
+        <input type="hidden" name="Recevied" value="@(parameter.Recevied.HasValue?parameter.Recevied.Value.GetDescription():"")" />
+        <input type="hidden" name="ZtopCompany" value="@(parameter.ZtopCompany.HasValue?parameter.ZtopCompany.Value.GetDescription():"")" />
+        <input type="hidden" name="Time" value="@(parameter.Time)" />
+        <div class="form-group">
+            <label class="control-label">申请人所在部门：</label>
+            <div class="col-md-12">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-@(string.IsNullOrEmpty(parameter.Department)?"success":"default")" name="Department">全部</button>
+                    @foreach(var dep in department)
+                    {
+                        <button type="button" class="btn btn-@(dep==parameter.Department?"success":"default")" name="Department">@(dep)</button>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label">发票状态：</label>
+            <div class="col-md-12">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-@(parameter.Status.HasValue?"default":"success")" name="Status">全部</button>
+                    @foreach (InvoiceState state in Enum.GetValues(typeof(InvoiceState)))
+                    {
+                        <button type="button" class="btn btn-@((parameter.Status.HasValue&&parameter.Status.Value==state)?"success":"default")"name="Status" >@(state.GetDescription())</button>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label">对方单位:</label>
+            <div class="col-md-12">
+                <div class="input-group">
+                    <div class="input-group-btn" role="group">
+                        <button type="button" class="btn btn-@(string.IsNullOrEmpty(parameter.OtherSide)?"success":"default")"  >全部</button>
+                    </div>
+                    <input type="text" class="form-control" placeholder="对方单位关键字" name="OtherSide" value="@(parameter.OtherSide)" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label">发票金额:</label>
+            <div class="col-md-12">
+                <div class="btn-group" role="group">
+                    
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label">到账情况：</label>
+            <div class="col-md-12">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-@(parameter.Recevied.HasValue?"default":"success")" name="Recevied">全部</button>
+                    @foreach(Recevied received in Enum.GetValues(typeof(Recevied)))
+                    {
+                        <button type="button" class="btn btn-@(parameter.Recevied.HasValue&&parameter.Recevied.Value==received?"success":"default")" name="Recevied">@(received.GetDescription())</button>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label">开票单位：</label>
+            <div class="col-md-12">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-@(parameter.ZtopCompany.HasValue?"default":"success")" name="ZtopCompany">全部</button>
+                    @foreach(ZtopCompany company in Enum.GetValues(typeof(ZtopCompany)))
+                    {
+                        <button type="button" class="btn btn-@((parameter.ZtopCompany.HasValue&&parameter.ZtopCompany.Value==company)?"success":"default")" name="ZtopCompany">@(company.GetDescription())</button>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label">开票时间:</label>
+            <div class="col-md-12">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-@(string.IsNullOrEmpty(parameter.Time)?"success":"default")" name="Time">全部</button>
+                    <button type="button" class="btn btn-@(parameter.Time=="本周"?"success":"default")" name="Time">本周</button>
+                    <button type="button" class="btn btn-@(parameter.Time=="本月"?"success":"default")" name="Time">本月</button>
+                    <button type="button" class="btn btn-@(parameter.Time=="本年"?"success":"default")" name="Time">本年</button>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="form-group">
+            <div class="col-md-12">
+                <button type="submit" class="btn btn-success">立即查询</button>
+            </div>
+           
+        </div>
+    </form>
+</div>
+
+<div class="col-md-9">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>开票时间</th>
+                <th>开票申请人</th>
+                <th>所在部门</th>
+                <th>开票单位</th>
+                <th>对方单位</th>
+                <th>发票总金额（元）</th>
+                <th>已到账金额（元）</th>
+                <th>未完成金额（元）</th>
+            </tr>
+        </thead>
+        @foreach(var invoice in results)
+        {
+            <tr>
+                <td>@(invoice.Time.ToLongDateString())</td>
+                <td>@(invoice.Applicant)</td>
+                <td>@(invoice.GroupName)</td>
+                <td>@(invoice.ZtopCompany.GetDescription())</td>
+                <td>@(invoice.OtherSideCompany)</td>
+                <td>@(invoice.Money)</td>
+                <td>@(invoice.InvoiceBills.Sum(e=>e.Price))</td>
+                <td>@(invoice.Money-invoice.InvoiceBills.Sum(e=>e.Price))</td>
+            </tr>
+        }
+    </table>
+</div>
+
+<script>
+    $(function () {
+        $(".btn-group>button").click(function () {
+            var name = $(this).attr("name");
+            var val = $(this).text();
+            if (val == "全部") {
+                val = "";
+            }
+            $(".btn-group>button[name='" + name + "']").removeClass("btn-success").addClass("btn-default");
+            $(this).removeClass("btn-default").addClass("btn-success");
+            $("input[name='" + name + "']").val(val);
+        });
+
+        $(".input-group-btn>button").click(function () {
+            if ($(this).hasClass("btn-default")) {
+                $(this).removeClass("btn-default").addClass("btn-success");
+            }
+            $("input[name='OtherSide']").val();
+        });
+
+        $("input[name='OtherSide']").focus(function () {
+            $(".input-group-btn>button").removeClass("btn-success").addClass("btn-default");
+        });
+    });
+</script>
+

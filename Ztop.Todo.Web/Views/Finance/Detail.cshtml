@@ -121,9 +121,9 @@
                     <td>@(invoice.Content)</td>
                     <td>@(invoice.FillTime.HasValue?invoice.FillTime.Value.ToLongDateString():"-")</td>
                     <td>@(invoice.Number)</td>
-                    <td>@(invoice.State.HasValue ? invoice.State.Value.GetDescription() : "申请中")</td>
+                    <td>@(invoice.State.GetDescription())</td>
                     <td>
-                        @if (invoice.State.HasValue)
+                        @if (invoice.State!=InvoiceState.None)
                         {
                             <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#Change@(invoice.Coding)"><i class="glyphicon glyphicon-edit"></i>修改发票状态</a>
                             <div class="modal fade" id="Change@(invoice.Coding)" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">

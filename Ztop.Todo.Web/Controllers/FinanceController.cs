@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Ztop.Todo.Common;
 using Ztop.Todo.Model;
 
 namespace Ztop.Todo.Web.Controllers
@@ -14,6 +15,7 @@ namespace Ztop.Todo.Web.Controllers
         {
             ViewBag.List = Core.ContractManager.Get();
             ViewBag.Bills = Core.BillManager.Search();
+
             return View();
         }
 
@@ -82,7 +84,7 @@ namespace Ztop.Todo.Web.Controllers
         /// <returns></returns>
         public ActionResult CreateEntry()
         {
-            var dict = Core.InvoiceManager.Search().Where(e => Math.Abs(e.Money - e.InvoiceBills.Sum(k => k.Price)) > 0.01).GroupBy(e => e.Contract.Name).ToDictionary(e => e.Key, e => e.ToList());
+            var dict = Core.InvoiceManager.Search().Where(e =>e.State==InvoiceState.Have && Math.Abs(e.Money - e.InvoiceBills.Sum(k => k.Price)) > 0.01).GroupBy(e => e.Contract.Name).ToDictionary(e => e.Key, e => e.ToList());
             ViewBag.Invoices = dict;
             return View();
         }
@@ -122,6 +124,33 @@ namespace Ztop.Todo.Web.Controllers
             var list = Core.InvoiceBillManager.Get(iid, price, bid);
             Core.InvoiceBillManager.Save(list);
             return SuccessJsonResult();
+        }
+
+        public ActionResult InvoiceSearch(string status=null,string recevied=null,string ztopcompany=null, string department=null,string time=null,string otherside=null,int page=1)
+        {
+            var parameter = new InvoiceParameter()
+            {
+                Department = department,
+                Time = time,
+                OtherSide = otherside,
+                Page = new PageParameter(page, 20)
+            };
+            if (!string.IsNullOrEmpty(status))
+            {
+                parameter.Status = EnumHelper.GetEnum<InvoiceState>(status);
+            }
+            if (!string.IsNullOrEmpty(recevied))
+            {
+                parameter.Recevied = EnumHelper.GetEnum<Recevied>(recevied);
+            }
+            if (!string.IsNullOrEmpty(ztopcompany))
+            {
+                parameter.ZtopCompany = EnumHelper.GetEnum<ZtopCompany>(ztopcompany);
+            }
+            ViewBag.Results = Core.InvoiceManager.Search(parameter);
+            ViewBag.Department = Core.UserManager.GetUserGroups().Select(e => e.Name).ToList();
+            ViewBag.Parameter = parameter;
+            return View();
         }
 
 

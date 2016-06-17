@@ -33,6 +33,10 @@ namespace Ztop.Todo.Model
         /// </summary>
         public string Applicant { get; set; }
         /// <summary>
+        /// 
+        /// </summary>
+        public string GroupName { get; set; }
+        /// <summary>
         /// 开票单位
         /// </summary>
         [Column(TypeName ="int")]
@@ -61,7 +65,7 @@ namespace Ztop.Todo.Model
         /// 发票状态
         /// </summary>
         [Column(TypeName ="int")]
-        public InvoiceState? State { get; set; }
+        public InvoiceState State { get; set; }
         /// <summary>
         /// 备注
         /// </summary>
@@ -71,6 +75,8 @@ namespace Ztop.Todo.Model
         /// </summary>
         public int CID { get; set; }
         public bool Deleted { get; set; }
+        [NotMapped]
+        public double Pay { get; set; }
 
         [NotMapped]
         public Contract Contract { get; set; }
@@ -84,6 +90,8 @@ namespace Ztop.Todo.Model
 
     public enum InvoiceState
     {
+        [Description("未开票")]
+        None,
         [Description("已开票")]
         Have,
         [Description("退票")]

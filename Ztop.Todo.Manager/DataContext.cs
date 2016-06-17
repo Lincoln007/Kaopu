@@ -52,5 +52,6 @@ namespace Ztop.Todo.Manager
         public DbSet<Contract> Contracts { get; set; }
         public DbSet<Invoice> Invoices { get; set; }
         public DbSet<InvoiceBill> InvoiceBills { get; set; }
+        public DbSet<UserGroupView> UserGroupViews { get; set; }
     }
 }
