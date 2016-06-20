@@ -15,7 +15,7 @@ namespace Ztop.Todo.Web.Controllers
         {
             ViewBag.List = Core.ContractManager.Get();
             ViewBag.Bills = Core.BillManager.Search();
-
+            ViewBag.Invoices = Core.InvoiceManager.Search(new InvoiceParameter() { Status = InvoiceState.Have, Instance = false });
             return View();
         }
 
@@ -84,7 +84,7 @@ namespace Ztop.Todo.Web.Controllers
         /// <returns></returns>
         public ActionResult CreateEntry()
         {
-            var dict = Core.InvoiceManager.Search(new InvoiceParameter() { Status=InvoiceState.Have}).Where(e=>e.Recevied!=Recevied.ALL).GroupBy(e => e.Contract.Name).ToDictionary(e => e.Key, e => e.ToList());
+            var dict = Core.InvoiceManager.Search(new InvoiceParameter() { Status=InvoiceState.Have,Instance=true}).Where(e=>e.Recevied!=Recevied.ALL).GroupBy(e => e.Contract.Name).ToDictionary(e => e.Key, e => e.ToList());
             ViewBag.Invoices = dict;
             return View();
         }
@@ -123,14 +123,17 @@ namespace Ztop.Todo.Web.Controllers
             return Core.InvoiceManager.UpdateRecevied(list.Select(e=>e.IID).ToList()) ? SuccessJsonResult() : ErrorJsonResult("更新到账情况错误，错误如：未找到发票信息，或者系统参数错误");
         }
 
-        public ActionResult InvoiceSearch(string status=null,string recevied=null,string ztopcompany=null, string department=null,string time=null,string otherside=null,int page=1)
+        public ActionResult InvoiceSearch(string status=null,string recevied=null,string ztopcompany=null, string department=null,string time=null,string otherside=null,double? minMoney=null,double? maxMoney=null, int page=1)
         {
             var parameter = new InvoiceParameter()
             {
                 Department = department,
                 Time = time,
                 OtherSide = otherside,
-                Page = new PageParameter(page, 20)
+                Page = new PageParameter(page, 20),
+                MinMoney=minMoney,
+                MaxMoney=maxMoney,
+                Instance=true
             };
             if (!string.IsNullOrEmpty(status))
             {
@@ -150,7 +153,21 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
 
+        /// <summary>
+        /// 查看已开发票
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult DetailInvoice(int id)
+        {
+            ViewBag.Invoice = Core.InvoiceManager.Get(id);
+            return View();
+        }
 
+        public ActionResult ContractSearch()
+        {
+            return View(); 
+        }
 
     }
 }

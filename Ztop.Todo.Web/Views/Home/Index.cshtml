@@ -18,7 +18,14 @@
                     @foreach (var item in ReceiveNewTasks)
                 {
                         <li class="list-group-item">
-                            <a href="/task/detail?id=@(item.ID)">@(item.Title)</a>
+                            @if (item.ScheduledTime.HasValue && DateTime.Compare(DateTime.Now, item.ScheduledTime.Value) > 0)
+                            {
+                                <a href="/task/detail?id=@(item.ID)" class="text-danger"><strong>@(item.Title)</strong> </a>
+                            }
+                            else
+                            {
+                                <a href="/task/detail?id=@(item.ID)">@(item.Title)</a>
+                            }
                             <p style="margin-bottom:0px;">
                                 <span class="badge">
                                     @(item.Creator.DisplayName)
@@ -39,7 +46,14 @@
                     @foreach (var item in ReceiveUndoneTasks)
                 {
                         <li class="list-group-item">
-                            <a href="/task/detail?id=@(item.ID)">@(item.Title)</a>
+                            @if (item.ScheduledTime.HasValue && DateTime.Compare(DateTime.Now, item.ScheduledTime.Value) > 0)
+                            {
+                                <a href="/task/detail?id=@(item.ID)" class="text-danger"><strong>@(item.Title)</strong> </a>
+                            }
+                            else
+                            {
+                                <a href="/task/detail?id=@(item.ID)">@(item.Title)</a>
+                            }
                             <p style="margin-bottom:0px;">
                                 <span class="badge">
                                     @(item.Creator.DisplayName)
@@ -61,7 +75,14 @@
                     @foreach (var item in CreatedUndoneTasks)
                 {
                         <li class="list-group-item">
-                            <a href="/task/detail?id=@(item.ID)">@(item.Title)</a>
+                            @if (item.ScheduledTime.HasValue && DateTime.Compare(DateTime.Now, item.ScheduledTime.Value) > 0)
+                            {
+                                <a href="/task/detail?id=@(item.ID)" class="text-danger"><strong>@(item.Title)</strong> </a>
+                            }
+                            else
+                            {
+                                <a href="/task/detail?id=@(item.ID)">@(item.Title)</a>
+                            }
                             <p style="margin-bottom:0px;">
                                 <span class="badge">
                                     @(item.Receiver.DisplayName)
@@ -79,7 +100,14 @@
                     @foreach (var item in CreatedDoneTasks)
                 {
                         <li class="list-group-item">
-                            <a href="/task/detail?id=@(item.ID)">@(item.Title)</a>
+                            @if (item.ScheduledTime.HasValue && DateTime.Compare(DateTime.Now, item.ScheduledTime.Value) > 0)
+                            {
+                                <a href="/task/detail?id=@(item.ID)" class="text-danger"><strong>@(item.Title)</strong> </a>
+                            }
+                            else
+                            {
+                                <a href="/task/detail?id=@(item.ID)">@(item.Title)</a>
+                            }
                             <p style="margin-bottom:0px;">
                                 <span class="badge">
                                     @(item.Receiver.DisplayName)
@@ -109,7 +137,14 @@ else
                     @foreach (var item in ReceiveNewTasks)
                 {
                         <li class="list-group-item">
-                            <a href="/task/detail?id=@(item.ID)">@(item.Title)</a>
+                            @if (item.ScheduledTime.HasValue && DateTime.Compare(DateTime.Now, item.ScheduledTime.Value) > 0)
+                            {
+                                <a href="/task/detail?id=@(item.ID)" class="text-danger"><strong>@(item.Title)</strong> </a>
+                            }
+                            else
+                            {
+                                <a href="/task/detail?id=@(item.ID)">@(item.Title)</a>
+                            }
                             <p style="margin-bottom:0px;">
                                 <span class="badge">
                                     @(item.Creator.DisplayName)
@@ -131,7 +166,15 @@ else
                     @foreach (var item in ReceiveUndoneTasks)
                 {
                         <li class="list-group-item">
-                            <a href="/task/detail?id=@(item.ID)">@(item.Title)</a>
+                            @if (item.ScheduledTime.HasValue && DateTime.Compare(DateTime.Now, item.ScheduledTime.Value) > 0)
+                            {
+                                <a href="/task/detail?id=@(item.ID)" class="text-danger"><strong>@(item.Title)</strong> </a>
+                            }
+                            else
+                            {
+                                <a href="/task/detail?id=@(item.ID)">@(item.Title)</a>
+                            }
+                            
                             <p style="margin-bottom:0px;">
                                 <span class="badge">
                                     @(item.Creator.DisplayName)
@@ -156,7 +199,14 @@ else
                     @foreach (var item in CreatedUndoneTasks)
                 {
                         <li class="list-group-item">
-                            <a href="/task/detail?id=@(item.ID)">@(item.Title)</a>
+                            @if (item.ScheduledTime.HasValue && DateTime.Compare(DateTime.Now, item.ScheduledTime.Value) > 0)
+                            {
+                                <a href="/task/detail?id=@(item.ID)" class="text-danger"><strong>@(item.Title)</strong> </a>
+                            }
+                            else
+                            {
+                                <a href="/task/detail?id=@(item.ID)">@(item.Title)</a>
+                            }
                             <p style="margin-bottom:0px;">
                                 <span class="badge">
                                     @(item.Receiver.DisplayName)
@@ -175,7 +225,15 @@ else
                     @foreach (var item in CreatedDoneTasks)
                 {
                         <li class="list-group-item">
-                            <a href="/task/detail?id=@(item.ID)">@(item.Title)</a>
+                            @if (item.ScheduledTime.HasValue && DateTime.Compare(DateTime.Now, item.ScheduledTime.Value) > 0)
+                            {
+                                <a href="/task/detail?id=@(item.ID)" class="text-danger"><strong>@(item.Title)</strong> </a>
+                            }
+                            else
+                            {
+                                <a href="/task/detail?id=@(item.ID)">@(item.Title)</a>
+                            }
+                           
                             <p style="margin-bottom:0px;">
                                 <span class="badge">
                                     @(item.Receiver.DisplayName)

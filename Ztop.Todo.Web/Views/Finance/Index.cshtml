@@ -4,18 +4,19 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     List<Contract> list = ViewBag.List;
     List<Bill> Bills = ViewBag.Bills;
+    List<Invoice> invoices = ViewBag.Invoices;
 }
 
 
 
 <h2 class="text-center">杭州智拓项目合同清单列表</h2>
-<div class="col-md-4">
+<div class="col-md-6">
     <div class="panel panel-yellow">
         <div class="panel panel-heading">
             <h3 class="panel-title text-center">@(ZtopCompany.Evaluation.GetDescription())</h3>
         </div>
         <div class="panel panel-body">
-            <a href="#" style="float:right;"><i class="glyphicon glyphicon-info-sign"></i>更多</a>
+            <a href="/Finance/" style="float:right;"><i class="glyphicon glyphicon-info-sign"></i>更多</a>
             <table class="table table-bordered">
                 <tr>
                     <th>合同编号</th>
@@ -36,7 +37,7 @@
 </div>
 
 
-<div class="col-md-4">
+<div class="col-md-6">
     <div class="panel panel-green">
         <div class="panel panel-heading">
             <h3 class="panel-title text-center">@(ZtopCompany.Projection.GetDescription())</h3>
@@ -91,10 +92,31 @@
 <div class="col-md-4">
     <div class="panel panel-primary">
         <div class="panel panel-heading">
-            <h3 class="panel-title text-center">发票开出</h3>
+            <h3 class="panel-title text-center">发票</h3>
         </div>
         <div class="panel-body">
-
+            <a href="/Finance/InvoiceSearch" style="float:right;"><i class="glyphicon glyphicon-info-sign"></i>更多</a>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>发票编号</th>
+                        <th>申请人</th>
+                        <th>金额（元）</th>
+                        <th>状态</th>
+                        <th>到账情况</th>
+                    </tr>
+                </thead>
+                @foreach(var item in invoices)
+                {
+                    <tr>
+                        <td><a href="/Finance/DetailInvoice?id=@(item.ID)">@(item.Coding)</a></td>
+                        <td>@(item.Applicant)</td>
+                        <td>@(item.Money)</td>
+                        <td>@(item.State.GetDescription())</td>
+                        <td>@(item.Recevied.GetDescription())</td>
+                    </tr>
+                }
+            </table>
         </div>
     </div>
 </div>

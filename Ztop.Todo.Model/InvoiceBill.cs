@@ -12,5 +12,7 @@ namespace Ztop.Todo.Model
         public double Price { get; set; }
         public int IID { get; set; }
         public int BID { get; set; }
+        [NotMapped]
+        public Bill Bill { get; set; }
     }
 }

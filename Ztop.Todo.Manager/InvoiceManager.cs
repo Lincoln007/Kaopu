@@ -38,9 +38,23 @@ namespace Ztop.Todo.Manager
         }
         public Invoice Get(int id)
         {
+            if (id == 0)
+            {
+                return null;
+            }
             using (var db = GetDbContext())
             {
-                return db.Invoices.Find(id);
+                var invoice = db.Invoices.Find(id);
+                if (invoice != null)
+                {
+                    invoice.Contract = db.Contracts.Find(invoice.CID);
+                    invoice.InvoiceBills = db.InvoiceBills.Where(e => e.IID == invoice.ID).ToList();
+                    foreach(var item in invoice.InvoiceBills)
+                    {
+                        item.Bill = db.Bills.Find(item.BID);
+                    }
+                }
+                return invoice;
             }
         }
         public bool Improve(int id,DateTime fillTime,string number,string remark,InvoiceState state)
@@ -92,6 +106,14 @@ namespace Ztop.Todo.Manager
                 {
                     query = query.Where(e => e.OtherSideCompany.Contains(parameter.OtherSide));
                 }
+                if (parameter.MinMoney.HasValue)
+                {
+                    query = query.Where(e => e.Money >= parameter.MinMoney.Value);
+                }
+                if (parameter.MaxMoney.HasValue)
+                {
+                    query = query.Where(e => e.Money <= parameter.MaxMoney.Value);
+                }
                 if (parameter.ZtopCompany.HasValue)
                 {
                     query = query.Where(e => e.ZtopCompany == parameter.ZtopCompany.Value);
@@ -120,11 +142,15 @@ namespace Ztop.Todo.Manager
                
                 query = query.OrderByDescending(e => e.Time);
                 query = query.SetPage(parameter.Page);
-                foreach(var invoice in query)
+                if (parameter.Instance)
                 {
-                    invoice.Contract = db.Contracts.Find(invoice.CID);
-                    invoice.InvoiceBills = db.InvoiceBills.Where(e => e.IID == invoice.ID).ToList();
+                    foreach (var invoice in query)
+                    {
+                        invoice.Contract = db.Contracts.Find(invoice.CID);
+                        invoice.InvoiceBills = db.InvoiceBills.Where(e => e.IID == invoice.ID).ToList();
+                    }
                 }
+            
                 return query.ToList();
             }
         }

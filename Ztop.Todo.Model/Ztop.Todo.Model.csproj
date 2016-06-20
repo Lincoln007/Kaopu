@@ -76,6 +76,7 @@
     <Compile Include="Message.cs" />
     <Compile Include="Notification.cs" />
     <Compile Include="PageParameter.cs" />
+    <Compile Include="ParameterBase.cs" />
     <Compile Include="PieData.cs" />
     <Compile Include="Record.cs" />
     <Compile Include="SerialNumber.cs" />

@@ -37,7 +37,16 @@ namespace Ztop.Todo.Model
         /// 对方单位
         /// </summary>
         public string OtherSide { get; set; }
+        /// <summary>
+        /// 最小值金额
+        /// </summary>
+        public double? MinMoney { get; set; }
+        /// <summary>
+        /// 最大值金额
+        /// </summary>
+        public double? MaxMoney { get; set; }
         public PageParameter Page { get; set; }
+        public bool Instance { get; set; }
 
     }
 

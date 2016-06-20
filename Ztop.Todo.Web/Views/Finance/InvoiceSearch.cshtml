@@ -55,6 +55,11 @@
         <div class="form-group">
             <label class="control-label">发票金额:</label>
             <div class="col-md-12">
+                <div class="input-group">
+                    <input type="text" class="form-control" name="MinMoney" placeholder="最小值" @(parameter.MinMoney.HasValue?string.Format("value={0}",parameter.MinMoney.Value):"") />
+                    <span class="input-group-addon">至</span>
+                    <input type="text" class="form-control" name="MaxMoney" placeholder="最大值" @(parameter.MaxMoney.HasValue?string.Format("value={0}",parameter.MaxMoney.Value):"") />
+                </div>
                 <div class="btn-group" role="group">
                     
                 </div>
@@ -98,7 +103,7 @@
         <hr />
         <div class="form-group">
             <div class="col-md-12">
-                <button type="submit" class="btn btn-success">立即查询</button>
+                <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-search"></i> 立即查询</button>
             </div>
            
         </div>
@@ -117,6 +122,7 @@
                 <th>发票总金额（元）</th>
                 <th>已到账金额（元）</th>
                 <th>未完成金额（元）</th>
+                <td>发票详情</td>
             </tr>
         </thead>
         @foreach(var invoice in results)
@@ -130,6 +136,7 @@
                 <td>@(invoice.Money)</td>
                 <td>@(invoice.InvoiceBills.Sum(e=>e.Price))</td>
                 <td>@(invoice.Money-invoice.InvoiceBills.Sum(e=>e.Price))</td>
+                <td><a href="/Finance/DetailInvoice?id=@(invoice.ID)"><i class="glyphicon glyphicon-send"></i></a></td>
             </tr>
         }
     </table>
