@@ -103,7 +103,7 @@
                 <th>发票开出时间</th>
                 <th>发票编号</th>
                 <th>发票状态</th>
-                <th>操作</th>
+                <th class="col-md-2">操作</th>
             </tr>
         </thead>
         <tbody>
@@ -163,7 +163,11 @@
                         }
                         else
                         {
-                            <a href="#" class="btn btn-success" data-toggle="modal" data-target="#Add@(invoice.Coding)"><i class="glyphicon glyphicon-plus"></i>补充信息</a>
+                            <div class="btn-group btn-group-justified" role="group">
+                                <a href="#" class="btn btn-success" data-toggle="modal" data-target="#Add@(invoice.Coding)"><i class="glyphicon glyphicon-plus"></i>补充信息</a>
+                                <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#Edit@(invoice.Coding)"><i class="glyphicon glyphicon-edit"></i>编辑</a>
+                                <a href="javascript:void(0)" class="btn btn-danger btn-remove" Index="@(invoice.ID)"><i class="glyphicon glyphicon-remove"></i>删除</a>
+                            </div> 
                             <div class="modal fade" id="Add@(invoice.Coding)" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
@@ -207,7 +211,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#Edit@(invoice.Coding)"><i class="glyphicon glyphicon-edit"></i>编辑</a>
                             <div class="modal fade" id="Edit@(invoice.Coding)" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
@@ -262,9 +265,7 @@
                                         </form>
                                     </div>
                                 </div>
-                            </div>
-
-                            <a href="javascript:void(0)" class="btn btn-danger btn-remove" Index="@(invoice.ID)"><i class="glyphicon glyphicon-remove"></i>删除</a>
+                            </div>     
                         }
                       
                        

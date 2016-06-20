@@ -84,7 +84,7 @@ namespace Ztop.Todo.Web.Controllers
         /// <returns></returns>
         public ActionResult CreateEntry()
         {
-            var dict = Core.InvoiceManager.Search().Where(e =>e.State==InvoiceState.Have && Math.Abs(e.Money - e.InvoiceBills.Sum(k => k.Price)) > 0.01).GroupBy(e => e.Contract.Name).ToDictionary(e => e.Key, e => e.ToList());
+            var dict = Core.InvoiceManager.Search(new InvoiceParameter() { Status=InvoiceState.Have}).Where(e=>e.Recevied!=Recevied.ALL).GroupBy(e => e.Contract.Name).ToDictionary(e => e.Key, e => e.ToList());
             ViewBag.Invoices = dict;
             return View();
         }
@@ -106,24 +106,21 @@ namespace Ztop.Todo.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult SaveInvoiceBill(Bill bill,int[] iid,double[] price)
+        public ActionResult SaveInvoiceBill(Bill bill)
         {
-            if (Math.Abs(bill.Money - price.Sum()) > 0.001)
-            {
-                return ErrorJsonResult("到账金额不等于发票总金额！，请核对");
-            }
-            if (iid==null||price==null)
-            {
-                return ErrorJsonResult("未关联发票！,请核实！");
-            }
             bill.Budget = Budget.Income;
             bill.Coding = DateTime.Now.Ticks.ToString();
             bill.Cost = Cost.RealIncome;
             bill.Summary = string.Format("{0}录入的到账信息", Identity.Name);
             var bid = Core.BillManager.Save(bill);
-            var list = Core.InvoiceBillManager.Get(iid, price, bid);
+            var list = Core.InvoiceBillManager.Get(HttpContext, bid);
+            if (Math.Abs(bill.Money - list.Sum(e => e.Price)) > 0.01)
+            {
+                return ErrorJsonResult("请核对关联发票金额");
+            }
             Core.InvoiceBillManager.Save(list);
-            return SuccessJsonResult();
+
+            return Core.InvoiceManager.UpdateRecevied(list.Select(e=>e.IID).ToList()) ? SuccessJsonResult() : ErrorJsonResult("更新到账情况错误，错误如：未找到发票信息，或者系统参数错误");
         }
 
         public ActionResult InvoiceSearch(string status=null,string recevied=null,string ztopcompany=null, string department=null,string time=null,string otherside=null,int page=1)

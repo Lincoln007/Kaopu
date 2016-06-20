@@ -48,7 +48,7 @@
            <div class="panel panel-default">
                <div class="panel-heading">@(entry.Key)</div>
                <div class="panel-body">
-                   <table class="table">
+                   <table class="table" style="margin-bottom:0px;">
                        @foreach (var invoice in entry.Value)
                        {
                            <tr>
@@ -62,7 +62,7 @@
                                <td>@(invoice.Money)元</td>
                                <td>@(invoice.Content)</td>
                                <td>
-                                   <input type="text" class="form-control" name="Price" id="@(invoice.ID)" max="@(invoice.Money-invoice.InvoiceBills.Sum(e=>e.Price))"/>
+                                   <input type="text" class="form-control" name="@(invoice.ID)Price" id="@(invoice.ID)" max="@(invoice.Money-invoice.InvoiceBills.Sum(e=>e.Price))"/>
                                </td>
                            </tr>
                        }

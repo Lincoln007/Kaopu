@@ -75,6 +75,11 @@ namespace Ztop.Todo.Model
         /// </summary>
         public int CID { get; set; }
         public bool Deleted { get; set; }
+        /// <summary>
+        /// 发票到账情况
+        /// </summary>
+        [Column(TypeName ="int")]
+        public Recevied Recevied { get; set; }
         [NotMapped]
         public double Pay { get; set; }
 

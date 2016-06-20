@@ -75,30 +75,11 @@ namespace Ztop.Todo.Manager
                 return true;
             }
         }
-
-       public List<Invoice> Search()
-        {
-            using (var db = GetDbContext())
-            {
-                var list = db.Invoices.ToList();
-                foreach(var invoice in list)
-                {
-                    invoice.Contract = db.Contracts.Find(invoice.CID);
-                    invoice.InvoiceBills = db.InvoiceBills.Where(e => e.IID == invoice.ID).ToList();
-                }
-                return list;
-            }
-        }
         public List<Invoice> Search(InvoiceParameter parameter)
         {
             using (var db = GetDbContext())
             {
                 var query = db.Invoices.AsQueryable();
-                foreach(var invoice in query)
-                {
-                    var abc = db.InvoiceBills.Where(e => e.IID == invoice.ID).ToList();
-                    //invoice.Pay
-                }
                 if (!string.IsNullOrEmpty(parameter.Department))
                 {
                     query = query.Where(e => e.GroupName == parameter.Department);
@@ -117,44 +98,34 @@ namespace Ztop.Todo.Manager
                 }
                 if (parameter.Recevied.HasValue)
                 {
-                    switch (parameter.Recevied.Value)
+                    query = query.Where(e => e.Recevied == parameter.Recevied.Value);
+                }
+                if (!string.IsNullOrEmpty(parameter.Time))
+                {
+                    DateTime compareTime = DateTime.Now;
+                    switch (parameter.Time)
                     {
-                        case Recevied.None:
-                            query = query.Where(e => Math.Abs(e.Pay-0)<0.01);
+                        case "本周":
+                            compareTime = compareTime.AddDays(7);
                             break;
-                        case Recevied.Part:
-                            query = query.Where(e => e.Money > e.Pay);
+                        case "本月":
+                            compareTime = compareTime.AddMonths(1);
                             break;
-                        case Recevied.ALL:
-                            query = query.Where(e => Math.Abs(e.Money - e.Pay) < 0.01);
+                        case "本年":
+                            compareTime = compareTime.AddYears(1);
                             break;
                     }
+                    query = query.Where(e => (DateTime.Compare(compareTime, e.Time) > 0));
                 }
-                DateTime compareTime = DateTime.Now;
-                switch (parameter.Time)
-                {
-                    case "本周":
-                        compareTime = compareTime.AddDays(7);
-                        query = query.Where(e => (DateTime.Compare(compareTime, e.Time) > 0));
-                        break;
-                    case "本月":
-                        compareTime = compareTime.AddMonths(1);
-                        query = query.Where(e => DateTime.Compare(compareTime, e.Time) > 0);
-                        break;
-                    case "本年":
-                        compareTime = compareTime.AddYears(1);
-                        query = query.Where(e => DateTime.Compare(compareTime, e.Time) > 0);
-                        break;
-                    default:break;
-                }
+               
                 query = query.OrderByDescending(e => e.Time);
-                var list = query.ToList();
-                if (parameter.Page.RecordCount == 0)
+                query = query.SetPage(parameter.Page);
+                foreach(var invoice in query)
                 {
-                    parameter.Page.RecordCount = list.Count;
+                    invoice.Contract = db.Contracts.Find(invoice.CID);
+                    invoice.InvoiceBills = db.InvoiceBills.Where(e => e.IID == invoice.ID).ToList();
                 }
-                list = list.Skip(parameter.Page.PageSize * (parameter.Page.PageIndex - 1)).Take(parameter.Page.PageSize).ToList();
-                return list;
+                return query.ToList();
             }
         }
 
@@ -217,5 +188,42 @@ namespace Ztop.Todo.Manager
             }
         }
 
+        public bool UpdateRecevied(List<int> iid)
+        {
+            if (iid == null)
+            {
+                return false;
+            }
+            using (var db = GetDbContext())
+            {
+                foreach (var index in iid)
+                {
+                    var invoice = db.Invoices.Find(index);
+                    var list = db.InvoiceBills.Where(e => e.IID == index).ToList();
+                    if (invoice == null)
+                    {
+                        return false;
+                    }
+                    var sum = list.Sum(e => e.Price);
+                    if (Math.Abs(sum - 0) < 0.01)//等于0
+                    {
+                        invoice.Recevied = Recevied.None;//未到账
+                    }
+                    else//不等于0
+                    {
+                        if (Math.Abs(sum - invoice.Money) < 0.01)
+                        {
+                            invoice.Recevied = Recevied.ALL;//已全部到账
+                        }
+                        else
+                        {
+                            invoice.Recevied = Recevied.Part;//部分到账
+                        }
+                    }
+                    db.SaveChanges();
+                }
+            }
+            return true;
+        }
     }
 }
