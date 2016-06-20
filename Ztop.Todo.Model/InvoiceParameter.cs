@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Ztop.Todo.Model
 {
-    public class InvoiceParameter
+    public class InvoiceParameter:ParameterBase
     {
         /// <summary>
         /// 申请人所在部门
@@ -25,10 +25,7 @@ namespace Ztop.Todo.Model
         /// 到账情况
         /// </summary>
         public Recevied? Recevied { get; set; }
-        /// <summary>
-        /// 开票单位
-        /// </summary>
-        public ZtopCompany? ZtopCompany { get; set; }
+
         /// <summary>
         /// 时间
         /// </summary>
@@ -45,7 +42,7 @@ namespace Ztop.Todo.Model
         /// 最大值金额
         /// </summary>
         public double? MaxMoney { get; set; }
-        public PageParameter Page { get; set; }
+       
         public bool Instance { get; set; }
 
     }

@@ -24,7 +24,7 @@
             <div class="col-md-12">
                 <div class="input-group">
                     <div class="input-group-btn" role="group">
-                        <button type="button" class="btn btn-default">全部</button>
+                        <button type="button" class="btn btn-default" targetName="Name">全部</button>
                     </div>
                     <input type="text" class="form-control" placeholder="合同名称关键字" name="Name" value="" />
                 </div>
@@ -35,7 +35,7 @@
             <div class="col-md-12">
                 <div class="input-group">
                     <div class="input-group-btn" role="group">
-                        <button type="button" class="btn btn-default">全部</button>
+                        <button type="button" class="btn btn-default" targetName="OtherSide">全部</button>
                     </div>
                     <input type="text" class="form-control" placeholder="对方单位关键字" name="OtherSide" value="" />
                 </div>
@@ -63,4 +63,26 @@
         </thead>
     </table>
 </div>
+
+<script>
+    $(function () {
+        $(".btn-group>button").click(function () {
+            var val = $(this).text();
+            $(".btn-group>button").removeClass("btn-success").addClass("btn-default");
+            $(this).removeClass("btn-default").addClass("btn-success");
+        });
+        $(".input-group-btn>button").click(function () {
+            var targetName = $(this).attr("targetName");
+            $(this).removeClass("btn-default").addClass("btn-success");
+            $("input[name='" + targetName + "']").val();
+        });
+        $("input[name='OtherSide']").focus(function () {
+            $(this).prev().children().removeClass("btn-success").addClass("btn-default");
+        });
+
+        $("input[name='Name']").focus(function () {
+            $(this).prev().children().removeClass("btn-success").addClass("btn-default");
+        });
+    });
+</script>
 

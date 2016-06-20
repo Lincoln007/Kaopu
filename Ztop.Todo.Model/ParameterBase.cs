@@ -8,6 +8,10 @@ namespace Ztop.Todo.Model
 {
     public class ParameterBase
     {
-
+        /// <summary>
+        /// 开票单位
+        /// </summary>
+        public ZtopCompany? ZtopCompany { get; set; }
+        public PageParameter Page { get; set; }
     }
 }

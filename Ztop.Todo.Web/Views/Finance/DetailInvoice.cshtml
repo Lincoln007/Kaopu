@@ -54,7 +54,7 @@
                 <th>合同编号</th>
                 <td>@(invoice.Contract.Coding)</td>
                 <th>合同名称</th>
-                <td>@(invoice.Contract.Name)</td>
+                <td><a href="/Finance/Detail?id=@(invoice.Contract.ID)">@(invoice.Contract.Name)</a></td>
             </tr>
             <tr>
                 <th>对方单位</th>
