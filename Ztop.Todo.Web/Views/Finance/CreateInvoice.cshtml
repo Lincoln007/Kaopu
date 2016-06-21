@@ -9,11 +9,11 @@
 <h2 class="text-center">申请开具发票</h2>
 <form class="form-horizontal" method="post" action="/Finance/SaveInvoice" id="Create">
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-5">
             <h3 class="text-center">发票基本信息</h3>
             <input type="hidden" name="Applicant" value="@(Identity.Name)" />
             <div class="form-group">
-                <label class="control-label col-md-3">开票单位：</label>
+                <label class="control-label col-md-4">开票单位：</label>
                 <div class="col-md-8">
                     <select name="ZtopCompany" class="form-control">
                         @foreach (ZtopCompany company in Enum.GetValues(typeof(ZtopCompany)))
@@ -24,13 +24,13 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-md-3">对方单位：</label>
+                <label class="control-label col-md-4">对方单位：</label>
                 <div class="col-md-8">
                     <input type="text" name="OtherSideCompany" class="form-control" />
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-md-3">发票金额：</label>
+                <label class="control-label col-md-4">发票金额：</label>
                 <div class="col-md-8">
                     <div class="input-group">
                         <input type="text" name="Money" class="form-control" required="required" />
@@ -39,19 +39,19 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-md-3">发票内容：</label>
+                <label class="control-label col-md-4">发票内容：</label>
                 <div class="col-md-8">
                     <input type="text" name="Content" class="form-control" />
                 </div>
             </div>
             <div class="form-group">
-                <div class="col-md-8 col-md-offset-3">
+                <div class="col-md-8 col-md-offset-4">
                     <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i>申请</button>
                     <button type="button" class="btn btn-default" onclick="history.back();"><i class="glyphicon glyphicon-arrow-left"></i>返回</button>
                 </div>
             </div>
         </div>
-        <div class="col-md-8">
+        <div class="col-md-7">
             <h3 class="text-center">合同</h3>
             @foreach (var entry in dict)
             {

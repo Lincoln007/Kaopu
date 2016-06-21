@@ -7,16 +7,16 @@
 
 <div class="row">
     <form class="form-horizontal" action="/Finance/SaveInvoiceBill" method="post" id="form-invoicebill">
-        <div class="col-md-4">
+        <div class="col-md-5">
             <h3 class="text-center">到账基本信息</h3>
             <div class="form-group">
-                <label class="control-label col-md-3">到账时间：</label>
+                <label class="control-label col-md-4">到账时间：</label>
                 <div class="col-md-8">
                     <input type="text" class="form-control" name="Time" value="@(DateTime.Now.ToShortDateString())" />
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-md-3">到账金额：</label>
+                <label class="control-label col-md-4">到账金额：</label>
                 <div class="col-md-8">
                     <div class="input-group">
                         <input type="text" class="form-control" name="Money" required="required" />
@@ -25,24 +25,24 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-md-3">对方户名：</label>
+                <label class="control-label col-md-4">对方户名：</label>
                 <div class="col-md-8">
                     <input type="text" class="form-control" name="Account" required="required" />
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-md-3">银行备注：</label>
+                <label class="control-label col-md-4">银行备注：</label>
                 <div class="col-md-8">
                     <textarea class="form-control" name="Remark" rows="4"></textarea>
                 </div>
             </div>
             <div class="form-group">
-                <div class="col-md-8 col-md-offset-3">
+                <div class="col-md-8 col-md-offset-4">
                     <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i>录入到账信息</button>
                 </div>
             </div>
         </div>
-        <div class="col-md-8">
+        <div class="col-md-7">
             <h3 class="text-center">待关联发票信息</h3>
             @foreach (var entry in dict)
             {
