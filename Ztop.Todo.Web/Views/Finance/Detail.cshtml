@@ -7,8 +7,30 @@
 
 <hr />
 
+<div class="btn-group" role="group">
+    @if (!contract.Deleted)
+    {
+        if (!contract.Archived)
+        {
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#Apply"><i class="glyphicon glyphicon-pencil"></i> 申请开具发票</button>
+            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#Edit"><i class="glyphicon glyphicon-edit"></i>编辑合同</button>
+            <button type="button" class="btn btn-primary btn-archive" tabindex="@(contract.ID)"><i class="glyphicon glyphicon-lock"></i>归档合同</button>
+            <button type="button" class="btn btn-danger" tabindex="@(contract.ID)"><i class="glyphicon glyphicon-remove"></i>删除合同</button>
+        }
+        else
+        {
+            <h3>@(contract.Name)<span class="label label-info">已归档</span></h3>
+        }
+       
+    }
+    else
+    {
+        <h3>@(contract.Name)<span class="label label-danger">已删除</span></h3>
+    }
+    <button type="button" class="btn btn-default" onclick="history.back();"><i class="glyphicon glyphicon-arrow-left"></i>返回</button>
 
-<button type="button" class="btn btn-success" data-toggle="modal" data-target="#Apply"><i class="glyphicon glyphicon-pencil"></i> 申请开具发票</button>
+</div>
+
 <div class="modal fade" id="Apply" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -56,14 +78,67 @@
                 </div>
                 <div class="modal-footer">
                     <div class="form-group">
-                        <div class="col-md-8 col-lg-offset-3">
+                        <div class="col-md-8 col-md-offset-3">
                             <button type="button" class="btn btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove"></i> 取消</button>
                             <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i> 申请</button>
                         </div>
                     </div>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
 
+<div id="Edit" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">编辑</h4>
+            </div>
+            <form class="form-horizontal" method="post" action="/Finance/Edit" id="Edit-Contract">
+                <div class="modal-body">
+                    <input type="hidden" name="ID" value="@(contract.ID)" />
+                    <input type="hidden" name="Creator" value="@(contract.Creator)" />
+                    <div class="form-group">
+                        <label class="control-label col-md-3">合同编号：</label>
+                        <div class="col-md-8">
+                            <input type="text" name="Coding" class="form-control" value="@(contract.Coding)" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">合同名称：</label>
+                        <div class="col-md-8">
+                            <input type="text" name="Name" class="form-control" value="@(contract.Name)" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">对方单位：</label>
+                        <div class="col-md-8">
+                            <input type="text" name="Company" class="form-control" value="@(contract.Company)" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">签署单位：</label>
+                        <div class="col-md-8">
+                            <select name="ZtopCompany" class="form-control">
+                                @foreach(ZtopCompany company in Enum.GetValues(typeof(ZtopCompany)))
+                                {
+                                    <option value="@(company)" @(contract.ZtopCompany==company?"checked=checked":"")>@(company.GetDescription())</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="form-group">
+                        <div class="col-md-8 col-md-offset-3">
+                            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove"></i> 取消</button>
+                            <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-remove"></i> 编辑</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -282,12 +357,50 @@
             $.request("/Finance/SaveInvoice", data, function (json) {
                 alert(json.content);
                 if (json.result == 1) {
-                    location.href = "/Finance/Detail?id=" + json.data;
+                    location.href = "/Finance/Detail?id=" + json.data.CID;
                 }
                 return false;
             });
             return false;
         });
+
+
+        $("#Edit-Contract").submit(function(){
+            var data=$(this).serialize();
+            $.request("/Finance/Edit",data,function(json){
+                alert(json.content);
+                if(json.result==1){
+                    location.href="/Finance/Detail?id="+json.data;
+                }
+                return false;
+            });
+            return false;
+        });
+
+        $("button.btn-danger").click(function(){
+            var index=$(this).attr("tabindex");
+            $.request("/Finance/Delete?id="+index,null,function(json){
+                alert(json.content);
+                if(json.result==1){
+                    location.href="/Finance/Index";
+                }
+                return false;
+            });
+            return false;
+        });
+
+        $(".btn-archive").click(function(){
+            var index=$(this).attr("tabindex");
+            $.request("/Finance/Archive?id="+index,null,function(json){
+                alert(json.content);
+                if(json.result==1){
+                    location.href="/Finance/Detail?id="+json.data;
+                }
+                return false;
+            });
+            return false;
+        });
+        
 
         $("input[name='FillTime']").datetimepicker({
             timepicker: false,

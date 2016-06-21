@@ -17,7 +17,7 @@
                 <h3 class="panel-title text-center">@(ZtopCompany.Evaluation.GetDescription())</h3>
             </div>
             <div class="panel panel-body">
-                <a href="/Finance/" style="float:right;"><i class="glyphicon glyphicon-info-sign"></i>更多</a>
+                <a href="/Finance/ContractSearch?ztopCompany=@(ZtopCompany.Evaluation.GetDescription())" style="float:right;"><i class="glyphicon glyphicon-info-sign"></i>更多</a>
                 <table class="table table-bordered">
                     <tr>
                         <th>合同编号</th>
@@ -44,7 +44,7 @@
                 <h3 class="panel-title text-center">@(ZtopCompany.Projection.GetDescription())</h3>
             </div>
             <div class="panel panel-body">
-                <a href="#" style="float:right;"><i class="glyphicon glyphicon-info-sign"></i>更多</a>
+                <a href="/Finance/ContractSearch?ztopCompany=@(ZtopCompany.Projection.GetDescription())" style="float:right;"><i class="glyphicon glyphicon-info-sign"></i>更多</a>
                 <table class="table table-bordered">
                     <tr>
                         <th>合同编号</th>
@@ -66,7 +66,7 @@
 </div>
 
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         <div class="panel panel-red">
             <div class="panel panel-heading">
                 <h3 class="panel-title text-center">银行到账情况 </h3>
@@ -93,7 +93,7 @@
         </div>
     </div>
 
-    <div class="col-md-4">
+    <div class="col-md-6">
         <div class="panel panel-primary">
             <div class="panel panel-heading">
                 <h3 class="panel-title text-center">发票</h3>

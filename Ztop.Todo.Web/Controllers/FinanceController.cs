@@ -44,10 +44,34 @@ namespace Ztop.Todo.Web.Controllers
         }
 
         [HttpPost]
+        public ActionResult Edit(Contract contract)
+        {
+            
+            var id = Core.ContractManager.Edit(contract);
+            return SuccessJsonResult(id);
+        }
+
+        public ActionResult Delete(int id)
+        {
+            return Core.ContractManager.Delete(id) ? SuccessJsonResult() : ErrorJsonResult("删除合同失败！参数错误或是系统不存在该合同！");
+        }
+
+        public ActionResult Archive(int id)
+        {
+            return Core.ContractManager.Archive(id) ? SuccessJsonResult(id) : ErrorJsonResult("归档合同失败！参数错误或是系统中未找到该合同！");
+        }
+
+        public ActionResult CreateInvoice()
+        {
+            ViewBag.Contract = Core.ContractManager.Search(new ContractParameter() { Archived = false });
+            return View();
+        }
+
+        [HttpPost]
         public ActionResult SaveInvoice(Invoice invoice)
         {
             var id = Core.InvoiceManager.Save(invoice);
-            return SuccessJsonResult(invoice.CID);
+            return SuccessJsonResult(invoice);
         }
 
 
@@ -164,9 +188,37 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
 
-        public ActionResult ContractSearch()
+        public ActionResult ContractSearch(string ztopCompany=null,string Name=null,string OtherSide=null,string archived=null, int page=1)
         {
+            var parameter = new ContractParameter()
+            {
+                OtherSide = OtherSide,
+                Name = Name,
+                Page = new PageParameter(page, 20)
+            };
+            if (!string.IsNullOrEmpty(archived))
+            {
+                if (archived == "未归档")
+                {
+                    parameter.Archived = false;
+                }
+                else
+                {
+                    parameter.Archived = true;
+                }
+            }
+            if (!string.IsNullOrEmpty(ztopCompany))
+            {
+                parameter.ZtopCompany = EnumHelper.GetEnum<ZtopCompany>(ztopCompany);
+            }
+            ViewBag.Results = Core.ContractManager.Search(parameter);
+            ViewBag.Parameter = parameter;
             return View(); 
+        }
+
+        public ActionResult BillSearch()
+        {
+            return View();
         }
 
     }

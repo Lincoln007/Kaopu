@@ -30,10 +30,7 @@ namespace Ztop.Todo.Model
         /// 时间
         /// </summary>
         public string Time { get; set; }
-        /// <summary>
-        /// 对方单位
-        /// </summary>
-        public string OtherSide { get; set; }
+
         /// <summary>
         /// 最小值金额
         /// </summary>

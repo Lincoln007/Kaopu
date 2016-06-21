@@ -38,11 +38,28 @@ namespace Ztop.Todo.Model
         /// </summary>
         [MaxLength(255)]
         public string Creator { get; set; }
+        /// <summary>
+        /// 是否归档
+        /// </summary>
+        public bool Archived { get; set; }
+        /// <summary>
+        /// 是否删除
+        /// </summary>
+        public bool Deleted { get; set; }
         [Column(TypeName ="int")]
         public ZtopCompany ZtopCompany { get; set; }
 
         [NotMapped]
         public List<Invoice> Invoices { get; set; }
+    }
+    public enum ContractState
+    {
+        [Description("未归档")]
+        None,
+        [Description("归档")]
+        Archived,
+        [Description("删除")]
+        Deleted
     }
 
     public enum ZtopCompany

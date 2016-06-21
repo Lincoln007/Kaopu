@@ -292,6 +292,8 @@
     <Content Include="Views\Finance\InvoiceSearch.cshtml" />
     <Content Include="Views\Finance\DetailInvoice.cshtml" />
     <Content Include="Views\Finance\ContractSearch.cshtml" />
+    <Content Include="Views\Finance\CreateInvoice.cshtml" />
+    <Content Include="Views\Finance\BillSearch.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

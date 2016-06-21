@@ -12,6 +12,10 @@ namespace Ztop.Todo.Model
         /// 开票单位
         /// </summary>
         public ZtopCompany? ZtopCompany { get; set; }
+        /// <summary>
+        /// 对方单位
+        /// </summary>
+        public string OtherSide { get; set; }
         public PageParameter Page { get; set; }
     }
 }

@@ -5,75 +5,78 @@
 }
 <h2 class="text-center">到账信息录入</h2>
 
-<form class="form-horizontal" action="/Finance/SaveInvoiceBill" method="post" id="form-invoicebill">
-    <div class="col-md-4">
-        <h3 class="text-center">到账基本信息</h3>
-        <div class="form-group">
-            <label class="control-label col-md-3">到账时间：</label>
-            <div class="col-md-8">
-                <input type="text" class="form-control" name="Time" value="@(DateTime.Now.ToShortDateString())" />
+<div class="row">
+    <form class="form-horizontal" action="/Finance/SaveInvoiceBill" method="post" id="form-invoicebill">
+        <div class="col-md-4">
+            <h3 class="text-center">到账基本信息</h3>
+            <div class="form-group">
+                <label class="control-label col-md-3">到账时间：</label>
+                <div class="col-md-8">
+                    <input type="text" class="form-control" name="Time" value="@(DateTime.Now.ToShortDateString())" />
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label col-md-3">到账金额：</label>
-            <div class="col-md-8">
-                <div class="input-group">
-                    <input type="text" class="form-control" name="Money" required="required" />
-                    <span class="input-group-addon">元</span>
+            <div class="form-group">
+                <label class="control-label col-md-3">到账金额：</label>
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="Money" required="required" />
+                        <span class="input-group-addon">元</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">对方户名：</label>
+                <div class="col-md-8">
+                    <input type="text" class="form-control" name="Account" required="required" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">银行备注：</label>
+                <div class="col-md-8">
+                    <textarea class="form-control" name="Remark" rows="4"></textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-8 col-md-offset-3">
+                    <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i>录入到账信息</button>
                 </div>
             </div>
         </div>
-        <div class="form-group">
-            <label class="control-label col-md-3">对方户名：</label>
-            <div class="col-md-8">
-                <input type="text" class="form-control" name="Account" required="required" />
-            </div>
+        <div class="col-md-8">
+            <h3 class="text-center">待关联发票信息</h3>
+            @foreach (var entry in dict)
+            {
+                <div class="panel panel-default">
+                    <div class="panel-heading">@(entry.Key)</div>
+                    <div class="panel-body">
+                        <table class="table" style="margin-bottom:0px;">
+                            @foreach (var invoice in entry.Value)
+                            {
+                                <tr>
+                                    <td>
+                                        <label class="checkbox-inline" style="padding:0px;">
+                                            <input type="checkbox" value="@(invoice.ID)" name="IID" targetID="@(invoice.ID)" />@(invoice.Coding)
+                                        </label>
+                                    </td>
+                                    <td>@(invoice.Applicant)</td>
+                                    <td>@(invoice.OtherSideCompany)</td>
+                                    <td>@(invoice.Money)元</td>
+                                    <td>@(invoice.Content)</td>
+                                    <td>
+                                        <input type="text" class="form-control" name="@(invoice.ID)Price" id="@(invoice.ID)" max="@(invoice.Money-invoice.InvoiceBills.Sum(e=>e.Price))" />
+                                    </td>
+                                </tr>
+                            }
+                        </table>
+
+                    </div>
+                </div>
+            }
         </div>
-        <div class="form-group">
-            <label class="control-label col-md-3">银行备注：</label>
-            <div class="col-md-8">
-                <textarea class="form-control" name="Remark" rows="4"></textarea>
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-8 col-md-offset-3">
-                <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i>录入到账信息</button>
-            </div>
-        </div>
-    </div>
-   <div class="col-md-8">
-       <h3 class="text-center">待关联发票信息</h3>
-       @foreach(var entry in dict)
-       {
-           <div class="panel panel-default">
-               <div class="panel-heading">@(entry.Key)</div>
-               <div class="panel-body">
-                   <table class="table" style="margin-bottom:0px;">
-                       @foreach (var invoice in entry.Value)
-                       {
-                           <tr>
-                               <td>
-                                   <label class="checkbox-inline" style="padding:0px;">
-                                       <input type="checkbox" value="@(invoice.ID)" name="IID" targetID="@(invoice.ID)" />@(invoice.Coding)
-                                   </label>
-                               </td>
-                               <td>@(invoice.Applicant)</td>
-                               <td>@(invoice.OtherSideCompany)</td>
-                               <td>@(invoice.Money)元</td>
-                               <td>@(invoice.Content)</td>
-                               <td>
-                                   <input type="text" class="form-control" name="@(invoice.ID)Price" id="@(invoice.ID)" max="@(invoice.Money-invoice.InvoiceBills.Sum(e=>e.Price))"/>
-                               </td>
-                           </tr>
-                       }
-                   </table>
-                  
-               </div>
-           </div>
-       }
-   </div>
-   
-</form>
+
+    </form>
+
+</div>
 
 
 <script>

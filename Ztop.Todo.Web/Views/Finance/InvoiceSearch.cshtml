@@ -60,9 +60,6 @@
                     <span class="input-group-addon">至</span>
                     <input type="text" class="form-control" name="MaxMoney" placeholder="最大值" @(parameter.MaxMoney.HasValue?string.Format("value={0}",parameter.MaxMoney.Value):"") />
                 </div>
-                <div class="btn-group" role="group">
-                    
-                </div>
             </div>
         </div>
         <div class="form-group">
@@ -103,7 +100,11 @@
         <hr />
         <div class="form-group">
             <div class="col-md-12">
-                <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-search"></i> 立即查询</button>
+                <div class="btn-group" role="group">
+                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-search"></i> 立即查询</button>
+                    <button type="button" class="btn btn-default" onclick="history.back();"><i class="glyphicon glyphicon-arrow-left"></i>返回</button>
+                </div>
+              
             </div>
            
         </div>
@@ -159,7 +160,7 @@
             if ($(this).hasClass("btn-default")) {
                 $(this).removeClass("btn-default").addClass("btn-success");
             }
-            $("input[name='OtherSide']").val();
+            $("input[name='OtherSide']").val("");
         });
 
         $("input[name='OtherSide']").focus(function () {
