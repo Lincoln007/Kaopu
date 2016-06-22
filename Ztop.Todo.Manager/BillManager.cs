@@ -1,6 +1,8 @@
 ﻿using NPOI.SS.UserModel;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +14,11 @@ namespace Ztop.Todo.Manager
 {
     public class BillManager:ManagerBase
     {
+        private static string _uploadDir;
+        static BillManager()
+        {
+            _uploadDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ConfigurationManager.AppSettings["upload_floder"] ?? "upload_files");
+        }
         public List<Bill> GetBills(int bid,string[] coding,DateTime[] time,Budget[] budget,double[] money,string[] account,string[] summary,Cost[] cost,Category[] category)
         {
             if (coding == null)
@@ -213,6 +220,20 @@ namespace Ztop.Todo.Manager
             {
                 return db.Bills.ToList();
             }
+        }
+
+        public string Upload(HttpPostedFileBase file)
+        {
+            if (file.ContentLength == 0) return string.Empty;
+            if (!Directory.Exists(_uploadDir))
+            {
+                Directory.CreateDirectory(_uploadDir);
+            }
+            var newFileName = DateTime.Now.Ticks.ToString() + Path.GetExtension(file.FileName);
+            var saveFileFullPath = Path.Combine(_uploadDir, newFileName);
+            file.SaveAs(saveFileFullPath);
+            return saveFileFullPath;
+            
         }
 
         

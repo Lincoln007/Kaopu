@@ -75,5 +75,13 @@ namespace Ztop.Todo.Web.Controllers
             byte[] fileContents = ms.ToArray();
             return File(fileContents, "application/ms-excel", string.Format("杭州智拓{0}咨询有限公司{1}年{2}月银行对账单.xls", company == Company.Evaluation ? "房地产土地评估" : "土地规划设计", year, month));
         }
+
+        [HttpPost]
+        public ActionResult Upload(int year,int month,Company company)
+        {
+            var file = HttpContext.Request.Files[0];
+            var saveFullFilePath = Core.BillManager.Upload(file);
+            return SuccessJsonResult();
+        }
     }
 }

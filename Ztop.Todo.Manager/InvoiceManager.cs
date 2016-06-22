@@ -155,6 +155,17 @@ namespace Ztop.Todo.Manager
             }
         }
 
+        public List<Invoice> Search(string key)
+        {
+            if (string.IsNullOrEmpty(key))
+            {
+                return new List<Invoice>();
+            }
+            using (var db = GetDbContext())
+            {
+                return db.Invoices.Where(e => e.GroupName.Contains(key) || e.OtherSideCompany.Contains(key)).ToList();
+            }
+        }
         /// <summary>
         /// 删除发票记录  只有当发票处于未开票的情况下才可以删除
         /// </summary>

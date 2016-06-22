@@ -113,6 +113,12 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
 
+        public ActionResult SearchInvoice(string key)
+        {
+            var list = Core.InvoiceManager.Search(key);
+            return Json(list);
+        }
+
         /// <summary>
         /// 删除开具发票申请
         /// </summary>
