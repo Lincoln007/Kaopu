@@ -79,9 +79,23 @@ namespace Ztop.Todo.Web.Controllers
         [HttpPost]
         public ActionResult Upload(int year,int month,Company company)
         {
+            if (Core.BillManager.Exist(year, month, company))
+            {
+                throw new ArgumentException(string.Format("系统中已经存在{0}年{1}月{2}公司的银行对账清单，对有需要更改请前往编辑！", year, month, company.GetDescription()));
+            }
+            var bank = Core.BillManager.GetBank(year, month, company);
             var file = HttpContext.Request.Files[0];
             var saveFullFilePath = Core.BillManager.Upload(file);
-            return SuccessJsonResult();
+            var bills = BillClass.Analyze(saveFullFilePath, bank.ID);
+            try
+            {
+                Core.BillManager.UpDateBills(bills, bank.ID);
+            }catch(Exception ex)
+            {
+                throw new ArgumentException(ex.ToString());
+
+            }
+            return RedirectToAction("Detail", new { id = bank.ID });
         }
     }
 }

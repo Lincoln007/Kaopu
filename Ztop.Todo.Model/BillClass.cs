@@ -10,7 +10,7 @@ namespace Ztop.Todo.Model
 {
     public static class BillClass
     {
-        public static List<Bill> Analyze(string filePath)
+        public static List<Bill> Analyze(string filePath,int bid)
         {
             var list = new List<Bill>();
             IWorkbook workbook = filePath.OpenExcel();
@@ -20,14 +20,18 @@ namespace Ztop.Todo.Model
                 if (sheet != null)
                 {
                     IRow row = null;
-                    for (var i = 0; i <= sheet.LastRowNum; i++)
+                    for (var i = 1; i <= sheet.LastRowNum; i++)
                     {
                         row = sheet.GetRow(i);
-                        if (row != null)
+                        if (row == null)
                         {
                             continue;
                         }
-
+                        var bill = Analyze(row,bid);
+                        if (bill != null)
+                        {
+                            list.Add(bill);
+                        }
                     }
                 }
             }
@@ -59,14 +63,18 @@ namespace Ztop.Todo.Model
                     currentTime = DateTime.Parse(cells[0].ToString());
                 }
             }
-            double income = .0, pay = .0;
+            double income = .0, pay = .0, balance = .0;
             if (cells[1] != null)
             {
-                double.TryParse(cells[1].ToString(), out income);
+                double.TryParse(cells[1].ToString(), out pay);
             }
             if (cells[2] != null)
             {
-                double.TryParse(cells[2].ToString(), out pay);
+                double.TryParse(cells[2].ToString(), out income);
+            }
+            if (cells[3] != null)
+            {
+                double.TryParse(cells[3].ToString(), out balance);
             }
             if (income > 0 && pay > 0)//当支出收入同时填写时，为错误，返回null
             {
@@ -168,7 +176,9 @@ namespace Ztop.Todo.Model
                         Cost = cost,
                         Category = category,
                         Summary = cells[5] == null ? string.Empty : cells[5].ToString(),
-                        BID = bid
+                        Remark= cells[5] == null ? string.Empty : cells[5].ToString(),
+                        BID = bid,
+                        Balance=balance
                     };
                 }
             }
@@ -185,7 +195,9 @@ namespace Ztop.Todo.Model
                         Cost = cost,
                         Category = category,
                         Summary = cells[5] == null ? string.Empty : cells[5].ToString(),
-                        BID = bid
+                        Remark= cells[5] == null ? string.Empty : cells[5].ToString(),
+                        BID = bid,
+                        Balance=balance
                     }; 
                 }
             }

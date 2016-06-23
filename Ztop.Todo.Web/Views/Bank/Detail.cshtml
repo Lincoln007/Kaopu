@@ -128,8 +128,8 @@
                         <td>@(item.Time.ToString("yyyy-MM-dd"))</td>
                         <td>@(item.Budget.GetDescription())</td>
                         <td>@(item.Money)</td>
-                        <td>@(item.Account) </td>
-                        <td>@(item.Cost.GetDescription()) @(item.Category.HasValue ? "-" + item.Category.Value.GetDescription() : "")</td>
+                        <td class="text-center">@(item.Account) </td>
+                        <td class="text-center">@(item.Cost.GetDescription()) @(item.Category.HasValue ? "-" + item.Category.Value.GetDescription() : "")</td>
                         <td colspan="2">@(item.Summary)</td>
                     </tr>
                 }

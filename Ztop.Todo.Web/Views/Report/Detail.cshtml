@@ -13,7 +13,13 @@
 {
     <div class="col-md-12 noprint">
         <h3>报销单详情</h3>
-       
+       @if (sheet.Controler == Identity.Name&&sheet.Status!=Status.RollBack)
+       {
+        <button type="button" class="btn btn-primary btn-lg btn-checked">
+            <em class="glyphicon glyphicon-ok">审核通过</em>
+        </button>
+       }
+
 
         @if (sheet.Status == Status.OutLine || sheet.Status == Status.RollBack)//草稿  或者退回
         {
@@ -47,9 +53,6 @@
               }
               else if (sheet.Controler == Identity.Name)//主管  查看报销单
               {
-                   <button type="button" class="btn btn-primary btn-lg btn-checked">
-                                <em class="glyphicon glyphicon-ok">审核通过</em>
-                            </button>
                    if (Identity.Name == XmlHelper.GetFinance())
                    {
                         <button class="btn btn-default btn-lg" type="button" onclick="javascript: Preview()">

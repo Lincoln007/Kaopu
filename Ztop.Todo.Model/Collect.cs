@@ -135,6 +135,10 @@ namespace Ztop.Todo.Model
         /// 备注
         /// </summary>
         public string Remark { get; set; }
+        /// <summary>
+        /// 余额
+        /// </summary>
+        public double Balance { get; set; }
         public int BID { get; set; }
     }
     //public enum Cost

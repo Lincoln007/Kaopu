@@ -57,12 +57,13 @@
     </div>
     
 </form>
-<form class="form-inline" method="post" enctype="multipart/form-data" action="">
+<form class="form-inline" method="post" enctype="multipart/form-data" action="/Bank/Upload" id="form-file">
     <input type="hidden" name="Year" value="@(DateTime.Now.Year)" />
     <input type="hidden" name="Month" value="@(DateTime.Now.Month-1)" />
+    <input type="hidden" name="Company" value="@(company)" />
     <div class="form-group">
         <label for="">银行对账单Excel文件：</label>
-        <input type="file" class="form-control" name="FF" />
+        <input type="file" class="form-control" name="file" />
     </div>
     <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-floppy-open"></i> 上传分析</button>
 </form>
@@ -137,7 +138,6 @@
             }
         </select>
     </div>
-
 </div>
 
 <script>
@@ -194,6 +194,19 @@
             })
         });
 
+
+        //$("#form-file").submit(function () {
+        //    var data = $(this).serialize();
+        //    $.request("/Bank/upload", data, function (json) {
+        //        alert(json.content);
+        //        if (json.result == 1) {
+        //            window.location.href = "/Bank/Detail?id=" + json.data.ID;
+        //        }
+        //        return false;
+        //    });
+        //    return false;
+        //});
+
         $("input[name='Time']").datetimepicker({
             timepicker: false,
             format: 'Y-m-d',
@@ -209,6 +222,8 @@
             var val = $(this).val();
             $("input[name='Month']").val(val);
         });
+
+
     })
 </script>
 
