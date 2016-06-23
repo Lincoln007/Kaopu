@@ -41,6 +41,7 @@ namespace Ztop.Todo.Model
         public double? MaxMoney { get; set; }
        
         public bool Instance { get; set; }
+        public string Key { get; set; }
 
     }
 

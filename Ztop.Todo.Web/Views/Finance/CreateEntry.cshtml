@@ -10,14 +10,14 @@
         <div class="col-md-12">
             <h3 class="text-center">到账基本信息</h3>
             <div class="form-group">
-                <label class="control-label col-md-3">到账时间：</label>
-                <div class="col-md-8">
+                <label class="control-label col-md-2">到账时间：</label>
+                <div class="col-md-10">
                     <input type="text" class="form-control" name="Time" value="@(DateTime.Now.ToShortDateString())" />
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-md-3">到账金额：</label>
-                <div class="col-md-8">
+                <label class="control-label col-md-2">到账金额：</label>
+                <div class="col-md-10">
                     <div class="input-group">
                         <input type="text" class="form-control" name="Money" required="required" />
                         <span class="input-group-addon">元</span>
@@ -25,40 +25,27 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-md-3">对方户名：</label>
-                <div class="col-md-8">
+                <label class="control-label col-md-2">对方户名：</label>
+                <div class="col-md-10">
                     <input type="text" class="form-control" name="Account" required="required" />
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-md-3">银行备注：</label>
-                <div class="col-md-8">
+                <label class="control-label col-md-2">银行备注：</label>
+                <div class="col-md-10">
                     <textarea class="form-control" name="Remark" rows="4"></textarea>
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-md-3">关联发票：</label>
-                <div class="col-md-8">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="发票关键字" name="Key" />
-                        <span class="input-group-btn">
-                            <button type="button" class="btn btn-success"><i class="glyphicon glyphicon-search"></i></button>
-                        </span>
-                    </div>
-                    <table class="table">
-                        <tr>
-                            <td>发票编号</td>
-                            <td>对方单位</td>
-                            <td>发票金额（元）</td>
-                            <td>发票内容</td>
-                            <td>到账金额（元）</td>
-                            <td>操作</td>
-                        </tr>
+                <label class="control-label col-md-2">关联发票：</label>
+                <div class="col-md-10">
+                    <table class="table" id="Relate">
+
                     </table>
                 </div>
             </div>
             <div class="form-group">
-                <div class="col-md-8 col-md-offset-3">
+                <div class="col-md-10 col-md-offset-2">
                     <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i>录入到账信息</button>
                 </div>
             </div>
@@ -66,7 +53,29 @@
     </form>
 </div>
 <div class="row">
-    <div class="col-md-7">
+    <div class="input-group">
+        <input type="text" class="form-control" placeholder="发票关键字" name="Key" />
+        <span class="input-group-btn">
+            <button type="button" class="btn btn-success btn-Search"><i class="glyphicon glyphicon-search"></i></button>
+        </span>
+    </div>
+    <div class="alert alert-warning" role="alert" style="margin-bottom:0px;">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <td>发票编号</td>
+                    <td>对方单位</td>
+                    <td>发票金额（元）</td>
+                    <td>发票内容</td>
+                    <td>到账金额（元）</td>
+                    <td>操作</td>
+                </tr>
+            </thead>
+            <tbody id="Result"></tbody>
+        </table>
+    </div>
+
+    @*<div class="col-md-7">
         <h3 class="text-center">待关联发票信息</h3>
         @foreach (var entry in dict)
             {
@@ -96,11 +105,14 @@
                 </div>
             </div>
         }
-    </div>
+    </div>*@
 </div>
 
 
+
 <script>
+    var items = [];
+    var IIDS = [];
     $(function () {
         $("input[name='Time']").datetimepicker({
             timepicker: false,
@@ -151,6 +163,79 @@
             }
         })
 
-        $("")
+        $("button.btn-Search").click(function () {
+            var key = $("input[name='Key']").val();
+            $.getJSON("/Finance/SearchInvoice", { key: key }, function (data) {
+                $("#Result").empty();
+                items = data;
+                for (var invoice in data) {
+                    var appendHtml = "<tr><td>" + data[invoice].Coding + "</td><td>" + data[invoice].OtherSideCompany + "</td><td>" + data[invoice].Money + "</td><td>" + data[invoice].Content + "</td><td><input type='hidden' name='IID' value='"+data[invoice].ID+"' /> <input type='text' name='" + data[invoice].ID + "Price'  class='form-control' max='" + data[invoice].Leave + "' /><td><td><button type='button' class='btn btn-success btn-sm btn-Relate' targetIndex='" + invoice + "'><i class='glyphicon glyphicon-plus'></i>关联</button><button type='button' class='btn btn-danger btn-sm btn-remove' targetIndex='" + invoice + "'><i class='glyphicon glyphicon-remove-sign'></i>取消关联</button></td></tr>";
+                    $("#Result").append(appendHtml);
+                }
+                $("#Result button.btn-danger.btn-remove").hide();
+                $("button.btn-Relate").unbind("click").bind("click", function () {
+                    $(this).hide();
+                    var appendhtml = "<tr>"+ $(this).parent().parent().html()+"</tr>";
+                    $("#Relate").append(appendhtml);
+                    $(this).parent().parent().remove();
+                    $("#Relate button.btn-danger.btn-remove").show();
+                    $("#Relate button.btn-danger.btn-remove").unbind("click").bind("click", function () {
+                        $(this).hide();
+                        $(this).parent().parent().remove();
+                    });
+                    $("input[name$=Price]").unbind("change").bind("change", function () {
+                        var val = parseFloat($(this).val());
+                        var maxVal = parseFloat($(this).attr("max"));
+                        if (!isNaN(val) && !isNaN(maxVal)) {
+                            if (val > maxVal) {
+                                alert("超出发票金额限制！请核对");
+                                $(this).val("");
+                            }
+                        }
+                    });
+
+                });
+               
+
+
+
+
+                //绑定点击关联事件
+                //$("button.btn-Relate").unbind("click").bind("click", function () {
+                //    var targetIndex = $(this).attr("targetIndex");
+                //    var price = $("input[name='" + targetIndex + "Price").val();
+                //    if (price == NaN || price == undefined||price==""||price==null) {
+                //        return false;
+                //    }
+                //    var appendhtml = "<tr><td>" + items[targetIndex].Coding + "</td><td>" + items[targetIndex].OtherSideCompany + "</td><td>" + items[targetIndex].Content + "</td><td>" + price + "</td><td><button type='button' class='btn btn-danger btn-sm btn-remove' targetIndex='"+targetIndex+"'><i class='glyphicon glyphicon-remove-sign'></i>取消关联</button></td></tr>";
+                //    $("#Relate").append(appendhtml);
+                //    //绑定取消关联事件
+                //    $("button.btn-danger.btn-remove").unbind("click").bind("click", function () {
+                //        var targetIndex = $(this).attr("targetIndex");
+                //        $("button[targetIndex='" + targetIndex + "']").removeAttr("disabled");
+                //        $("input[name='" + targetIndex + "Price'").removeAttr("readonly");
+                //        $(this).parent().parent().remove();
+                //    });
+
+
+                //    $(this).attr("disabled", "disabled");
+                //    $("input[name='" + targetIndex + "Price'").attr("readonly", "readonly");
+                //});
+
+                //绑定关联金额检索事件
+                
+                $("input[name$=Price]").unbind("change").bind("change", function () {
+                    var val = parseFloat($(this).val());
+                    var maxVal = parseFloat($(this).attr("max"));
+                    if (!isNaN(val) && !isNaN(maxVal)) {
+                        if (val > maxVal) {
+                            alert("超出发票金额限制！请核对");
+                            $(this).val("");
+                        }
+                    }
+                });
+            });
+
+        });
     });
 </script>

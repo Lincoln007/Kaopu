@@ -115,8 +115,17 @@ namespace Ztop.Todo.Web.Controllers
 
         public ActionResult SearchInvoice(string key)
         {
-            var list = Core.InvoiceManager.Search(key);
-            return Json(list);
+            if (string.IsNullOrEmpty(key))
+            {
+                return Json(new List<Invoice>(), JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                var list = Core.InvoiceManager.Search(new InvoiceParameter() { Key = key, Instance = true });
+                return Json(list, JsonRequestBehavior.AllowGet);
+            }
+            //var list = Core.InvoiceManager.Search(key);
+            
         }
 
         /// <summary>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace Ztop.Todo.Model
 {
@@ -81,7 +82,21 @@ namespace Ztop.Todo.Model
         [Column(TypeName ="int")]
         public Recevied Recevied { get; set; }
         [NotMapped]
-        public double Pay { get; set; }
+        public double Leave
+        {
+            get
+            {
+                try
+                {
+                    return Money - InvoiceBills.Sum(e => e.Price);
+                }
+                catch
+                {
+                    return .0;
+                }
+               
+            }
+        }
 
         [NotMapped]
         public Contract Contract { get; set; }

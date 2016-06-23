@@ -94,6 +94,10 @@ namespace Ztop.Todo.Manager
             using (var db = GetDbContext())
             {
                 var query = db.Invoices.AsQueryable();
+                if (!string.IsNullOrEmpty(parameter.Key))
+                {
+                    query = query.Where(e => e.GroupName.Contains(parameter.Key) || e.OtherSideCompany.Contains(parameter.Key));
+                }
                 if (!string.IsNullOrEmpty(parameter.Department))
                 {
                     query = query.Where(e => e.GroupName == parameter.Department);
