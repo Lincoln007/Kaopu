@@ -33,15 +33,13 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th class="text-center">编号</th>
                     <th>交易日期</th>
-                    <th>交易类型（收入/支出）</th>
-                    <th>金额（元）</th>
-                    <th class="text-center">对方单位</th>
-                    <th class="text-center">类别</th>
-                    <th>
-                        摘要
-                    </th>
+                    <th>支出（元）</th>
+                    <th>收入（元）</th>
+                    <th>账户余额（元）</th>
+                    <th>对方单位</th>
+                    <th>摘要</th>
+                    <th>类别</th>
                     <td>
                        
                     </td>
@@ -72,6 +70,32 @@
     <table >
         <tbody id="add">
             <tr>
+                <td><input type="text" name="Time" class="form-control" placeholder="交易日期" /></td>
+                <td><input type="text" name="Income" class="form-control" placeholder="支出" targetIndex="{Index}" /></td>
+                <td><input type="text" name="Pay" class="form-control" placeholder="收入" targetIndex="{Index}" /></td>
+                <td><input type="text" name="Balance" class="form-control" placeholder="账户余额" /></td>
+                <td><input type="text" name="Account" class="form-control" placeholder="对方单位" /></td>
+                <td><input type="text" name="Summary" class="form-control" placeholder="摘要" /></td>
+                <td style="width:20%;">
+                    <div class="col-md-6" style="padding:0px;">
+                        <select name="Cost" class="form-control" id="Cost{Index}">
+                            @foreach (Cost cost in Enum.GetValues(typeof(Cost)))
+                            {
+                                if (cost == Cost.Posting)
+                                {
+                                    break;
+                                }
+                                <option value="@(cost)">@(cost.GetDescription())</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-6" style="padding:0px;" id="Append{Index}">
+
+                    </div>
+
+                </td>
+            </tr>
+            @*<tr>
                 <td><input type="text" name="Coding" class="form-control" placeholder="编号" /></td>
                 <td><input type="text" name="Time" class="form-control" placeholder="交易日期" /></td>
                 <td>
@@ -105,7 +129,7 @@
                 <td>
                     <button type="button" class="btn btn-danger btn-xs btn-remove" style="float:right;"><i class="glyphicon glyphicon-remove"></i></button>
                 </td>
-            </tr>
+            </tr>*@
         </tbody>
        
     </table>
@@ -147,8 +171,44 @@
     var appendCategoryhtml = $("#AppendCategory").html();
     $(function () {
 
-        var currentnumber=0;
+        var currentnumber = 0;
+
         $("button[name='Plus']").click(function () {
+            var Targetname = $(this).attr("TargetName");
+            var appendhtml = addhtml.replace(/{Index}/g, currentnumber);
+            currentnumber++;
+            $("#" + Targetname).append(appendhtml);
+            $("input[name='Time']").datetimepicker({
+                timepicker: false,
+                format: 'Y-m-d',
+                maxDate:'@(DateTime.Today.ToString("yyyy-MM-dd"))'
+            });
+            $("input[name='Income']").unbind("focus").bind("focus", function () {
+                var targetIndex = $(this).attr("targetIndex");
+                $("#Cost" + targetIndex).empty().append(incomehtml);
+                $("#Append" + targetIndex).empty();
+            });
+
+            $("input[name='Pay']").unbind("focus").bind("focus", function () {
+                var targetIndex = $(this).attr("targetIndex");
+                $("#Cost" + targetIndex).empty().append(payhtml);
+                $("#Append" + targetIndex).empty();
+            });
+            $("[name='Cost']").unbind("change").bind("change", function () {
+                var index = $(this).attr("id").replace("Cost", "");
+                var cost = $(this).val();
+                if (cost != undefined && cost != "") {
+                    if (cost == "RealPay") {
+                        $("#Append" + index).empty().append(appendCategoryhtml);
+                    } else {
+                        $("#Append" + index).empty();
+                    }
+                } 
+            });
+        });
+
+
+        @*$("button[name='Plus']").click(function () {
             var Targetname = $(this).attr("TargetName");
             var appendhtml = addhtml.replace(/{Index}/g, currentnumber);
             currentnumber++;
@@ -180,7 +240,7 @@
                     }
                 }
             });
-        });
+        });*@
 
         $("button[name='Save']").click(function () {
             var data = $("#Data").serialize();

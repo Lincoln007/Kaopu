@@ -53,59 +53,29 @@
     </form>
 </div>
 <div class="row">
-    <div class="input-group">
-        <input type="text" class="form-control" placeholder="发票关键字" name="Key" />
-        <span class="input-group-btn">
-            <button type="button" class="btn btn-success btn-Search"><i class="glyphicon glyphicon-search"></i></button>
-        </span>
+    <div class="col-md-10 col-md-offset-2">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="发票关键字" name="Key" />
+            <span class="input-group-btn">
+                <button type="button" class="btn btn-success btn-Search"><i class="glyphicon glyphicon-search"></i></button>
+            </span>
+        </div>
+        <div class="alert alert-warning" role="alert" style="margin-bottom:0px;">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <td>发票编号</td>
+                        <td>对方单位</td>
+                        <td>发票金额（元）</td>
+                        <td>发票内容</td>
+                        <td></td>
+                        <td>操作</td>
+                    </tr>
+                </thead>
+                <tbody id="Result"></tbody>
+            </table>
+        </div>
     </div>
-    <div class="alert alert-warning" role="alert" style="margin-bottom:0px;">
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <td>发票编号</td>
-                    <td>对方单位</td>
-                    <td>发票金额（元）</td>
-                    <td>发票内容</td>
-                    <td>到账金额（元）</td>
-                    <td>操作</td>
-                </tr>
-            </thead>
-            <tbody id="Result"></tbody>
-        </table>
-    </div>
-
-    @*<div class="col-md-7">
-        <h3 class="text-center">待关联发票信息</h3>
-        @foreach (var entry in dict)
-            {
-            <div class="panel panel-default">
-                <div class="panel-heading">@(entry.Key)</div>
-                <div class="panel-body">
-                    <table class="table" style="margin-bottom:0px;">
-                        @foreach (var invoice in entry.Value)
-                        {
-                            <tr>
-                                <td>
-                                    <label class="checkbox-inline" style="padding:0px;">
-                                        <input type="checkbox" value="@(invoice.ID)" name="IID" targetID="@(invoice.ID)" />@(invoice.Coding)
-                                    </label>
-                                </td>
-                                <td>@(invoice.Applicant)</td>
-                                <td>@(invoice.OtherSideCompany)</td>
-                                <td>@(invoice.Money)元</td>
-                                <td>@(invoice.Content)</td>
-                                <td>
-                                    <input type="text" class="form-control" name="@(invoice.ID)Price" id="@(invoice.ID)" max="@(invoice.Money-invoice.InvoiceBills.Sum(e=>e.Price))" />
-                                </td>
-                            </tr>
-                        }
-                    </table>
-
-                </div>
-            </div>
-        }
-    </div>*@
 </div>
 
 
@@ -122,9 +92,8 @@
         function CheckMoney() {
             var money = $("input[name='Money']").val();
             var sum = 0;
-            $("[name='IID']:checked").each(function () {
-                var targetID = $(this).attr("targetID");
-                var price = parseFloat($("#" + targetID).val());
+            $("input[name$=Price").each(function () {
+                var price = parseFloat($(this).val());
                 if (!isNaN(price) && price != NaN) {
                     sum += price;
                 }
@@ -151,17 +120,6 @@
             return false;
         });
 
-        $("input[name='Price']").change(function () {
-            var id = $(this).attr("id");
-            var val = parseFloat($(this).val());
-            var maxVal = parseFloat($(this).attr("max"));
-            if (!isNaN(val) && !isNaN(maxVal)) {
-                if (val > maxVal) {
-                    alert("超出发票金额限制！");
-                    $("#" + id).val();
-                }
-            }
-        })
 
         $("button.btn-Search").click(function () {
             var key = $("input[name='Key']").val();
@@ -169,16 +127,20 @@
                 $("#Result").empty();
                 items = data;
                 for (var invoice in data) {
-                    var appendHtml = "<tr><td>" + data[invoice].Coding + "</td><td>" + data[invoice].OtherSideCompany + "</td><td>" + data[invoice].Money + "</td><td>" + data[invoice].Content + "</td><td><input type='hidden' name='IID' value='"+data[invoice].ID+"' /> <input type='text' name='" + data[invoice].ID + "Price'  class='form-control' max='" + data[invoice].Leave + "' /><td><td><button type='button' class='btn btn-success btn-sm btn-Relate' targetIndex='" + invoice + "'><i class='glyphicon glyphicon-plus'></i>关联</button><button type='button' class='btn btn-danger btn-sm btn-remove' targetIndex='" + invoice + "'><i class='glyphicon glyphicon-remove-sign'></i>取消关联</button></td></tr>";
+                    var appendHtml = "<tr><td>" + data[invoice].Coding + "</td><td>" + data[invoice].OtherSideCompany + "</td><td>" + data[invoice].Money + "</td><td>" + data[invoice].Content + "</td><td><input type='text' name='" + data[invoice].ID + "Price' class='form-control' max='" + data[invoice].Leave + "' /></td><td><input type='hidden' name='IID' value='" + data[invoice].ID + "' /><button type='button' class='btn btn-success btn-sm btn-Relate' targetIndex='" + data[invoice].ID + "'><i class='glyphicon glyphicon-plus-sign'></i>关联</button><button type='button' class='btn btn-danger btn-sm btn-remove' targetIndex='" + data[invoice].ID + "'><i class='glyphicon glyphicon-remove-sign'></i>取消关联</button></td></tr>"
                     $("#Result").append(appendHtml);
                 }
                 $("#Result button.btn-danger.btn-remove").hide();
+                $("input[name$=Price]").hide();
                 $("button.btn-Relate").unbind("click").bind("click", function () {
                     $(this).hide();
                     var appendhtml = "<tr>"+ $(this).parent().parent().html()+"</tr>";
                     $("#Relate").append(appendhtml);
                     $(this).parent().parent().remove();
                     $("#Relate button.btn-danger.btn-remove").show();
+                    var targetIndex = $(this).attr("targetIndex");
+                    $("input[name='" + targetIndex + "Price'").show();
+
                     $("#Relate button.btn-danger.btn-remove").unbind("click").bind("click", function () {
                         $(this).hide();
                         $(this).parent().parent().remove();
@@ -194,45 +156,6 @@
                         }
                     });
 
-                });
-               
-
-
-
-
-                //绑定点击关联事件
-                //$("button.btn-Relate").unbind("click").bind("click", function () {
-                //    var targetIndex = $(this).attr("targetIndex");
-                //    var price = $("input[name='" + targetIndex + "Price").val();
-                //    if (price == NaN || price == undefined||price==""||price==null) {
-                //        return false;
-                //    }
-                //    var appendhtml = "<tr><td>" + items[targetIndex].Coding + "</td><td>" + items[targetIndex].OtherSideCompany + "</td><td>" + items[targetIndex].Content + "</td><td>" + price + "</td><td><button type='button' class='btn btn-danger btn-sm btn-remove' targetIndex='"+targetIndex+"'><i class='glyphicon glyphicon-remove-sign'></i>取消关联</button></td></tr>";
-                //    $("#Relate").append(appendhtml);
-                //    //绑定取消关联事件
-                //    $("button.btn-danger.btn-remove").unbind("click").bind("click", function () {
-                //        var targetIndex = $(this).attr("targetIndex");
-                //        $("button[targetIndex='" + targetIndex + "']").removeAttr("disabled");
-                //        $("input[name='" + targetIndex + "Price'").removeAttr("readonly");
-                //        $(this).parent().parent().remove();
-                //    });
-
-
-                //    $(this).attr("disabled", "disabled");
-                //    $("input[name='" + targetIndex + "Price'").attr("readonly", "readonly");
-                //});
-
-                //绑定关联金额检索事件
-                
-                $("input[name$=Price]").unbind("change").bind("change", function () {
-                    var val = parseFloat($(this).val());
-                    var maxVal = parseFloat($(this).attr("max"));
-                    if (!isNaN(val) && !isNaN(maxVal)) {
-                        if (val > maxVal) {
-                            alert("超出发票金额限制！请核对");
-                            $(this).val("");
-                        }
-                    }
                 });
             });
 

@@ -236,5 +236,10 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
 
+        public ActionResult DetailInvoiceBill(int IBID)
+        {
+            return View();
+        }
+
     }
 }

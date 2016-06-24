@@ -5,123 +5,91 @@
     Sheet sheet = ViewBag.Sheet;
 }
 
+<div class="col-md-8 col-md-offset-2">
+    <form method="post" id="form-Create" action="/Report/Save" class="form-horizontal" enctype="multipart/form-data">
+        <h2 class="text-center">报销单填写</h2>
+        <input type="hidden" name="SNID" value="@(sheet.SerialNumber.ID)" />
+        <input type="hidden" name="Number" value="@(sheet.SerialNumber.Number)" />
+        <input type="hidden" name="NumberExt" value="@(sheet.SerialNumber.NumberExt)" />
+        <input type="hidden" name="BarCode" value="@(sheet.SerialNumber.BarCode)" />
+        <input type="hidden" name="Name" value="@(Identity.Name)" />
+        <input type="hidden" name="ID" value="@(sheet.ID)" />
+        <input type="hidden" name="Type" value="@(sheet.Type)" />
 
-<form method="post" id="form-Create" action="/Report/Save" class="form-horizontal" enctype="multipart/form-data">
-    <h2>报销单</h2>
-    <input type="hidden" name="SNID" value="@(sheet.SerialNumber.ID)" />
-    <input type="hidden" name="Number" value="@(sheet.SerialNumber.Number)"  />
-    <input type="hidden" name="NumberExt" value="@(sheet.SerialNumber.NumberExt)" />
-    <input type="hidden" name="BarCode" value="@(sheet.SerialNumber.BarCode)" />
-    <input type="hidden"  name="Name" value="@(Identity.Name)" />
-    <input type="hidden" name="ID" value="@(sheet.ID)" />
-    <input type="hidden" name="Type" value="@(sheet.Type)" />
-    
-    <div class="col-md-12 col-xs-12 col-sm-12">
-        @{ 
-            Html.RenderPartial("SubmitButton");
-        }
-       
-        <button class="btn btn-success btn-lg" type="submit">
-            <em class="glyphicon glyphicon-floppy-disk"></em> 保存返回
-        </button>
-        <button type="button" class="btn btn-default btn-lg" onclick="history.back();"><em class="glyphicon glyphicon-arrow-left"></em> 返回</button>
-        @if (sheet.ID != 0)
-        {
-            <button class="btn btn-danger btn-lg" type="button">
-                <em class="glyphicon glyphicon-remove-circle"></em> 删除
+        <div class="col-md-12 col-xs-12 col-sm-12">
+            @{
+                Html.RenderPartial("SubmitButton");
+            }
+
+            <button class="btn btn-success" type="submit">
+                <em class="glyphicon glyphicon-floppy-disk"></em> 保存返回
             </button>
-        }
-       
-    </div>
-    <div class="col-md-12 col-xs-12 col-sm-12">
-        <h3>基本信息</h3>
-        <table class="table table-bordered">
-            <tbody>
-                <tr>
-                    <td>单据编号</td>
-                    <td>@(sheet.SerialNumber.Coding) </td>
-                    <td>报销日期</td>
-                    <td><input type="text"  class="form-control" value="@(DateTime.Now.ToString("yyyy-MM-dd"))" name="Time" readonly="readonly" /></td>
-                </tr>
-                <tr>
-                    <td>报销人</td>
-                    <td>
-                        @(Identity.Name)
-                    </td>
-                    <td>报销金额合计</td>
-                    <td>
-                        <input type="text" name="Money" value="@(sheet.Money)" class="form-control"  onclick="@(sheet.Type==SheetType.Errand?"SumErrand()":"SumDialy()")"  readonly="readonly"/>       
-                    </td>
-                </tr>
-                <tr>
-                    <td>发票张数</td>
-                    <td><input type="number" name="Count" value="@(sheet.Count)" class="form-control" min="0" /></td>
-                    <td>备注</td>
-                    <td><input type="text" name="Remarks" style="width:100%" value="@(sheet.Remarks)" class="form-control"  /></td>
-                </tr>
-            </tbody>
-        </table>
-        @if (sheet.Type == SheetType.Daily)
-        {
-            Html.RenderPartial("Subitem", sheet);
-        }
-        else
-        {
-            Html.RenderPartial("Errand", sheet.Evection);
-        }
-    </div>
-    @*@if (sheet.Verifys != null)
-    {
-        <div class="col-md-3">
-            <h3>
-                审核信息
-            </h3>
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>
-                            步骤
-                        </th>
-                        <th>
-                            姓名
-                        </th>
-                        <th>
-                            时间
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var verify in sheet.Verifys)
-                    {
-                        <tr>
-                            <td>@(verify.Step.GetDescription())</td>
-                            <td>@(verify.Name)</td>
-                            <td>@(verify.Time.ToShortDateString())</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+            <button type="button" class="btn btn-default" onclick="history.back();"><em class="glyphicon glyphicon-arrow-left"></em> 返回</button>
+            @if (sheet.ID != 0)
+            {
+                <button class="btn btn-danger btn-lg" type="button">
+                    <em class="glyphicon glyphicon-remove-circle"></em> 删除
+                </button>
+            }
 
         </div>
-    }*@
-   
-    <div class="col-md-12">
-        @{
-            Html.RenderPartial("SubmitButton");
-        }
-        <button class="btn btn-success btn-lg" type="submit">
-            <em class="glyphicon glyphicon-floppy-disk"></em> 保存返回
-        </button>
-        <button type="button" class="btn btn-default btn-lg" onclick="history.back();"><em class="glyphicon glyphicon-arrow-left"></em> 返回</button>
-        @if (sheet.ID != 0)
-        {
-            <button class="btn btn-danger btn-lg" type="button">
-                <em class="glyphicon glyphicon-remove-circle"></em> 删除
+        <div class="col-md-12 col-xs-12 col-sm-12">
+            <h3>基本信息</h3>
+            <table class="table table-bordered" style="margin:0px;">
+                <tbody>
+                    <tr>
+                        <th>单据编号</th>
+                        <td>@(sheet.SerialNumber.Coding) </td>
+                        <th>报销日期</th>
+                        <td><input type="text" class="form-control" value="@(DateTime.Now.ToString("yyyy-MM-dd"))" name="Time" readonly="readonly" /></td>
+                    </tr>
+                    <tr>
+                        <th>报销人</th>
+                        <td>
+                            @(Identity.Name)
+                        </td>
+                        <th>报销金额合计</th>
+                        <td>
+                            <input type="text" name="Money" value="@(sheet.Money)" class="form-control" onclick="@(sheet.Type==SheetType.Errand?"SumErrand()":"SumDialy()")" readonly="readonly" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>发票张数</th>
+                        <td><input type="number" name="Count" value="@(sheet.Count)" class="form-control" min="0" /></td>
+                        <th>备注</th>
+                        <td><input type="text" name="Remarks" style="width:100%" value="@(sheet.Remarks)" class="form-control" /></td>
+                    </tr>
+                </tbody>
+            </table>
+            @if (sheet.Type == SheetType.Daily)
+            {
+                Html.RenderPartial("Subitem", sheet);
+            }
+            else
+            {
+                Html.RenderPartial("Errand", sheet.Evection);
+            }
+        </div>
+        <div class="col-md-12">
+            @{
+                Html.RenderPartial("SubmitButton");
+            }
+            <button class="btn btn-success" type="submit">
+                <em class="glyphicon glyphicon-floppy-disk"></em> 保存返回
             </button>
-        }
-        
-    </div>
-</form>
+            <button type="button" class="btn btn-default" onclick="history.back();"><em class="glyphicon glyphicon-arrow-left"></em> 返回</button>
+            @if (sheet.ID != 0)
+            {
+                <button class="btn btn-danger" type="button">
+                    <em class="glyphicon glyphicon-remove-circle"></em> 删除
+                </button>
+            }
+
+        </div>
+    </form>
+</div>
+
+
 
 <table id="template" style="display:none">
     <tr>

@@ -51,6 +51,10 @@ namespace Ztop.Todo.Model
         /// 其他金额
         /// </summary>
         public double Other { get; set; }
+        /// <summary>
+        /// 出差人员  
+        /// </summary>
+        public string Persons { get; set; }
         public int SID { get; set; }
         [NotMapped]
         public List<Errand> Errands { get; set; }
@@ -96,17 +100,19 @@ namespace Ztop.Todo.Model
         Plane,
         [Description("火车")]
         Train,
+        [Description("客运大巴")]
+        Bus,
+        [Description("出租车")]
+        Taxi,
+        [Description("公交车")]
+        PublicBus,
+        [Description("地铁")]
+        Metro,
+        [Description("互联网平台用车")]
+        InternetCar,
         [Description("公司车")]
         Company,
         [Description("自备车")]
-        Personal,
-        [Description("客运大巴")]
-        Bus,
-        [Description("企业滴滴")]
-        Didi,
-        [Description("公共交通")]
-        PublicBus,
-        [Description("出租车")]
-        Taxi
+        Personal   
     }
 }

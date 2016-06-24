@@ -115,9 +115,9 @@ namespace Ztop.Todo.Manager
                         traffic.Toll = double.TryParse(tolls[1], out a) ? a : .0;
                         traffic.Plate = plates[1];
                         break;
-                    case BusType.Didi:
-                        traffic.Times = int.TryParse(times[0], out b) ? b : 0;
-                        break;
+                    //case BusType.Didi:
+                    //    traffic.Times = int.TryParse(times[0], out b) ? b : 0;
+                    //    break;
                     case BusType.Taxi:
                         traffic.Times = int.TryParse(times[1], out b) ? b : 0;
                         break;
