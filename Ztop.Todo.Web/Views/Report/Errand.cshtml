@@ -74,7 +74,7 @@
             <th>交通费用</th>
             <td>
                 <div class="input-group">
-                    <input type="text" class="form-control" placeholder="交通费用" readonly="readonly" name="" value="" />
+                    <input type="text" class="form-control" placeholder="交通费用" readonly="readonly" name="Traffic" value="" />
                     <span class="input-group-btn">
                         <button type="button" class="btn btn-success" data-toggle="modal" data-target="#Traffic"><i class="glyphicon glyphicon-zoom-in"></i>费用详情</button>
                     </span>
@@ -115,9 +115,26 @@
                 <duv class="input-group">
                     <input type="text" class="form-control" placeholder="出差补贴" readonly="readonly" name="" value="" />
                     <span class="input-group-btn">
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#"><i class="glyphicon glyphicon-zoom-in"></i>补贴详情</button>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#SubSide"><i class="glyphicon glyphicon-zoom-in"></i>补贴详情</button>
                     </span>
                 </duv>
+                <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" id="SubSide">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title">补贴详情</h4>
+                            </div>
+                            <div class="modal-body">
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove-sign"></i>取消</button>
+                                <button type="button" class="btn btn-primary" name="SubSide-OK" data-dismiss="modal"><i class="glyphicon glyphicon-ok-sign"></i>确定</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </td>
         </tr>
         <tr>
@@ -170,7 +187,7 @@
                     </div>
                     <div class="input-group" style="margin-top:10px;">
                         <span class="input-group-addon">公里数：</span>
-                        <input type="text" class="form-control" name="KiloMeters" placeholder="公里数" />
+                        <input type="text" class="form-control" name="KiloMeters" placeholder="公里数" targetType="@(type)" />
                         <span class="input-group-addon">公里</span>
                         <span class="input-group-addon">车牌：</span>
                         @if (type == BusType.Company)
@@ -189,6 +206,14 @@
                     @if (type == BusType.Company)
                     {
                         <div class="input-group" style="margin-top:10px;">
+                            <span class="input-group-addon">过路费:</span>
+                            <input type="text" class="form-control" name="Toll" placeholder="过路费" targetType="Company" />
+                            <span class="input-group-addon">元</span>
+                            <span class="input-group-addon">油费：</span>
+                            <input type="text" class="form-control" name="Petrol" placeholder="油费" />
+                            <span class="input-group-addon">元</span>
+                        </div>
+                        <div class="input-group" style="margin-top:10px;">
                             <span class="input-group-addon">司机：</span>
                             <select name="Driver" class="form-control">
                                 @foreach (Driver driver in Enum.GetValues(typeof(Driver)))
@@ -200,15 +225,15 @@
                             <input type="text" name="CarPetty" placeholder="车补" class="form-control" readonly="readonly" />
                             <span class="input-group-addon">元</span>
                         </div>
+                       
+                    }
+                    else
+                    {
                         <div class="input-group" style="margin-top:10px;">
-                            <span class="input-group-addon">过路费:</span>
-                            <input type="text" class="form-control" name="Toll" placeholder="过路费" />
-                            <span class="input-group-addon">元</span>
-                            <span class="input-group-addon">油费：</span>
-                            <input type="text" class="form-control" name="Petrol" placeholder="油费" />
+                            <span class="input-group-addon">过路费：</span>
+                            <input type="text" class="form-control" name="Toll" placeholder="过路费" targetType="Personal" />
                             <span class="input-group-addon">元</span>
                         </div>
-
                     }
                 </div>
             }
@@ -220,8 +245,9 @@
     var BUSHtml = $("#BUSBUS").html();
     var CarHtml = $("#CarCar").html();
     $(function () {
+        var mans = [];
         $("button[name='Person-OK']").click(function () {
-            var mans = [];
+            mans.splice(0, mans.length);
             $("input[name='Person']:checked").each(function () {
                 mans.push($(this).val());
             });
@@ -235,9 +261,10 @@
                 $("#ViewTraffic").append(BUSHtml);
             } else if (val == "自驾车") {
                 $("#ViewTraffic").append(CarHtml);
+                //公司车栏中选择司机的时候，自动计算车补
                 $("select[name='Driver']").unbind("change").bind("change", function () {
                     var money = .0;
-                    var kilo = parseFloat($("#ViewTraffic input[name='KiloMeters']").val());
+                    var kilo = parseFloat($("#ViewTraffic input[name='KiloMeters']")[0].value);
                     if (kilo != NaN && kilo != undefined) {
                         var driver = $(this).val();
                         if (driver == "无") {
@@ -248,14 +275,121 @@
                             money = kilo * 0.2;
                         }
                         $("#ViewTraffic input[name='CarPetty']").val(money);
+                        StatisticCompany();
                     } else {
                         alert("未获取公里数，无法计算车补金额！");
                     }
-
                 });
-            }
 
+                //绑定公司车以及自备车栏中填写油费之后，自动计算合计金额
+                $("input[name='Petrol']").unbind("change").bind("change", function () {
+                    StatisticCompany();
+                });
+                //绑定公司车以及自备车栏中填写过路费之后，自动计算合计金额
+                $("input[name='Toll']").unbind("change").bind("change", function () {
+                    var type = $(this).attr("targetType");
+                    if (type == "Company") {
+                        StatisticCompany();
+                    } else if (type = "Personal") {
+                        StatisticPersonal();
+                    }
+                });
+                //绑定公司车以及自备车栏中填写公里数之后，自动计算合计金额
+                $("input[name='KiloMeters']").unbind("change").bind("change", function () {
+                    var type = $(this).attr("targetType");
+                    if (type == "Company") {
+                        StatisticCompany();
+                    } else if (type == "Personal") {
+                        StatisticPersonal();
+                    }
+                });
+
+            }
+            StatisticTraffic();
         });
+
+        //自动统计公司车的金额
+        function StatisticCompany() {
+            var sum = 0;
+            var carPetty = parseFloat($("#ViewTraffic input[name='CarPetty']").val());
+            if (!isNaN(carPetty)) {
+                sum += carPetty;
+            }
+            var petrol = parseFloat($("#ViewTraffic input[name='Petrol']").val());
+            if (!isNaN(petrol)) {
+                sum += petrol;
+            }
+            var toll = parseFloat($("#ViewTraffic input[name='Toll']")[0].value);
+            if (!isNaN(toll)) {
+                sum += toll;
+            }
+            $("#ViewTraffic input[name='CostCompany']").val(sum);
+        }
+
+        //自动统计自备车的金额
+        function StatisticPersonal() {
+            var sum = 0;
+            var kile = parseFloat($("#ViewTraffic input[name='KiloMeters']")[1].value);
+            if (!isNaN(kile)) {
+                $("#ViewTraffic input[name='CostPersonal']").val(kile * 1.5);
+            }
+        }
+
+        //交通费用中点击确定，自动计算交通费用
+        function StatisticTraffic() {
+            var sum = 0;
+            $("#ViewTraffic input[name='BusType']:checked").each(function () {
+                var type = $(this).val();
+                var cost = parseFloat($("#ViewTraffic input[name='Cost" + type + "']").val());
+                if (!isNaN(cost)) {
+                    sum += cost;
+                }
+            });
+
+            $("input[name='Traffic']").val(sum);
+        }
+
+        //当点击交通费用详情中确定的时候，自动计算交通费用
+        $("button[name='Traffic-OK']").click(function () {
+            StatisticTraffic();
+        });
+
+        $("#SubSide").on("show.bs.modal", function (e) {
+            if (mans.length > 0) {
+                return true;
+            } else {
+                alert("请选择出差人员再录入出差补贴详情！");
+                return false;
+            }
+        });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -359,32 +493,6 @@
             return val;
         }
 
-        //计算公司派车合计金额
-        function StatisticCompany() {
-            var sum = .0;
-            var val = $("input[name='CarPetty']").val();
-            if (val != undefined && val != NaN && val != "") {
-                sum += parseFloat(val);
-            }
-            val = $("input[name='Petrol']").val();
-            if (val != undefined && val != NaN && val != "") {
-                sum += parseFloat(val);
-            }
-            val = $("input[name='Toll']")[0].value;
-            if (val != undefined && val != NaN && val != "") {
-                sum += parseFloat(val);
-            }
-            $("input[name='CostCompany']").val(sum);
-        };
-        //计算自备车车补金额
-        function StatisticPersonal() {
-            var kile = GetKile();
-            if (isNaN(kile)) {
-                alert("未获取公里数！");
-                return;
-            }
-            $("input[name='CostPersonal']").val(kile * 1.5);
-        }
         //在公司派车中选择司机 自动计算车补
         $("select[name='Driver']").change(function () {
             var val = $(this).val();
