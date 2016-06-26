@@ -139,7 +139,7 @@
                 <tr>
              
                     <td>
-                        <div class="col-md-6" style="padding:0px;">
+                        <div class="col-md-6 col-xs-6" style="padding:0px;">
                             <select name="Category" class="form-control" targetIndex="@(serial-1)">
                                 <option value="">请选择</option>
                                 @foreach (Category category in Enum.GetValues(typeof(Category)))
@@ -150,7 +150,7 @@
                         </div>
                         @if (subtance.SecondCategory.HasValue)
                         {
-                            <div class="col-md-6" style="padding:0px;" id="@(serial-1)">
+                            <div class="col-md-6 col-xs-6" style="padding:0px;" id="@(serial-1)">
                                 <select name="SecondCategory" class="form-control">
                                     @foreach (SecondCategory secondCategory in Enum.GetValues(typeof(SecondCategory)))
                                     {
@@ -221,7 +221,7 @@
             <tr>
   
                 <td> 
-                    <div class="col-md-6" style="padding:0px;">
+                    <div class="col-md-6 col-xs-6" style="padding:0px;">
                         <select class="form-control" name="Category" targetIndex="@(i+1)">
                             <option value="">请选择</option>
                             @foreach (Category category in Enum.GetValues(typeof(Category)))
@@ -230,7 +230,7 @@
                             }
                         </select>
                     </div>
-                    <div class="col-md-6" style="padding:0px;" id="@(i+1)">
+                    <div class="col-md-6 col-xs-6" style="padding:0px;" id="@(i+1)">
                       
                     </div>
                 </td>

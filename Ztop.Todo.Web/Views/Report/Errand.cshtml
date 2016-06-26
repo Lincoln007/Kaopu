@@ -12,12 +12,12 @@
 <div>
     <table class="table table-bordered" style="margin:0px;">
         <tr>
-            <th class="col-md-2">出差地点</th>
-            <td class="col-md-4">
+            <th class="col-md-2 col-xs-2">出差地点</th>
+            <td class="col-md-4 col-xs-4">
                 <input type="text" class="form-control" name="Place" value="@(Model.Place)" placeholder="出差地点" />
             </td>
-            <th class="col-md-2">出差人员</th>
-            <td class="col-md-4">
+            <th class="col-md-2 col-xs-2">出差人员</th>
+            <td class="col-md-4 col-xs-4">
                 <div class="input-group">
                     <input type="text" class="form-control" placeholder="出差人员" readonly="readonly" name="Persons" value="" />
                     <span class="input-group-btn">
@@ -88,8 +88,8 @@
                             </div>
                             <div class="modal-body container-fluid">
                                 <div class="form-group">
-                                    <label class="control-label col-md-2">交通：</label>
-                                    <div class="col-md-8">
+                                    <label class="control-label col-md-2 col-xs-2">交通：</label>
+                                    <div class="col-md-8 col-xs-8">
                                         <select name="Way" class="form-control">
                                             <option value="">请选择</option>
                                             <option value="公共交通">公共交通</option>
@@ -126,7 +126,18 @@
                                 <h4 class="modal-title">补贴详情</h4>
                             </div>
                             <div class="modal-body">
+                                <div class="form-group">
+                                    <label class="control-label col-md-2 col-xs-2">人员：</label>
+                                    <div class="col-md-7 col-xs-7" id="ViewSubSide">
 
+                                    </div>
+                                    <div class="col-md-3 col-xs-3">
+                                        <button type="button" class="btn btn-success btn-sm" name="Keyin"><i class="glyphicon glyphicon-plus"></i>录入时间</button>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    
+                                </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove-sign"></i>取消</button>
@@ -161,7 +172,7 @@
             {
                 break;
             }
-            <div class="col-md-6 alert alert-warning" style="padding:10px;margin-bottom:5px;margin-top:5px;">
+            <div class="col-md-6 col-xs-6 alert alert-warning" style="padding:10px;margin-bottom:5px;margin-top:5px;">
                 <div class="input-group">
                     <span class="input-group-addon">
                         <input type="checkbox" name="BusType" value="@(type)" />@(type.GetDescription())
@@ -177,7 +188,7 @@
         {
             if (((int)type) > 6)
             {
-                <div class="col-md-12 alert alert-warning" style="padding:10px;margin-top:5px;margin-bottom:5px;">
+                <div class="col-md-12 col-xs-12 alert alert-warning" style="padding:10px;margin-top:5px;margin-bottom:5px;">
                     <div class="input-group">
                         <span class="input-group-addon">
                             <input type="checkbox" name="BusType" value="@(type)" />@(type.GetDescription())
@@ -252,6 +263,14 @@
                 mans.push($(this).val());
             });
             $("input[name='Persons']").val(mans.join(";"));
+            //选择出差人员之后，自动在补贴详情中的人员自动添加
+            $("#ViewSubSide").empty();
+            $.each(mans, function (i, value) {
+                var appendhtml = "<label class='checkbok-inline'><input type='checkbox' name='mans' value='" + value + "' />"+value+"</label>";
+                $("#ViewSubSide").append(appendhtml);
+            });
+
+            $("#ViewSubSide input[name='mans']").unbind("")
         });
 
         $("select[name='Way']").change(function () {
@@ -363,6 +382,11 @@
             }
         });
 
+        $("button[name='Keyin']").click(function () {
+            $("#ViewSubSide input[name='mans']:checked").each(function () {
+                var value = $(this).val();
+            });
+        });
 
 
 
