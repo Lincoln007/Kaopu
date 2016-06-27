@@ -115,6 +115,10 @@
                                 <li><a href="/Report/Index"><i class="fa fa-desktop"></i>欢迎页</a></li>
                                 <li><a href="/Report/Create?type=@(SheetType.Daily)"><i class="fa fa-map-o"></i>日常报销填写</a></li>
                                 <li><a href="/Report/Create?type=@(SheetType.Errand)"><i class="fa fa-plane"></i>出差报销填写</a></li>
+                                @if (Identity.Director)
+                                {
+                                    <li><a href="/Report/"><i class="glyphicon glyphicon-star"></i>我的审核</a></li>
+                                }
                                 @if (Identity.Name == "申屠杜平")
                                 {
                                     <li><a href="/Report/Filing"><i class="fa fa-anchor"></i>报销归档</a></li>

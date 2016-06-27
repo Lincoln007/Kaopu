@@ -12,6 +12,7 @@ namespace Ztop.Todo.Web
     public static class AuthUtils
     {
         private const string _cookieName = ".user";
+        private static List<string> _directors = XmlHelper.GetDirectors();
 
         public static string GenerateToken(this HttpContextBase context, User user)
         {
@@ -59,7 +60,8 @@ namespace Ztop.Todo.Web
                             UserID = int.Parse(values[0]),
                             Name = values[1],
                             GroupType = Enum.TryParse(values[2], out type) ? type : GroupType.Guest,
-                            sAMAccountName=values[3]
+                            sAMAccountName=values[3],
+                            Director=_directors.Contains(values[1])?true:false
                         };
                     }
                 }

@@ -29,6 +29,8 @@ namespace Ztop.Todo.Web.Common
         public GroupType GroupType { get; set; }
         public string AuthenticationType { get { return "Web.Session"; } }
         public string Name { get; set; }
+        //是否为审核人
+        public bool Director { get; set; }
         public string sAMAccountName { get; set; }
         public bool IsAuthenticated
         {
