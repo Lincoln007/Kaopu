@@ -55,31 +55,60 @@ namespace Ztop.Todo.Manager
             }
             return list;
         }
-        public List<Errand> GetErrands(HttpContextBase context)
+        public List<Errand> GetErrands(HttpContextBase context,string lines)
         {
+            if (string.IsNullOrEmpty(lines))
+            {
+                return new List<Errand>();
+            }
             int a = 0, b = 0;
             DateTime startTime, endTime;
             var list = new List<Errand>();
-            for(var i = 0; i < 3; i++)
+            var indexs = lines.Split(';');
+            foreach(var index in indexs)
             {
-                if(int.TryParse(context.Request.Form[string.Format("Peoples{0}",i)].ToString(),out a))
+                if(int.TryParse(context.Request.Form[string.Format("Peoples{0}",index)].ToString(),out a))
                 {
-                    if(DateTime.TryParse(context.Request.Form[string.Format("StartTime{0}", i)].ToString(), out startTime))
+                    if (int.TryParse(index, out a))
                     {
-                        if(DateTime.TryParse(context.Request.Form[string.Format("EndTime{0}",i)].ToString(),out endTime))
+                        if (DateTime.TryParse(context.Request.Form[string.Format("StartTime{0}", index)], out startTime))
                         {
-                            list.Add(new Errand
+                            if (DateTime.TryParse(context.Request.Form[string.Format("EndTime{0}", index)].ToString(), out endTime))
                             {
-                                StartTime = startTime,
-                                EndTime = endTime,
-                                Users = context.Request.Form[string.Format("Users{0}", i)].ToString(),
-                                Peoples = a,
-                                Days = int.TryParse(context.Request.Form[string.Format("Days{0}", i)].ToString(), out b) ? b : (endTime - startTime).Days + 1
-                            });
+                                list.Add(new Errand
+                                {
+                                    StartTime = startTime,
+                                    EndTime = endTime,
+                                    Users = context.Request.Form[string.Format("Users{0}", index)].ToString(),
+                                    Peoples = a,
+                                    Days = int.TryParse(context.Request.Form[string.Format("Days{0}", index)].ToString(), out b) ? b : (endTime - startTime).Days + 1
+                                });
+                            }
                         }
                     }
                 }
+              
             }
+            //for(var i = 0; i < 3; i++)
+            //{
+            //    if(int.TryParse(context.Request.Form[string.Format("Peoples{0}",i)].ToString(),out a))
+            //    {
+            //        if(DateTime.TryParse(context.Request.Form[string.Format("StartTime{0}", i)].ToString(), out startTime))
+            //        {
+            //            if(DateTime.TryParse(context.Request.Form[string.Format("EndTime{0}",i)].ToString(),out endTime))
+            //            {
+            //                list.Add(new Errand
+            //                {
+            //                    StartTime = startTime,
+            //                    EndTime = endTime,
+            //                    Users = context.Request.Form[string.Format("Users{0}", i)].ToString(),
+            //                    Peoples = a,
+            //                    Days = int.TryParse(context.Request.Form[string.Format("Days{0}", i)].ToString(), out b) ? b : (endTime - startTime).Days + 1
+            //                });
+            //            }
+            //        }
+            //    }
+            //}
             return list;
         }
         public List<Traffic> GetTraffic(HttpContextBase context,string[] busTypes,Driver driver,double carpetty)
@@ -91,10 +120,11 @@ namespace Ztop.Todo.Manager
             var a = .0;
             var b = 0;
             var list = new List<Traffic>();
-            var times = context.Request.Form["Times"].Split(',');
+            //var times = context.Request.Form["Times"].Split(',');
             var plates = context.Request.Form["Plate"].Split(',');
             var tolls = context.Request.Form["Toll"].Split(',');
             var petrol = context.Request.Form["Petrol"].Split(',');
+            
             foreach(var type in busTypes)
             {
                 var traffic = new Traffic()
@@ -110,17 +140,19 @@ namespace Ztop.Todo.Manager
                         traffic.Driver = driver;
                         traffic.CarPetty = carpetty;
                         traffic.Plate = plates[0];
+                        traffic.KiloMeters = double.TryParse(context.Request.Form["KiloMeters"].Split(',')[0], out a) ? a: .0;
                         break;
                     case BusType.Personal:
                         traffic.Toll = double.TryParse(tolls[1], out a) ? a : .0;
                         traffic.Plate = plates[1];
+                        traffic.KiloMeters = double.TryParse(context.Request.Form["KiloMeters"].Split(',')[1], out a) ? a : .0;
                         break;
                     //case BusType.Didi:
                     //    traffic.Times = int.TryParse(times[0], out b) ? b : 0;
                     //    break;
-                    case BusType.Taxi:
-                        traffic.Times = int.TryParse(times[1], out b) ? b : 0;
-                        break;
+                    //case BusType.Taxi:
+                        //traffic.Times = int.TryParse(times[1], out b) ? b : 0;
+                        //break;
                     default:break;
                 }
                 list.Add(traffic);

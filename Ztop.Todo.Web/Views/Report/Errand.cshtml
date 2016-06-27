@@ -12,159 +12,407 @@
 <div>
     <table class="table table-bordered" style="margin:0px;">
         <tr>
-            <th class="col-md-2 col-xs-2">出差地点</th>
-            <td class="col-md-4 col-xs-4">
-                <input type="text" class="form-control" name="Place" value="@(Model.Place)" placeholder="出差地点" />
-            </td>
-            <th class="col-md-2 col-xs-2">出差人员</th>
-            <td class="col-md-4 col-xs-4">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="出差人员" readonly="readonly" name="Persons" value="" />
-                    <span class="input-group-btn">
-                        <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#Users"><i class="glyphicon glyphicon-zoom-in"></i>人员选择</button>
-                    </span>
-                </div>
-                <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" id="Users">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title">出差人员选择</h4>
-                            </div>
-                            <div class="modal-body" style="padding:10px;">
-                                @foreach (var group in groups.OrderByDescending(e => e.Order))
-                                {
-                                    <table class="table" style="margin:0px;">
-                                        <tr>
-                                            <th>@(group.Name)</th>
-                                        </tr>
-                                        @{ 
-                                            var table = allUsers.Where(e => e.GroupID == group.ID).OrderByDescending(e => e.Order).ToList().ListToTable(5);
-                                            foreach(var item in table)
-                                            {
-                                                <tr>
-                                                    @foreach(var entry in item)
-                                                    {
-                                                        if (entry != null)
+            <th class="col-md-1 col-xs-1">出差地点</th>
+            @if (flag)
+            {
+                <td class="col-md-5 col-xs-5">
+                    @(Model.Place)
+                </td>
+            }
+            else
+            {
+                <td class="col-md-5 col-xs-5">
+                    <input type="text" class="form-control" name="Place" value="@(Model.Place)" placeholder="出差地点" />
+                </td>
+               
+            }
+           
+            <th class="col-md-1 col-xs-1">出差人员</th>
+            @if (flag)
+            {
+                <td class="col-md-5 col-xs-5">
+                    @(Model.Persons)
+                </td>
+            }
+            else
+            {
+                <td class="col-md-5 col-xs-5">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="出差人员" readonly="readonly" name="Persons" value="@(Model.Persons)" />
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#Users"><i class="glyphicon glyphicon-zoom-in"></i>人员选择</button>
+                        </span>
+                    </div>
+                    <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" id="Users">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title">出差人员选择</h4>
+                                </div>
+                                <div class="modal-body" style="padding:10px;">
+                                    @foreach (var group in groups.OrderByDescending(e => e.Order))
+                                    {
+
+                                        var checkpersons = string.IsNullOrEmpty(Model.Persons) ? new string[10] : Model.Persons.Split(';');
+                                        <table class="table" style="margin:0px;">
+                                            <tr>
+                                                <th>@(group.Name)</th>
+                                            </tr>
+                                            @{
+                                                var table = allUsers.Where(e => e.GroupID == group.ID).OrderByDescending(e => e.Order).ToList().ListToTable(5);
+                                                foreach (var item in table)
+                                                {
+                                                    <tr>
+                                                        @foreach (var entry in item)
                                                         {
-                                                            <td>
-                                                                <label class="checkbox-inline">
-                                                                    <input type="checkbox" value="@(entry.DisplayName)" name="Person" />@(entry.DisplayName)
-                                                                </label>
-                                                            </td>
+                                                            if (entry != null)
+                                                            {
+                                                                <td>
+                                                                    <label class="checkbox-inline">
+                                                                        <input type="checkbox" value="@(entry.DisplayName)" name="Person" @(checkpersons.Contains(entry.DisplayName)?"checked=checked":"") />@(entry.DisplayName)
+                                                                    </label>
+                                                                </td>
+                                                            }
                                                         }
-                                                    }
-                                                </tr>
+                                                    </tr>
+                                                }
                                             }
-                                        }
-                                    </table>
-                                }
-                               
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove-sign"></i>取消</button>
-                                <button type="button" class="btn btn-primary" name="Person-OK" data-dismiss="modal"><i class="glyphicon glyphicon-ok-sign"></i>确定</button>
+                                        </table>
+                                                }
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove-sign"></i>取消</button>
+                                    <button type="button" class="btn btn-primary" name="Person-OK" data-dismiss="modal"><i class="glyphicon glyphicon-ok-sign"></i>确定</button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </td>
+                </td>
+
+            }
+          
         </tr>
         <tr>
             <th>交通费用</th>
-            <td>
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="交通费用" readonly="readonly" name="Traffic" value="" />
-                    <span class="input-group-btn">
-                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#Traffic"><i class="glyphicon glyphicon-zoom-in"></i>费用详情</button>
-                    </span>
-                </div>
-                <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" id="Traffic">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title">交通费用详情</h4>
-                            </div>
-                            <div class="modal-body container-fluid">
-                                <div class="form-group">
-                                    <label class="control-label col-md-2 col-xs-2">交通：</label>
-                                    <div class="col-md-8 col-xs-8">
-                                        <select name="Way" class="form-control">
-                                            <option value="">请选择</option>
-                                            <option value="公共交通">公共交通</option>
-                                            <option value="自驾车">自驾车</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <hr />
-                                <div id="ViewTraffic">
-                                 
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove-sign"></i>取消</button>
-                                <button type="button" class="btn btn-primary" name="Traffic-OK" data-dismiss="modal"><i class="glyphicon glyphicon-ok-sign"></i>确定</button>
-                            </div>
-                        </div>
+            @if (flag)
+            {
+                <td>
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>交通名称</th>
+                                <th>金额（元）</th>
+                                <th>公里数</th>
+                                <th>车牌</th>
+                                <th>过路费（元）</th>
+                                <th>油费（元）</th>
+                                <th>司机</th>
+                                <th>车补（元）</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var cost in Model.TCosts)
+                            {
+                                if (cost.Type == BusType.Company)
+                                {
+                                    <tr>
+                                        <td>@(cost.Type.GetDescription())</td>
+                                        <td>@(cost.Cost)</td>
+                                        <td>@(cost.KiloMeters)</td>
+                                        <td>@(cost.Plate)</td>
+                                        <td>@(cost.Toll)</td>
+                                        <td>@(cost.Petrol)</td>
+                                        <td>@(cost.Driver.GetDescription())</td>
+                                        <td>@(cost.CarPetty)</td>
+                                    </tr>
+                                }
+                                else if (cost.Type == BusType.Personal)
+                                {
+                                    <tr>
+                                        <td></td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </td>
+            }
+            else
+            {
+                <td>
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="交通费用" readonly="readonly" name="Traffic" value="@(Model.Traffic)" />
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#Traffic"><i class="glyphicon glyphicon-zoom-in"></i>费用详情</button>
+                        </span>
                     </div>
-                </div>
-            </td>
-            <th>出差补贴</th>
-            <td>
-                <duv class="input-group">
-                    <input type="text" class="form-control" placeholder="出差补贴" readonly="readonly" name="" value="" />
-                    <span class="input-group-btn">
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#SubSide"><i class="glyphicon glyphicon-zoom-in"></i>补贴详情</button>
-                    </span>
-                </duv>
-                <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" id="SubSide">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title">补贴详情</h4>
-                            </div>
-                            <div class="modal-body">
-                                <div class="form-group">
-                                    <label class="control-label col-md-2 col-xs-2">人员：</label>
-                                    <div class="col-md-7 col-xs-7" id="ViewSubSide">
+                    <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" id="Traffic">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title">交通费用详情</h4>
+                                </div>
+                                <div class="modal-body container-fluid">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-2 col-xs-2">交通：</label>
+                                        <div class="col-md-8 col-xs-8">
+                                            <select name="Way" class="form-control">
+                                                <option value="">请选择</option>
+                                                <option value="公共交通" @(Model.Way == "公共交通" ? "selected=selected" : "")>公共交通</option>
+                                                <option value="自驾车" @(Model.Way == "自驾车" ? "selected=selected" : "")>自驾车</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div id="ViewTraffic">
+                                        @{
+                                            var typeDict=Model.TCosts.ToDictionary(e=>e.Type,e=>e);
+                                            if (Model.Way == "公共交通")
+                                            {
+                                                foreach (BusType type in Enum.GetValues(typeof(BusType)))
+                                                {
+                                                    if (type == BusType.Company)
+                                                    {
+                                                        break;
+                                                    }
+                                                <div class="col-md-6 col-xs-6 alert alert-warning" style="padding:10px;margin-bottom:5px;margin-top:5px;">
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon">
+                                                            <input type="checkbox" name="BusType" value="@(type)" @(typeDict.ContainsKey(type)?"checked=checked":"") />@(type.GetDescription())
+                                                        </span>
+                                                        <input type="text" class="form-control" name="Cost@(type)" placeholder="金额" value="@(typeDict.ContainsKey(type)?typeDict[type].Cost:0)"/>
+                                                        <span class="input-group-addon">元</span>
+                                                    </div>
+                                                </div>
+                                                }
+                                            }
+                                            else if (Model.Way == "自驾车")
+                                            {
+                                                foreach (BusType type in Enum.GetValues(typeof(BusType)))
+                                                {
+                                                    if (((int)type) > 6)
+                                                    {
+                                                        var entry = typeDict.ContainsKey(type) ? typeDict[type] : new Traffic();
+                                                        <div class="col-md-12 col-xs-12 alert alert-warning" style="padding:10px;margin-top:5px;margin-bottom:5px;">
+                                                            <div class="input-group">
+                                                                <span class="input-group-addon">
+                                                                    <input type="checkbox" name="BusType" value="@(type)" @(typeDict.ContainsKey(type)?"checked=checked":"") />@(type.GetDescription())
+                                                                </span>
+                                                                <input type="text" class="form-control" name="Cost@(type)" placeholder="金额" readonly="readonly" value="@(entry.Cost)" />
+                                                                <span class="input-group-addon">元</span>
+                                                            </div>
+                                                            <div class="input-group" style="margin-top:10px;">
+                                                                <span class="input-group-addon">公里数：</span>
+                                                                <input type="text" class="form-control" name="KiloMeters" placeholder="公里数" targetType="@(type)" value="@(entry.KiloMeters)" />
+                                                                <span class="input-group-addon">公里</span>
+                                                                <span class="input-group-addon">车牌：</span>
+                                                                @if (type == BusType.Company)
+                                                                {
+                                                                    <select name="Plate" class="form-control">
+                                                                        <option value="">请选择车牌</option>
+                                                                        <option value="浙AZN022" @(entry.Plate=="浙AZN022"?"selected=selected":"")>浙AZN022</option>
+                                                                        <option value="浙A4RS85"@(entry.Plate=="浙A4RS85"?"selected=selected":"")>浙A4RS85</option>
+                                                                    </select>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <input type="text" class="form-control" name="Plate" placeholder="车牌" value="@(entry.Plate)" />
+                                                                }
+                                                            </div>
+                                                            @if (type == BusType.Company)
+                                                            {
+                                                                <div class="input-group" style="margin-top:10px;">
+                                                                    <span class="input-group-addon">过路费:</span>
+                                                                    <input type="text" class="form-control" name="Toll" placeholder="过路费" targetType="Company" value="@(entry.Toll)"/>
+                                                                    <span class="input-group-addon">元</span>
+                                                                    <span class="input-group-addon">油费：</span>
+                                                                    <input type="text" class="form-control" name="Petrol" placeholder="油费" value="@(entry.Petrol)"/>
+                                                                    <span class="input-group-addon">元</span>
+                                                                </div>
+                                                                <div class="input-group" style="margin-top:10px;">
+                                                                    <span class="input-group-addon">司机：</span>
+                                                                    <select name="Driver" class="form-control">
+                                                                        @foreach (Driver driver in Enum.GetValues(typeof(Driver)))
+                                {
+                                                                            <option value="@(driver)" @(entry.Driver==driver?"selected=selected":"")>@(driver)</option>
+                                                                        }
+                                                                    </select>
+                                                                    <span class="input-group-addon">车补：</span>
+                                                                    <input type="text" name="CarPetty" placeholder="车补" class="form-control" readonly="readonly" value="@(entry.CarPetty)" />
+                                                                    <span class="input-group-addon">元</span>
+                                                                </div>
 
-                                    </div>
-                                    <div class="col-md-3 col-xs-3">
-                                        <button type="button" class="btn btn-success btn-sm" name="Keyin"><i class="glyphicon glyphicon-plus"></i>录入时间</button>
+                                                            }
+                                                            else
+                                                            {
+                                                                <div class="input-group" style="margin-top:10px;">
+                                                                    <span class="input-group-addon">过路费：</span>
+                                                                    <input type="text" class="form-control" name="Toll" placeholder="过路费" targetType="Personal" value="@(entry.Toll)" />
+                                                                    <span class="input-group-addon">元</span>
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    }
+                                                }
+                                            }
+                                        }
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove-sign"></i>取消</button>
+                                    <button type="button" class="btn btn-primary" name="Traffic-OK" data-dismiss="modal"><i class="glyphicon glyphicon-ok-sign"></i>确定</button>
                                 </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove-sign"></i>取消</button>
-                                <button type="button" class="btn btn-primary" name="SubSide-OK" data-dismiss="modal"><i class="glyphicon glyphicon-ok-sign"></i>确定</button>
                             </div>
                         </div>
                     </div>
-                </div>
-            </td>
+                </td>
+            }
+           
+            <th>出差补贴</th>
+            @if (flag)
+            {
+                <td>
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>人员</th>
+                                <th>时间</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach(var errand in Model.Errands)
+                            {
+                                <tr>
+                                    <td>@(errand.Users)</td>
+                                    <td>@(errand.StartTime.ToString("yyyy-MM-dd")) 至 @(errand.EndTime.ToString("yyyy-MM-dd"))</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </td>
+            }
+            else
+            {
+                <td>
+                    <duv class="input-group">
+                        <input type="hidden" name="Lines" value="" />
+                        <input type="text" class="form-control" placeholder="出差补贴" readonly="readonly" name="SubSidy" value="@(Model.SubSidy)" />
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#SubSide"><i class="glyphicon glyphicon-zoom-in"></i>补贴详情</button>
+                        </span>
+                    </duv>
+                    <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" id="SubSide">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title">补贴详情</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-2 col-xs-2">人员：</label>
+                                        <div class="col-md-7 col-xs-7" id="ViewSubSide">
+                                            @foreach(var user in Model.Persons.Split(';'))
+                                            {
+                                                <label class="checkbox-inline">
+                                                    <input type="checkbox" name="mans" value="@(user)" />@(user)
+                                                </label>
+                                            }
+                                        </div>
+                                        <div class="col-md-3 col-xs-3">
+                                            <button type="button" class="btn btn-success btn-sm" name="Keyin"><i class="glyphicon glyphicon-plus"></i>录入时间</button>
+                                        </div>
+                                    </div>
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>人员</th>
+                                                <th style="width:70%;">时间</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="ViewTime">
+                                            @foreach(var errand in Model.Errands)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <input type="hidden" name="Peoples@(errand.ID)" value="@(errand.Peoples)" />
+                                                        <input type="hidden" name="Days@(errand.ID)" value="@(errand.Days)" />
+                                                        <input type="text" name="Users@(errand.ID)" class="form-control" value="@(errand.Users)" readonly="readonly" targetIndex="@(errand.ID)" />
+                                                    </td>
+                                                    <td>
+
+                                                    </td>
+                                                </tr>
+                                            }
+                                            <tr>
+                                                <td><input type="text" name="Users{Index}" class="form-control" value="{Value}" readonly="readonly" /></td>
+                                                <td>
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control datetimepicker" name="StartTime{Index}" placeholder="开始日期" />
+                                                        <span class="input-group-addon">至</span>
+                                                        <input type="text" class="form-control datetimepicker" name="EndTime{Index}" placeholder="结束日期" />
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove-sign"></i>取消</button>
+                                    <button type="button" class="btn btn-primary" name="SubSide-OK" data-dismiss="modal"><i class="glyphicon glyphicon-ok-sign"></i>确定</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            }
+           
         </tr>
         <tr>
+            <th>出差住宿</th>
+            @if (flag)
+            {
+                <td>@(Model.Hotel) 元</td>
+            }
+            else
+            {
+                <td>
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="Hotel" value="" />
+                        <span class="input-group-addon">元</span>
+                    </div>
+                </td>
+            }
+           
             <th>其他内容</th>
-            <td>
-                <input type="text" class="form-control" name=""  placeholder=""/>
-            </td>
-            <th>其他金额</th>
-            <td>
-                <div class="input-group">
-                    <input type="text" class="form-control" name="" placeholder="" />
-                    <span class="input-group-addon">元</span>
-                </div>
-            </td>
+            @if (flag)
+            {
+                <td> 内容： @(Model.Mark) 金额：@(Model.Other) 元</td>
+            }
+            else
+            {
+                <td>
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="Mark" placeholder="内容" />
+                        <span class="input-group-addon">金额：</span>
+                        <input type="text" class="form-control" name="Other" placeholder="" />
+                        <span class="input-group-addon">元</span>
+                    </div>
+
+                </td>
+            }
+          
         </tr>
     </table>
 </div>
 
-<div style="display:none">
+
+<div style="display:none" disabled="disabled">
     <div id="BUSBUS">
         @foreach (BusType type in Enum.GetValues(typeof(BusType)))
         {
@@ -236,7 +484,7 @@
                             <input type="text" name="CarPetty" placeholder="车补" class="form-control" readonly="readonly" />
                             <span class="input-group-addon">元</span>
                         </div>
-                       
+
                     }
                     else
                     {
@@ -248,15 +496,40 @@
                     }
                 </div>
             }
-        } 
+        }
     </div>
+    <table>
+        <tbody id="PMan">
+            <tr>
+                <td>
+                    <input type="hidden" name="Peoples{Index}" />
+                    <input type="hidden" name="Days{Index}" />
+                    <input type="text" name="Users{Index}" class="form-control" value="{Value}" readonly="readonly" targetIndex="{Index}" />
+                </td>
+                <td>
+                    <div class="input-group">
+                        <input type="text" class="form-control datetimepicker" name="StartTime{Index}" placeholder="开始日期" targetIndex="{Index}" />
+                        <span class="input-group-addon">至</span>
+                        <input type="text" class="form-control datetimepicker" name="EndTime{Index}" placeholder="结束日期" targetIndex="{Index}" />
+                    </div>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-xs" name="Remove" value="{Value}"><i class="glyphicon glyphicon-remove-circle"></i></button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </div>
+
 
 <script>
     var BUSHtml = $("#BUSBUS").html();
     var CarHtml = $("#CarCar").html();
+    var PManHtml = $("#PMan").html();
     $(function () {
         var mans = [];
+        var line = 0;
+        var indexs = [];
         $("button[name='Person-OK']").click(function () {
             mans.splice(0, mans.length);
             $("input[name='Person']:checked").each(function () {
@@ -265,12 +538,12 @@
             $("input[name='Persons']").val(mans.join(";"));
             //选择出差人员之后，自动在补贴详情中的人员自动添加
             $("#ViewSubSide").empty();
+            $("#ViewTime").empty();
             $.each(mans, function (i, value) {
                 var appendhtml = "<label class='checkbok-inline'><input type='checkbox' name='mans' value='" + value + "' />"+value+"</label>";
                 $("#ViewSubSide").append(appendhtml);
+              
             });
-
-            $("#ViewSubSide input[name='mans']").unbind("")
         });
 
         $("select[name='Way']").change(function () {
@@ -366,6 +639,7 @@
             });
 
             $("input[name='Traffic']").val(sum);
+            SumErrand();
         }
 
         //当点击交通费用详情中确定的时候，自动计算交通费用
@@ -383,23 +657,104 @@
         });
 
         $("button[name='Keyin']").click(function () {
+            var checkPerson = [];
             $("#ViewSubSide input[name='mans']:checked").each(function () {
-                var value = $(this).val();
+                if ($(this).attr("disabled") == undefined) {
+                    var value = $(this).val();
+                    if (value != undefined) {
+                        checkPerson.push(value);
+                        $(this).attr("disabled", "disabled");
+                    }
+                }
             });
+            if (checkPerson.length > 0) {
+                var appendhtml = PManHtml;
+                appendhtml = appendhtml.replace(/{Index}/g, line++).replace(/{Value}/g, checkPerson.join(";"));
+                $("#ViewTime").append(appendhtml);
+                //动态创建的时间 点击开始时间事件
+                $("#ViewTime input[name^=StartTime]").datetimepicker({
+                    timepicker: false,
+                    format: 'Y-m-d',
+                });
+                //动态创建的结束时间 点击显示时间选择器的事件
+                $("#ViewTime input[name^=EndTime]").datetimepicker({
+                    timepicker: false,
+                    format:'Y-m-d'
+                });
+                //动态创建的删除时间详情事件
+                $("#ViewTime button[name='Remove']").unbind("click").bind("click", function () {
+                    var value = $(this).attr("value");
+                    if (value != undefined) {
+                        var person = value.split(';');
+                        $("#ViewSubSide input[name='mans']:disabled:checked").each(function () {
+                            var value = $(this).val();
+                            if (value != undefined) {
+                                if (person.indexOf(value) >= 0) {
+                                    $(this).removeAttr("disabled").removeAttr("checked");
+                                }
+                            }
+                        });
+                    }
+                    $(this).parent().parent().remove();
+                });
+            } else {
+                alert("请选择用户！");
+                return false;
+            }
         });
 
-
-
-
-
-
-
-
-
-
-
-
-
+        $("button[name='SubSide-OK']").click(function () {
+            if (StatisticSubSide()) {
+                return true;
+            } else {
+                return false;
+            }
+        });
+        //统计出差补贴金额
+        function StatisticSubSide() {
+            var lines = [];
+            var subSide = 0;
+            $("#ViewTime input[name*='Users']").each(function () {
+                var users = $(this).val();
+                var targetIndex = $(this).attr("targetIndex");
+                var start = $("#ViewTime input[name='StartTime" + targetIndex + "']").val();
+                var end = $("#ViewTime input[name='EndTime" + targetIndex + "']").val();
+                var d1 = new Date(start);
+                var d2 = new Date(end);
+                if (d1 == undefined || d2 == undefined) {
+                    alert(users + "的时间信息获取失败！");
+                    return false;
+                }
+                if (d2 < d1) {
+                    alert(users + "的结束时间小于开始时间，请检查核对！");
+                    return false;
+                }
+                var day_d1 = d1.getTime() / 1000 / 3600 / 24;
+                var day_d2 = d2.getTime() / 1000 / 3600 / 24;
+                var peoples = users.split(';').length;
+                var days = day_d2 - day_d1 + 1;
+                $("#ViewTime input[name='Peoples" + targetIndex + "']").val(peoples);
+                $("#ViewTime input[name='Days" + targetIndex + "']").val(days);
+                subSide += peoples * days * 40;
+                lines.push(targetIndex);
+            });
+            $("input[name='SubSidy']").val(subSide);
+            $("input[name='Lines']").val(lines.join(';'));
+            SumErrand();
+            return true;
+        }
+        //出差住宿金额发生改变自动统计总金额
+        $("input[name='Hotel']").change(function () {
+            SumErrand();
+        }).blur(function () {
+            SumErrand();
+        });
+        //其他内容金额发生改变自动统计总金额
+        $("input[name='Other']").change(function () {
+            SumErrand();
+        }).blur(function () {
+            SumErrand();
+        });
 
 
 
@@ -453,9 +808,9 @@
             SumErrand();
         }
         //点击出差补贴输入框  统计出差补贴
-        $("input[name='SubSidy']").focus(function () {
-            SumSubSidy();
-        });
+        //$("input[name='SubSidy']").focus(function () {
+        //    SumSubSidy();
+        //});
         $("#View").click(function () {//统计出差补贴并隐藏窗口
             SumSubSidy();
             $(".ViewSubSidy").modal("hide");

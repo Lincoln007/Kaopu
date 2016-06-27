@@ -25,7 +25,7 @@ namespace Ztop.Todo.Model
         /// <summary>
         /// 公里数
         /// </summary>
-        public double KiloMeters { get; set; }
+        //public double KiloMeters { get; set; }
         /// <summary>
         /// 交通费用详情列表
         /// </summary>
@@ -55,6 +55,7 @@ namespace Ztop.Todo.Model
         /// 出差人员  
         /// </summary>
         public string Persons { get; set; }
+        public string Way { get; set; }
         public int SID { get; set; }
         [NotMapped]
         public List<Errand> Errands { get; set; }
@@ -86,6 +87,7 @@ namespace Ztop.Todo.Model
         /// 企业滴滴或者出租车填写的时候  填写次数
         /// </summary>
         public int Times { get; set; }
+        public double KiloMeters { get; set; }
         public int EID { get; set; }
     }
 

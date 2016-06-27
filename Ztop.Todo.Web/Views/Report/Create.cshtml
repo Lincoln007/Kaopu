@@ -5,7 +5,7 @@
     Sheet sheet = ViewBag.Sheet;
 }
 
-<div class="col-md-8 col-md-offset-2">
+<div class="col-md-10 col-md-offset-1">
     <form method="post" id="form-Create" action="/Report/Save" class="form-horizontal" enctype="multipart/form-data">
         <h2 class="text-center">报销单填写</h2>
         <input type="hidden" name="SNID" value="@(sheet.SerialNumber.ID)" />
@@ -27,7 +27,7 @@
             <button type="button" class="btn btn-default" onclick="history.back();"><em class="glyphicon glyphicon-arrow-left"></em> 返回</button>
             @if (sheet.ID != 0)
             {
-                <button class="btn btn-danger btn-lg" type="button">
+                <button class="btn btn-danger" type="button">
                     <em class="glyphicon glyphicon-remove-circle"></em> 删除
                 </button>
             }
@@ -113,6 +113,10 @@
         </td>
     </tr>
 </table>
+
+
+
+
 
 
 
