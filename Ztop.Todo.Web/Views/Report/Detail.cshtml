@@ -46,7 +46,7 @@
              {
                  if (sheet.Controler == sheet.Checkers)
                  {
-                      <button type="button" class="btn btn-danger btn-lg" id="Revoke">
+                      <button type="button" class="btn btn-danger" id="Revoke">
                                     <em class="glyphicon glyphicon-log-out"></em>撤回
                                 </button>
                   }
@@ -55,26 +55,26 @@
               {
                    if (Identity.Name == XmlHelper.GetFinance())
                    {
-                        <button class="btn btn-default btn-lg" type="button" onclick="javascript: Preview()">
-                                        <em class="glyphicon glyphicon-print"></em> 打印
+                        <button class="btn btn-default" type="button" onclick="javascript: Preview()">
+                              <em class="glyphicon glyphicon-print"></em> 打印
                         </button>
                    }
                    {
                         Html.RenderPartial("WithDrawal", sheet);
                    }
                }
-               <button type="button" class="btn btn-default btn-lg" onclick="history.back();"><em class="glyphicon glyphicon-arrow-left"></em> 返回</button>
+               <button type="button" class="btn btn-default" onclick="history.back();"><em class="glyphicon glyphicon-arrow-left"></em> 返回</button>
          }
          else if (sheet.Status == Status.Examined)
          {
-               <button type="button" class="btn btn-default btn-lg" onclick="history.back();"><em class="glyphicon glyphicon-arrow-left"></em> 返回</button>
+               <button type="button" class="btn btn-default" onclick="history.back();"><em class="glyphicon glyphicon-arrow-left"></em> 返回</button>
          }
          else if (sheet.Status == Status.Filing&&Identity.Name==XmlHelper.GetFinance())
          {
-                <button class="btn btn-default btn-lg" type="button" onclick="javascript: Preview()">
+                <button class="btn btn-default" type="button" onclick="javascript: Preview()">
                       <em class="glyphicon glyphicon-print"></em> 打印
                 </button>
-                <button type="button" class="btn btn-default btn-lg" onclick="history.back();"><em class="glyphicon glyphicon-arrow-left"></em> 返回</button>
+                <button type="button" class="btn btn-default" onclick="history.back();"><em class="glyphicon glyphicon-arrow-left"></em> 返回</button>
          }
 
     </div>
@@ -308,7 +308,9 @@
     function Preview() {
         var LODOP = getCLodop();
        
-        var strStyleCSS = "<style>table{ border-collapse:collapse; border-spacing:0;} td,th{ border:solid 1px #000; font-size:12px;padding:0;} h3,div{font-size:15px; font-weight:bold;margin:0px;padding:2px;}</style>";
+        var strStyleCSS = "<style>table{ border-collapse:collapse; border-spacing:0;width:90%} td,th{ border:solid 1px #000; font-size:12px;padding:0;} h3,div{font-size:15px; font-weight:bold;margin:0px;padding:2px;}</style>";
+        //var strStyleCSS = "<link href='/Content/bootstrap.min.css'  type='text/css' rel='stylesheet'";
+        //var strStyleCSS = "";
         var strHTML = strStyleCSS + "<body>" + document.getElementById("Print").innerHTML + "<div class='form-group'><label class='control-label col-md-4'>审核人：________________________</label><label class='control-label col-md-4'>报销人：________________________</label></div></body>";
         LODOP.PRINT_INITA(1, 1, 770, 660, "打印报销单");
         //LODOP.ADD_PRINT_TABLE(50, 10, "50%", 220, document.getElementById("Main").innerHTML);

@@ -104,6 +104,7 @@
     <Compile Include="SerialNumber.cs" />
     <Compile Include="Sheet.cs" />
     <Compile Include="SheetQueryParameter.cs" />
+    <Compile Include="SheetVerifyParameter.cs" />
     <Compile Include="Substancs.cs" />
     <Compile Include="SystemClass.cs" />
     <Compile Include="Task.cs" />

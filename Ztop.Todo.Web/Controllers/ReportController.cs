@@ -10,7 +10,7 @@ namespace Ztop.Todo.Web.Controllers
 {
     public class ReportController : ControllerBase
     {
-        protected static List<string> Directors = XmlHelper.GetDirectors();
+        //protected static List<string> Directors = XmlHelper.GetDirectors();
         public ActionResult Index()
         {
             SheetQueryParameter parameter = new SheetQueryParameter
@@ -25,11 +25,11 @@ namespace Ztop.Todo.Web.Controllers
             //  我提交的报销单  同时也
             ViewBag.ExaminList = list.Where(e => e.Status == Status.Examined).Take(10).ToList();
             ViewBag.RollBackList = list.Where(e => e.Status == Status.RollBack).Take(10).ToList();
-            if (Directors.Contains(Identity.Name))
+            if(Identity.Director||Identity.Name== "靳小阳")
             {
                 ViewBag.WaitForMe = Core.SheetManager.GetSheets(new SheetQueryParameter { Deleted = false, Controler = Identity.Name }).Where(e => e.Status != Status.Examined && e.Status != Status.OutLine).ToList();
+                ViewBag.Checks = Core.VerifyManager.GetSheetByVerify(Identity.Name);
             }
-            
             return View();
         }
         /// <summary>
@@ -375,6 +375,24 @@ namespace Ztop.Todo.Web.Controllers
         public ActionResult Collect(int year,int month)
         {
             ViewBag.Sheets = Core.SheetManager.GetSheets(year, month);
+            return View();
+        }
+
+        public ActionResult Review(string Coding=null,string Time=null,double? MinMoney=null,double? MaxMoney=null,string Creater=null,Order order=Order.Time,int page=1)
+        {
+            var parameter = new SheetVerifyParameter()
+            {
+                Page = new PageParameter(page, 20),
+                Coding = Coding,
+                Time = Time,
+                MinMoney = MinMoney,
+                MaxMoney = MaxMoney,
+                Creater = Creater,
+                Order = order,
+                Checker = Identity.Name
+            };
+            ViewBag.List = Core.VerifyManager.GetSheetByVerify(parameter);
+            ViewBag.Parameter = parameter;
             return View();
         }
 

@@ -295,6 +295,7 @@
     <Content Include="Views\Finance\CreateInvoice.cshtml" />
     <Content Include="Views\Finance\BillSearch.cshtml" />
     <Content Include="Views\Finance\DetailInvoiceBill.cshtml" />
+    <Content Include="Views\Report\Review.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

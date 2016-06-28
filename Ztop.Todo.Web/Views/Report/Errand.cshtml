@@ -10,7 +10,7 @@
 
 <h3 style="margin-top:10px;">出差详情</h3>
 <div>
-    <table class="table table-bordered" style="margin:0px;">
+    <table class="table table-bordered table-hover" style="margin:0px;">
         <tr>
             <th class="col-md-1 col-xs-1">出差地点</th>
             @if (flag)
@@ -98,46 +98,7 @@
             <th>交通费用</th>
             @if (flag)
             {
-                <td>
-                    <table class="table table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>交通名称</th>
-                                <th>金额（元）</th>
-                                <th>公里数</th>
-                                <th>车牌</th>
-                                <th>过路费（元）</th>
-                                <th>油费（元）</th>
-                                <th>司机</th>
-                                <th>车补（元）</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var cost in Model.TCosts)
-                            {
-                                if (cost.Type == BusType.Company)
-                                {
-                                    <tr>
-                                        <td>@(cost.Type.GetDescription())</td>
-                                        <td>@(cost.Cost)</td>
-                                        <td>@(cost.KiloMeters)</td>
-                                        <td>@(cost.Plate)</td>
-                                        <td>@(cost.Toll)</td>
-                                        <td>@(cost.Petrol)</td>
-                                        <td>@(cost.Driver.GetDescription())</td>
-                                        <td>@(cost.CarPetty)</td>
-                                    </tr>
-                                }
-                                else if (cost.Type == BusType.Personal)
-                                {
-                                    <tr>
-                                        <td></td>
-                                    </tr>
-                                }
-                            }
-                        </tbody>
-                    </table>
-                </td>
+                <td>@(Model.Traffic) 元</td>
             }
             else
             {
@@ -275,31 +236,13 @@
             <th>出差补贴</th>
             @if (flag)
             {
-                <td>
-                    <table class="table table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>人员</th>
-                                <th>时间</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach(var errand in Model.Errands)
-                            {
-                                <tr>
-                                    <td>@(errand.Users)</td>
-                                    <td>@(errand.StartTime.ToString("yyyy-MM-dd")) 至 @(errand.EndTime.ToString("yyyy-MM-dd"))</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </td>
+                <td>@(Model.SubSidy) 元</td>
             }
             else
             {
                 <td>
                     <duv class="input-group">
-                        <input type="hidden" name="Lines" value="" />
+                        <input type="hidden" name="Lines" value="@(Model.Errands==null?"":string.Join(";",Model.Errands.Select(e=>e.ID).ToArray()))" />
                         <input type="text" class="form-control" placeholder="出差补贴" readonly="readonly" name="SubSidy" value="@(Model.SubSidy)" />
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#SubSide"><i class="glyphicon glyphicon-zoom-in"></i>补贴详情</button>
@@ -353,7 +296,7 @@
                                                             <div class="input-group">
                                                                 <input type="text" class="form-control datetimepicker" name="StartTime@(errand.ID)" placeholder="开始日期" targetIndex="@(errand.ID)" value="@(errand.StartTime.ToString("yyyy-MM-dd"))" />
                                                                 <span class="input-group-addon">至</span>
-                                                                <input type="text" class="form-control datetimepicker" name="EndTime@(errand.ID) " placeholder="结束日期" targetIndex="@(errand.ID)" value="@(errand.EndTime.ToString("yyyy-MM-dd"))" />
+                                                                <input type="text" class="form-control datetimepicker" name="EndTime@(errand.ID)" placeholder="结束日期" targetIndex="@(errand.ID)" value="@(errand.EndTime.ToString("yyyy-MM-dd"))" />
                                                             </div>
                                                         </td>
                                                         <td>
@@ -387,7 +330,7 @@
             {
                 <td>
                     <div class="input-group">
-                        <input type="text" class="form-control" name="Hotel" value="" />
+                        <input type="text" class="form-control" name="Hotel" value="@(Model.Hotel)" />
                         <span class="input-group-addon">元</span>
                     </div>
                 </td>
@@ -402,9 +345,9 @@
             {
                 <td>
                     <div class="input-group">
-                        <input type="text" class="form-control" name="Mark" placeholder="内容" />
+                        <input type="text" class="form-control" name="Mark" placeholder="内容" value="@(Model.Mark)" />
                         <span class="input-group-addon">金额：</span>
-                        <input type="text" class="form-control" name="Other" placeholder="" />
+                        <input type="text" class="form-control" name="Other" placeholder=""  value="@(Model.Other)"/>
                         <span class="input-group-addon">元</span>
                     </div>
 
@@ -413,6 +356,92 @@
           
         </tr>
     </table>
+    @if (flag)
+    {
+        <table class="table table-bordered table-hover" style="margin:0px;">
+            <thead>
+                <tr>
+                    <th>人员</th>
+                    <th>时间</th>
+                    <th>人数</th>
+                    <th>天数</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var errand in Model.Errands)
+                {
+                    <tr>
+                        <td>@(errand.Users)</td>
+                        <td>@(errand.StartTime.ToString("yyyy-MM-dd")) 至 @(errand.EndTime.ToString("yyyy-MM-dd"))</td>
+                        <td>@(errand.Peoples)</td>
+                        <td>@(errand.Days)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <table class="table table-bordered table-hover" style="margin:0px;">
+            <thead>
+                <tr>
+                    <th>交通名称</th>
+                    <th>金额（元）</th>
+                    <th>公里数</th>
+                    <th>车牌</th>
+                    <th>过路费（元）</th>
+                    <th>油费（元）</th>
+                    <th>司机</th>
+                    <th>车补（元）</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.TCosts != null)
+                {
+                    foreach (var cost in Model.TCosts)
+                    {
+                        if (cost.Type == BusType.Company)
+                        {
+                            <tr>
+                                <td>@(cost.Type.GetDescription())</td>
+                                <td>@(cost.Cost)</td>
+                                <td>@(cost.KiloMeters)</td>
+                                <td>@(cost.Plate)</td>
+                                <td>@(cost.Toll)</td>
+                                <td>@(cost.Petrol)</td>
+                                <td>@(cost.Driver.GetDescription())</td>
+                                <td>@(cost.CarPetty)</td>
+                            </tr>
+                        }
+                        else if (cost.Type == BusType.Personal)
+                        {
+                            <tr>
+                                <td>@(cost.Type.GetDescription())</td>
+                                <td>@(cost.Cost)</td>
+                                <td>@(cost.KiloMeters)</td>
+                                <td>@(cost.Plate)</td>
+                                <td>@(cost.Toll)</td>
+                                <td>/</td>
+                                <td>/</td>
+                                <td>/</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr>
+                                <td>@(cost.Type.GetDescription())</td>
+                                <td>@(cost.Cost)</td>
+                                <td>/</td>
+                                <td>/</td>
+                                <td>/</td>
+                                <td>/</td>
+                                <td>/</td>
+                                <td>/</td>
+                            </tr>
+                        }
+                    }
+                }
+            </tbody>
+        </table>
+    }
 </div>
 
 

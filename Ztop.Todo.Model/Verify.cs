@@ -44,6 +44,8 @@ namespace Ztop.Todo.Model
         /// 关联的报销单ID
         /// </summary>
         public int SID { get; set; }
+        [NotMapped]
+        public Sheet Sheet { get; set; }
 
     }
 

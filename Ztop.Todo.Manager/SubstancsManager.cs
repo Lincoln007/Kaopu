@@ -67,20 +67,24 @@ namespace Ztop.Todo.Manager
             var indexs = lines.Split(';');
             foreach(var index in indexs)
             {
-                if(int.TryParse(context.Request.Form[string.Format("Peoples{0}",index)].ToString(),out a))
+                var peopleString = context.Request.Form[string.Format("Peoples{0}", index)].ToString();
+                if (int.TryParse(peopleString,out a))
                 {
                     if (int.TryParse(index, out a))
                     {
-                        if (DateTime.TryParse(context.Request.Form[string.Format("StartTime{0}", index)], out startTime))
+                        var startTimeString = context.Request.Form[string.Format("StartTime{0}", a)].ToString();
+                        if (DateTime.TryParse(startTimeString, out startTime))
                         {
-                            if (DateTime.TryParse(context.Request.Form[string.Format("EndTime{0}", index)].ToString(), out endTime))
+                            var endTimeString = context.Request.Form["EndTime"+index];
+                            if (DateTime.TryParse(endTimeString, out endTime))
                             {
+                                var users = context.Request.Form[string.Format("Users{0}", a)].ToString();
                                 list.Add(new Errand
                                 {
                                     StartTime = startTime,
                                     EndTime = endTime,
-                                    Users = context.Request.Form[string.Format("Users{0}", index)].ToString(),
-                                    Peoples = a,
+                                    Users = users,
+                                    Peoples = users.Split(';').Count(),
                                     Days = int.TryParse(context.Request.Form[string.Format("Days{0}", index)].ToString(), out b) ? b : (endTime - startTime).Days + 1
                                 });
                             }

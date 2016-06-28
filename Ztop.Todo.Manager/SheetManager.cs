@@ -167,6 +167,7 @@ namespace Ztop.Todo.Manager
                             CarPetty=e.CarPetty,
                             Plate = e.Plate,
                             Times = e.Times,
+                            KiloMeters=e.KiloMeters,
                             EID = sheet.Evection.ID
                         }).ToList();
                         db.Traffics.AddRange(sheet.Evection.TCosts);
