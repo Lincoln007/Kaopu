@@ -95,45 +95,10 @@
 
                 </td>
             </tr>
-            @*<tr>
-                <td><input type="text" name="Coding" class="form-control" placeholder="编号" /></td>
-                <td><input type="text" name="Time" class="form-control" placeholder="交易日期" /></td>
-                <td>
-                    <select name="Budget" class="form-control" targetIndex="{Index}">
-                        @foreach (Budget budget in Enum.GetValues(typeof(Budget)))
-                        {
-                            <option value="@(budget)">@(budget.GetDescription())</option>
-                        }
-                    </select>
-                </td>
-                <td><input type="text" name="Money" class="form-control" placeholder="金额" /></td>
-                <td><input type="text" name="Account" class="form-control" placeholder="对方单位" /></td>
-                <td style="width:20%;">
-                    <div class="col-md-6" style="padding:0px;">
-                        <select name="Cost" class="form-control" id="Cost{Index}">
-                            @foreach (Cost cost in Enum.GetValues(typeof(Cost)))
-                            {
-                                if (cost == Cost.Posting)
-                                {
-                                    break;
-                                }
-                                <option value="@(cost)">@(cost.GetDescription())</option>
-                            }
-                        </select>
-                    </div>
-                  <div class="col-md-6" style="padding:0px;" id="Append{Index}">
-
-                  </div>
-                </td>
-                <td><input type="text" name="Summary" class="form-control" placeholder="备注/摘要" /></td>
-                <td>
-                    <button type="button" class="btn btn-danger btn-xs btn-remove" style="float:right;"><i class="glyphicon glyphicon-remove"></i></button>
-                </td>
-            </tr>*@
         </tbody>
        
     </table>
-    <select name="Cost" class="form-control" id="Income">
+    <select name="Cost" class="form-control" id="Pay">
         @foreach (Cost cost in Enum.GetValues(typeof(Cost)))
             {
                 if (cost == Cost.Posting)
@@ -143,7 +108,7 @@
                 <option value="@(cost)">@(cost.GetDescription())</option>
         }
     </select>
-    <select name="Cost" class="form-control" id="Pay">
+    <select name="Cost" class="form-control" id="Income">
         @foreach (Cost cost in Enum.GetValues(typeof(Cost)))
         {
             var index = (int)cost;

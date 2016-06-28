@@ -10,32 +10,125 @@
 
 <h3 style="margin-top:10px;">出差详情</h3>
 <div>
-    <table class="table table-bordered table-hover" style="margin:0px;">
-        <tr>
-            <th class="col-md-1 col-xs-1">出差地点</th>
-            @if (flag)
-            {
+    @if (flag)
+    {
+        <table class="table table-bordered table-hover" style="margin:0px;">
+            <tr>
+                <th class="col-md-1 col-xs-1">出差地点</th>
                 <td class="col-md-5 col-xs-5">
                     @(Model.Place)
                 </td>
-            }
-            else
-            {
-                <td class="col-md-5 col-xs-5">
-                    <input type="text" class="form-control" name="Place" value="@(Model.Place)" placeholder="出差地点" />
-                </td>
-               
-            }
-           
-            <th class="col-md-1 col-xs-1">出差人员</th>
-            @if (flag)
-            {
+                <th class="col-md-1 col-xs-1">出差人员</th>
                 <td class="col-md-5 col-xs-5">
                     @(Model.Persons)
                 </td>
-            }
-            else
-            {
+            </tr>
+            <tr>
+                <th>交通费用</th>
+                <td>@(Model.Traffic) 元</td>
+                <th>出差补贴</th>
+                <td>@(Model.SubSidy) 元</td>
+            </tr>
+            <tr>
+                <th>出差住宿</th>
+                <td>@(Model.Hotel) 元</td>
+                <th>其他内容</th>
+                <td> 内容： @(Model.Mark) 金额：@(Model.Other) 元</td>
+            </tr>
+        </table>
+        <table class="table table-bordered table-hover" style="margin:0px;">
+            <thead>
+                <tr>
+                    <th>人员</th>
+                    <th>时间</th>
+                    <th>人数</th>
+                    <th>天数</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var errand in Model.Errands)
+                {
+                    <tr>
+                        <td>@(errand.Users)</td>
+                        <td>@(errand.StartTime.ToString("yyyy-MM-dd")) 至 @(errand.EndTime.ToString("yyyy-MM-dd"))</td>
+                        <td>@(errand.Peoples)</td>
+                        <td>@(errand.Days)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <table class="table table-bordered table-hover" style="margin:0px;">
+            <thead>
+                <tr>
+                    <th>交通名称</th>
+                    <th>金额（元）</th>
+                    <th>公里数</th>
+                    <th>车牌</th>
+                    <th>过路费（元）</th>
+                    <th>油费（元）</th>
+                    <th>司机</th>
+                    <th>车补（元）</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.TCosts != null)
+                {
+                    foreach (var cost in Model.TCosts)
+                    {
+                        if (cost.Type == BusType.Company)
+                        {
+                            <tr>
+                                <td>@(cost.Type.GetDescription())</td>
+                                <td>@(cost.Cost)</td>
+                                <td>@(cost.KiloMeters)</td>
+                                <td>@(cost.Plate)</td>
+                                <td>@(cost.Toll)</td>
+                                <td>@(cost.Petrol)</td>
+                                <td>@(cost.Driver.GetDescription())</td>
+                                <td>@(cost.CarPetty)</td>
+                            </tr>
+                        }
+                        else if (cost.Type == BusType.Personal)
+                        {
+                            <tr>
+                                <td>@(cost.Type.GetDescription())</td>
+                                <td>@(cost.Cost)</td>
+                                <td>@(cost.KiloMeters)</td>
+                                <td>@(cost.Plate)</td>
+                                <td>@(cost.Toll)</td>
+                                <td>/</td>
+                                <td>/</td>
+                                <td>/</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr>
+                                <td>@(cost.Type.GetDescription())</td>
+                                <td>@(cost.Cost)</td>
+                                <td>/</td>
+                                <td>/</td>
+                                <td>/</td>
+                                <td>/</td>
+                                <td>/</td>
+                                <td>/</td>
+                            </tr>
+                        }
+                    }
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <table class="table table-bordered table-hover" style="margin:0px;">
+            <tr>
+                <th class="col-md-1 col-xs-1">出差地点</th>
+                <td class="col-md-5 col-xs-5">
+                    <input type="text" class="form-control" name="Place" value="@(Model.Place)" placeholder="出差地点" />
+                </td>
+                <th class="col-md-1 col-xs-1">出差人员</th>
                 <td class="col-md-5 col-xs-5">
                     <div class="input-group">
                         <input type="text" class="form-control" placeholder="出差人员" readonly="readonly" name="Persons" value="@(Model.Persons)" />
@@ -70,7 +163,7 @@
                                                             {
                                                                 <td>
                                                                     <label class="checkbox-inline">
-                                                                        <input type="checkbox" value="@(entry.DisplayName)" name="Person" @(checkpersons.Contains(entry.DisplayName)?"checked=checked":"") />@(entry.DisplayName)
+                                                                        <input type="checkbox" value="@(entry.DisplayName)" name="Person" @(checkpersons.Contains(entry.DisplayName) ? "checked=checked" : "") />@(entry.DisplayName)
                                                                     </label>
                                                                 </td>
                                                             }
@@ -90,18 +183,9 @@
                         </div>
                     </div>
                 </td>
-
-            }
-          
-        </tr>
-        <tr>
-            <th>交通费用</th>
-            @if (flag)
-            {
-                <td>@(Model.Traffic) 元</td>
-            }
-            else
-            {
+            </tr>
+            <tr>
+                <th>交通费用</th>
                 <td>
                     <div class="input-group">
                         <input type="text" class="form-control" placeholder="交通费用" readonly="readonly" name="Traffic" value="@(Model.Traffic)" />
@@ -231,15 +315,7 @@
                         </div>
                     </div>
                 </td>
-            }
-           
-            <th>出差补贴</th>
-            @if (flag)
-            {
-                <td>@(Model.SubSidy) 元</td>
-            }
-            else
-            {
+                <th>出差补贴</th>
                 <td>
                     <duv class="input-group">
                         <input type="hidden" name="Lines" value="@(Model.Errands==null?"":string.Join(";",Model.Errands.Select(e=>e.ID).ToArray()))" />
@@ -264,7 +340,7 @@
                                                 foreach (var user in Model.Persons.Split(';'))
                                                 {
                                                     <label class="checkbox-inline">
-                                                        <input type="checkbox" name="mans" value="@(user)" checked="checked"  disabled="disabled"/>@(user)
+                                                        <input type="checkbox" name="mans" value="@(user)" checked="checked" disabled="disabled" />@(user)
                                                     </label>
                                                 }
                                             }
@@ -317,132 +393,34 @@
                         </div>
                     </div>
                 </td>
-            }
-           
-        </tr>
-        <tr>
-            <th>出差住宿</th>
-            @if (flag)
-            {
-                <td>@(Model.Hotel) 元</td>
-            }
-            else
-            {
+            </tr>
+            <tr>
+                <th>出差住宿</th>
                 <td>
                     <div class="input-group">
                         <input type="text" class="form-control" name="Hotel" value="@(Model.Hotel)" />
                         <span class="input-group-addon">元</span>
                     </div>
                 </td>
-            }
-           
-            <th>其他内容</th>
-            @if (flag)
-            {
-                <td> 内容： @(Model.Mark) 金额：@(Model.Other) 元</td>
-            }
-            else
-            {
+                <th>其他内容</th>
                 <td>
                     <div class="input-group">
                         <input type="text" class="form-control" name="Mark" placeholder="内容" value="@(Model.Mark)" />
                         <span class="input-group-addon">金额：</span>
-                        <input type="text" class="form-control" name="Other" placeholder=""  value="@(Model.Other)"/>
+                        <input type="text" class="form-control" name="Other" placeholder="" value="@(Model.Other)" />
                         <span class="input-group-addon">元</span>
                     </div>
 
                 </td>
-            }
-          
-        </tr>
-    </table>
-    @if (flag)
-    {
-        <table class="table table-bordered table-hover" style="margin:0px;">
-            <thead>
-                <tr>
-                    <th>人员</th>
-                    <th>时间</th>
-                    <th>人数</th>
-                    <th>天数</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var errand in Model.Errands)
-                {
-                    <tr>
-                        <td>@(errand.Users)</td>
-                        <td>@(errand.StartTime.ToString("yyyy-MM-dd")) 至 @(errand.EndTime.ToString("yyyy-MM-dd"))</td>
-                        <td>@(errand.Peoples)</td>
-                        <td>@(errand.Days)</td>
-                    </tr>
-                }
-            </tbody>
+            </tr>
         </table>
 
-        <table class="table table-bordered table-hover" style="margin:0px;">
-            <thead>
-                <tr>
-                    <th>交通名称</th>
-                    <th>金额（元）</th>
-                    <th>公里数</th>
-                    <th>车牌</th>
-                    <th>过路费（元）</th>
-                    <th>油费（元）</th>
-                    <th>司机</th>
-                    <th>车补（元）</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (Model.TCosts != null)
-                {
-                    foreach (var cost in Model.TCosts)
-                    {
-                        if (cost.Type == BusType.Company)
-                        {
-                            <tr>
-                                <td>@(cost.Type.GetDescription())</td>
-                                <td>@(cost.Cost)</td>
-                                <td>@(cost.KiloMeters)</td>
-                                <td>@(cost.Plate)</td>
-                                <td>@(cost.Toll)</td>
-                                <td>@(cost.Petrol)</td>
-                                <td>@(cost.Driver.GetDescription())</td>
-                                <td>@(cost.CarPetty)</td>
-                            </tr>
-                        }
-                        else if (cost.Type == BusType.Personal)
-                        {
-                            <tr>
-                                <td>@(cost.Type.GetDescription())</td>
-                                <td>@(cost.Cost)</td>
-                                <td>@(cost.KiloMeters)</td>
-                                <td>@(cost.Plate)</td>
-                                <td>@(cost.Toll)</td>
-                                <td>/</td>
-                                <td>/</td>
-                                <td>/</td>
-                            </tr>
-                        }
-                        else
-                        {
-                            <tr>
-                                <td>@(cost.Type.GetDescription())</td>
-                                <td>@(cost.Cost)</td>
-                                <td>/</td>
-                                <td>/</td>
-                                <td>/</td>
-                                <td>/</td>
-                                <td>/</td>
-                                <td>/</td>
-                            </tr>
-                        }
-                    }
-                }
-            </tbody>
-        </table>
     }
 </div>
+
+
+
+
 
 
 <div style="display:none" disabled="disabled">

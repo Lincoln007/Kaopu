@@ -29,14 +29,15 @@ namespace Ztop.Todo.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult Save(int year,int month,Company company,string[] Coding,DateTime[] Time,double[] Money,string[] Account,string[] Summary,Budget[] Budget,Cost[] Cost,Category[] Category,bool Edit=false)
+        public ActionResult Save(int year,int month,Company company,DateTime[] Time,double[] Income,double[] Pay,double[] Balance, string[] Account,string[] Summary,Cost[] Cost,Category[] Category,bool Edit=false)
         {
             if (Core.BillManager.Exist(year, month, company)&&!Edit)
             {
                 return ErrorJsonResult(string.Format("系统中已经存在{0}年{1}月{2}公司的银行对账清单，对有需要更改请前往编辑！", year, month, company.GetDescription()));
             }
             var bank = Core.BillManager.GetBank(year, month, company);
-            var bills = Core.BillManager.GetBills(bank.ID, Coding, Time, Budget, Money, Account, Summary,Cost,Category);
+            var bills = Core.BillManager.GetBills(bank.ID, Time, Income, Pay, Balance, Account, Summary, Cost, Category);
+            //var bills = Core.BillManager.GetBills(bank.ID, Coding, Time, Budget, Money, Account, Summary,Cost,Category);
             try
             {
                 Core.BillManager.UpDateBills(bills, bank.ID);

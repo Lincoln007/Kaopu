@@ -39,6 +39,7 @@ namespace Ztop.Todo.Manager
                     Account = account[i],
                     Budget = budget[i],
                     Summary = summary[i],
+                    Remark=summary[i],
                     Cost = cost[i],
                     BID = bid
                 };
@@ -48,6 +49,39 @@ namespace Ztop.Todo.Manager
                     bill.Category = category[j++];
                 }
 
+                list.Add(bill);
+            }
+            return list;
+        }
+
+        public List<Bill> GetBills(int bid,DateTime[] time,double[] income,double[] pay,double[] balance,string[] account,string[] summary,Cost[] cost,Category[] category)
+        {
+            var list = new List<Bill>();
+            if (time == null)
+            {
+                throw new ArgumentException("参数错误！");
+            }
+            var count = time.Count();
+            var j = 0;
+            for(var i = 0; i < count; i++)
+            {
+                var budget = income[i] > 0 ? Budget.Income : Budget.Expense;
+                var bill = new Bill()
+                {
+                    Time = time[i],
+                    Money = budget == Budget.Income ? income[i] : pay[i],
+                    Balance = balance[i],
+                    Account = account[i],
+                    Budget = budget,
+                    Summary = summary[i],
+                    Remark=summary[i],
+                    Cost = cost[i],
+                    BID = bid
+                };
+                if (bill.Cost == Cost.RealPay)
+                {
+                    bill.Category = category[j++];
+                }
                 list.Add(bill);
             }
             return list;

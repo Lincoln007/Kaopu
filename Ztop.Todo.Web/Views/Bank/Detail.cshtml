@@ -29,15 +29,13 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th class="text-center">编号</th>
                                 <th>交易日期</th>
-                                <th>交易类型（收入/支出）</th>
-                                <th>金额（元）</th>
+                                <th>支出（元）</th>
+                                <th>收入（元）</th>
+                                <th>账户余额（元）</th>
                                 <th class="text-center">对方单位</th>
+                                <th>摘要</th>
                                 <th>类别&nbsp;</th>
-                                <th>
-                                    摘要
-                                </th>
                             </tr>
                         </thead>
                         
@@ -107,15 +105,15 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th class="text-center">编号</th>
                 <th>交易日期</th>
-                <th>交易类型（收入/支出）</th>
-                <th>金额（元）</th>
+                <th>支出（元）</th>
+                <th>收入（元）</th>
+                <th>账户余额（元）</th>
                 <th class="text-center">对方单位</th>
-                <th style="width:20%;" class="text-center">类别</th>
                 <th colspan="2">
                     摘要
                 </th>
+                <th style="width:20%;" class="text-center">类别</th>
             </tr>
         </thead>
         @if (!EditFlag)
@@ -124,13 +122,22 @@
                 @foreach (var item in bank.Bills)
                 {
                     <tr>
-                        <td>@(item.Coding)</td>
                         <td>@(item.Time.ToString("yyyy-MM-dd"))</td>
-                        <td>@(item.Budget.GetDescription())</td>
-                        <td>@(item.Money)</td>
+                        @if (item.Budget == Budget.Expense)
+                        {
+                            <td>@(item.Money)</td>
+                            <td>/</td>
+                        }
+                        else
+                        {
+                            <td>/</td>
+                            <td>@(item.Money)</td>
+                        }
+                        <td>@(item.Balance)</td>
                         <td class="text-center">@(item.Account) </td>
-                        <td class="text-center">@(item.Cost.GetDescription()) @(item.Category.HasValue ? "-" + item.Category.Value.GetDescription() : "")</td>
                         <td colspan="2">@(item.Summary)</td>
+                        <td class="text-center">@(item.Cost.GetDescription()) @(item.Category.HasValue ? "-" + item.Category.Value.GetDescription() : "")</td>
+                        
                     </tr>
                 }
             </tbody>
