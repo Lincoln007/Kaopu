@@ -83,6 +83,7 @@
     <Compile Include="Attachment.cs" />
     <Compile Include="Authorize.cs" />
     <Compile Include="BillClass.cs" />
+    <Compile Include="ContractFile.cs" />
     <Compile Include="Code128.cs" />
     <Compile Include="Collect.cs" />
     <Compile Include="Comment.cs" />

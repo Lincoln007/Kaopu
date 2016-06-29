@@ -6,117 +6,120 @@
 
 <h3 class="text-center">录入合同</h3>
 
-<form class="form-horizontal" id="Contract" action="/Finance/SaveContract" method="post">
+<form class="form-horizontal" id="Contract" action="/Finance/SaveContract" method="post" enctype="multipart/form-data">
     <input type="hidden" name="Creator" value="@(Identity.Name)" />
-    <div class="col-md-6">
-        <div class="form-group">
-            <label class="control-label col-md-4">合同名称：</label>
-            <div class="col-md-8">
-                <input type="text" class="form-control" name=""  placeholder="合同名称"/>
+    <div class="row">
+        <div class="col-md-6 col-xs-6">
+            <div class="form-group">
+                <label class="control-label col-md-4">合同名称：</label>
+                <div class="col-md-8">
+                    <input type="text" class="form-control" name="Name" placeholder="合同名称" />
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label col-md-4">合同起始时间：</label>
-            <div class="col-md-8">
-                <input type="text" class="form-control" name="" placeholder="起始时间" />
+            <div class="form-group">
+                <label class="control-label col-md-4">合同起始时间：</label>
+                <div class="col-md-8">
+                    <input type="text" class="form-control datetimepicker" name="StartTime" placeholder="起始时间" />
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label col-md-4">对方单位：</label>
-            <div class="col-md-8">
-                <input type="text" class="form-control" name="" placeholder="对方单位" />
+            <div class="form-group">
+                <label class="control-label col-md-4">对方单位：</label>
+                <div class="col-md-8">
+                    <input type="text" class="form-control" name="Company" placeholder="对方单位" />
+                </div>
             </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">合同金额：</label>
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="Money" placeholder="金额" />
+                        <span class="input-group-addon">元</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">付款方式：</label>
+                <div class="col-md-8">
+                    <textarea class="form-control" name="PayWay" rows="6"></textarea>
+                </div>
+            </div>  
         </div>
-        <div class="form-group">
-            <label class="control-label col-md-4">合同金额：</label>
-            <div class="col-md-8">
-                <div class="input-group">
-                    <input type="text" class="form-control" name="" placeholder="金额" />
-                    <span class="input-group-addon">元</span>
+        <div class="col-md-6 col-xs-6">
+            <div class="form-group">
+                <label class="control-label col-md-4">填报人：</label>
+                <div class="col-md-8">
+                    <input type="text" name="Creater" class="form-control" placeholder="填报人" value="@(Identity.Name)" readonly />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">合同结束时间：</label>
+                <div class="col-md-8">
+                    <input type="text" class="form-control datetimepicker" name="EndTime" placeholder="结束时间(可选)" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">合同所属组织：</label>
+                <div class="col-md-8">
+                    <select name="ZtopCompany" class="form-control">
+                        @foreach(ZtopCompany company in Enum.GetValues(typeof(ZtopCompany)))
+                        {
+                            <option value="@(company)">@(company.GetDescription())</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">履约保证金：</label>
+                <div class="col-md-8">
+                    <div class="input-group" role="group">
+                        <input type="text" class="form-control" name="PerformanceBond" placeholder="履约保证金" />
+                        <span class="input-group-addon">元</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">合同相关文件：</label>
+                <div class="col-md-8">
+                    <button type="button" class="btn btn-success btn-sm" name="AddFile"><i class="glyphicon glyphicon-plus"></i> 添加文件</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-8 col-md-offset-4">
+                    <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i> 录入</button>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-md-6">
-       <div class="form-group">
-           <label class="control-label col-md-4">填报人：</label>
-           <div class="col-md-8">
-               <input type="text" name="" class="form-control" placeholder="填报人" readonly />
-           </div>
-       </div>
-        <div class="form-group">
-            <label class="control-label col-md-4">合同结束时间：</label>
-            <div class="col-md-8">
-                <input type="text" class="form-control" name="" placeholder="结束时间" />
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label col-md-4">合同所属组织：</label>
-            <div class="col-md-8">
-                <select name="" class="form-control">
-
-                </select>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label col-md-4">履约保证金：</label>
-            <div class="col-md-8">
-                <div class="input-group" role="group">
-                    <input type="text" class="form-control" name="" placeholder="" />
-                </div>
-            </div>
-        </div>
-    </div>
-    
- 
-    <div class="form-group">
-        <label class="control-label col-md-3">合同编号:</label>
-        <div class="col-md-8">
-            <input type="text" class="form-control" name="Coding" />
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="control-label col-md-3">合同名称:</label>
-        <div class="col-md-8">
-            <input type="text" class="form-control" name="Name" />
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="control-label col-md-3">签署单位：</label>
-        <div class="col-md-8">
-            <select name="ZtopCompany" class="form-control">
-                @foreach(ZtopCompany company in Enum.GetValues(typeof(ZtopCompany)))
-                {
-                    <option value="@(company)">@(company.GetDescription())</option>
-                }
-            </select>
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="control-label col-md-3">对方单位:</label>
-        <div class="col-md-8">
-            <input type="text" class="form-control" name="Company" />
-        </div>
-    </div>
-
-    <div class="form-group">
-        <div class="col-md-8 col-md-offset-3">
-            <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i> 录入</button>
-        </div>
-    </div>
+  
 </form>
+<div style="display:none">
+    <div id="Files">
+        <div class="input-group" style="margin-top:10px;">
+            <input type="file" name="file{Index}" class="form-control" />
+            <span class="input-group-btn">
+                <button class="btn btn-danger btn-remove" type="button"><i class="glyphicon glyphicon-remove-circle"></i></button>
+            </span>
+        </div>
+    </div>
+  
+</div>
 
 
 <script>
+    var fileHtml = $("#Files").html();
     $(function () {
-
-        $("#Contract").submit(function () {
-            var data = $(this).serialize();
-            $.request("/Finance/SaveContract", data, function (json) {
-                alert("成功创建项目合同!");
-                location.href = "/Finance/Detail?id=" + json.data;
+        var index = 0;
+        $("button[name='AddFile']").click(function () {
+            var replacthtml = fileHtml.replace(/{Index}/g, index++);
+            $(this).parent().append(replacthtml);
+            $("button.btn-remove").unbind("click").bind("click", function () {
+                $(this).parent().parent().remove();
             });
-            return false;
-        })
+        });
+
+        $(".datetimepicker").datetimepicker({
+            timepicker: false,
+            format: 'Y-m-d'
+        });
     })
 </script>

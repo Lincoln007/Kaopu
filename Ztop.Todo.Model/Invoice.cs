@@ -15,7 +15,6 @@ namespace Ztop.Todo.Model
     {
         public Invoice()
         {
-            Time = DateTime.Now;
             Coding = Time.Ticks.ToString();
         }
         [Key]

@@ -15,11 +15,15 @@ namespace Ztop.Todo.Model
     [Table("contracts")]
     public class Contract
     {
+        public Contract()
+        {
+            Coding = DateTime.Now.Ticks.ToString();
+        }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
         /// <summary>
-        /// 合同编号
+        /// 合同流水号
         /// </summary>
         [MaxLength(255)]
         public string Coding { get; set; }
@@ -48,6 +52,32 @@ namespace Ztop.Todo.Model
         public bool Deleted { get; set; }
         [Column(TypeName ="int")]
         public ZtopCompany ZtopCompany { get; set; }
+        /// <summary>
+        /// 合同起始时间
+        /// </summary>
+        public DateTime StartTime { get; set; }
+        /// <summary>
+        /// 合同结束时间
+        /// </summary>
+        public DateTime? EndTime { get; set; }
+        /// <summary>
+        /// 合同金额
+        /// </summary>
+        public double Money { get; set; }
+        /// <summary>
+        /// 履约保证金
+        /// </summary>
+        public double PerformanceBond { get; set; }
+        /// <summary>
+        /// 付款方式
+        /// </summary>
+        [MaxLength(1023)]
+        public string PayWay { get; set; }
+        /// <summary>
+        /// 合同相关文件
+        /// </summary>
+        [NotMapped]
+        public List<ContractFile> ContractFiles { get; set; }
 
         [NotMapped]
         public List<Invoice> Invoices { get; set; }
@@ -64,9 +94,13 @@ namespace Ztop.Todo.Model
 
     public enum ZtopCompany
     {
-        [Description("杭州智拓土地规划设计咨询有限公司")]
+        [Description("智拓规划公司")]
         Evaluation,
-        [Description("杭州智拓房地产土地评估咨询有限公司")]
-        Projection
+        [Description("智拓评估公司")]
+        Projection,
+        [Description("浙江大学")]
+        ZhejiangUniversity,
+        [Description("其他")]
+        Other
     }
 }

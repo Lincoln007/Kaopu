@@ -28,7 +28,11 @@ namespace Ztop.Todo.Web.Controllers
         public ActionResult SaveContract(Contract contract)
         {
             var id = Core.ContractManager.Save(contract);
-            return SuccessJsonResult(id);
+            if (HttpContext.Request.Files.Count > 0)
+            {
+                Core.ContractManager.SaveContractFile(HttpContext, id);
+            }
+            return RedirectToAction("Detail", new { id = id });
         }
 
 
@@ -38,6 +42,7 @@ namespace Ztop.Todo.Web.Controllers
             if (contract != null)
             {
                 contract.Invoices = Core.InvoiceManager.GetByCID(contract.ID);
+                contract.ContractFiles = Core.ContractManager.GetContractFiles(contract.ID);
             }
             ViewBag.Contract = contract;
             return View();

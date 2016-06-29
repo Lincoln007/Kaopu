@@ -32,7 +32,7 @@
 </div>
 
 <div class="modal fade" id="Apply" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -40,39 +40,53 @@
             </div>
             <form class="form-horizontal" method="post" action="/Finance/SaveInvoice" id="from-invoice">
                 <div class="modal-body">
-                    <input type="hidden" name="Applicant" value="@(Identity.Name)" />
                     <input type="hidden" name="CID" value="@(contract.ID)" />
-                    <div class="form-group">
-                        <label class="control-label col-md-3">开票单位:</label>
-                        <div class="col-md-8">
-                            <select name="ZtopCompany" class="form-control">
-                                @foreach (ZtopCompany company in Enum.GetValues(typeof(ZtopCompany)))
-                                {
-                                    <option value="@(company)">@(company.GetDescription())</option>
-                                }
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-md-3">对方单位:</label>
-                        <div class="col-md-8">
-                            <input type="text" class="form-control" name="OtherSideCompany" />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-md-3">发票金额：</label>
-                        <div class="col-md-8">
-                            <div class="input-group">
-                                <input type="text" class="form-control" name="Money" />
-                                <span class="input-group-addon">元</span>
+                    <div class="row">
+                        <div class="col-md-6 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">开票申请时间:</label>
+                                <div class="col-md-8">
+                                    <input type="text" name="Time" class="form-control" readonly="readonly" value="@(DateTime.Now.ToShortDateString())" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-4">开票单位：</label>
+                                <div class="col-md-8">
+                                    <select name="ZtopCompany" class="form-control">
+                                        <option value="@(ZtopCompany.Evaluation)">@(ZtopCompany.Evaluation.GetDescription())</option>
+                                        <option value="@(ZtopCompany.Projection)">@(ZtopCompany.Projection.GetDescription())</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-4">发票金额：</label>
+                                <div class="col-md-8">
+                                    <div class="input-group">
+                                        <input type="text" name="Money" placeholder="金额" class="form-control" />
+                                        <span class="input-group-addon">元</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label col-md-3">发票内容：</label>
-                        <div class="col-md-8">
-                            <input type="text" class="form-control" name="Content" />
+                        <div class="col-md-6 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">开票申请人：</label>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" name="Applicant" value="@(Identity.Name)" readonly="readonly" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-4">对方单位：</label>
+                                <div class="col-md-8">
+                                    <input type="text" name="OtherSideCompany" class="form-control" placeholder="对方单位" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-4">发票内容：</label>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" name="Content" placeholder="发票内容" />
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -143,22 +157,68 @@
     </div>
 </div>
 <hr />
+
+<table class="table table-bordered">
+    <tr>
+        <th>合同编号</th>
+        <td>@(contract.Coding)</td>
+        <th>填报人</th>
+        <td>@(contract.Creator)</td>
+
+    </tr>
+    <tr>
+        <th>合同名称</th>
+        <td colspan="3">@(contract.Name)</td>
+    </tr>
+    <tr>
+        <th>对方单位</th>
+        <td>@(contract.Company)</td>
+        <th>合同所属组织</th>
+        <td>@(contract.ZtopCompany.GetDescription())</td>
+    </tr>
+    <tr>
+        <th>合同起始时间</th>
+        <td>@(contract.StartTime.ToLongDateString())</td>
+        <th>合同结束时间</th>
+        <td>@(contract.EndTime.HasValue ? contract.EndTime.Value.ToShortDateString() : "/")</td>
+    </tr>
+    <tr>
+        <th>合同金额（元）</th>
+        <td>@(contract.Money)</td>
+        <th>履约保证金（元）</th>
+        <td>@(contract.PerformanceBond)</td>
+    </tr>
+    <tr>
+        <th>付款方式</th>
+        @if (!string.IsNullOrEmpty(contract.PayWay))
+            {
+            <td colspan="3">
+                @foreach (var item in contract.PayWay.Replace("\r\n", ";").Split(';'))
+                {
+                    <span>@(item)</span><br />
+                }
+            </td>
+        }
+    </tr>
+    <tr>
+        <th>相关文件</th>
+        <td colspan="3">
+            <table class="table table-bordered">
+                @foreach (var file in contract.ContractFiles)
+                {
+                    <tr>
+                        <td class="col-md-8"><a href="/@(file.SavePath)">@(file.FileName)</a> </td>
+                        <td>@(file.FileSize / 1024) kb</td>
+                    </tr>
+                }
+            </table>
+
+        </td>
+    </tr>
+</table>
+
 <div class="alert alert-success alert-dismissable" role="alert">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-    <table class="table table-bordered">
-        <tr>
-            <th>合同编号</th>
-            <td>@(contract.Coding)</td>
-            <th>合同名称</th>
-            <td>@(contract.Name)</td>
-        </tr>
-        <tr>
-            <th>对方单位</th>
-            <td>@(contract.Company)</td>
-            <th>签署单位</th>
-            <td>@(contract.ZtopCompany.GetDescription())</td>
-        </tr>
-    </table>
 </div>
 
 <hr />
