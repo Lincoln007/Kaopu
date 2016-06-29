@@ -3,7 +3,8 @@
     ViewBag.Title = "银行对账";
     Layout = "~/Views/Shared/_Layout.cshtml";
     Company company = ViewBag.Company;
-    
+    Bank PreBank = ViewBag.PreBank??new Bank();
+
 }
 
 
@@ -30,6 +31,7 @@
         <button class="btn btn-success" type="button" name="Save"><i class="glyphicon glyphicon-upload" ></i> 保存</button>
         <button type="button" class="btn btn-primary" TargetName="@(company.ToString())" name="Plus"><i class="glyphicon glyphicon-plus"></i>添加</button>
         <input type="hidden" name="Company" value="@(company)" />
+        <span class="text-info">上个月账户余额：@(PreBank.Balance)  元</span>
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -45,9 +47,36 @@
                     </td>
                 </tr>
             </thead>
-            <tbody id="@(company.ToString())">
+            <tbody id="Result">
 
             </tbody>
+            <tfoot id="@(company.ToString())">
+                <tr>
+                    <td><input type="text" name="Time" class="form-control" placeholder="交易日期" /></td>
+                    <td><input type="text" name="Pay" class="form-control" placeholder="支出" targetIndex="0" id="Pay0"/></td>
+                    <td><input type="text" name="Income" class="form-control" placeholder="收入" targetIndex="0" id="Income0" /></td>
+                    <td><input type="text" name="Balance" class="form-control" placeholder="账户余额" id="Balance0" readonly="readonly" /></td>
+                    <td><input type="text" name="Account" class="form-control" placeholder="对方单位" /></td>
+                    <td><input type="text" name="Summary" class="form-control" placeholder="摘要" /></td>
+                    <td style="width:20%;">
+                        <div class="col-md-6" style="padding:0px;">
+                            <select name="Cost" class="form-control" id="Cost0">
+                                @foreach (Cost cost in Enum.GetValues(typeof(Cost)))
+                                {
+                                    if (cost == Cost.Posting)
+                                    {
+                                        break;
+                                    }
+                                    <option value="@(cost)">@(cost.GetDescription())</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-6" style="padding:0px;" id="Append0">
+
+                        </div>
+                    </td>
+                </tr>
+            </tfoot>
         </table>
     </div>
     <div class="col-md-6 col-md-offset-6">
@@ -71,9 +100,9 @@
         <tbody id="add">
             <tr>
                 <td><input type="text" name="Time" class="form-control" placeholder="交易日期" /></td>
-                <td><input type="text" name="Income" class="form-control" placeholder="支出" targetIndex="{Index}" /></td>
-                <td><input type="text" name="Pay" class="form-control" placeholder="收入" targetIndex="{Index}" /></td>
-                <td><input type="text" name="Balance" class="form-control" placeholder="账户余额" /></td>
+                <td><input type="text" name="Pay" class="form-control" placeholder="支出" targetIndex="{Index}" /></td>
+                <td><input type="text" name="Income" class="form-control" placeholder="收入" targetIndex="{Index}" /></td>
+                <td><input type="text" name="Balance" class="form-control" placeholder="账户余额" id="Balance{Index}" readonly="readonly" /></td>
                 <td><input type="text" name="Account" class="form-control" placeholder="对方单位" /></td>
                 <td><input type="text" name="Summary" class="form-control" placeholder="摘要" /></td>
                 <td style="width:20%;">
@@ -98,7 +127,7 @@
         </tbody>
        
     </table>
-    <select name="Cost" class="form-control" id="Pay">
+    <select name="Cost" class="form-control" id="Income">
         @foreach (Cost cost in Enum.GetValues(typeof(Cost)))
             {
                 if (cost == Cost.Posting)
@@ -108,7 +137,7 @@
                 <option value="@(cost)">@(cost.GetDescription())</option>
         }
     </select>
-    <select name="Cost" class="form-control" id="Income">
+    <select name="Cost" class="form-control" id="Pay">
         @foreach (Cost cost in Enum.GetValues(typeof(Cost)))
         {
             var index = (int)cost;
@@ -136,9 +165,12 @@
     var appendCategoryhtml = $("#AppendCategory").html();
     $(function () {
 
-        var currentnumber = 0;
+        var currentnumber = 1;
+        var balance = 0;
 
         $("button[name='Plus']").click(function () {
+    
+
             var Targetname = $(this).attr("TargetName");
             var appendhtml = addhtml.replace(/{Index}/g, currentnumber);
             currentnumber++;
@@ -152,12 +184,34 @@
                 var targetIndex = $(this).attr("targetIndex");
                 $("#Cost" + targetIndex).empty().append(incomehtml);
                 $("#Append" + targetIndex).empty();
+            }).unbind("change").bind("change", function () {
+                var val = parseFloat($(this).val());
+                if (!isNaN(val)) {
+                    var targetIndex = $(this).attr("targetIndex");
+                    balance = balance + val;
+                    $("#Balance" + targetIndex).val(balance);
+                } else {
+                    alert("收入金额不是数字，请核对！");
+                    $(this).val("");
+                    return false;
+                }
+               
             });
-
             $("input[name='Pay']").unbind("focus").bind("focus", function () {
                 var targetIndex = $(this).attr("targetIndex");
                 $("#Cost" + targetIndex).empty().append(payhtml);
                 $("#Append" + targetIndex).empty();
+            }).unbind("change").bind("change", function () {
+                var val = parseFloat($(this).val());
+                if (!isNaN(val)) {
+                    var targetIndex = $(this).attr("targetIndex");
+                    balance = balance - val;
+                    $("#Balance"+targetIndex).val(balance);
+                } else {
+                    alert("支出金额不是数字，请核对！")
+                    $(this).val("");
+                    return false;
+                }
             });
             $("[name='Cost']").unbind("change").bind("change", function () {
                 var index = $(this).attr("id").replace("Cost", "");
@@ -172,40 +226,40 @@
             });
         });
 
-
-        @*$("button[name='Plus']").click(function () {
-            var Targetname = $(this).attr("TargetName");
-            var appendhtml = addhtml.replace(/{Index}/g, currentnumber);
-            currentnumber++;
-            $("#" + Targetname).append(appendhtml);
-            $("input[name='Time']").datetimepicker({
-                timepicker: false,
-                format: 'Y-m-d',
-                maxDate: '@(DateTime.Today.ToString("yyyy-MM-dd"))'
-            });
-            $(".btn-remove").unbind("click").bind("click", function () {
-                $(this).parent().parent().remove();
-            });
-
-            $("[name='Budget']").unbind("change").bind("change", function () {
+        $("input[name='Income']").focus(function () {
+            var targetIndex = $(this).attr("targetIndex");
+            $("#Cost" + targetIndex).empty().append(incomehtml);
+            $("#Append" + targetIndex).empty();
+        }).change(function () {
+            var val = parseFloat($(this).val());
+            if (!isNaN(val)) {
                 var targetIndex = $(this).attr("targetIndex");
-                var buget = $(this).val();
-                var replacehtml = buget == "Income" ? incomehtml : payhtml;
-                $("#Cost" + targetIndex).empty().append(replacehtml);
-                $("#Append" + targetIndex).empty();
-            });
-            $("[name='Cost']").unbind("change").bind("change", function () {
-                var index = $(this).attr("id").replace("Cost", "");
-                var cost = $(this).val();
-                if (cost != undefined && cost != "") {
-                    if (cost == "RealPay") {
-                        $("#Append" + index).empty().append(appendCategoryhtml);
-                    } else {
-                        $("#Append" + index).empty();
-                    }
-                }
-            });
-        });*@
+                balance = balance + val;
+                $("#Balance" + targetIndex).val(balance);
+            } else {
+                alert("收入金额不是数字，请核对！");
+                $(this).val("");
+                return false;
+            }
+        });
+
+        $("input[name='Pay']").focus(function () {
+            var targetIndex = $(this).attr("targetIndex");
+            $("#Cost" + targetIndex).empty().append(payhtml);
+            $("#Append" + targetIndex).empty();
+        }).change(function () {
+            var val = parseFloat($(this).val());
+            if (!isNaN(val)) {
+                var targetIndex = $(this).attr("targetIndex");
+                balance = balance - val;
+                $("#Balance" + targetIndex).val(balance);
+            } else {
+                alert("支出金额不是数字，请核对！")
+                $(this).val("");
+                return false;
+            }
+        });
+
 
         $("button[name='Save']").click(function () {
             var data = $("#Data").serialize();
@@ -217,6 +271,36 @@
                     window.location = "/Bank/Detail?id=" + json.data.ID;
                 }
             })
+        });
+
+        $("select[name='Year']").change(function () {
+            var year = $(this).val();
+            var month = $("select[name='Month']").val();
+            var company = $("input[name='Company']").val();
+            $.getJSON("/Bank/Gain", {
+                year: year,
+                month: month,
+                company: company
+            },
+            function (data) {
+                $("span .text-info").text("上个月余额：" + data.Balance+"元");
+            }
+            );
+        });
+
+        $("select[name='Month']").change(function () {
+            var year = $("select[name='Year']").val();
+            var month = $(this).val();
+            var company = $("input[name='Company']").val();
+            $.getJSON("/Bank/Gain", {
+                year: year,
+                month: month,
+                company: company
+            },
+          function (data) {
+              $("span .text-info").text("上个月余额：" + data.Balance + "元");
+          }
+          );
         });
 
 

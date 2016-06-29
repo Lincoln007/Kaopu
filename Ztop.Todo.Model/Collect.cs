@@ -82,6 +82,10 @@ namespace Ztop.Todo.Model
         public int Month { get; set; }
         [Column(TypeName ="int")]
         public Company Company { get; set; }
+        /// <summary>
+        /// 本月余额
+        /// </summary>
+        public double Balance { get; set; }
         [NotMapped]
         public List<Bill> Bills { get; set; }
         [NotMapped]

@@ -13,9 +13,6 @@
 
 <h2 class="text-center">杭州智拓@(bank.Company==Company.Evaluation?"房地产土地评估":"土地规划设计")咨询有限公司@(bank.Year)年@(bank.Month)月银行对账单</h2>
 
-
-
-@*<button type="button" class="btn btn-success" data-toggle="modal" data-target="#AddOne"><i class="glyphicon glyphicon-plus"></i>增加</button>*@
 <div class="modal fade" id="AddOne" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -110,10 +107,8 @@
                 <th>收入（元）</th>
                 <th>账户余额（元）</th>
                 <th class="text-center">对方单位</th>
-                <th colspan="2">
-                    摘要
-                </th>
-                <th style="width:20%;" class="text-center">类别</th>
+                <th>摘要</th>
+                <th colspan="2" class="text-center" style="width:20%;">类别</th>
             </tr>
         </thead>
         @if (!EditFlag)
@@ -148,21 +143,23 @@
                 @foreach(var item in bank.Bills)
                 {
                     <tr>
-                        <td><input type="text" name="Coding" class="form-control" value="@(item.Coding)" /></td>
                         <td><input type="text" name="Time" class="form-control" value="@(item.Time.ToString("yyyy-MM-dd"))" /></td>
-                        <td>
-                            <select name="Budget" class="form-control" targetIndex="@(currentNumber)">
-                                @foreach(Budget budget in Enum.GetValues(typeof(Budget)))
-                                {
-                                    <option value="@(budget)" @(budget==item.Budget?"selected=selected":"")>@(budget.GetDescription())</option>
-                                }
-                            </select>
-                        </td>
-                        <td><input type="text" name="Money" class="form-control" value="@(item.Money)" /></td>
-                        <td><input type="text" name="Account" class="form-control" value="@(item.Account)" /></td>
+                        @if (item.Budget == Budget.Income)
+                        {
+                            <td><input type="text" name="Pay" class="form-control"  placeholder="支出" targetIndex="@(currentNumber)"/></td>
+                            <td><input type="text" name="Income" class="form-control" placeholder="收入" value="@(item.Money)" targetIndex="@(currentNumber)" /></td>
+                        }
+                        else
+                        {
+                            <td><input type="text" name="Pay" class="form-control" placeholder="支出" value="@(item.Money)" targetIndex="@(currentNumber)" /></td>
+                            <td><input type="text" name="Income" class="form-control" placeholder="收入" value="" targetIndex="@(currentNumber)" /></td>
+                        }
+                        <td><input type="text" name="Balance" class="form-control" placeholder="账户余额" value="@(item.Balance)" /></td>
+                        <td><input type="text" name="Account" class="form-control" placeholder="对方单位" value="@(item.Account)" /></td>
+                        <td><input type="text" name="Summary" class="form-control" placeholder="摘要" value="@(item.Summary)" /></td>
                         <td>
                             <div class="col-md-6" style="padding:0px;">
-                                <select name="Cost" class="form-control" id="Cost@(currentNumber++)">
+                                <select name="Cost" class="form-control" id="Cost@(currentNumber)">
                                     @foreach (Cost cost in Enum.GetValues(typeof(Cost)))
                                     {
                                         if (item.Budget == Budget.Income)
@@ -186,7 +183,7 @@
                                     }
                                 </select>
                             </div>
-                            <div class="col-md-6" style="padding:0px;" id="Append{Index}">
+                            <div class="col-md-6" style="padding:0px;" id="Append@(currentNumber++)">
                                 @if (item.Category.HasValue)
                                 {
                                     <select name="Category" class="form-control">
@@ -195,15 +192,10 @@
                                             <option value="@(category)" @(item.Category.Value == category ? "selected=selected" : "")>@(category.GetDescription())</option>
                                         }
                                     </select>
-
                                 }
-                            </div>
-                           
+                            </div>  
                         </td>
-                        <td>
-                            <input type="text" name="Summary" class="form-control" value="@(item.Summary)" />
-                           
-                        </td>
+                      
                         <td>
                             <button type="button" class="btn btn-danger btn-xs btn-remove" style="float:right"><i class="glyphicon glyphicon-remove"></i></button>
                         </td>
@@ -228,18 +220,12 @@
     <table>
         <tbody id="add">
             <tr>
-                <td><input type="text" name="Coding" class="form-control" placeholder="编号" /></td>
                 <td><input type="text" name="Time" class="form-control" placeholder="交易日期" /></td>
-                <td>
-                    <select name="Budget" class="form-control" targetIndex="{Index}">
-                        @foreach (Budget budget in Enum.GetValues(typeof(Budget)))
-                        {
-                            <option value="@(budget)">@(budget.GetDescription())</option>
-                        }
-                    </select>
-                </td>
-                <td><input type="text" name="Money" class="form-control" placeholder="金额" /></td>
-                <td><input type="text" name="Account" class="form-control" placeholder="银行账号" /></td>
+                <td><input type="text" name="Pay" class="form-control" placeholder="支出" targetIndex="{Index}" /></td>
+                <td><input type="text" name="Income" class="form-control" placeholder="收入" targetIndex="{Index}" /></td>
+                <td><input type="text" name="Balance" class="form-control" placeholder="账户余额" /></td>
+                <td><input type="text" name="Account" class="form-control" placeholder="对方单位" /></td>
+                <td><input type="text" name="Summary" class="form-control" placeholder="备注/摘要" /></td>
                 <td>
                     <div class="col-md-6" style="padding:0px;">
                         <select name="Cost" class="form-control" id="Cost{Index}">
@@ -254,15 +240,9 @@
                         </select>
                     </div>
                    <div class="col-md-6" style="padding:0px;" id="Append{Index}">
-
                    </div>
                 </td>
-                <td>
-                    <input type="text" name="Summary" class="form-control" placeholder="备注/摘要" />
-                </td>
-                <td>
-                    <button type="button" class="btn btn-danger btn-xs btn-remove" style="float:right"><i class="glyphicon glyphicon-remove"></i></button>
-                </td>
+                <td><button type="button" class="btn btn-danger btn-xs btn-remove" style="float:right"><i class="glyphicon glyphicon-remove"></i></button></td>
             </tr>
         </tbody>
 
@@ -324,11 +304,16 @@
                 $(this).parent().parent().remove();
             });
 
-            $("[name='Budget']").unbind("change").bind("change",function(){
-                var targetIndex=$(this).attr("targetIndex");
-                var budget=$(this).val();
-                var replacehtml=budget=="Income"?incomehtml:payhtml;
-                $("#Cost"+targetIndex).empty().append(replacehtml);
+            $("input[name='Income']").unbind("focus").bind("focus",function(){
+                var targetIndex = $(this).attr("targetIndex");
+                $("#Cost" + targetIndex).empty().append(incomehtml);
+                $("#Append" + targetIndex).empty();
+            });
+
+            $("input[name='Pay']").unbind("focus").bind("focus",function(){
+                var targetIndex = $(this).attr("targetIndex");
+                $("#Cost" + targetIndex).empty().append(payhtml);
+                $("#Append" + targetIndex).empty();
             });
 
             $("[name='Cost']").unbind("change").bind("change",function(){
@@ -344,12 +329,6 @@
             });
         });
 
-        $("[name='Budget']").change(function(){
-            var targetIndex=$(this).attr("targetIndex");
-            var budget=$(this).val();
-            var replacehtml=budget=="Income"?incomehtml:payhtml;
-            $("#Cost"+targetIndex).empty().append(replacehtml);
-        });
 
         $("[name='Cost']").change(function(){
             var index=$(this).attr("id").replace("Cost","");

@@ -80,6 +80,7 @@
   <ItemGroup>
     <Compile Include="AttachmentManager.cs" />
     <Compile Include="AuthorizeManager.cs" />
+    <Compile Include="BankManager.cs" />
     <Compile Include="BillManager.cs" />
     <Compile Include="CommentManager.cs" />
     <Compile Include="ContractManager.cs" />

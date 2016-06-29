@@ -65,6 +65,10 @@ namespace Ztop.Todo.Manager
             var j = 0;
             for(var i = 0; i < count; i++)
             {
+                if (time[i].Year == 1)
+                {
+                    continue;
+                }
                 var budget = income[i] > 0 ? Budget.Income : Budget.Expense;
                 var bill = new Bill()
                 {
@@ -219,16 +223,26 @@ namespace Ztop.Todo.Manager
                             cell = ExcelClass.GetCell(row, 0, modelRow);
                             cell.SetCellValue(serial++);
                             ExcelClass.GetCell(row, 1, modelRow).SetCellValue(bill.Time.ToShortDateString());
-                            ExcelClass.GetCell(row, 2, modelRow).SetCellValue(bill.Budget.GetDescription());
-                            ExcelClass.GetCell(row, 3, modelRow).SetCellValue(bill.Money);
-                            ExcelClass.GetCell(row, 4, modelRow).SetCellValue(bill.Account);
+                            if (bill.Budget == Budget.Income)
+                            {
+                                ExcelClass.GetCell(row, 2, modelRow);
+                                ExcelClass.GetCell(row, 3, modelRow).SetCellValue(bill.Money);
+                            }
+                            else
+                            {
+                                ExcelClass.GetCell(row, 2, modelRow).SetCellValue(bill.Money);
+                                ExcelClass.GetCell(row, 3, modelRow);
+                            }
+                            ExcelClass.GetCell(row, 4, modelRow).SetCellValue(bill.Balance);
+                            ExcelClass.GetCell(row, 5, modelRow).SetCellValue(bill.Account);
+                            ExcelClass.GetCell(row, 6, modelRow).SetCellValue(bill.Summary);
                             var description = bill.Cost.GetDescription();
                             if (bill.Category.HasValue)
                             {
                                 description += "-" + bill.Category.Value.GetDescription();
                             }
-                            ExcelClass.GetCell(row, 5, modelRow).SetCellValue(description);
-                            ExcelClass.GetCell(row, 6, modelRow).SetCellValue(bill.Summary);
+                            ExcelClass.GetCell(row, 7, modelRow).SetCellValue(description);
+                     
                         }
                     }
                    

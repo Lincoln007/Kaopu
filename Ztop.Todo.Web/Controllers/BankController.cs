@@ -25,6 +25,19 @@ namespace Ztop.Todo.Web.Controllers
         public ActionResult Create(Company company)
         {
             ViewBag.Company = company;
+            var year = DateTime.Now.Year;
+            var month = DateTime.Now.Month-1;
+            if (month == 1)
+            {
+                year--;
+                month = 12;
+            }
+            else
+            {
+                month--;
+            }
+            var PreBank = Core.BankManager.GetBank(year, month, company);
+            ViewBag.PreBank = PreBank;
             return View();
         }
 
@@ -48,6 +61,25 @@ namespace Ztop.Todo.Web.Controllers
             }
            
             return SuccessJsonResult(bank);
+        }
+
+        public ActionResult SaveOne(int year,int month,Company company,DateTime time,double income,double pay,double balance,string account,string summary,Cost cost,Category category)
+        {
+            var bank = Core.BillManager.GetBank(year, month, company);
+            var id = Core.BillManager.Save(new Bill()
+            {
+                Time = time,
+                Money = income > 0 ? income : pay,
+                Account = account,
+                Balance = balance,
+                Budget = income > 0 ? Budget.Income : Budget.Expense,
+                Summary = summary,
+                Remark = summary,
+                Cost = cost,
+                Category = category,
+                BID = bank.ID
+            });
+            return SuccessJsonResult();
         }
 
         public ActionResult Detail(int id,bool edit=false)
@@ -97,6 +129,21 @@ namespace Ztop.Todo.Web.Controllers
 
             }
             return RedirectToAction("Detail", new { id = bank.ID });
+        }
+
+        public ActionResult Gain(int year,int month,Company company)
+        {
+            if (month == 1)
+            {
+                year--;
+                month = 12;
+            }
+            else
+            {
+                month--;
+            }
+            var bank = Core.BankManager.GetBank(year, month, company);
+            return Json(bank, JsonRequestBehavior.AllowGet);
         }
     }
 }
