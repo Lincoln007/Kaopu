@@ -13,7 +13,7 @@
         if (!contract.Archived)
         {
             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#Apply"><i class="glyphicon glyphicon-pencil"></i> 申请开具发票</button>
-            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#Edit"><i class="glyphicon glyphicon-edit"></i>编辑合同</button>
+            <a href="/Finance/CreateContract?id=@(contract.ID)" class="btn btn-info"> <i class="glyphicon glyphicon-edit"></i>编辑合同</a>
             <button type="button" class="btn btn-primary btn-archive" tabindex="@(contract.ID)"><i class="glyphicon glyphicon-lock"></i>归档合同</button>
             <button type="button" class="btn btn-danger" tabindex="@(contract.ID)"><i class="glyphicon glyphicon-remove"></i>删除合同</button>
         }
@@ -112,37 +112,10 @@
             </div>
             <form class="form-horizontal" method="post" action="/Finance/Edit" id="Edit-Contract">
                 <div class="modal-body">
-                    <input type="hidden" name="ID" value="@(contract.ID)" />
-                    <input type="hidden" name="Creator" value="@(contract.Creator)" />
-                    <div class="form-group">
-                        <label class="control-label col-md-3">合同编号：</label>
-                        <div class="col-md-8">
-                            <input type="text" name="Coding" class="form-control" value="@(contract.Coding)" />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-md-3">合同名称：</label>
-                        <div class="col-md-8">
-                            <input type="text" name="Name" class="form-control" value="@(contract.Name)" />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-md-3">对方单位：</label>
-                        <div class="col-md-8">
-                            <input type="text" name="Company" class="form-control" value="@(contract.Company)" />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-md-3">签署单位：</label>
-                        <div class="col-md-8">
-                            <select name="ZtopCompany" class="form-control">
-                                @foreach(ZtopCompany company in Enum.GetValues(typeof(ZtopCompany)))
-                                {
-                                    <option value="@(company)" @(contract.ZtopCompany==company?"checked=checked":"")>@(company.GetDescription())</option>
-                                }
-                            </select>
-                        </div>
-                    </div>
+                   
+                   
+                   
+                  
                 </div>
                 <div class="modal-footer">
                     <div class="form-group">
@@ -217,9 +190,6 @@
     </tr>
 </table>
 
-<div class="alert alert-success alert-dismissable" role="alert">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-</div>
 
 <hr />
 
@@ -238,7 +208,7 @@
                 <th>发票开出时间</th>
                 <th>发票编号</th>
                 <th>发票状态</th>
-                <th class="col-md-2">操作</th>
+                <th class="col-md-2 col-xs-2 col-sm-2">操作</th>
             </tr>
         </thead>
         <tbody>
@@ -249,7 +219,7 @@
                         @(invoice.Coding)   
                     </td>
                     <td>@(invoice.Applicant)</td>
-                    <td>@(invoice.Time.ToLongDateString()) @(invoice.Time.ToLongTimeString())</td>
+                    <td>@(invoice.Time.ToShortDateString())</td>
                     <td>@(invoice.ZtopCompany.GetDescription())</td>
                     <td>@(invoice.OtherSideCompany)</td>
                     <td>@(invoice.Money)</td>
@@ -412,6 +382,11 @@
 }
 <script>
     $(function () {
+        $("input.datetimepicker").datetimepicker({
+            timepicker:false,
+            format:'Y-m-d'
+        });
+
         $("#from-invoice").submit(function () {
             var data = $(this).serialize();
             $.request("/Finance/SaveInvoice", data, function (json) {
@@ -438,14 +413,17 @@
         });
 
         $("button.btn-danger").click(function(){
-            var index=$(this).attr("tabindex");
-            $.request("/Finance/Delete?id="+index,null,function(json){
-                alert(json.content);
-                if(json.result==1){
-                    location.href="/Finance/Index";
-                }
-                return false;
-            });
+            if(confirm("您确定要删除本项目合同吗？")){
+                var index=$(this).attr("tabindex");
+                $.request("/Finance/Delete?id="+index,null,function(json){
+                    alert(json.content);
+                    if(json.result==1){
+                        location.href="/Finance/Index";
+                    }
+                    return false;
+                });
+            }
+          
             return false;
         });
 

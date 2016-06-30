@@ -15,5 +15,9 @@ namespace Ztop.Todo.Model
         [MaxLength(255)]
         public string FileName { get; set; }
         public int FileSize { get; set; }
+        /// <summary>
+        /// 是否移除
+        /// </summary>
+        public bool Remove { get; set; }
     }
 }

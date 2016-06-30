@@ -36,8 +36,6 @@
             </div>
         </div>
     </div>
-
-
     <div class="col-md-6">
         <div class="panel panel-green">
             <div class="panel panel-heading">
@@ -52,6 +50,58 @@
                         <th>对方单位</th>
                     </tr>
                     @foreach (var contract in list.Where(e => e.ZtopCompany == ZtopCompany.Projection))
+                    {
+                        <tr>
+                            <td><a href="/Finance/Detail?id=@(contract.ID)">@(contract.Coding)</a> </td>
+                            <td>@(contract.Name)</td>
+                            <td>@(contract.Company)</td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel panel-primary">
+            <div class="panel panel-heading">
+                <h3 class="panel-title text-center">@(ZtopCompany.ZhejiangUniversity.GetDescription())</h3>
+            </div>
+            <div class="panel panel-body">
+                <a href="/Finance/ContractSearch?ztopCompany=@(ZtopCompany.ZhejiangUniversity.GetDescription())" style="float:right;"><i class="glyphicon glyphicon-info-sign"></i>更多</a>
+                <table class="table table-bordered">
+                    <tr>
+                        <th>合同编号</th>
+                        <th>合同名称</th>
+                        <th>对方单位</th>
+                    </tr>
+                    @foreach (var contract in list.Where(e => e.ZtopCompany == ZtopCompany.ZhejiangUniversity))
+                    {
+                        <tr>
+                            <td><a href="/Finance/Detail?id=@(contract.ID)">@(contract.Coding)</a> </td>
+                            <td>@(contract.Name)</td>
+                            <td>@(contract.Company)</td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-info">
+            <div class="panel panel-heading">
+                <h3 class="panel-title text-center">@(ZtopCompany.Other.GetDescription())</h3>
+            </div>
+            <div class="panel panel-body">
+                <a href="/Finance/ContractSearch?ztopCompany=@(ZtopCompany.Other.GetDescription())" style="float:right;"><i class="glyphicon glyphicon-info-sign"></i>更多</a>
+                <table class="table table-bordered">
+                    <tr>
+                        <th>合同编号</th>
+                        <th>合同名称</th>
+                        <th>对方单位</th>
+                    </tr>
+                    @foreach (var contract in list.Where(e => e.ZtopCompany == ZtopCompany.Other))
                     {
                         <tr>
                             <td><a href="/Finance/Detail?id=@(contract.ID)">@(contract.Coding)</a> </td>

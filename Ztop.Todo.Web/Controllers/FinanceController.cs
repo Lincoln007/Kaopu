@@ -19,18 +19,31 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
 
-        public ActionResult CreateContract()
+        public ActionResult CreateContract(int id=0)
         {
+            if (id > 0)
+            {
+                var contract = Core.ContractManager.Get(id);
+                if (contract != null)
+                {
+                    contract.ContractFiles = Core.ContractFileManager.GetContractFiles(contract.ID);
+                }
+                ViewBag.Contract = contract;
+            }
             return View();
         }
 
         [HttpPost]
-        public ActionResult SaveContract(Contract contract)
+        public ActionResult SaveContract(Contract contract,int[] leaves)
         {
             var id = Core.ContractManager.Save(contract);
+            if (leaves != null && leaves.Count() > 0)
+            {
+                Core.ContractFileManager.Update(leaves, id);
+            }
             if (HttpContext.Request.Files.Count > 0)
             {
-                Core.ContractManager.SaveContractFile(HttpContext, id);
+                Core.ContractFileManager.SaveContractFile(HttpContext, id);
             }
             return RedirectToAction("Detail", new { id = id });
         }
@@ -42,7 +55,7 @@ namespace Ztop.Todo.Web.Controllers
             if (contract != null)
             {
                 contract.Invoices = Core.InvoiceManager.GetByCID(contract.ID);
-                contract.ContractFiles = Core.ContractManager.GetContractFiles(contract.ID);
+                contract.ContractFiles = Core.ContractFileManager.GetContractFiles(contract.ID);
             }
             ViewBag.Contract = contract;
             return View();
@@ -68,7 +81,7 @@ namespace Ztop.Todo.Web.Controllers
 
         public ActionResult CreateInvoice()
         {
-            ViewBag.Contract = Core.ContractManager.Search(new ContractParameter() { Archived = false });
+            ViewBag.Contract = Core.ContractManager.Search(new ContractParameter() { Archived = false,Deleted=false });
             return View();
         }
 
@@ -117,6 +130,12 @@ namespace Ztop.Todo.Web.Controllers
             ViewBag.Invoices = dict;
             return View();
         }
+        public ActionResult SearchContract(string name,string company,DateTime? startTime,DateTime? endTime)
+        {
+            var list = Core.ContractManager.Search(new ContractParameter() { Name = name, OtherSide = company, StartTime = startTime, EndTime = endTime,Archived=false,Deleted=false });
+            return Json(list, JsonRequestBehavior.AllowGet);
+        }
+
 
         public ActionResult SearchInvoice(string key)
         {

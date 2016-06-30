@@ -3,15 +3,20 @@
     ViewBag.Title = "申请开具发票";
     Layout = "~/Views/Shared/_Layout.cshtml";
     List<Contract> Contracts = ViewBag.Contract;
-    Dictionary<ZtopCompany, List<Contract>> dict = Contracts.GroupBy(e => e.ZtopCompany).ToDictionary(e => e.Key, e => e.ToList());
+    //Dictionary<ZtopCompany, List<Contract>> dict = Contracts.GroupBy(e => e.ZtopCompany).ToDictionary(e => e.Key, e => e.ToList());
 }
 
 <h2 class="text-center">申请开具发票</h2>
-<form class="form-horizontal" method="post" action="/Finance/SaveInvoice" id="Create">
-    <div class="row">
-        <div class="col-md-5">
-            <h3 class="text-center">发票基本信息</h3>
-            <input type="hidden" name="Applicant" value="@(Identity.Name)" />
+<div class="row">
+
+    <form class="form-horizontal" method="post" action="/Finance/SaveInvoice" id="Create">
+        <div class="col-md-6 col-xs-6 col-sm-6">
+            <div class="form-group">
+                <label class="control-label col-md-4">开票申请时间：</label>
+                <div class="col-md-8">
+                    <input type="text" name="Time" class="form-control" value="@(DateTime.Now.ToShortDateString())" readonly="readonly" />
+                </div>
+            </div>
             <div class="form-group">
                 <label class="control-label col-md-4">开票单位：</label>
                 <div class="col-md-8">
@@ -24,12 +29,6 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-md-4">对方单位：</label>
-                <div class="col-md-8">
-                    <input type="text" name="OtherSideCompany" class="form-control" />
-                </div>
-            </div>
-            <div class="form-group">
                 <label class="control-label col-md-4">发票金额：</label>
                 <div class="col-md-8">
                     <div class="input-group">
@@ -38,63 +37,148 @@
                     </div>
                 </div>
             </div>
+          
+        </div>
+        <div class="col-md-6 col-sm-6 col-xs-6">
+            <div class="form-group">
+                <label class="control-label col-md-4">开票申请人：</label>
+                <div class="col-md-8">
+                    <input type="text" name="Applicant" value="@(Identity.Name)" readonly="readonly" class="form-control" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">对方单位：</label>
+                <div class="col-md-8">
+                    <input type="text" name="OtherSideCompany" class="form-control" />
+                </div>
+            </div>
             <div class="form-group">
                 <label class="control-label col-md-4">发票内容：</label>
                 <div class="col-md-8">
                     <input type="text" name="Content" class="form-control" />
                 </div>
             </div>
+        </div>
+        <div class="col-md-12">
             <div class="form-group">
-                <div class="col-md-8 col-md-offset-4">
+                <label class="control-label col-md-2">项目合同：</label>
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <input type="hidden" name="CID" />
+                        <input type="text" name="ContractName" class="form-control" placeholder="项目合同" readonly="readonly" />
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#Project"><i class="glyphicon glyphicon-th-list"></i></button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-8 col-md-offset-2">
                     <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i>申请</button>
                     <button type="button" class="btn btn-default" onclick="history.back();"><i class="glyphicon glyphicon-arrow-left"></i>返回</button>
                 </div>
             </div>
         </div>
-        <div class="col-md-7">
-            <h3 class="text-center">合同</h3>
-            @foreach (var entry in dict)
-            {
-                <div class="panel panel-default">
-                    <div class="panel-heading">@(entry.Key.GetDescription())</div>
-                    <div class="panel-body">
-                        <table class="table" style="margin-bottom:0px;">
+    </form>
+    <div class="modal fade" id="Project" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">项目合同</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-inline">
+                        <div class="form-group">
+                            <label class="sr-only">时间：</label>
+                            <div class="input-group">
+                                <input type="text" name="StartTime" class="form-control datetimepicker" placeholder="起始时间" />
+                                <span class="input-group-addon">至</span>
+                                <input type="text" name="EndTime" class="form-control datetimepicker" placeholder="结束时间" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="sr-only">合同名称：</label>
+                            <input type="text" class="form-control" name="Name" placeholder="合同名称关键字" />
+                        </div>
+                        <div class="form-group">
+                            <label class="sr-only">对方单位：</label>
+                            <input type="text" class="form-control" name="Company" placeholder="对方单位关键字" />
+                        </div>
+                        <button type="button" class="btn btn-success btn-search"><i class="glyphicon glyphicon-search"></i>筛选</button>
+                    </form>
+                    <div class="">
+                        <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th>合同编号</th>
                                     <th>合同名称</th>
                                     <th>对方单位</th>
-                                    <th>填写人</th>
-                                    <th>签署单位</th>
+                                    <th>合同金额（元）</th>
+                                    <th></th>
                                 </tr>
                             </thead>
-                            @foreach (var contract in entry.Value)
-                            {
-                                <tr>
-                                    <td style="padding:0px;">
-                                        <label class="radio-inline">
-                                            <input type="radio" name="CID" value="@(contract.ID)" />@(contract.Coding)
-                                        </label>
-                                    </td>
-                                    <td>@(contract.Name)</td>
-                                    <td>@(contract.Company)</td>
-                                    <td>@(contract.Creator)</td>
-                                    <td>@(contract.ZtopCompany.GetDescription())</td>
-                                </tr>
-                            }
+                            <tbody id="Contract-Result">
+
+                            </tbody>
                         </table>
                     </div>
                 </div>
-            }
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove"></i> 取消</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="glyphicon glyphicon-ok"></i> 确定</button>
+                </div>
+            </div>
         </div>
     </div>
   
+</div>
 
-   
-</form>
+
+
+
+
+
 
 <script>
     $(function () {
+
+        $("input.datetimepicker").datetimepicker({
+            timepicker: false,
+            format:'Y-m-d'
+        });
+
+        $("button.btn-search").click(function () {
+            var startTime = $("input[name='StartTime']").val();
+            var endTime = $("input[name='EndTime']").val();
+            var name = $("input[name='Name']").val();
+            var company = $("input[name='Company']").val();
+            $.getJSON("/Finance/SearchContract", {
+                startTime: startTime,
+                endTime: endTime,
+                name: name,
+                company: company
+            },function (data) {
+                $("#Contract-Result").empty();
+                var html = "";
+                $.each(data, function (index, value) {
+                    var appendhtml = "<tr index='"+value.ID+"'><td name='Name"+value.ID+"'>" + value.Name + "</td><td>" + value.Company + "</td><td>" + value.Money + "</td><td name='"+value.ID+"'><i class='glyphicon glyphicon-refresh'></i></td></tr>";
+                    html += appendhtml;
+                });
+                $("#Contract-Result").append(html);
+                $("#Contract-Result>tr").unbind("click").bind("click", function () {
+                    $("#Contract-Result>tr").each(function () {
+                        $(this).removeClass("success");
+                        var index = $(this).attr("index");
+                        $("td[name='" + index + "']").empty().append("<i class='glyphicon glyphicon-refresh'></i>");
+                    });
+                    $(this).addClass("success");
+                    var Index = $(this).attr("index");
+                    $("input[name='CID']").val(Index);
+                    $("input[name='ContractName']").val($("td[name='Name" + Index + "']").text());
+                    $("td[name='"+Index+"']").empty().append("<i class='glyphicon glyphicon-ok'></i>")
+                });
+            });
+        });
         $("#Create").submit(function () {
             var data = $(this).serialize();
             $.request("/Finance/SaveInvoice", data, function (json) {

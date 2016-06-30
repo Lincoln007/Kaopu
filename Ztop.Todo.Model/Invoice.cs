@@ -15,7 +15,7 @@ namespace Ztop.Todo.Model
     {
         public Invoice()
         {
-            Coding = Time.Ticks.ToString();
+            Coding = DateTime.Now.Ticks.ToString();
         }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

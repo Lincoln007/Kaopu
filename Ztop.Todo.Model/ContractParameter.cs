@@ -10,5 +10,8 @@ namespace Ztop.Todo.Model
     {
         public string Name { get; set; }
         public bool? Archived { get; set; }
+        public bool? Deleted { get; set; }
+        public DateTime? StartTime { get; set; }
+        public DateTime? EndTime { get; set; }
     }
 }

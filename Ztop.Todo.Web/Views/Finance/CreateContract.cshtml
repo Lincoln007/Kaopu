@@ -2,37 +2,39 @@
 @{
     ViewBag.Title = "输入合同信息";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    Contract contract = ViewBag.Contract;
 }
 
 <h3 class="text-center">录入合同</h3>
 
 <form class="form-horizontal" id="Contract" action="/Finance/SaveContract" method="post" enctype="multipart/form-data">
-    <input type="hidden" name="Creator" value="@(Identity.Name)" />
     <div class="row">
         <div class="col-md-6 col-xs-6">
+            <input type="hidden" name="ID" value="@(contract==null?"":contract.ID.ToString())" />
+            <input type="hidden" name="Coding" value="@(contract==null?DateTime.Now.Ticks.ToString():contract.Coding)" />
             <div class="form-group">
                 <label class="control-label col-md-4">合同名称：</label>
                 <div class="col-md-8">
-                    <input type="text" class="form-control" name="Name" placeholder="合同名称" />
+                    <input type="text" class="form-control" name="Name" placeholder="合同名称" value="@(contract==null?"":contract.Name)" />
                 </div>
             </div>
             <div class="form-group">
                 <label class="control-label col-md-4">合同起始时间：</label>
                 <div class="col-md-8">
-                    <input type="text" class="form-control datetimepicker" name="StartTime" placeholder="起始时间" />
+                    <input type="text" class="form-control datetimepicker" name="StartTime" placeholder="起始时间" value="@(contract==null?"":contract.StartTime.ToString("yyyy-MM-dd"))" />
                 </div>
             </div>
             <div class="form-group">
                 <label class="control-label col-md-4">对方单位：</label>
                 <div class="col-md-8">
-                    <input type="text" class="form-control" name="Company" placeholder="对方单位" />
+                    <input type="text" class="form-control" name="Company" placeholder="对方单位" value="@(contract==null?"":contract.Company)" />
                 </div>
             </div>
             <div class="form-group">
                 <label class="control-label col-md-4">合同金额：</label>
                 <div class="col-md-8">
                     <div class="input-group">
-                        <input type="text" class="form-control" name="Money" placeholder="金额" />
+                        <input type="text" class="form-control" name="Money" placeholder="金额" value="@(contract==null?"":contract.Money.ToString())"/>
                         <span class="input-group-addon">元</span>
                     </div>
                 </div>
@@ -40,7 +42,7 @@
             <div class="form-group">
                 <label class="control-label col-md-4">付款方式：</label>
                 <div class="col-md-8">
-                    <textarea class="form-control" name="PayWay" rows="6"></textarea>
+                    <textarea class="form-control" name="PayWay" rows="6">@(contract==null?"":contract.PayWay)</textarea>
                 </div>
             </div>  
         </div>
@@ -48,13 +50,13 @@
             <div class="form-group">
                 <label class="control-label col-md-4">填报人：</label>
                 <div class="col-md-8">
-                    <input type="text" name="Creater" class="form-control" placeholder="填报人" value="@(Identity.Name)" readonly />
+                    <input type="text" name="Creator" class="form-control" placeholder="填报人" value="@(contract==null?Identity.Name:contract.Creator)" readonly />
                 </div>
             </div>
             <div class="form-group">
                 <label class="control-label col-md-4">合同结束时间：</label>
                 <div class="col-md-8">
-                    <input type="text" class="form-control datetimepicker" name="EndTime" placeholder="结束时间(可选)" />
+                    <input type="text" class="form-control datetimepicker" name="EndTime" placeholder="结束时间(可选)" value="@(contract!=null&&contract.EndTime.HasValue?contract.EndTime.Value.ToString("yyyy-MM-dd"):"")" />
                 </div>
             </div>
             <div class="form-group">
@@ -63,7 +65,7 @@
                     <select name="ZtopCompany" class="form-control">
                         @foreach(ZtopCompany company in Enum.GetValues(typeof(ZtopCompany)))
                         {
-                            <option value="@(company)">@(company.GetDescription())</option>
+                            <option value="@(company)" @(contract!=null&&contract.ZtopCompany==company?"selected=selected":"")>@(company.GetDescription())</option>
                         }
                     </select>
                 </div>
@@ -72,7 +74,7 @@
                 <label class="control-label col-md-4">履约保证金：</label>
                 <div class="col-md-8">
                     <div class="input-group" role="group">
-                        <input type="text" class="form-control" name="PerformanceBond" placeholder="履约保证金" />
+                        <input type="text" class="form-control" name="PerformanceBond" placeholder="履约保证金"  value="@(contract==null?"":contract.PerformanceBond.ToString())" />
                         <span class="input-group-addon">元</span>
                     </div>
                 </div>
@@ -80,7 +82,21 @@
             <div class="form-group">
                 <label class="control-label col-md-4">合同相关文件：</label>
                 <div class="col-md-8">
-                    <button type="button" class="btn btn-success btn-sm" name="AddFile"><i class="glyphicon glyphicon-plus"></i> 添加文件</button>
+                    <button type="button" class="btn btn-success btn-sm" name="AddFile"><i class="glyphicon glyphicon-plus"></i> 添加文件</button><span class="text-info">仅支持小于100M文件</span>
+                    @if (contract != null && contract.ContractFiles != null)
+                    {
+                        foreach (var file in contract.ContractFiles)
+                        {
+                            <div class="input-group" style="margin-top:10px;">
+                                <input type="hidden" name="leaves" value="@(file.ID)" /> 
+                                <input type="text"  class="form-control" value="@(file.FileName)" readonly="readonly" />
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-danger btn-remove"><i class="glyphicon glyphicon-remove-circle"></i></button>
+                                </span>
+                            </div>
+                        }
+
+                    }
                 </div>
             </div>
             <div class="form-group">
@@ -117,6 +133,9 @@
             });
         });
 
+        $("button.btn-remove").click(function () {
+            $(this).parent().parent().remove();
+        });
         $(".datetimepicker").datetimepicker({
             timepicker: false,
             format: 'Y-m-d'

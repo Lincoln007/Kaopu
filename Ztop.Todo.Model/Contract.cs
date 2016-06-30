@@ -15,10 +15,6 @@ namespace Ztop.Todo.Model
     [Table("contracts")]
     public class Contract
     {
-        public Contract()
-        {
-            Coding = DateTime.Now.Ticks.ToString();
-        }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
