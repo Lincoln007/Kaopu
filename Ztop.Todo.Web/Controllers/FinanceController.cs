@@ -36,6 +36,10 @@ namespace Ztop.Todo.Web.Controllers
         [HttpPost]
         public ActionResult SaveContract(Contract contract,int[] leaves)
         {
+            if (string.IsNullOrEmpty(contract.Department))
+            {
+                contract.Department = Core.UserManager.GetGroupName(Identity.Name);
+            }
             var id = Core.ContractManager.Save(contract);
             if (leaves != null && leaves.Count() > 0)
             {
@@ -251,6 +255,7 @@ namespace Ztop.Todo.Web.Controllers
                 parameter.ZtopCompany = EnumHelper.GetEnum<ZtopCompany>(ztopCompany);
             }
             ViewBag.Results = Core.ContractManager.Search(parameter);
+            ViewBag.Department = Core.UserManager.GetUserGroups().Select(e => e.Name).ToList();
             ViewBag.Parameter = parameter;
             return View(); 
         }

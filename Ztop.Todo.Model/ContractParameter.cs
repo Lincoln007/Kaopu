@@ -13,5 +13,12 @@ namespace Ztop.Todo.Model
         public bool? Deleted { get; set; }
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
+        
     }
+    //public enum ContractState
+    //{
+    //    None,
+    //    Part,
+    //    ALL
+    //}
 }

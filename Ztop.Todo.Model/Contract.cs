@@ -65,6 +65,10 @@ namespace Ztop.Todo.Model
         /// </summary>
         public double PerformanceBond { get; set; }
         /// <summary>
+        /// 所在部门
+        /// </summary>
+        public string Department { get; set; }
+        /// <summary>
         /// 付款方式
         /// </summary>
         [MaxLength(1023)]

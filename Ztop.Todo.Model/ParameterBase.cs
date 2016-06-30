@@ -16,6 +16,23 @@ namespace Ztop.Todo.Model
         /// 对方单位
         /// </summary>
         public string OtherSide { get; set; }
+   
+        /// <summary>
+        /// 到账情况
+        /// </summary>
+        public Recevied? Recevied { get; set; }
+        /// <summary>
+        /// 最小值金额
+        /// </summary>
+        public double? MinMoney { get; set; }
+        /// <summary>
+        /// 最大值金额
+        /// </summary>
+        public double? MaxMoney { get; set; }
+        /// <summary>
+        /// 申请人所在部门
+        /// </summary>
+        public string Department { get; set; }
         public PageParameter Page { get; set; }
     }
 }

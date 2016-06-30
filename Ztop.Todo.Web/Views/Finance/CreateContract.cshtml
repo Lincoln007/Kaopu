@@ -12,6 +12,7 @@
         <div class="col-md-6 col-xs-6">
             <input type="hidden" name="ID" value="@(contract==null?"":contract.ID.ToString())" />
             <input type="hidden" name="Coding" value="@(contract==null?DateTime.Now.Ticks.ToString():contract.Coding)" />
+            <input type="hidden" name="Department" value="@(contract==null?"":contract.Department)" />
             <div class="form-group">
                 <label class="control-label col-md-4">合同名称：</label>
                 <div class="col-md-8">

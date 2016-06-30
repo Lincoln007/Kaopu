@@ -15,10 +15,12 @@ namespace Ztop.Todo.Manager
             {
                 throw new Exception("invoice 为 null");
             }
+            if (string.IsNullOrEmpty(invoice.GroupName))
+            {
+                invoice.GroupName = Core.UserManager.GetGroupName(invoice.Applicant);
+            }
             using (var db = GetDbContext())
             {
-                var entry = db.UserGroupViews.FirstOrDefault(e => e.RealName == invoice.Applicant);
-                invoice.GroupName = entry == null ? null : entry.Name;
                 db.Invoices.Add(invoice);
                 db.SaveChanges();
                 return invoice.ID;

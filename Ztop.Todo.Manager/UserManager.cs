@@ -182,5 +182,14 @@ namespace Ztop.Todo.Manager
             }
             return 0;
         }
+
+        public string GetGroupName(string userName)
+        {
+            using (var db = GetDbContext())
+            {
+                var entry = db.UserGroupViews.FirstOrDefault(e => e.RealName == userName);
+                return entry == null ? null : entry.Name;
+            }
+        }
     }
 }
