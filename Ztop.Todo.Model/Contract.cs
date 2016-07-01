@@ -74,6 +74,13 @@ namespace Ztop.Todo.Model
         [MaxLength(1023)]
         public string PayWay { get; set; }
         /// <summary>
+        /// 发票开具情况
+        /// </summary>
+        [NotMapped]
+        public ContractState Status { get; set; }
+        [NotMapped]
+        public Recevied Recevied { get; set; }
+        /// <summary>
         /// 合同相关文件
         /// </summary>
         [NotMapped]
@@ -81,15 +88,6 @@ namespace Ztop.Todo.Model
 
         [NotMapped]
         public List<Invoice> Invoices { get; set; }
-    }
-    public enum ContractState
-    {
-        [Description("未归档")]
-        None,
-        [Description("归档")]
-        Archived,
-        [Description("删除")]
-        Deleted
     }
 
     public enum ZtopCompany

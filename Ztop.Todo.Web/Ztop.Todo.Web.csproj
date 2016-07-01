@@ -222,6 +222,7 @@
     <Content Include="Scripts\Chart.js" />
     <Content Include="Scripts\CLodopfuncs.js" />
     <Content Include="Scripts\common.js" />
+    <Content Include="Scripts\Contract.js" />
     <Content Include="Scripts\jquery-1.9.1.js" />
     <Content Include="Scripts\jquery-1.9.1.min.js" />
     <Content Include="Scripts\jquery.autocomplete.js" />
@@ -296,6 +297,8 @@
     <Content Include="Views\Finance\BillSearch.cshtml" />
     <Content Include="Views\Finance\DetailInvoiceBill.cshtml" />
     <Content Include="Views\Report\Review.cshtml" />
+    <Content Include="Views\Finance\Relate.cshtml" />
+    <Content Include="Views\Finance\BillAccountSearch.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

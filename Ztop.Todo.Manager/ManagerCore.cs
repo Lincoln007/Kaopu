@@ -53,5 +53,6 @@ namespace Ztop.Todo.Manager
         public InvoiceBillManager InvoiceBillManager { get; private set; }
         public BankManager BankManager { get; private set; }
         public ContractFileManager ContractFileManager { get; private set; }
+        public BillAccountManager BillAccountManager { get; private set; }
     }
 }

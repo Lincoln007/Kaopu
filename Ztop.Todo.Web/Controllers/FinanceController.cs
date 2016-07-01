@@ -152,7 +152,6 @@ namespace Ztop.Todo.Web.Controllers
                 var list = Core.InvoiceManager.Search(new InvoiceParameter() { Key = key, Instance = true });
                 return Json(list, JsonRequestBehavior.AllowGet);
             }
-            //var list = Core.InvoiceManager.Search(key);
             
         }
 
@@ -172,23 +171,44 @@ namespace Ztop.Todo.Web.Controllers
             return Core.InvoiceManager.Edit(id, ztopcompany, othersidecompany, money, content) ? SuccessJsonResult() : ErrorJsonResult("编辑失败！可能已经用过财务审核，请刷新查看！");
         }
 
-        [HttpPost]
-        public ActionResult SaveInvoiceBill(Bill bill)
-        {
-            bill.Budget = Budget.Income;
-            bill.Coding = DateTime.Now.Ticks.ToString();
-            bill.Cost = Cost.RealIncome;
-            bill.Summary = string.Format("{0}录入的到账信息", Identity.Name);
-            var bid = Core.BillManager.Save(bill);
-            var list = Core.InvoiceBillManager.Get(HttpContext, bid);
-            if (Math.Abs(bill.Money - list.Sum(e => e.Price)) > 0.01)
-            {
-                return ErrorJsonResult("请核对关联发票金额");
-            }
-            Core.InvoiceBillManager.Save(list);
 
-            return Core.InvoiceManager.UpdateRecevied(list.Select(e=>e.IID).ToList()) ? SuccessJsonResult() : ErrorJsonResult("更新到账情况错误，错误如：未找到发票信息，或者系统参数错误");
+
+        [HttpPost]
+        public ActionResult SaveBillAccount(BillAccount billaccount)
+        {
+            Core.BillAccountManager.Save(billaccount);
+            return SuccessJsonResult();
         }
+
+
+        public ActionResult Relate(int id)
+        {
+            ViewBag.BillAccount = Core.BillAccountManager.Get(id);
+            return View();
+        }
+
+        public ActionResult BillAccountSearch(DateTime? startTime=null,DateTime? endTime=null,double? minMoney=null,double? maxMoney=null,string account=null,string remark=null,string association=null,int page=1)
+        {
+            var parameter = new BillAccountParameter()
+            {
+                StartTime = startTime,
+                EndTime = endTime,
+                MinMoney = minMoney,
+                MaxMoney = maxMoney,
+                OtherSide = account,
+                Remark = remark,
+                Page=new PageParameter(page,20)
+            };
+            if (!string.IsNullOrEmpty(association))
+            {
+                parameter.Association = EnumHelper.GetEnum<Association>(association);
+            }
+            ViewBag.Result = Core.BillAccountManager.Search(parameter);
+            ViewBag.Parameter = parameter;
+
+            return View();
+        }
+
 
         public ActionResult InvoiceSearch(string status=null,string recevied=null,string ztopcompany=null, string department=null,string time=null,string otherside=null,double? minMoney=null,double? maxMoney=null, int page=1)
         {
@@ -231,12 +251,17 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
 
-        public ActionResult ContractSearch(string ztopCompany=null,string Name=null,string OtherSide=null,string archived=null, int page=1)
+        public ActionResult ContractSearch(string name=null,string OtherSide=null,DateTime? starttime=null,DateTime? endtime=null,string status=null,string recevied=null,double? minmoney=null,double? maxmoney=null,string department=null, string archived=null,string ztopcompany=null, int page=1)
         {
             var parameter = new ContractParameter()
             {
                 OtherSide = OtherSide,
-                Name = Name,
+                Name = name,
+                StartTime=starttime,
+                EndTime=endtime,
+                MinMoney=minmoney,
+                MaxMoney=maxmoney,
+                Department=department,
                 Page = new PageParameter(page, 20)
             };
             if (!string.IsNullOrEmpty(archived))
@@ -250,9 +275,17 @@ namespace Ztop.Todo.Web.Controllers
                     parameter.Archived = true;
                 }
             }
-            if (!string.IsNullOrEmpty(ztopCompany))
+            if (!string.IsNullOrEmpty(recevied))
             {
-                parameter.ZtopCompany = EnumHelper.GetEnum<ZtopCompany>(ztopCompany);
+                parameter.Recevied = EnumHelper.GetEnum<Recevied>(recevied);
+            }
+            if (!string.IsNullOrEmpty(status))
+            {
+                parameter.Status = EnumHelper.GetEnum<ContractState>(status);
+            }
+            if (!string.IsNullOrEmpty(ztopcompany))
+            {
+                parameter.ZtopCompany = EnumHelper.GetEnum<ZtopCompany>(ztopcompany);
             }
             ViewBag.Results = Core.ContractManager.Search(parameter);
             ViewBag.Department = Core.UserManager.GetUserGroups().Select(e => e.Name).ToList();

@@ -117,33 +117,85 @@ namespace Ztop.Todo.Manager
             using (var db = GetDbContext())
             {
                 var query = db.Contracts.AsQueryable();
-                if (parameter.Deleted.HasValue)
+
+                if (parameter.Deleted.HasValue)//是否删除
                 {
                     query = query.Where(e => e.Deleted == parameter.Deleted.Value);
                 }
-                if (parameter.Archived.HasValue)
-                {
-                    query = query.Where(e => e.Archived == parameter.Archived.Value);
-                }
-                if (!string.IsNullOrEmpty(parameter.Name))
+                if (!string.IsNullOrEmpty(parameter.Name))//项目合同 关键字
                 {
                     query = query.Where(e => e.Name.Contains(parameter.Name));
                 }
-                if (!string.IsNullOrEmpty(parameter.OtherSide))
+                if (!string.IsNullOrEmpty(parameter.OtherSide))//对方单位 关键字
                 {
                     query = query.Where(e => e.Company.Contains(parameter.OtherSide));
                 }
-                if (parameter.ZtopCompany.HasValue)
-                {
-                    query = query.Where(e => e.ZtopCompany == parameter.ZtopCompany.Value);
-                }
-                if (parameter.StartTime.HasValue)
+                if (parameter.StartTime.HasValue)//时间范围
                 {
                     query = query.Where(e => e.StartTime >= parameter.StartTime.Value);
                 }
                 if (parameter.EndTime.HasValue)
                 {
                     query = query.Where(e => e.EndTime <= parameter.EndTime.Value);
+                }
+                if (parameter.Status.HasValue||parameter.Recevied.HasValue)//发票开具情况
+                {
+                    foreach(var item in query)
+                    {
+                        //已经开具的发票 不包括退票  红票
+                        var list = db.Invoices.Where(e => e.CID == item.ID&&e.State==InvoiceState.Have).ToList();
+                        if (list == null)
+                        {
+                            item.Status = ContractState.None;
+                        }
+                        else
+                        {
+                            if (list.Count == 0)
+                            {
+                                item.Status = ContractState.None;
+                            }
+                            else
+                            {
+                                if (Math.Abs(item.Money - list.Sum(e => e.Money)) < 0.001)
+                                {
+                                    item.Status = ContractState.ALL;
+                                }
+                                else
+                                {
+                                    item.Status = ContractState.Part;
+                                }
+                            }
+                        }
+                    }
+                    if (parameter.Status.HasValue)
+                    {
+                        query = query.Where(e => e.Status == parameter.Status.Value);
+                    }
+                    if (parameter.Recevied.HasValue)
+                    {
+
+                    }
+                    
+                }
+                if (parameter.MinMoney.HasValue)//金额范围
+                {
+                    query = query.Where(e => e.Money >= parameter.MinMoney.Value);
+                }
+                if (parameter.MaxMoney.HasValue)
+                {
+                    query = query.Where(e => e.Money <= parameter.MaxMoney.Value);
+                }
+                if (!string.IsNullOrEmpty(parameter.Department))//合同部门
+                {
+                    query = query.Where(e => e.Department.Contains(parameter.Department));
+                }
+                if (parameter.Archived.HasValue)
+                {
+                    query = query.Where(e => e.Archived == parameter.Archived.Value);
+                }
+                if (parameter.ZtopCompany.HasValue)//所属组织
+                {
+                    query = query.Where(e => e.ZtopCompany == parameter.ZtopCompany.Value);
                 }
                 query = query.OrderByDescending(e=>e.Coding).SetPage(parameter.Page);
                 return query.ToList();

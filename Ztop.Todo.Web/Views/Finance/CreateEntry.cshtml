@@ -5,11 +5,12 @@
 }
 <h2 class="text-center">到账信息录入</h2>
 
-<form class="form-horizontal" action="/Finance/SaveInvoiceBill" method="post" id="form-invoicebill">
+<form class="form-horizontal" action="/Finance/SaveBillAccount" method="post" id="form-invoicebill">
     <h3>到账基本信息</h3>
     <hr />
     <div class="row">
         <div class="col-md-6 col-xs-6">
+            <input type="hidden" name="Coding" value="@(DateTime.Now.Ticks.ToString())" />
             <div class="form-group">
                 <label class="control-label col-md-4">到账时间：</label>
                 <div class="col-md-8">
@@ -40,80 +41,13 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-12">
-            <div class="form-group">
-                <label class="control-label col-md-2">关联发票：</label>
-                <div class="col-md-10">
-                    <div class="col-md-5" style="padding-left:0px;">
-                        <div class="input-group" role="group">
-                            <input type="text" class="form-control" placeholder="发票关键字" name="Key" />
-                            <span class="input-group-btn">
-                                <button type="button" class="btn btn-success btn-Search" data-toggle="modal" data-target="#Search"><i class="glyphicon glyphicon-search"></i></button>
-                            </span>
-                        </div>
-                    </div>
-                    <table class="table" id="Relate"></table>
-                </div>
-            </div>
-        </div>
-        
     </div>
-
-
-
-
-
     <div class="form-group">
         <div class="col-md-8 col-md-offset-2">
             <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i>录入到账信息</button>
         </div>
     </div>
 </form>
-
-<div class="modal fade" id="Search" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">发票搜索结果</h4>
-            </div>
-            <div class="modal-body">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <td>发票编号</td>
-                            <td>对方单位</td>
-                            <td>发票金额（元）</td>
-                            <td>发票内容</td>
-                            <td></td>
-                            <td>操作</td>
-                        </tr>
-                    </thead>
-                    <tbody id="Result">
-
-                    </tbody>
-                </table>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-primary">确定</button>
-            </div>
-        </div>
-    </div>
-</div>
-@*<div class="row">
-    <div class="col-md-10 col-md-offset-2">
-        <div class="input-group">
-            <input type="text" class="form-control" placeholder="发票关键字" name="Key" />
-            <span class="input-group-btn">
-                <button type="button" class="btn btn-success btn-Search"><i class="glyphicon glyphicon-search"></i></button>
-            </span>
-        </div>
-        <div class="alert alert-warning" role="alert" style="margin-bottom:0px;">
-           
-        </div>
-    </div>
-</div>*@
 
 
 

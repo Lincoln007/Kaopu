@@ -20,7 +20,7 @@
             <div class="col-md-12">
                 <div class="input-group">
                     <div class="input-group-btn" role="group">
-                        <button type="button" class="btn btn-@(string.IsNullOrEmpty(parameter.Name)?"success":"default")" targetName="Name">全部</button>
+                        <button type="button" class="btn btn-@(string.IsNullOrEmpty(parameter.Name)?"success":"default")" name="Name">全部</button>
                     </div>
                     <input type="text" class="form-control" placeholder="合同名称关键字" name="Name" value="@(parameter.Name)" />
                 </div>
@@ -31,7 +31,7 @@
             <div class="col-md-12">
                 <div class="input-group">
                     <div class="input-group-btn" role="group">
-                        <button type="button" class="btn btn-@(string.IsNullOrEmpty(parameter.OtherSide)?"success":"default")" targetName="OtherSide">全部</button>
+                        <button type="button" class="btn btn-@(string.IsNullOrEmpty(parameter.OtherSide)?"success":"default")" name="OtherSide">全部</button>
                     </div>
                     <input type="text" class="form-control" placeholder="对方单位关键字" name="OtherSide" value="@(parameter.OtherSide)" />
                 </div>
@@ -41,9 +41,9 @@
             <label class="control-label">项目起始时间：</label>
             <div class="col-md-12">
                 <div class="input-group">
-                    <input type="text" name="StartTime" class="form-control" placeholder="起始时间" />
+                    <input type="text" name="StartTime" class="form-control datetimepicker" placeholder="起始时间" value="@(parameter.StartTime.HasValue?parameter.StartTime.Value.ToString("yyyy-MM-dd"):"")" />
                     <span class="input-group-addon">至</span>
-                    <input type="text" name="EndTime" class="form-control" placeholder="结束时间" />
+                    <input type="text" name="EndTime" class="form-control datetimepicker" placeholder="结束时间" value="@(parameter.EndTime.HasValue?parameter.EndTime.Value.ToString("yyyy-MM-dd"):"")" />
                 </div>
             </div>
         </div>
@@ -51,10 +51,10 @@
             <label class="control-label">发票开具情况：</label>
             <div class="col-md-12">
                 <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-default" name="Status">全部</button>
-                    <button type="button" class="btn btn-default" name="Status">未开发票</button>
-                    <button type="button" class="btn btn-default" name="Status">部分开票</button>
-                    <button type="button" class="btn btn-default" name="Status">全开发票</button>
+                    <button type="button" class="btn btn-@(parameter.Status.HasValue?"default":"success")" name="Status">全部</button>
+                    <button type="button" class="btn btn-@(parameter.Status.HasValue&&parameter.Status.Value==ContractState.None?"success":"default")" name="Status">未开发票</button>
+                    <button type="button" class="btn btn-@(parameter.Status.HasValue&&parameter.Status.Value==ContractState.Part?"success":"default")" name="Status">部分开票</button>
+                    <button type="button" class="btn btn-@(parameter.Status.HasValue&&parameter.Status.Value==ContractState.ALL?"success":"default")" name="Status">全开发票</button>
                 </div>
             </div>
         </div>
@@ -62,10 +62,10 @@
             <label class="control-label">到账情况：</label>
             <div class="col-md-12">
                 <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-default" name="Recevied">全部</button>
-                    <button type="button" class="btn btn-default" name="Recevied">未到账</button>
-                    <button type="button" class="btn btn-default" name="Recevied">部分到账</button>
-                    <button type="button" class="btn btn-default" name="Recevied">全部到账</button>
+                    <button type="button" class="btn btn-@(parameter.Recevied.HasValue?"default":"success")" name="Recevied">全部</button>
+                    <button type="button" class="btn btn-@(parameter.Recevied.HasValue&&parameter.Recevied.Value==Recevied.None?"success":"default")" name="Recevied">未到账</button>
+                    <button type="button" class="btn btn-@(parameter.Recevied.HasValue&&parameter.Recevied.Value==Recevied.Part?"success":"default")" name="Recevied">部分到账</button>
+                    <button type="button" class="btn btn-@(parameter.Recevied.HasValue&&parameter.Recevied.Value==Recevied.ALL?"success":"default")" name="Recevied">已到账</button>
                 </div>
             </div>
         </div>
@@ -73,9 +73,9 @@
             <label class="control-label">合同金额：</label>
             <div class="col-md-12">
                 <div class="input-group">
-                    <input type="text" name="MinMoney" class="form-control" placeholder="最小值" />
+                    <input type="text" name="MinMoney" class="form-control" placeholder="最小值" value="@(parameter.MinMoney.HasValue?parameter.MinMoney.Value.ToJson():"")" />
                     <span class="input-group-addon">至</span>
-                    <input type="text" name="MaxMoney" class="form-control" placeholder="最大值" />
+                    <input type="text" name="MaxMoney" class="form-control" placeholder="最大值" value="@(parameter.MaxMoney.HasValue?parameter.MaxMoney.Value.ToString():"")" />
                 </div>
             </div>
         </div>
@@ -83,10 +83,10 @@
             <label class="control-label">项目所在部门：</label>
             <div class="col-md-12">
                 <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-default" name="Department">全部</button>
+                    <button type="button" class="btn btn-@(string.IsNullOrEmpty(parameter.Department)?"success":"default")" name="Department">全部</button>
                     @foreach(var department in Departments)
                     {
-                        <button type="button" class="btn btn-default" name="Department">@(department)</button>
+                        <button type="button" class="btn btn-@(parameter.Department==department?"success":"default")" name="Department">@(department)</button>
                     }
                 </div>
             </div>
@@ -137,6 +137,9 @@
                 <th>对方单位</th>
                 <th>签署单位</th>
                 <th>起始时间</th>
+                <th>结束时间</th>
+                <th>合同金额（元）</th>
+                <th>填报部门</th>
             </tr>
         </thead>
         <tbody>
@@ -148,6 +151,9 @@
                     <td>@(contract.Company)</td>
                     <td>@(contract.ZtopCompany.GetDescription())</td>
                     <td>@(contract.StartTime.ToShortDateString())</td>
+                    <td>@(contract.EndTime.HasValue?contract.EndTime.Value.ToShortDateString():"-")</td>
+                    <td>@(contract.Money)</td>
+                    <td>@(contract.Department)</td>
                 </tr>
             }
         </tbody>
@@ -156,28 +162,8 @@
 
 <script>
     $(function () {
-        $(".btn-group>button").click(function () {
-            var val = $(this).text();
-            if (val == "全部") {
-                val = "";
-            }
-            var targetName = $(this).attr("name");
-            $(".btn-group>button[name='"+targetName+"']").removeClass("btn-success").addClass("btn-default");
-            $(this).removeClass("btn-default").addClass("btn-success");
-            $("input[name='" + targetName + "']").val(val);
-        });
-        $(".input-group-btn>button").click(function () {
-            var targetName = $(this).attr("targetName");
-            $(this).removeClass("btn-default").addClass("btn-success");
-            $("input[name='" + targetName + "']").val("");
-        });
-        $("input[name='OtherSide']").focus(function () {
-            $(this).prev().children().removeClass("btn-success").addClass("btn-default");
-        });
 
-        $("input[name='Name']").focus(function () {
-            $(this).prev().children().removeClass("btn-success").addClass("btn-default");
-        });
+
     });
 </script>
 

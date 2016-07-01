@@ -46,7 +46,7 @@
             <div class="col-md-12">
                 <div class="input-group">
                     <div class="input-group-btn" role="group">
-                        <button type="button" class="btn btn-@(string.IsNullOrEmpty(parameter.OtherSide)?"success":"default")"  >全部</button>
+                        <button type="button" class="btn btn-@(string.IsNullOrEmpty(parameter.OtherSide)?"success":"default")" name="OtherSide"  >全部</button>
                     </div>
                     <input type="text" class="form-control" placeholder="对方单位关键字" name="OtherSide" value="@(parameter.OtherSide)" />
                 </div>
@@ -145,27 +145,9 @@
 
 <script>
     $(function () {
-        $(".btn-group>button").click(function () {
-            var name = $(this).attr("name");
-            var val = $(this).text();
-            if (val == "全部") {
-                val = "";
-            }
-            $(".btn-group>button[name='" + name + "']").removeClass("btn-success").addClass("btn-default");
-            $(this).removeClass("btn-default").addClass("btn-success");
-            $("input[name='" + name + "']").val(val);
-        });
-
-        $(".input-group-btn>button").click(function () {
-            if ($(this).hasClass("btn-default")) {
-                $(this).removeClass("btn-default").addClass("btn-success");
-            }
-            $("input[name='OtherSide']").val("");
-        });
-
-        $("input[name='OtherSide']").focus(function () {
-            $(".input-group-btn>button").removeClass("btn-success").addClass("btn-default");
-        });
+        //$("input[name='OtherSide']").focus(function () {
+        //    $(".input-group-btn>button").removeClass("btn-success").addClass("btn-default");
+        //});
     });
 </script>
 
