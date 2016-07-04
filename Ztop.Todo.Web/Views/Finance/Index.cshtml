@@ -4,6 +4,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     List<Contract> list = ViewBag.List;
     List<Bill> Bills = ViewBag.Bills;
+    List<BillAccount> BillAccounts = ViewBag.BillAccount;
     List<Invoice> invoices = ViewBag.Invoices;
 }
 
@@ -154,12 +155,12 @@
                         <th>到账时间</th>
                         <th>到账金额（元）</th>
                     </tr>
-                    @foreach (var bill in Bills.OrderByDescending(e => e.Time).Take(15))
+                    @foreach(var billAccount in BillAccounts)
                     {
                         <tr>
-                            <td>@(bill.Account)</td>
-                            <td>@(bill.Time.ToLongDateString())</td>
-                            <td>@(bill.Money)</td>
+                            <td>@(billAccount.Account)</td>
+                            <td>@(billAccount.Time.ToShortDateString())</td>
+                            <td>@(billAccount.Money)</td>
                         </tr>
                     }
                 </table>

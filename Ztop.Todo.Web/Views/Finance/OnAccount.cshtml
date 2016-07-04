@@ -1,0 +1,67 @@
+﻿
+@{
+    ViewBag.Title = "发票挂账";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<BillAccount> BillAccounts = ViewBag.Results;
+}
+
+
+<div class="col-md-6 col-xs-6 col-sm-6" style="padding-left:0px;">
+    <div class="panel panel-success">
+        <div class="panel-heading">
+            <h3 class="panel-title">到账联</h3>
+        </div>
+        <div class="panel-body" style="padding:0px;">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>对方户名</th>
+                        <th>到账时间</th>
+                        <th>到账金额（元）</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var billAccount in BillAccounts)
+                    {
+                        <tr>
+                            <td>@(billAccount.Account)</td>
+                            <td>@(billAccount.Time.ToShortDateString())</td>
+                            <td>@(billAccount.Money)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+           
+        </div>
+    </div>
+</div>
+<div class="col-md-6 col-xs-6 col-sm-6" style="padding-right:0px;">
+    <div class="panel panel-warning">
+        <div class="panel-heading">
+            <h3 class="panel-title">发票联</h3>
+        </div>
+        <div class="panel-body" style="padding:0px;">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>对方单位</th>
+                        <th>发票金额（元）</th>
+                        <th>发票内容</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table> 
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $("tr").click(function () {
+            $("tr").removeClass("success");
+            $(this).addClass("success");
+        })
+    })
+</script>

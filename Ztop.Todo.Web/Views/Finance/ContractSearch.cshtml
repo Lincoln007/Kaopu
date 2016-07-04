@@ -7,7 +7,7 @@
     ContractParameter parameter = ViewBag.Parameter;
 }
 
-<div class="col-md-4 col-xs-4 well" style="padding:0px;">
+<div class="col-md-12 col-xs-12 well" style="padding:0px;">
     <fieldset><legend>查询设置</legend></fieldset>
     <form method="get">
         <input type="hidden" name="ZtopCompany" value="@(parameter.ZtopCompany.HasValue?parameter.ZtopCompany.Value.GetDescription():"")" />
@@ -15,70 +15,76 @@
         <input type="hidden" name="Status" value=""/>
         <input type="hidden" name="Recevied" value="@(parameter.Recevied.HasValue?parameter.Recevied.Value.GetDescription():"")" />
         <input type="hidden" name="Department" value="@(parameter.Department)"/>
-        <div class="form-group">
-            <label class="control-label">合同名称：</label>
-            <div class="col-md-12">
-                <div class="input-group">
-                    <div class="input-group-btn" role="group">
-                        <button type="button" class="btn btn-@(string.IsNullOrEmpty(parameter.Name)?"success":"default")" name="Name">全部</button>
+        <div class="row">
+            <div class="col-md-6 col-xs-6 col-sm-6">
+                <div class="form-group">
+                    <label class="control-label">合同名称：</label>
+                    <div class="col-md-12">
+                        <div class="input-group">
+                            <div class="input-group-btn" role="group">
+                                <button type="button" class="btn btn-@(string.IsNullOrEmpty(parameter.Name)?"success":"default")" name="Name">全部</button>
+                            </div>
+                            <input type="text" class="form-control" placeholder="合同名称关键字" name="Name" value="@(parameter.Name)" />
+                        </div>
                     </div>
-                    <input type="text" class="form-control" placeholder="合同名称关键字" name="Name" value="@(parameter.Name)" />
                 </div>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label">对方单位：</label>
-            <div class="col-md-12">
-                <div class="input-group">
-                    <div class="input-group-btn" role="group">
-                        <button type="button" class="btn btn-@(string.IsNullOrEmpty(parameter.OtherSide)?"success":"default")" name="OtherSide">全部</button>
+                <div class="form-group">
+                    <label class="control-label">发票开具情况：</label>
+                    <div class="col-md-12">
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-@(parameter.Status.HasValue?"default":"success")" name="Status">全部</button>
+                            <button type="button" class="btn btn-@(parameter.Status.HasValue&&parameter.Status.Value==ContractState.None?"success":"default")" name="Status">未开发票</button>
+                            <button type="button" class="btn btn-@(parameter.Status.HasValue&&parameter.Status.Value==ContractState.Part?"success":"default")" name="Status">部分开票</button>
+                            <button type="button" class="btn btn-@(parameter.Status.HasValue&&parameter.Status.Value==ContractState.ALL?"success":"default")" name="Status">全开发票</button>
+                        </div>
                     </div>
-                    <input type="text" class="form-control" placeholder="对方单位关键字" name="OtherSide" value="@(parameter.OtherSide)" />
+                </div>
+                <div class="form-group">
+                    <label class="control-label">项目起始时间：</label>
+                    <div class="col-md-12">
+                        <div class="input-group">
+                            <input type="text" name="StartTime" class="form-control datetimepicker" placeholder="起始时间" value="@(parameter.StartTime.HasValue?parameter.StartTime.Value.ToString("yyyy-MM-dd"):"")" />
+                            <span class="input-group-addon">至</span>
+                            <input type="text" name="EndTime" class="form-control datetimepicker" placeholder="结束时间" value="@(parameter.EndTime.HasValue?parameter.EndTime.Value.ToString("yyyy-MM-dd"):"")" />
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label">项目起始时间：</label>
-            <div class="col-md-12">
-                <div class="input-group">
-                    <input type="text" name="StartTime" class="form-control datetimepicker" placeholder="起始时间" value="@(parameter.StartTime.HasValue?parameter.StartTime.Value.ToString("yyyy-MM-dd"):"")" />
-                    <span class="input-group-addon">至</span>
-                    <input type="text" name="EndTime" class="form-control datetimepicker" placeholder="结束时间" value="@(parameter.EndTime.HasValue?parameter.EndTime.Value.ToString("yyyy-MM-dd"):"")" />
+            <div class="col-md-6 col-xs-6 col-sm-6">
+                <div class="form-group">
+                    <label class="control-label">对方单位：</label>
+                    <div class="col-md-12">
+                        <div class="input-group">
+                            <div class="input-group-btn" role="group">
+                                <button type="button" class="btn btn-@(string.IsNullOrEmpty(parameter.OtherSide)?"success":"default")" name="OtherSide">全部</button>
+                            </div>
+                            <input type="text" class="form-control" placeholder="对方单位关键字" name="OtherSide" value="@(parameter.OtherSide)" />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">到账情况：</label>
+                    <div class="col-md-12">
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-@(parameter.Recevied.HasValue?"default":"success")" name="Recevied">全部</button>
+                            <button type="button" class="btn btn-@(parameter.Recevied.HasValue&&parameter.Recevied.Value==Recevied.None?"success":"default")" name="Recevied">未到账</button>
+                            <button type="button" class="btn btn-@(parameter.Recevied.HasValue&&parameter.Recevied.Value==Recevied.Part?"success":"default")" name="Recevied">部分到账</button>
+                            <button type="button" class="btn btn-@(parameter.Recevied.HasValue&&parameter.Recevied.Value==Recevied.ALL?"success":"default")" name="Recevied">已到账</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">合同金额：</label>
+                    <div class="col-md-12">
+                        <div class="input-group">
+                            <input type="text" name="MinMoney" class="form-control" placeholder="最小值" value="@(parameter.MinMoney.HasValue?parameter.MinMoney.Value.ToJson():"")" />
+                            <span class="input-group-addon">至</span>
+                            <input type="text" name="MaxMoney" class="form-control" placeholder="最大值" value="@(parameter.MaxMoney.HasValue?parameter.MaxMoney.Value.ToString():"")" />
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label">发票开具情况：</label>
-            <div class="col-md-12">
-                <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-@(parameter.Status.HasValue?"default":"success")" name="Status">全部</button>
-                    <button type="button" class="btn btn-@(parameter.Status.HasValue&&parameter.Status.Value==ContractState.None?"success":"default")" name="Status">未开发票</button>
-                    <button type="button" class="btn btn-@(parameter.Status.HasValue&&parameter.Status.Value==ContractState.Part?"success":"default")" name="Status">部分开票</button>
-                    <button type="button" class="btn btn-@(parameter.Status.HasValue&&parameter.Status.Value==ContractState.ALL?"success":"default")" name="Status">全开发票</button>
-                </div>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label">到账情况：</label>
-            <div class="col-md-12">
-                <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-@(parameter.Recevied.HasValue?"default":"success")" name="Recevied">全部</button>
-                    <button type="button" class="btn btn-@(parameter.Recevied.HasValue&&parameter.Recevied.Value==Recevied.None?"success":"default")" name="Recevied">未到账</button>
-                    <button type="button" class="btn btn-@(parameter.Recevied.HasValue&&parameter.Recevied.Value==Recevied.Part?"success":"default")" name="Recevied">部分到账</button>
-                    <button type="button" class="btn btn-@(parameter.Recevied.HasValue&&parameter.Recevied.Value==Recevied.ALL?"success":"default")" name="Recevied">已到账</button>
-                </div>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label">合同金额：</label>
-            <div class="col-md-12">
-                <div class="input-group">
-                    <input type="text" name="MinMoney" class="form-control" placeholder="最小值" value="@(parameter.MinMoney.HasValue?parameter.MinMoney.Value.ToJson():"")" />
-                    <span class="input-group-addon">至</span>
-                    <input type="text" name="MaxMoney" class="form-control" placeholder="最大值" value="@(parameter.MaxMoney.HasValue?parameter.MaxMoney.Value.ToString():"")" />
-                </div>
-            </div>
-        </div>
+        </div>       
         <div class="form-group">
             <label class="control-label">项目所在部门：</label>
             <div class="col-md-12">
@@ -113,9 +119,6 @@
                 </div>
             </div>
         </div>
-       
-      
-    
         <hr />
         <div class="form-group">
             <div class="col-md-12">
@@ -128,7 +131,7 @@
     </form>
 </div>
 
-<div class="col-md-8 col-xs-8">
+<div class="col-md-12 col-xs-12">
     <table class="table table-hover">
         <thead>
             <tr>

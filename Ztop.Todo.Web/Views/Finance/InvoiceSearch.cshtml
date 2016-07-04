@@ -8,7 +8,7 @@
 }
 
 
-<div class="col-md-4 well" style="padding:0px;">
+<div class="col-md-12 well" style="padding:0px;">
     <fieldset><legend>查询设置</legend></fieldset>
     <form method="get">
         <input type="hidden" name="Department" value="@(parameter.Department)" />
@@ -17,86 +17,103 @@
         <input type="hidden" name="Recevied" value="@(parameter.Recevied.HasValue?parameter.Recevied.Value.GetDescription():"")" />
         <input type="hidden" name="ZtopCompany" value="@(parameter.ZtopCompany.HasValue?parameter.ZtopCompany.Value.GetDescription():"")" />
         <input type="hidden" name="Time" value="@(parameter.Time)" />
-        <div class="form-group">
-            <label class="control-label">申请人所在部门：</label>
-            <div class="col-md-12">
-                <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-@(string.IsNullOrEmpty(parameter.Department)?"success":"default")" name="Department">全部</button>
-                    @foreach(var dep in department)
-                    {
-                        <button type="button" class="btn btn-@(dep==parameter.Department?"success":"default")" name="Department">@(dep)</button>
-                    }
-                </div>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label">发票状态：</label>
-            <div class="col-md-12">
-                <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-@(parameter.Status.HasValue?"default":"success")" name="Status">全部</button>
-                    @foreach (InvoiceState state in Enum.GetValues(typeof(InvoiceState)))
-                    {
-                        <button type="button" class="btn btn-@((parameter.Status.HasValue&&parameter.Status.Value==state)?"success":"default")"name="Status" >@(state.GetDescription())</button>
-                    }
-                </div>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label">对方单位:</label>
-            <div class="col-md-12">
-                <div class="input-group">
-                    <div class="input-group-btn" role="group">
-                        <button type="button" class="btn btn-@(string.IsNullOrEmpty(parameter.OtherSide)?"success":"default")" name="OtherSide"  >全部</button>
+        <div class="row">
+            <div class="col-md-12 col-xs-12 col-sm-12">
+                <div class="form-group">
+                    <label class="control-label">申请人所在部门：</label>
+                    <div class="col-md-12">
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-@(string.IsNullOrEmpty(parameter.Department)?"success":"default")" name="Department">全部</button>
+                            @foreach (var dep in department)
+                            {
+                                <button type="button" class="btn btn-@(dep==parameter.Department?"success":"default")" name="Department">@(dep)</button>
+                            }
+                        </div>
                     </div>
-                    <input type="text" class="form-control" placeholder="对方单位关键字" name="OtherSide" value="@(parameter.OtherSide)" />
+                </div>
+                <div class="form-group">
+                    <label class="control-label">开票单位：</label>
+                    <div class="col-md-12">
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-@(parameter.ZtopCompany.HasValue?"default":"success")" name="ZtopCompany">全部</button>
+                            @foreach (ZtopCompany company in Enum.GetValues(typeof(ZtopCompany)))
+                            {
+                                <button type="button" class="btn btn-@((parameter.ZtopCompany.HasValue&&parameter.ZtopCompany.Value==company)?"success":"default")" name="ZtopCompany">@(company.GetDescription())</button>
+                            }
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label">发票金额:</label>
-            <div class="col-md-12">
-                <div class="input-group">
-                    <input type="text" class="form-control" name="MinMoney" placeholder="最小值" @(parameter.MinMoney.HasValue?string.Format("value={0}",parameter.MinMoney.Value):"") />
-                    <span class="input-group-addon">至</span>
-                    <input type="text" class="form-control" name="MaxMoney" placeholder="最大值" @(parameter.MaxMoney.HasValue?string.Format("value={0}",parameter.MaxMoney.Value):"") />
+          
+            <div class="col-md-6 col-xs-6 col-sm-6">
+                <div class="form-group">
+                    <label class="control-label">发票状态：</label>
+                    <div class="col-md-12">
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-@(parameter.Status.HasValue?"default":"success")" name="Status">全部</button>
+                            @foreach (InvoiceState state in Enum.GetValues(typeof(InvoiceState)))
+                            {
+                                <button type="button" class="btn btn-@((parameter.Status.HasValue&&parameter.Status.Value==state)?"success":"default")" name="Status">@(state.GetDescription())</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">发票金额:</label>
+                    <div class="col-md-12">
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="MinMoney" placeholder="最小值" @(parameter.MinMoney.HasValue ? string.Format("value={0}", parameter.MinMoney.Value) : "") />
+                            <span class="input-group-addon">至</span>
+                            <input type="text" class="form-control" name="MaxMoney" placeholder="最大值" @(parameter.MaxMoney.HasValue ? string.Format("value={0}", parameter.MaxMoney.Value) : "") />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">开票时间:</label>
+                    <div class="col-md-12">
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-@(string.IsNullOrEmpty(parameter.Time)?"success":"default")" name="Time">全部</button>
+                            <button type="button" class="btn btn-@(parameter.Time=="本周"?"success":"default")" name="Time">本周</button>
+                            <button type="button" class="btn btn-@(parameter.Time=="本月"?"success":"default")" name="Time">本月</button>
+                            <button type="button" class="btn btn-@(parameter.Time=="本年"?"success":"default")" name="Time">本年</button>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label">到账情况：</label>
-            <div class="col-md-12">
-                <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-@(parameter.Recevied.HasValue?"default":"success")" name="Recevied">全部</button>
-                    @foreach(Recevied received in Enum.GetValues(typeof(Recevied)))
-                    {
-                        <button type="button" class="btn btn-@(parameter.Recevied.HasValue&&parameter.Recevied.Value==received?"success":"default")" name="Recevied">@(received.GetDescription())</button>
-                    }
+            <div class="col-md-6 col-xs-6 col-sm-6">
+                <div class="form-group">
+                    <label class="control-label">对方单位:</label>
+                    <div class="col-md-12">
+                        <div class="input-group">
+                            <div class="input-group-btn" role="group">
+                                <button type="button" class="btn btn-@(string.IsNullOrEmpty(parameter.OtherSide)?"success":"default")" name="OtherSide">全部</button>
+                            </div>
+                            <input type="text" class="form-control" placeholder="对方单位关键字" name="OtherSide" value="@(parameter.OtherSide)" />
+                        </div>
+                    </div>
                 </div>
+                <div class="form-group">
+                    <label class="control-label">到账情况：</label>
+                    <div class="col-md-12">
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-@(parameter.Recevied.HasValue?"default":"success")" name="Recevied">全部</button>
+                            @foreach (Recevied received in Enum.GetValues(typeof(Recevied)))
+                            {
+                                <button type="button" class="btn btn-@(parameter.Recevied.HasValue&&parameter.Recevied.Value==received?"success":"default")" name="Recevied">@(received.GetDescription())</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+               
             </div>
         </div>
-        <div class="form-group">
-            <label class="control-label">开票单位：</label>
-            <div class="col-md-12">
-                <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-@(parameter.ZtopCompany.HasValue?"default":"success")" name="ZtopCompany">全部</button>
-                    @foreach(ZtopCompany company in Enum.GetValues(typeof(ZtopCompany)))
-                    {
-                        <button type="button" class="btn btn-@((parameter.ZtopCompany.HasValue&&parameter.ZtopCompany.Value==company)?"success":"default")" name="ZtopCompany">@(company.GetDescription())</button>
-                    }
-                </div>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label">开票时间:</label>
-            <div class="col-md-12">
-                <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-@(string.IsNullOrEmpty(parameter.Time)?"success":"default")" name="Time">全部</button>
-                    <button type="button" class="btn btn-@(parameter.Time=="本周"?"success":"default")" name="Time">本周</button>
-                    <button type="button" class="btn btn-@(parameter.Time=="本月"?"success":"default")" name="Time">本月</button>
-                    <button type="button" class="btn btn-@(parameter.Time=="本年"?"success":"default")" name="Time">本年</button>
-                </div>
-            </div>
-        </div>
+      
+
+       
+       
+      
+       
+      
         <hr />
         <div class="form-group">
             <div class="col-md-12">
@@ -111,7 +128,7 @@
     </form>
 </div>
 
-<div class="col-md-8">
+<div class="col-md-12">
     <table class="table table-hover">
         <thead>
             <tr>

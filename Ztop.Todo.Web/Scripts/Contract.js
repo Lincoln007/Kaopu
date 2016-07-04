@@ -6,9 +6,12 @@ $(function () {
             val = "";
         }
         var targetName = $(this).attr("name");
-        $(".btn-group>button[name='" + targetName + "']").removeClass("btn-success").addClass("btn-default");
-        $(this).removeClass("btn-default").addClass("btn-success");
-        $("input[name='" + targetName + "']").val(val);
+        if (targetName != undefined) {
+            $(".btn-group>button[name='" + targetName + "']").removeClass("btn-success").addClass("btn-default");
+            $(this).removeClass("btn-default").addClass("btn-success");
+            $("input[name='" + targetName + "']").val(val);
+        }
+       
     });
     $("input.datetimepicker").datetimepicker({
         timepicker: false,
@@ -22,12 +25,30 @@ $(function () {
     });
 
 
-    $("input[name='OtherSide']").focus(function () {
+    $(".input-group>input[name='OtherSide']").focus(function () {
         $(this).prev().children().removeClass("btn-success").addClass("btn-default");
+    }).blur(function () {
+        var val = $(this).val();
+        if (val == "") {
+            $(this).prev().children().removeClass("btn-default").addClass("btn-success");
+        }
     });
 
-    $("input[name='Name']").focus(function () {
+    $(".input-group>input[name='Name']").focus(function () {
         $(this).prev().children().removeClass("btn-success").addClass("btn-default");
+    }).blur(function () {
+        var val = $(this).val();
+        if (val == "") {
+            $(this).prev().children().removeClass("btn-default").addClass("btn-success");
+        }
+    });
+    $(".input-group>input[name='Remark']").focus(function () {
+        $(this).prev().children().removeClass("btn-success").addClass("btn-default");
+    }).blur(function () {
+        var val = $(this).val();
+        if (val == "") {
+            $(this).prev().children().removeClass("btn-default").addClass("btn-success");
+        }
     });
 })
 

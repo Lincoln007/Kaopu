@@ -15,6 +15,7 @@ namespace Ztop.Todo.Web.Controllers
         {
             ViewBag.List = Core.ContractManager.Get();
             ViewBag.Bills = Core.BillManager.Search();
+            ViewBag.BillAccount = Core.BillAccountManager.Search(new BillAccountParameter() { Page = new PageParameter(1, 20) });
             ViewBag.Invoices = Core.InvoiceManager.Search(new InvoiceParameter() { Status = InvoiceState.Have, Instance = false });
             return View();
         }
@@ -187,7 +188,13 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
 
-        public ActionResult BillAccountSearch(DateTime? startTime=null,DateTime? endTime=null,double? minMoney=null,double? maxMoney=null,string account=null,string remark=null,string association=null,int page=1)
+        public ActionResult OnAccount()
+        {
+            ViewBag.Results = Core.BillAccountManager.Search(new BillAccountParameter() { Association = Association.None });
+            return View();
+        }
+
+        public ActionResult BillAccountSearch(DateTime? startTime=null,DateTime? endTime=null,double? minMoney=null,double? maxMoney=null,string otherside=null,string remark=null,string association=null,int page=1)
         {
             var parameter = new BillAccountParameter()
             {
@@ -195,7 +202,7 @@ namespace Ztop.Todo.Web.Controllers
                 EndTime = endTime,
                 MinMoney = minMoney,
                 MaxMoney = maxMoney,
-                OtherSide = account,
+                OtherSide = otherside,
                 Remark = remark,
                 Page=new PageParameter(page,20)
             };

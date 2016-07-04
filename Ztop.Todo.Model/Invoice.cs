@@ -103,7 +103,7 @@ namespace Ztop.Todo.Model
         /// 到账信息
         /// </summary>
         [NotMapped]
-        public List<InvoiceBill> InvoiceBills { get; set; }
+        public List<InvoiceBillAccount> InvoiceBills { get; set; }
 
     }
 

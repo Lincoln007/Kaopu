@@ -3,8 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Ztop.Todo.Model
 {
-    [Table("invoicebill")]
-    public class InvoiceBill
+    [Table("invoicebillaccount")]
+    public class InvoiceBillAccount
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

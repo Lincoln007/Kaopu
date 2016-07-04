@@ -76,18 +76,14 @@
         }
 
         $("#form-invoicebill").submit(function () {
-            if (CheckMoney()) {
-                var data = $(this).serialize();
-                $.request("/Finance/SaveInvoiceBill", data, function (json) {
-                    alert(json.content);
-                    if (json.result == 1) {
-                        location.href = "/Finance/Index";
-                    }
-                    return false;
-                });
-            } else {
-                alert("请核对金额！");
-            }
+            var data = $(this).serialize();
+            $.request("/Finance/SaveBillAccount", data, function (json) {
+                alert(json.content);
+                if (json.result == 1) {
+                    location.href = "/Finance/Index";
+                }
+                return false;
+            });
             return false;
         });
 
