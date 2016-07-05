@@ -59,21 +59,21 @@ namespace Ztop.Todo.Manager
                 return invoice;
             }
         }
-        public bool Improve(int id,DateTime fillTime,string number,string remark,InvoiceState state)
+        public int Improve(int id,DateTime fillTime,string number,string remark,InvoiceState state)
         {
             using (var db = GetDbContext())
             {
                 var invoice = db.Invoices.Find(id);
                 if (invoice == null)
                 {
-                    return false;
+                    return -1;
                 }
                 invoice.FillTime = fillTime;
                 invoice.Number = number;
                 invoice.Remark = remark;
                 invoice.State = state;
                 db.SaveChanges();
-                return true;
+                return invoice.CID;
             }
         }
         public bool Change(int id,InvoiceState state)

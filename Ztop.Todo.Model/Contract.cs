@@ -76,9 +76,10 @@ namespace Ztop.Todo.Model
         /// <summary>
         /// 发票开具情况
         /// </summary>
-        [NotMapped]
         public ContractState Status { get; set; }
-        [NotMapped]
+        /// <summary>
+        /// 到账情况
+        /// </summary>
         public Recevied Recevied { get; set; }
         /// <summary>
         /// 合同相关文件

@@ -110,7 +110,15 @@ namespace Ztop.Todo.Web.Controllers
         [HttpPost]
         public ActionResult ImproveInvoice(int id,DateTime fillTime,string number,string remark,InvoiceState state)
         {
-            return Core.InvoiceManager.Improve(id, fillTime, number, remark,state) ? SuccessJsonResult() : ErrorJsonResult("补充信息失败");
+            var cid = Core.InvoiceManager.Improve(id, fillTime, number, remark, state);
+            if (cid > 0)
+            {
+                return Core.ContractManager.UpdateState(cid) ? SuccessJsonResult() : ErrorJsonResult("更新合同发票开具情况失败！");
+            }
+            else
+            {
+                return ErrorJsonResult("补充信息失败！");
+            }
         }
 
         /// <summary>
@@ -177,6 +185,7 @@ namespace Ztop.Todo.Web.Controllers
         [HttpPost]
         public ActionResult SaveBillAccount(BillAccount billaccount)
         {
+            billaccount.Leave = billaccount.Money;
             Core.BillAccountManager.Save(billaccount);
             return SuccessJsonResult();
         }
@@ -191,7 +200,65 @@ namespace Ztop.Todo.Web.Controllers
         public ActionResult OnAccount()
         {
             ViewBag.Results = Core.BillAccountManager.Search(new BillAccountParameter() { Association = Association.None });
+            ViewBag.Department = Core.UserManager.GetUserGroups().Select(e => e.Name).ToList();
             return View();
+        }
+        [HttpGet]
+        public ActionResult GetJsonBillAccount(DateTime?startTime=null,DateTime? endTime=null,double?minMoney=null,double?maxMoney=null,string otherside=null,string remark=null,string association=null)
+        {
+            var parameter = new BillAccountParameter()
+            {
+                StartTime = startTime,
+                EndTime = endTime,
+                MinMoney = minMoney,
+                MaxMoney = maxMoney,
+                OtherSide = otherside,
+                Remark = remark
+            };
+            if (!string.IsNullOrEmpty(association))
+            {
+                parameter.Association = EnumHelper.GetEnum<Association>(association);
+            }
+            var list= Core.BillAccountManager.Search(parameter);
+            return Json(list, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult GetJsonInvoice(string status=null,string recevied=null,string ztopcompany=null,string department=null,string time=null,string otherside=null,double?minmoney=null,double? maxmoney=null)
+        {
+            var parameter = new InvoiceParameter()
+            {
+                Department = department,
+                Time = time,
+                OtherSide = otherside,
+                MinMoney = minmoney,
+                MaxMoney = maxmoney,
+                Instance = true
+            };
+            if (!string.IsNullOrEmpty(status))
+            {
+                parameter.Status = EnumHelper.GetEnum<InvoiceState>(status);
+            }
+            if (!string.IsNullOrEmpty(recevied))
+            {
+                parameter.Recevied = EnumHelper.GetEnum<Recevied>(recevied);
+            }
+            if (!string.IsNullOrEmpty(ztopcompany))
+            {
+                parameter.ZtopCompany = EnumHelper.GetEnum<ZtopCompany>(ztopcompany);
+            }
+            var list= Core.InvoiceManager.Search(parameter);
+            return Json(list, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult Relate(int bid,string iid)
+        {
+            if (!string.IsNullOrEmpty(iid))
+            {
+                var m = iid.Split(',');
+            }
+            return SuccessJsonResult();
         }
 
         public ActionResult BillAccountSearch(DateTime? startTime=null,DateTime? endTime=null,double? minMoney=null,double? maxMoney=null,string otherside=null,string remark=null,string association=null,int page=1)
@@ -258,13 +325,13 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
 
-        public ActionResult ContractSearch(string name=null,string OtherSide=null,DateTime? starttime=null,DateTime? endtime=null,string status=null,string recevied=null,double? minmoney=null,double? maxmoney=null,string department=null, string archived=null,string ztopcompany=null, int page=1)
+        public ActionResult ContractSearch(string name=null,string OtherSide=null,DateTime? startime=null,DateTime? endtime=null,string status=null,string recevied=null,double? minmoney=null,double? maxmoney=null,string department=null, string archived=null,string ztopcompany=null, int page=1)
         {
             var parameter = new ContractParameter()
             {
                 OtherSide = OtherSide,
                 Name = name,
-                StartTime=starttime,
+                StartTime=startime,
                 EndTime=endtime,
                 MinMoney=minmoney,
                 MaxMoney=maxmoney,

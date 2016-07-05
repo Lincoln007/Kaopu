@@ -94,8 +94,6 @@ namespace Ztop.Todo.Manager
                 return true;
             }
         }
-
-
         public Contract Get(int id)
         {
             using (var db = GetDbContext())
@@ -103,7 +101,6 @@ namespace Ztop.Todo.Manager
                 return db.Contracts.Find(id);
             }
         }
-
         public List<Contract> Get()
         {
             using (var db = GetDbContext())
@@ -167,7 +164,7 @@ namespace Ztop.Todo.Manager
                             }
                         }
                     }
-                    if (parameter.Status.HasValue)
+                    if (parameter.Status.HasValue)//过滤发票开具情况
                     {
                         query = query.Where(e => e.Status == parameter.Status.Value);
                     }
@@ -197,9 +194,32 @@ namespace Ztop.Todo.Manager
                 {
                     query = query.Where(e => e.ZtopCompany == parameter.ZtopCompany.Value);
                 }
-                query = query.OrderByDescending(e=>e.Coding).SetPage(parameter.Page);
+               // query = query.OrderByDescending(e=>e.Coding).SetPage(parameter.Page);
                 return query.ToList();
             }
+        }
+
+        public bool UpdateState(int id)
+        {
+            using (var db = GetDbContext())
+            {
+                var contract = db.Contracts.FirstOrDefault(e=>e.ID==id);
+                if (contract == null)
+                {
+                    return false;
+                }
+                var invoices = db.Invoices.Where(e=>e.CID==id&&e.State==InvoiceState.Have).ToList();
+                if (invoices.Count == 0)
+                {
+                    contract.Status = ContractState.None;
+                }
+                else
+                {
+                    contract.Status = Math.Abs(contract.Money - invoices.Sum(e => e.Money)) < 0.01 ? ContractState.ALL : ContractState.Part;
+                }
+                db.SaveChanges();
+            }
+            return true;
         }
 
        

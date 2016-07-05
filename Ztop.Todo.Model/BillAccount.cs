@@ -14,6 +14,10 @@ namespace Ztop.Todo.Model
         public string Coding { get; set; }
         public DateTime Time { get; set; }
         public double Money { get; set; }
+        /// <summary>
+        /// 可关联金额
+        /// </summary>
+        public double Leave { get; set; }
         public string Account { get; set; }
         [MaxLength(1023)]
         public string Remark { get; set; }
