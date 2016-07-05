@@ -74,36 +74,14 @@ namespace Ztop.Todo.Model
         /// 合同ID
         /// </summary>
         public int CID { get; set; }
-        public bool Deleted { get; set; }
         /// <summary>
-        /// 发票到账情况
+        /// 到账信息ID
         /// </summary>
-        [Column(TypeName ="int")]
-        public Recevied Recevied { get; set; }
-        [NotMapped]
-        public double Leave
-        {
-            get
-            {
-                try
-                {
-                    return Money - InvoiceBills.Sum(e => e.Price);
-                }
-                catch
-                {
-                    return .0;
-                }
-               
-            }
-        }
+        public int BAID { get; set; }
+        public bool Deleted { get; set; }
 
         [NotMapped]
         public Contract Contract { get; set; }
-        /// <summary>
-        /// 到账信息
-        /// </summary>
-        [NotMapped]
-        public List<InvoiceBillAccount> InvoiceBills { get; set; }
 
     }
 

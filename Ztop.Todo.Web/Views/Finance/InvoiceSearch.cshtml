@@ -152,19 +152,12 @@
                 <td>@(invoice.ZtopCompany.GetDescription())</td>
                 <td>@(invoice.OtherSideCompany)</td>
                 <td>@(invoice.Money)</td>
-                <td>@(invoice.InvoiceBills.Sum(e=>e.Price))</td>
-                <td>@(invoice.Money-invoice.InvoiceBills.Sum(e=>e.Price))</td>
+                <td></td>
+                <td></td>
                 <td><a href="/Finance/DetailInvoice?id=@(invoice.ID)"><i class="glyphicon glyphicon-send"></i></a></td>
             </tr>
         }
     </table>
 </div>
 
-<script>
-    $(function () {
-        //$("input[name='OtherSide']").focus(function () {
-        //    $(".input-group-btn>button").removeClass("btn-success").addClass("btn-default");
-        //});
-    });
-</script>
 

@@ -96,7 +96,6 @@
     <Compile Include="Errand.cs" />
     <Compile Include="Evection.cs" />
     <Compile Include="Invoice.cs" />
-    <Compile Include="InvoiceBillAccount.cs" />
     <Compile Include="InvoiceParameter.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="Notification.cs" />

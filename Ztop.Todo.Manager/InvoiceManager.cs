@@ -38,7 +38,19 @@ namespace Ztop.Todo.Manager
                 return query.Count() > 0 ? query.ToList() : new List<Invoice>();
             }
         }
+
         public Invoice Get(int id)
+        {
+            if (id == 0)
+            {
+                return null;
+            }
+            using (var db = GetDbContext())
+            {
+                return db.Invoices.FirstOrDefault(e => e.ID == id);
+            }
+        }
+        public Invoice GetFullStance(int id)
         {
             if (id == 0)
             {
@@ -50,11 +62,6 @@ namespace Ztop.Todo.Manager
                 if (invoice != null)
                 {
                     invoice.Contract = db.Contracts.Find(invoice.CID);
-                    invoice.InvoiceBills = db.InvoiceBills.Where(e => e.IID == invoice.ID).ToList();
-                    foreach(var item in invoice.InvoiceBills)
-                    {
-                        item.Bill = db.Bills.Find(item.BID);
-                    }
                 }
                 return invoice;
             }
@@ -126,7 +133,16 @@ namespace Ztop.Todo.Manager
                 }
                 if (parameter.Recevied.HasValue)
                 {
-                    query = query.Where(e => e.Recevied == parameter.Recevied.Value);
+                    switch (parameter.Recevied.Value)
+                    {
+                        case Recevied.ALL:
+                            query = query.Where(e => e.BAID > 0);
+                            break;
+                        case Recevied.None:
+                            query = query.Where(e => e.BAID == 0);
+                            break;
+                    }
+                    //query = query.Where(e => e.Recevied == parameter.Recevied.Value);
                 }
                 if (!string.IsNullOrEmpty(parameter.Time))
                 {
@@ -153,7 +169,6 @@ namespace Ztop.Todo.Manager
                     foreach (var invoice in query)
                     {
                         invoice.Contract = db.Contracts.Find(invoice.CID);
-                        invoice.InvoiceBills = db.InvoiceBills.Where(e => e.IID == invoice.ID).ToList();
                     }
                 }
             
@@ -231,41 +246,46 @@ namespace Ztop.Todo.Manager
             }
         }
 
-        public bool UpdateRecevied(List<int> iid)
+        public bool Relate(int bid,string iidString)
         {
-            if (iid == null)
+            if (string.IsNullOrEmpty(iidString))
             {
                 return false;
             }
+            var a = 0;
+            var iids = iidString.Split(',');
+            double relateSum = .0;
             using (var db = GetDbContext())
             {
-                foreach (var index in iid)
+                var billAccount = db.BillAccounts.FirstOrDefault(e => e.ID == bid);
+                if (billAccount == null)
                 {
-                    var invoice = db.Invoices.Find(index);
-                    var list = db.InvoiceBills.Where(e => e.IID == index).ToList();
-                    if (invoice == null)
-                    {
-                        return false;
-                    }
-                    var sum = list.Sum(e => e.Price);
-                    if (Math.Abs(sum - 0) < 0.01)//等于0
-                    {
-                        invoice.Recevied = Recevied.None;//未到账
-                    }
-                    else//不等于0
-                    {
-                        if (Math.Abs(sum - invoice.Money) < 0.01)
-                        {
-                            invoice.Recevied = Recevied.ALL;//已全部到账
-                        }
-                        else
-                        {
-                            invoice.Recevied = Recevied.Part;//部分到账
-                        }
-                    }
-                    db.SaveChanges();
+                    return false;
                 }
+                foreach (var item in iids)
+                {
+                    if (int.TryParse(item, out a))
+                    {
+                        var invoice = db.Invoices.FirstOrDefault(e => e.ID == a);
+                        if (invoice != null)
+                        {
+                            if (invoice.BAID > 0)
+                            {
+                                continue;
+                            }
+                            else
+                            {
+                                invoice.BAID = bid;
+                                db.SaveChanges();
+                                relateSum += invoice.Money;
+                            }
+                        }
+                    }
+                }
+                billAccount.Leave = billAccount.Leave - relateSum;
+                db.SaveChanges();
             }
+               
             return true;
         }
     }

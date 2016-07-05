@@ -61,6 +61,30 @@ INSERT INTO `banks` (`ID`, `Year`, `Month`, `Company`, `Balance`) VALUES
 	(1, 2016, 5, b'000', 0);
 /*!40000 ALTER TABLE `banks` ENABLE KEYS */;
 
+-- 导出  表 ztoptodo.billaccount 结构
+CREATE TABLE IF NOT EXISTS `billaccount` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `Coding` varchar(255) NOT NULL,
+  `Time` datetime NOT NULL,
+  `Money` double NOT NULL,
+  `Account` varchar(255) NOT NULL,
+  `Remark` varchar(1023) DEFAULT NULL,
+  `Association` bit(3) NOT NULL DEFAULT b'0',
+  `Leave` double NOT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+
+-- 正在导出表  ztoptodo.billaccount 的数据：~5 rows (大约)
+DELETE FROM `billaccount`;
+/*!40000 ALTER TABLE `billaccount` DISABLE KEYS */;
+INSERT INTO `billaccount` (`ID`, `Coding`, `Time`, `Money`, `Account`, `Remark`, `Association`, `Leave`) VALUES
+	(1, '636032217869055852', '2016-07-04 00:00:00', 1000000, '嘉兴市国土资源局秀洲分局', NULL, b'000', 0),
+	(2, '636032416733160156', '2016-07-04 00:00:00', 1000000, '嘉兴市国土资源局秀州分局', NULL, b'000', 0),
+	(3, '636032418165315148', '2016-07-01 00:00:00', 30000, '嘉兴市国土资源局南湖分局', NULL, b'000', 0),
+	(4, '636032426904408302', '2016-07-04 00:00:00', 40000, '舟山市国土资源局定海分局', NULL, b'000', 0),
+	(5, '636033357174124140', '2016-07-05 00:00:00', 10000, '嘉兴市国土资源局南湖分局', NULL, b'000', 0);
+/*!40000 ALTER TABLE `billaccount` ENABLE KEYS */;
+
 -- 导出  表 ztoptodo.bills 结构
 CREATE TABLE IF NOT EXISTS `bills` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
@@ -77,17 +101,11 @@ CREATE TABLE IF NOT EXISTS `bills` (
   `Balance` double NOT NULL DEFAULT '0',
   PRIMARY KEY (`ID`),
   KEY `BID` (`BID`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- 正在导出表  ztoptodo.bills 的数据：~5 rows (大约)
+-- 正在导出表  ztoptodo.bills 的数据：~0 rows (大约)
 DELETE FROM `bills`;
 /*!40000 ALTER TABLE `bills` DISABLE KEYS */;
-INSERT INTO `bills` (`ID`, `Coding`, `Time`, `Money`, `Account`, `Budget`, `Cost`, `Category`, `Summary`, `Remark`, `BID`, `Balance`) VALUES
-	(1, NULL, '2016-05-02 00:00:00', 1000, '嘉兴市国土资源局秀洲分局', b'000', b'010', NULL, '保证金退回', '保证金退回', 1, 1000),
-	(2, NULL, '2016-05-03 00:00:00', 1000, '嘉兴市国土资源局南湖分局', b'000', b'010', NULL, '保证金退回', '保证金退回', 1, 2000),
-	(3, NULL, '2016-05-04 00:00:00', 200, '陆吾科技', b'001', b'011', NULL, '过账', '过账', 1, 1800),
-	(4, NULL, '0001-01-01 00:00:00', 0, '', b'001', b'000', NULL, '', '', 1, 0),
-	(5, '636028771683630198', '2016-06-30 00:00:00', 10000, '唐尧', b'000', b'000', NULL, '汪建龙录入的到账信息', '唐尧中奖了', 0, 0);
 /*!40000 ALTER TABLE `bills` ENABLE KEYS */;
 
 -- 导出  表 ztoptodo.comment 结构
@@ -123,9 +141,9 @@ CREATE TABLE IF NOT EXISTS `contractfiles` (
   `Remove` bit(1) NOT NULL DEFAULT b'0',
   PRIMARY KEY (`ID`),
   KEY `ContractID` (`ContractID`)
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8;
 
--- 正在导出表  ztoptodo.contractfiles 的数据：~26 rows (大约)
+-- 正在导出表  ztoptodo.contractfiles 的数据：~35 rows (大约)
 DELETE FROM `contractfiles`;
 /*!40000 ALTER TABLE `contractfiles` DISABLE KEYS */;
 INSERT INTO `contractfiles` (`ID`, `ContractID`, `SavePath`, `FileName`, `FileSize`, `Remove`) VALUES
@@ -157,7 +175,13 @@ INSERT INTO `contractfiles` (`ID`, `ContractID`, `SavePath`, `FileName`, `FileSi
 	(26, 8, 'ContractFiles\\[jQuery攻略].(印)哈瓦尼.扫描版636029053102373893.pdf', '[jQuery攻略].(印)哈瓦尼.扫描版.pdf', 21478998, b'0'),
 	(27, 14, 'ContractFiles\\7af40ad162d9f2d309bcd489aaec8a136327cc23636029168991141069.jpg', '7af40ad162d9f2d309bcd489aaec8a136327cc23.jpg', 51538, b'0'),
 	(28, 14, 'ContractFiles\\QQ截图20160610201427636029168991176016.png', 'QQ截图20160610201427.png', 67514, b'0'),
-	(29, 14, 'ContractFiles\\新建文本文档636029168991181032.txt', '新建文本文档.txt', 710, b'0');
+	(29, 14, 'ContractFiles\\新建文本文档636029168991181032.txt', '新建文本文档.txt', 710, b'0'),
+	(30, 15, 'ContractFiles\\[jQuery攻略].(印)哈瓦尼.扫描版636029775197973281.pdf', '[jQuery攻略].(印)哈瓦尼.扫描版.pdf', 21478998, b'0'),
+	(31, 15, 'ContractFiles\\7af40ad162d9f2d309bcd489aaec8a136327cc23636029775369808180.jpg', '7af40ad162d9f2d309bcd489aaec8a136327cc23.jpg', 51538, b'0'),
+	(32, 15, 'ContractFiles\\123636029775369828188.xls', '123.xls', 2248619, b'0'),
+	(33, 1, 'ContractFiles\\7af40ad162d9f2d309bcd489aaec8a136327cc23636029826714829536.jpg', '7af40ad162d9f2d309bcd489aaec8a136327cc23.jpg', 51538, b'0'),
+	(34, 1, 'ContractFiles\\123636029826714849544.xls', '123.xls', 2248619, b'0'),
+	(35, 1, 'ContractFiles\\[jQuery攻略].(印)哈瓦尼.扫描版636029826890795091.pdf', '[jQuery攻略].(印)哈瓦尼.扫描版.pdf', 21478998, b'0');
 /*!40000 ALTER TABLE `contractfiles` ENABLE KEYS */;
 
 -- 导出  表 ztoptodo.contracts 结构
@@ -176,27 +200,18 @@ CREATE TABLE IF NOT EXISTS `contracts` (
   `PerformanceBond` double NOT NULL DEFAULT '0',
   `PayWay` varchar(1023) NOT NULL DEFAULT '0',
   `Department` varchar(255) NOT NULL,
+  `Status` bit(3) NOT NULL DEFAULT b'0',
+  `Recevied` bit(3) NOT NULL DEFAULT b'0',
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
--- 正在导出表  ztoptodo.contracts 的数据：~13 rows (大约)
+-- 正在导出表  ztoptodo.contracts 的数据：~3 rows (大约)
 DELETE FROM `contracts`;
 /*!40000 ALTER TABLE `contracts` DISABLE KEYS */;
-INSERT INTO `contracts` (`ID`, `Coding`, `Name`, `Company`, `Creator`, `ZtopCompany`, `Deleted`, `Archived`, `StartTime`, `EndTime`, `Money`, `PerformanceBond`, `PayWay`, `Department`) VALUES
-	(1, '636028302358101647', '嘉兴市工业区评价', '嘉兴市国土资源局秀洲分局', '汪建龙', b'000', b'1', b'0', '2016-06-01 00:00:00', NULL, 100000, 1000, '第一期：\r\n第二期：\r\n第三期：', ''),
-	(2, '636028314860853057', '测试多个文件', '嘉兴市国土资源局南湖分局', '汪建龙', b'000', b'1', b'0', '2016-06-01 00:00:00', '2019-10-03 00:00:00', 1000000, 2000, '第一期：100000元\r\n第二期：20000元', ''),
-	(3, '636028317274933451', '测试多个文件', '嘉兴市国土资源局秀洲分局', '汪建龙', b'000', b'1', b'0', '2016-06-01 00:00:00', '2020-06-11 00:00:00', 1000000, 2000, '第一期：100000元\r\n第二期：10000元', ''),
-	(4, '636028322145679633', '测试', '嘉兴市国土资源局秀洲分局', '汪建龙', b'000', b'1', b'0', '2016-06-01 00:00:00', '2020-06-11 00:00:00', 100000, 1000, '第一期：10000元\r\n第二期：1000元', ''),
-	(5, '636028325535078648', '测试多个文件深深', '嘉兴市国土资源局秀洲分局', '汪建龙', b'000', b'1', b'0', '2016-06-01 00:00:00', '2021-06-10 00:00:00', 100000, 2000, '第一期：1000元\r\n第二期：10000元', ''),
-	(6, '636028336835630316', '测试第二遍', '嘉兴市国土资源局秀洲分局', '汪建龙', b'000', b'1', b'0', '2016-06-01 00:00:00', '2021-06-23 00:00:00', 100000, 2000, '第一期：10000元\r\n第三期：5555元', ''),
-	(7, '636028775712631579', '嘉兴市测试合同项目', '嘉兴市国土资源局', '汪建龙', b'000', b'0', b'0', '2016-06-01 00:00:00', '2020-06-12 00:00:00', 10000, 1000, '第一期：5000元\r\n第二期：5000元', ''),
-	(8, '636028945247032279', '第二个项目', '嘉兴市国土资源局南湖分局', '汪建龙', b'001', b'0', b'0', '2016-06-08 00:00:00', '2020-06-04 00:00:00', 100000, 2999, '第一期：2020\r\n第二期：28282', ''),
-	(9, '636028962358636678', '第三个项目', '嘉兴市国土资源局南湖分局', '汪建龙', b'000', b'0', b'0', '2016-05-31 00:00:00', '2021-06-09 00:00:00', 10000, 2000, '第一期：1000元\r\n第二期：1000元', ''),
-	(10, '636029036071718234', '第三个个木木', '嘉兴市国土资源局秀洲分局', '汪建龙', b'010', b'0', b'0', '2016-06-01 00:00:00', '2020-06-10 00:00:00', 10000, 2000, '第一期：1000元\r\n第二期：10000元', ''),
-	(11, '636029036356073848', '第三个个木木', '嘉兴市国土资源局秀洲分局', '汪建龙', b'010', b'0', b'0', '2016-06-01 00:00:00', '2020-06-10 00:00:00', 10000, 2000, '第一期：1000元\r\n第二期：10000元', ''),
-	(12, '636029036753945389', '第三个个木木', '嘉兴市国土资源局秀洲分局', '汪建龙', b'010', b'0', b'0', '2016-06-01 00:00:00', '2020-06-10 00:00:00', 10000, 2000, '第一期：1000元\r\n第二期：10000元', ''),
-	(13, '636029041953980105', '第四个木木木', '嘉兴市国土资源局南湖分局', '汪建龙', b'010', b'0', b'0', '2016-06-01 00:00:00', '2021-06-10 00:00:00', 10000, 1000, '第一期：1000元\r\n第二期：1000元', ''),
-	(14, '636029168322235151', '一个可以做很多年很多年的项目', '嘉兴市国土资源局', '汪建龙', b'010', b'0', b'0', '2016-06-01 00:00:00', '2023-06-01 00:00:00', 10000000, 2000, '第一期：1000元\r\n第二期：10000元\r\n第三期：10000元', '陆吾科技');
+INSERT INTO `contracts` (`ID`, `Coding`, `Name`, `Company`, `Creator`, `ZtopCompany`, `Deleted`, `Archived`, `StartTime`, `EndTime`, `Money`, `PerformanceBond`, `PayWay`, `Department`, `Status`, `Recevied`) VALUES
+	(1, '636029826140132661', '第一个项目', '嘉兴市国土资源局', '汪建龙', b'001', b'0', b'0', '2016-06-01 00:00:00', NULL, 100000, 1000, '第一期：1000元\r\n第二期：1000元\r\n第三期：8000元', '陆吾科技', b'000', b'000'),
+	(2, '636029831035849705', '第二个项目', '嘉兴市国土资源局南湖分局', '汪建龙', b'000', b'0', b'0', '2016-06-01 00:00:00', NULL, 100000, 200, '第一期：1000元\r\n第二期：1000元\r\n第三期：1000元', '陆吾科技', b'010', b'000'),
+	(3, '636029833620237491', '第三个项目', '嘉兴市国土资源局秀州分局', '汪建龙', b'001', b'0', b'0', '2016-06-01 00:00:00', NULL, 100000, 100, '第一期：1000元\r\n第二期：1000元\r\n第三期：8000元', '陆吾科技', b'000', b'000');
 /*!40000 ALTER TABLE `contracts` ENABLE KEYS */;
 
 -- 导出  表 ztoptodo.databooks 结构
@@ -280,8 +295,8 @@ INSERT INTO `evections` (`ID`, `Place`, `KiloMeters`, `Traffic`, `SubSidy`, `Hot
 	(8, '浙江省衢州市江山市', 0, 567, 1000, 0, NULL, 0, 8, '宋学云;周典;周威俊;吕骏杰;孙夏阳', '公共交通');
 /*!40000 ALTER TABLE `evections` ENABLE KEYS */;
 
--- 导出  表 ztoptodo.invoicebill 结构
-CREATE TABLE IF NOT EXISTS `invoicebill` (
+-- 导出  表 ztoptodo.invoicebillaccount 结构
+CREATE TABLE IF NOT EXISTS `invoicebillaccount` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `Price` double NOT NULL DEFAULT '0',
   `IID` int(11) NOT NULL DEFAULT '0',
@@ -289,14 +304,12 @@ CREATE TABLE IF NOT EXISTS `invoicebill` (
   PRIMARY KEY (`ID`),
   KEY `IID` (`IID`),
   KEY `BID` (`BID`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- 正在导出表  ztoptodo.invoicebill 的数据：~1 rows (大约)
-DELETE FROM `invoicebill`;
-/*!40000 ALTER TABLE `invoicebill` DISABLE KEYS */;
-INSERT INTO `invoicebill` (`ID`, `Price`, `IID`, `BID`) VALUES
-	(1, 10000, 1, 5);
-/*!40000 ALTER TABLE `invoicebill` ENABLE KEYS */;
+-- 正在导出表  ztoptodo.invoicebillaccount 的数据：~0 rows (大约)
+DELETE FROM `invoicebillaccount`;
+/*!40000 ALTER TABLE `invoicebillaccount` DISABLE KEYS */;
+/*!40000 ALTER TABLE `invoicebillaccount` ENABLE KEYS */;
 
 -- 导出  表 ztoptodo.invoices 结构
 CREATE TABLE IF NOT EXISTS `invoices` (
@@ -315,19 +328,22 @@ CREATE TABLE IF NOT EXISTS `invoices` (
   `Remark` varchar(1023) DEFAULT '0',
   `CID` int(11) NOT NULL DEFAULT '0',
   `Deleted` bit(1) NOT NULL DEFAULT b'0',
-  `Recevied` bit(3) NOT NULL DEFAULT b'0',
+  `BAID` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`ID`),
-  KEY `CID` (`CID`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+  KEY `CID` (`CID`),
+  KEY `BAID` (`BAID`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
--- 正在导出表  ztoptodo.invoices 的数据：~4 rows (大约)
+-- 正在导出表  ztoptodo.invoices 的数据：~6 rows (大约)
 DELETE FROM `invoices`;
 /*!40000 ALTER TABLE `invoices` DISABLE KEYS */;
-INSERT INTO `invoices` (`ID`, `Coding`, `Time`, `Applicant`, `GroupName`, `ZtopCompany`, `OtherSideCompany`, `Money`, `Content`, `FillTime`, `Number`, `State`, `Remark`, `CID`, `Deleted`, `Recevied`) VALUES
-	(1, '0', '2016-06-29 00:00:00', '汪建龙', '陆吾科技', b'00', '嘉兴市国土资源局秀洲分局', 10000, '第一期项目', NULL, NULL, b'000', NULL, 6, b'1', b'010'),
-	(2, '0', '2016-06-30 00:00:00', '汪建龙', '陆吾科技', b'00', '嘉兴市国土资源局秀洲分局', 5000, '第一期项目', NULL, NULL, b'000', NULL, 7, b'0', b'000'),
-	(3, '636028778685116720', '2016-06-30 00:00:00', '汪建龙', '陆吾科技', b'00', '嘉兴市国土资源局秀洲分局', 5000, '第二期项目', NULL, NULL, b'000', NULL, 7, b'0', b'000'),
-	(4, '636028971595630631', '2016-06-30 00:00:00', '汪建龙', '陆吾科技', b'00', '嘉兴市国土资源局南湖分局', 5000, '第一期', NULL, NULL, b'000', NULL, 9, b'0', b'000');
+INSERT INTO `invoices` (`ID`, `Coding`, `Time`, `Applicant`, `GroupName`, `ZtopCompany`, `OtherSideCompany`, `Money`, `Content`, `FillTime`, `Number`, `State`, `Remark`, `CID`, `Deleted`, `BAID`) VALUES
+	(1, '636029827195795373', '2016-07-01 00:00:00', '汪建龙', '陆吾科技', b'01', '嘉兴市国土资源局', 1000, '第一期项目', '2016-07-01 00:00:00', '', b'001', '', 1, b'0', 0),
+	(2, '636029834855065100', '2016-07-01 00:00:00', '汪建龙', '陆吾科技', b'00', '嘉兴市国土资源局', 1000, '第一期项目', NULL, NULL, b'000', NULL, 2, b'1', 0),
+	(3, '636032257797497177', '2016-07-04 00:00:00', '汪建龙', '陆吾科技', b'01', '嘉兴市国土资源局', 1000, '第一期项目资金', '2016-07-01 00:00:00', '', b'001', '', 1, b'0', 0),
+	(4, '636032399163108109', '2016-07-04 00:00:00', '汪建龙', '陆吾科技', b'00', '嘉兴市', 1000, '第一期项目', '2016-07-04 00:00:00', '234234', b'001', '撒大声地', 2, b'0', 0),
+	(5, '636033294730964842', '2016-07-05 00:00:00', '汪建龙', '陆吾科技', b'00', '嘉兴市国土资源局南湖分局', 10000, '第二期项目', '2016-07-05 00:00:00', '234123', b'001', '', 2, b'0', 5),
+	(6, '636033319551334642', '2016-07-05 00:00:00', '汪建龙', '陆吾科技', b'00', '嘉兴市国土资源局南湖分局', 89000, '尾款', '2016-07-05 00:00:00', '', b'001', '', 2, b'0', 0);
 /*!40000 ALTER TABLE `invoices` ENABLE KEYS */;
 
 -- 导出  表 ztoptodo.messages 结构

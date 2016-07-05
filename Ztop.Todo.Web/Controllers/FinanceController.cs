@@ -139,7 +139,7 @@ namespace Ztop.Todo.Web.Controllers
         /// <returns></returns>
         public ActionResult CreateEntry()
         {
-            var dict = Core.InvoiceManager.Search(new InvoiceParameter() { Status=InvoiceState.Have,Instance=true}).Where(e=>e.Recevied!=Recevied.ALL).GroupBy(e => e.Contract.Name).ToDictionary(e => e.Key, e => e.ToList());
+            var dict = Core.InvoiceManager.Search(new InvoiceParameter() { Status=InvoiceState.Have,Instance=true}).Where(e=>e.BAID>0).GroupBy(e => e.Contract.Name).ToDictionary(e => e.Key, e => e.ToList());
             ViewBag.Invoices = dict;
             return View();
         }
@@ -191,6 +191,7 @@ namespace Ztop.Todo.Web.Controllers
         }
 
 
+        [HttpGet]
         public ActionResult Relate(int id)
         {
             ViewBag.BillAccount = Core.BillAccountManager.Get(id);
@@ -223,11 +224,23 @@ namespace Ztop.Todo.Web.Controllers
             return Json(list, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 到账挂入发票的查询  发票状态为已开并且该发票未挂账
+        /// </summary>
+        /// <param name="ztopcompany"></param>
+        /// <param name="department"></param>
+        /// <param name="time"></param>
+        /// <param name="otherside"></param>
+        /// <param name="minmoney"></param>
+        /// <param name="maxmoney"></param>
+        /// <returns></returns>
         [HttpGet]
-        public ActionResult GetJsonInvoice(string status=null,string recevied=null,string ztopcompany=null,string department=null,string time=null,string otherside=null,double?minmoney=null,double? maxmoney=null)
+        public ActionResult GetJsonInvoice(string ztopcompany=null,string department=null,string time=null,string otherside=null,double?minmoney=null,double? maxmoney=null)
         {
             var parameter = new InvoiceParameter()
             {
+                Status=InvoiceState.Have,
+                Recevied=Recevied.None,
                 Department = department,
                 Time = time,
                 OtherSide = otherside,
@@ -235,14 +248,6 @@ namespace Ztop.Todo.Web.Controllers
                 MaxMoney = maxmoney,
                 Instance = true
             };
-            if (!string.IsNullOrEmpty(status))
-            {
-                parameter.Status = EnumHelper.GetEnum<InvoiceState>(status);
-            }
-            if (!string.IsNullOrEmpty(recevied))
-            {
-                parameter.Recevied = EnumHelper.GetEnum<Recevied>(recevied);
-            }
             if (!string.IsNullOrEmpty(ztopcompany))
             {
                 parameter.ZtopCompany = EnumHelper.GetEnum<ZtopCompany>(ztopcompany);
@@ -254,11 +259,7 @@ namespace Ztop.Todo.Web.Controllers
         [HttpPost]
         public ActionResult Relate(int bid,string iid)
         {
-            if (!string.IsNullOrEmpty(iid))
-            {
-                var m = iid.Split(',');
-            }
-            return SuccessJsonResult();
+            return Core.InvoiceManager.Relate(bid, iid) ? SuccessJsonResult() : ErrorJsonResult("关联发票失败！");
         }
 
         public ActionResult BillAccountSearch(DateTime? startTime=null,DateTime? endTime=null,double? minMoney=null,double? maxMoney=null,string otherside=null,string remark=null,string association=null,int page=1)
@@ -321,7 +322,7 @@ namespace Ztop.Todo.Web.Controllers
         /// <returns></returns>
         public ActionResult DetailInvoice(int id)
         {
-            ViewBag.Invoice = Core.InvoiceManager.Get(id);
+            ViewBag.Invoice = Core.InvoiceManager.GetFullStance(id);
             return View();
         }
 
