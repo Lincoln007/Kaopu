@@ -176,11 +176,11 @@
                 <td>@(contract.PerformanceBond)</td>
             </tr>
             <tr>
-                <th>发票开具情况：</th>
+                <th>发票开具情况</th>
                 <td>
                     <span class="label label-@(contract.Status==ContractState.None?"default":contract.Status==ContractState.Part?"info":"success")">@(contract.Status.GetDescription())</span>
                 </td>
-                <th>到账情况：</th>
+                <th>到账情况</th>
                 <td>
                     <span class="label label-@(contract.Recevied==Recevied.None?"default":contract.Recevied==Recevied.Part?"info":"success")">@(contract.Recevied.GetDescription())</span>
                 </td>

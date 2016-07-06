@@ -5,102 +5,157 @@
     Invoice invoice = ViewBag.Invoice;
 }
 
-<h3>发票详情&nbsp;</h3>
-
-<div class="alert alert-success" role="alert">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-    <table class="table table-bordered">
-        <tbody>
-            <tr>
-                <th>系统发票编号</th>
-                <td>@(invoice.Coding)</td>
-                <th>申请开票时间</th>
-                 <td>@(invoice.Time.ToLongDateString())</td>
-            </tr>
-            <tr>
-                <th>开票申请人</th>
-                <td>@(invoice.Applicant)</td>
-                <th>开票单位</th>
-                <td>@(invoice.ZtopCompany.GetDescription())</td>
-            </tr>
-            <tr>
-                <th>对方单位</th>
-                <td>@(invoice.OtherSideCompany)</td>
-                <th>发票金额（元）</th>
-                <td>@(invoice.Money)</td>
-            </tr>
-            <tr>
-                <th>发票状态</th>
-                <td>@(invoice.State.GetDescription())</td>
-                <th>发票开出时间</th>
-                <td>@(invoice.FillTime.HasValue?invoice.FillTime.Value.ToLongDateString():"-")</td>
-            </tr>
-            <tr>
-                <th>发票编号</th>
-                <td>@(invoice.Number)</td>
-                <th>备注</th>
-                <td>@(invoice.Remark)</td>
-            </tr>
-        </tbody>
-    </table>
+<hr />
+<div class="btn-group" role="group">
+    <button type="button" class="btn btn-default" onclick="history.back();"><i class="glyphicon glyphicon-arrow-left"></i>返回</button>
 </div>
+<hr />
 
-<h3>合同详情&nbsp;</h3>
-<div class="alert alert-warning" role="alert">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-    <table class="table table-bordered">
-        <tbody>
-            <tr>
-                <th>合同编号</th>
-                <td>@(invoice.Contract.Coding)</td>
-                <th>合同名称</th>
-                <td><a href="/Finance/Detail?id=@(invoice.Contract.ID)">@(invoice.Contract.Name)</a></td>
-            </tr>
-            <tr>
-                <th>对方单位</th>
-                <td>@(invoice.Contract.Company)</td>
-                <th>签署单位</th>
-                <td>@(invoice.Contract.ZtopCompany.GetDescription())</td>
-            </tr>
-            <tr>
-                <th>创建人</th>
-                <td>@(invoice.Contract.Creator)</td>
-                <th></th>
-                <td></td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-<h3>到账记录</h3>
-<div class="alert alert-info" role="alert">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>到账时间</th>
-                <th>到账总金额（元）</th>
-                <th>对方单位</th>
-                <th>银行备注</th>
-                <th>到账金额（元）</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in invoice.InvoiceBills)
-            {
-                if (item.Bill != null)
-                {
+<ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#Invoice" aria-controls="Invoice" role="tab" data-toggle="tab">发票详情</a></li>
+    <li role="presentation"><a href="#Contract" aria-controls="Contract" role="tab" data-toggle="tab">合同详情</a></li>
+    <li role="presentation"><a href="#BillAccount" aria-controls="BillAccount"role="tab" data-toggle="tab">到账详情</a></li>
+</ul>
+<div class="tab-content">
+    <div class="tab-pane fade in active" role="tabpanel" id="Invoice">
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <th>开票编号</th>
+                    <td>@(invoice.Coding)</td>
+                    <th>申请开票时间</th>
+                    <td>@(invoice.Time.ToLongDateString())</td>
+                </tr>
+                <tr>
+                    <th>开票申请人</th>
+                    <td>@(invoice.Applicant)</td>
+                    <th>开票单位</th>
+                    <td>@(invoice.ZtopCompany.GetDescription())</td>
+                </tr>
+                <tr>
+                    <th>对方单位</th>
+                    <td>@(invoice.OtherSideCompany)</td>
+                    <th>发票金额（元）</th>
+                    <td>@(invoice.Money)</td>
+                </tr>
+                <tr>
+                    <th>发票状态</th>
+                    <td>@(invoice.State.GetDescription())</td>
+                    <th>发票开出时间</th>
+                    <td>@(invoice.FillTime.HasValue ? invoice.FillTime.Value.ToLongDateString() : "-")</td>
+                </tr>
+                <tr>
+                    <th>发票编号</th>
+                    <td>@(invoice.Number)</td>
+                    <th>备注</th>
+                    <td>@(invoice.Remark)</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="tab-pane fade" role="tabpanel" id="Contract">
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <th>合同编号</th>
+                    <td>@(invoice.Contract.Coding)</td>
+                    <th>填报人</th>
+                    <td>@(invoice.Contract.Creator)</td>
+                   
+                </tr>
+                <tr>
+                    <th>合同名称</th>
+                    <td colspan="3"><a href="/Finance/Detail?id=@(invoice.Contract.ID)">@(invoice.Contract.Name)</a></td>
+                </tr>
+                <tr>
+                    <th>对方单位</th>
+                    <td>@(invoice.Contract.Company)</td>
+                    <th>合同所属组织</th>
+                    <td>@(invoice.Contract.ZtopCompany.GetDescription())</td>
+                </tr>
+                <tr>
+                    <th>合同起始时间</th>
+                    <td>@(invoice.Contract.StartTime.ToLongDateString())</td>
+                    <th>合同结束时间</th>
+                    <td>@(invoice.Contract.EndTime.HasValue?invoice.Contract.EndTime.Value.ToLongDateString():"/")</td>
+                </tr>
+                <tr>
+                    <th>合同金额（元）</th>
+                    <td>@(invoice.Contract.Money)</td>
+                    <th>履约保证金（元）</th>
+                    <td>@(invoice.Contract.PerformanceBond)</td>
+                </tr>
+                <tr>
+                    <th>发票开具情况</th>
+                    <td><span class="label label-@(invoice.Contract.Status==ContractState.None?"default":invoice.Contract.Status==ContractState.ALL?"success":"info")">@(invoice.Contract.Status.GetDescription())</span></td>
+                    <th>到账情况</th>
+                    <td>
+                        <span class="label label-@(invoice.Contract.Recevied==Recevied.None?"default":invoice.Contract.Recevied==Recevied.Part?"info":"success")">@(invoice.Contract.Recevied.GetDescription())</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>付款方式</th>
+                    @if (!string.IsNullOrEmpty(invoice.Contract.PayWay))
+                    {
+                        <td colspan="3">
+                            @foreach(var item in invoice.Contract.PayWay.Replace("\r\n", ";").Split(';'))
+                            {
+                                <span>@(item)</span><br />
+                            }
+                        </td>
+                    }
+                </tr>
+                <tr>
+                    <th>相关文件</th>
+                    <td colspan="3">
+                        <table class="table table-bordered">
+                            @foreach(var file in invoice.Contract.ContractFiles)
+                            {
+                                <tr>
+                                    <td class="col-md-6"><a href="/@(file.SavePath)">@(file.FileName)</a></td>
+                                    <td>@(file.FileSize/1024) kb</td>
+                                </tr>
+                            }
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="tab-pane fade" role="tabpanel" id="BillAccount">
+        @if (invoice.BillAccount != null)
+        {
+            <table class="table table-bordered">
+                <tbody>
                     <tr>
-                        <td>@(item.Bill.Time.ToLongDateString())</td>
-                        <td>@(item.Bill.Money)</td>
-                        <td>@(item.Bill.Account)</td>
-                        <td>@(item.Bill.Remark)</td>
-                        <td>@(item.Price)</td>
+                        <th>到账编号</th>
+                        <td><a href="/Finance/BillAccountDetail?id=@(invoice.BillAccount.ID)">@(invoice.BillAccount.Coding)</a> </td>  
+                        <th>到账日期</th>
+                        <td>@(invoice.BillAccount.Time.ToLongDateString())</td>              
                     </tr>
-                }
-
-            }
-        </tbody>
-    </table>
+                    <tr>
+                        <th>到账金额（元）</th>
+                        <td>@(invoice.BillAccount.Money)</td>
+                        <th>对方户名</th>
+                        <td>@(invoice.BillAccount.Account)</td>
+                    </tr>
+                    <tr>
+                        <th>银行备注</th>
+                        <td colspan="3">@(invoice.BillAccount.Remark)</td>
+                    </tr>
+                    <tr>
+                        <th>发票关联情况</th>
+                        <td>
+                            <span class="label label-@(invoice.BillAccount.Association==Association.None?"default":invoice.BillAccount.Association==Association.Full?"success":"info")">@(invoice.BillAccount.Association.GetDescription())</span>
+                        </td>
+                        <th>可关联金额（元）</th>
+                        <td>@(invoice.BillAccount.Leave)</td>
+                    </tr>
+                </tbody>
+            </table>
+        }
+    </div>
 </div>
-<button type="button" class="btn btn-default" onclick="history.back();"><i class="glyphicon glyphicon-arrow-left"></i>返回</button>
+
+
 

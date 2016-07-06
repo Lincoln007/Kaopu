@@ -82,6 +82,8 @@ namespace Ztop.Todo.Model
 
         [NotMapped]
         public Contract Contract { get; set; }
+        [NotMapped]
+        public BillAccount BillAccount { get; set; }
 
     }
 

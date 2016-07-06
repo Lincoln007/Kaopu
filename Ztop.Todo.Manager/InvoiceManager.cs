@@ -62,6 +62,11 @@ namespace Ztop.Todo.Manager
                 if (invoice != null)
                 {
                     invoice.Contract = db.Contracts.Find(invoice.CID);
+                    if (invoice.Contract != null)
+                    {
+                        invoice.Contract.ContractFiles = db.ContractFiles.Where(e => e.ContractID == invoice.Contract.ID).ToList();
+                    }
+                    invoice.BillAccount = db.BillAccounts.FirstOrDefault(e=>e.ID==invoice.BAID);
                 }
                 return invoice;
             }
