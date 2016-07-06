@@ -13,9 +13,14 @@
         if (!contract.Archived)
         {
             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#Apply"><i class="glyphicon glyphicon-pencil"></i> 申请开具发票</button>
-            <a href="/Finance/CreateContract?id=@(contract.ID)" class="btn btn-info"> <i class="glyphicon glyphicon-edit"></i>编辑合同</a>
+            if (Identity.Market || Identity.Project)
+            {
+                <a href="/Finance/CreateContract?id=@(contract.ID)" class="btn btn-info"> <i class="glyphicon glyphicon-edit"></i>编辑合同</a>
+                <button type="button" class="btn btn-danger" tabindex="@(contract.ID)"><i class="glyphicon glyphicon-remove"></i>删除合同</button>
+            }
+
             <button type="button" class="btn btn-primary btn-archive" tabindex="@(contract.ID)"><i class="glyphicon glyphicon-lock"></i>归档合同</button>
-            <button type="button" class="btn btn-danger" tabindex="@(contract.ID)"><i class="glyphicon glyphicon-remove"></i>删除合同</button>
+            
         }
         else
         {
@@ -224,7 +229,7 @@
                         <th>发票金额（元）</th>
                         <th>发票内容</th>
                         <th>申请状态</th>
-                        <th>备注</th>
+                        <th class="col-md-2">备注</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -243,111 +248,118 @@
                                 <div class="btn-group" role="group">
                                     @if (invoice.State == InvoiceState.None)
                                     {
-                                        <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#Edit@(invoice.ID)"><i class="glyphicon glyphicon-edit"></i>编辑</button>
-                                        <div class="modal fade" id="Edit@(invoice.ID)" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                                            <div class="modal-dialog" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                        <h4 class="modal-title">发票申请编辑</h4>
-                                                    </div>
-                                                    <form class="form-horizontal" action="/Finance/EditInvoice" method="post" name="Edit">
-                                                        <div class="modal-body">
-                                                            <input type="hidden" name="ID" value="@(invoice.ID)" />
-                                                            <div class="row">
-                                                                <div class="col-md-6 col-xs-6 col-sm-6" style="padding-left:0px;">
-                                                                    <div class="form-group">
-                                                                        <label class="control-label col-md-4 col-xs-4 col-sm-4">开票单位：</label>
-                                                                        <div class="col-md-8 col-xs-8 col-sm-8">
-                                                                            <select name="ZtopCompany" class="form-control">
-                                                                                <option value="@(ZtopCompany.Evaluation)" @(invoice.ZtopCompany==ZtopCompany.Evaluation?"selected=selected":"")>@(ZtopCompany.Evaluation.GetDescription())</option>
-                                                                                <option value="@(ZtopCompany.Projection)" @(invoice.ZtopCompany==ZtopCompany.Projection?"selected=selected":"")>@(ZtopCompany.Projection.GetDescription())</option>
-                                                                            </select>
+                                        if (contract.Creator == Identity.Name)
+                                        {
+                                            <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#Edit@(invoice.ID)"><i class="glyphicon glyphicon-edit"></i>编辑</button>
+                                            <div class="modal fade" id="Edit@(invoice.ID)" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                            <h4 class="modal-title">发票申请编辑</h4>
+                                                        </div>
+                                                        <form class="form-horizontal" action="/Finance/EditInvoice" method="post" name="Edit">
+                                                            <div class="modal-body">
+                                                                <input type="hidden" name="ID" value="@(invoice.ID)" />
+                                                                <div class="row">
+                                                                    <div class="col-md-6 col-xs-6 col-sm-6" style="padding-left:0px;">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label col-md-4 col-xs-4 col-sm-4">开票单位：</label>
+                                                                            <div class="col-md-8 col-xs-8 col-sm-8">
+                                                                                <select name="ZtopCompany" class="form-control">
+                                                                                    <option value="@(ZtopCompany.Evaluation)" @(invoice.ZtopCompany == ZtopCompany.Evaluation ? "selected=selected" : "")>@(ZtopCompany.Evaluation.GetDescription())</option>
+                                                                                    <option value="@(ZtopCompany.Projection)" @(invoice.ZtopCompany == ZtopCompany.Projection ? "selected=selected" : "")>@(ZtopCompany.Projection.GetDescription())</option>
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label class="control-label col-md-4 col-xs-4 col-sm-4">发票金额：</label>
+                                                                            <div class="col-md-8 col-xs-8 col-sm-8">
+                                                                                <div class="input-group">
+                                                                                    <input type="text" class="form-control" name="Money" value="@(invoice.Money)" />
+                                                                                    <span class="input-group-addon">元</span>
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
-                                                                    <div class="form-group">
-                                                                        <label class="control-label col-md-4 col-xs-4 col-sm-4">发票金额：</label>
-                                                                        <div class="col-md-8 col-xs-8 col-sm-8">
-                                                                            <div class="input-group">
-                                                                                <input type="text" class="form-control" name="Money" value="@(invoice.Money)" />
-                                                                                <span class="input-group-addon">元</span>
+                                                                    <div class="col-md-6 col-xs-6 col-sm-6" style="padding-right:0px;">
+                                                                        <div class="form-group">
+                                                                            <label class="control-label col-md-4">对方单位：</label>
+                                                                            <div class="col-md-8">
+                                                                                <input type="text" class="form-control" name="OtherSideCompany" value="@(invoice.OtherSideCompany)" />
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label class="control-label col-md-4">发票内容：</label>
+                                                                            <div class="col-md-8">
+                                                                                <input type="text" name="Content" class="form-control" value="@(invoice.Content)" />
                                                                             </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-md-6 col-xs-6 col-sm-6" style="padding-right:0px;">
-                                                                    <div class="form-group">
-                                                                        <label class="control-label col-md-4">对方单位：</label>
-                                                                        <div class="col-md-8">
-                                                                            <input type="text" class="form-control" name="OtherSideCompany" value="@(invoice.OtherSideCompany)" />
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="form-group">
-                                                                        <label class="control-label col-md-4">发票内容：</label>
-                                                                        <div class="col-md-8">
-                                                                            <input type="text" name="Content" class="form-control" value="@(invoice.Content)" />
-                                                                        </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <div class="form-group">
+                                                                    <div class="col-md-8 col-md-offset-4" style="padding-right:0px;">
+                                                                        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove"></i> 取消</button>
+                                                                        <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i> 编辑</button>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <div class="form-group">
-                                                                <div class="col-md-8 col-md-offset-4" style="padding-right:0px;">
-                                                                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove"></i> 取消</button>
-                                                                    <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i> 编辑</button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <a href="javascript:void(0)" class="btn btn-danger btn-remove btn-sm" Index="@(invoice.ID)"><i class="glyphicon glyphicon-remove"></i>删除</a>
-                                        <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#Add@(invoice.ID)"><i class="glyphicon glyphicon-plus"></i>补充发票信息</button>
-                                        <div class="modal fade" tabindex="-1" role="dialog" id="Add@(invoice.ID)" aria-labelledby="myModalLabel">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                        <h4 class="modal-title">输入开具发票信息</h4>
+                                                        </form>
                                                     </div>
-                                                    <form class="form-horizontal" action="/Finance/ImproveInvoice" method="post" name="Plus">
-                                                        <div class="modal-body">
-                                                            <input type="hidden" name="ID" value="@(invoice.ID)" />
-                                                            <input type="hidden" name="State" value="@(InvoiceState.Have)" />
-                                                            <div class="form-group">
-                                                                <label class="control-label col-md-3">发票时间：</label>
-                                                                <div class="col-md-8">
-                                                                    <input type="text" class="form-control" name="FillTime" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <label class="control-label col-md-3">发票编号：</label>
-                                                                <div class="col-md-8">
-                                                                    <input type="text" class="form-control" name="Number" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <label class="control-label col-md-3 col-xs-3 col-sm-3">备注：</label>
-                                                                <div class="col-md-8 col-xs-8 col-sm-8">
-                                                                    <textarea class="form-control" name="Remark" rows="3"></textarea>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <div class="form-group">
-                                                                <div class="col-md-8 col-md-offset-3">
-                                                                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove"></i> 取消</button>
-                                                                    <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i> 补充</button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </form>
-
                                                 </div>
                                             </div>
-                                        </div>
+                                            <a href="javascript:void(0)" class="btn btn-danger btn-remove btn-sm" Index="@(invoice.ID)"><i class="glyphicon glyphicon-remove"></i>删除</a>
+                                        }
+                                        if (Identity.Finance)
+                                        {
+                                            <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#Add@(invoice.ID)"><i class="glyphicon glyphicon-plus"></i>补充发票信息</button>
+                                            <div class="modal fade" tabindex="-1" role="dialog" id="Add@(invoice.ID)" aria-labelledby="myModalLabel">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                            <h4 class="modal-title">输入开具发票信息</h4>
+                                                        </div>
+                                                        <form class="form-horizontal" action="/Finance/ImproveInvoice" method="post" name="Plus">
+                                                            <div class="modal-body">
+                                                                <input type="hidden" name="ID" value="@(invoice.ID)" />
+                                                                <input type="hidden" name="State" value="@(InvoiceState.Have)" />
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-3">发票时间：</label>
+                                                                    <div class="col-md-8">
+                                                                        <input type="text" class="form-control" name="FillTime" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-3">发票编号：</label>
+                                                                    <div class="col-md-8">
+                                                                        <input type="text" class="form-control" name="Number" />
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="control-label col-md-3 col-xs-3 col-sm-3">备注：</label>
+                                                                    <div class="col-md-8 col-xs-8 col-sm-8">
+                                                                        <textarea class="form-control" name="Remark" rows="3"></textarea>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <div class="form-group">
+                                                                    <div class="col-md-8 col-md-offset-3">
+                                                                        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove"></i> 取消</button>
+                                                                        <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i> 补充</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+
                                     }
                                 </div>
                               
@@ -384,7 +396,7 @@
                             <td>@(invoice.Content)</td>
                             <td>@(invoice.State.GetDescription())</td>
                             <td>
-                                @if (invoice.State != InvoiceState.None)
+                                @if (invoice.State != InvoiceState.None&&Identity.Finance)
                                 {
                                     <a href="#" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#Change@(invoice.Coding)"><i class="glyphicon glyphicon-edit"></i>修改发票状态</a>
                                     <div class="modal fade" id="Change@(invoice.Coding)" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">

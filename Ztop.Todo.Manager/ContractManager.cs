@@ -114,7 +114,10 @@ namespace Ztop.Todo.Manager
             using (var db = GetDbContext())
             {
                 var query = db.Contracts.AsQueryable();
-
+                if (!string.IsNullOrEmpty(parameter.UserName))
+                {
+                    query = query.Where(e => e.Creator == parameter.UserName);
+                }
                 if (parameter.Deleted.HasValue)//是否删除
                 {
                     query = query.Where(e => e.Deleted == parameter.Deleted.Value);
@@ -135,44 +138,13 @@ namespace Ztop.Todo.Manager
                 {
                     query = query.Where(e => e.EndTime <= parameter.EndTime.Value);
                 }
-                if (parameter.Status.HasValue||parameter.Recevied.HasValue)//发票开具情况
+                if (parameter.Status.HasValue)
                 {
-                    foreach(var item in query)
-                    {
-                        //已经开具的发票 不包括退票  红票
-                        var list = db.Invoices.Where(e => e.CID == item.ID&&e.State==InvoiceState.Have).ToList();
-                        if (list == null)
-                        {
-                            item.Status = ContractState.None;
-                        }
-                        else
-                        {
-                            if (list.Count == 0)
-                            {
-                                item.Status = ContractState.None;
-                            }
-                            else
-                            {
-                                if (Math.Abs(item.Money - list.Sum(e => e.Money)) < 0.001)
-                                {
-                                    item.Status = ContractState.ALL;
-                                }
-                                else
-                                {
-                                    item.Status = ContractState.Part;
-                                }
-                            }
-                        }
-                    }
-                    if (parameter.Status.HasValue)//过滤发票开具情况
-                    {
-                        query = query.Where(e => e.Status == parameter.Status.Value);
-                    }
-                    if (parameter.Recevied.HasValue)
-                    {
-
-                    }
-                    
+                    query = query.Where(e => e.Status == parameter.Status.Value);
+                }
+                if (parameter.Recevied.HasValue)
+                {
+                    query = query.Where(e => e.Recevied == parameter.Recevied.Value);
                 }
                 if (parameter.MinMoney.HasValue)//金额范围
                 {
@@ -194,7 +166,7 @@ namespace Ztop.Todo.Manager
                 {
                     query = query.Where(e => e.ZtopCompany == parameter.ZtopCompany.Value);
                 }
-               // query = query.OrderByDescending(e=>e.Coding).SetPage(parameter.Page);
+                query = query.OrderByDescending(e=>e.Coding).SetPage(parameter.Page);
                 return query.ToList();
             }
         }
@@ -216,6 +188,28 @@ namespace Ztop.Todo.Manager
                 else
                 {
                     contract.Status = Math.Abs(contract.Money - invoices.Sum(e => e.Money)) < 0.01 ? ContractState.ALL : ContractState.Part;
+                }
+                db.SaveChanges();
+            }
+            return true;
+        }
+        public bool UpdateRecevied(int id)
+        {
+            using (var db = GetDbContext())
+            {
+                var contract = db.Contracts.FirstOrDefault(e => e.ID == id);
+                if (contract == null)
+                {
+                    return false;
+                }
+                var invoices = db.Invoices.Where(e => e.CID == id && e.State == InvoiceState.Have && e.BAID > 0).ToList();
+                if (invoices.Count == 0)
+                {
+                    contract.Recevied = Recevied.None;
+                }
+                else
+                {
+                    contract.Recevied = Math.Abs(contract.Money - invoices.Sum(e => e.Money)) < 0.01 ? Recevied.ALL : Recevied.Part;
                 }
                 db.SaveChanges();
             }

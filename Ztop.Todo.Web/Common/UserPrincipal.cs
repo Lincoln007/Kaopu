@@ -31,6 +31,10 @@ namespace Ztop.Todo.Web.Common
         public string Name { get; set; }
         //是否为审核人
         public bool Director { get; set; }
+        public bool Project { get; set; }
+        public bool Finance { get; set; }
+        public bool Admin { get; set; }
+        public bool Market { get; set; }
         public string sAMAccountName { get; set; }
         public bool IsAuthenticated
         {

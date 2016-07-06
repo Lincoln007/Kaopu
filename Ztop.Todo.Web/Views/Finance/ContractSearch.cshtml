@@ -12,7 +12,7 @@
     <form method="get">
         <input type="hidden" name="ZtopCompany" value="@(parameter.ZtopCompany.HasValue?parameter.ZtopCompany.Value.GetDescription():"")" />
         <input type="hidden" name="Archived" value="@(parameter.Archived.HasValue?parameter.Archived.Value.ToString():"")" />
-        <input type="hidden" name="Status" value=""/>
+        <input type="hidden" name="Status" value="@(parameter.Status.HasValue?parameter.Status.Value.GetDescription():"")"/>
         <input type="hidden" name="Recevied" value="@(parameter.Recevied.HasValue?parameter.Recevied.Value.GetDescription():"")" />
         <input type="hidden" name="Department" value="@(parameter.Department)"/>
         <div class="row">
@@ -33,9 +33,10 @@
                     <div class="col-md-12">
                         <div class="btn-group" role="group">
                             <button type="button" class="btn btn-sm btn-@(parameter.Status.HasValue?"default":"success")" name="Status">全部</button>
-                            <button type="button" class="btn btn-sm btn-@(parameter.Status.HasValue&&parameter.Status.Value==ContractState.None?"success":"default")" name="Status">未开发票</button>
-                            <button type="button" class="btn btn-sm btn-@(parameter.Status.HasValue&&parameter.Status.Value==ContractState.Part?"success":"default")" name="Status">部分开票</button>
-                            <button type="button" class="btn btn-sm btn-@(parameter.Status.HasValue&&parameter.Status.Value==ContractState.ALL?"success":"default")" name="Status">全开发票</button>
+                            @foreach(ContractState state in Enum.GetValues(typeof(ContractState)))
+                            {
+                                <button type="button" class="btn btn-sm btn-@(parameter.Status.HasValue&&parameter.Status.Value==state?"success":"default")" name="Status">@(state.GetDescription())</button>
+                            }
                         </div>
                     </div>
                 </div>
@@ -67,9 +68,10 @@
                     <div class="col-md-12">
                         <div class="btn-group" role="group">
                             <button type="button" class="btn btn-sm btn-@(parameter.Recevied.HasValue?"default":"success")" name="Recevied">全部</button>
-                            <button type="button" class="btn btn-sm btn-@(parameter.Recevied.HasValue&&parameter.Recevied.Value==Recevied.None?"success":"default")" name="Recevied">未到账</button>
-                            <button type="button" class="btn btn-sm btn-@(parameter.Recevied.HasValue&&parameter.Recevied.Value==Recevied.Part?"success":"default")" name="Recevied">部分到账</button>
-                            <button type="button" class="btn btn-sm btn-@(parameter.Recevied.HasValue&&parameter.Recevied.Value==Recevied.ALL?"success":"default")" name="Recevied">已到账</button>
+                            @foreach(Recevied recevied in Enum.GetValues(typeof(Recevied)))
+                            {
+                                <button type="button" class="btn btn-sm btn-@(parameter.Recevied.HasValue&&parameter.Recevied.Value==recevied?"success":"default")" name="Recevied">@(recevied.GetDescription())</button>
+                            }
                         </div>
                     </div>
                 </div>

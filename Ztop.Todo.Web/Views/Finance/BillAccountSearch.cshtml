@@ -5,65 +5,52 @@
     List<BillAccount> BillAccounts = ViewBag.Result;
     BillAccountParameter parameter = ViewBag.Parameter;
 }
-<style>
-    .input-sm{
-        height:30px;
-    }
-</style>
 
-<div class="row">
-    <div class="col-md-6 col-xs-6 col-sm-6">
-        <div class="col-md-12 col-xs-12 well" style="padding:0px;">
-            <fieldset><legend>到账查询设置</legend></fieldset>
-            <form method="get">
-                <input type="hidden" name="Association" value="@(parameter.Association.HasValue?parameter.Association.Value.GetDescription():"")" />
-                <div class="row">
-                    <div class="col-md-12 col-xs-12 col-sm-12">
-                        <div class="form-group">
-                            <label class="control-label">到账时间：</label>
-                            <div class="col-md-12">
-                                <div class="input-group">
-                                    <input type="text" name="StartTime" placeholder="起始时间" class="form-control datetimepicker input-sm" value="@(parameter.StartTime.HasValue?parameter.StartTime.Value.ToString("yyyy-MM-dd"):"")" />
-                                    <span class="input-group-addon input-sm">至</span>
-                                    <input type="text" name="EndTime" placeholder="结束时间" class="form-control datetimepicker input-sm" value="@(parameter.EndTime.HasValue?parameter.EndTime.Value.ToString("yyyy-MM-dd"):"")" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label">到账金额：</label>
-                            <div class="col-md-12">
-                                <div class="input-group">
-                                    <input type="text" name="MinMoney" placeholder="最小值" class="form-control input-sm" value="@(parameter.MinMoney.HasValue ? parameter.MinMoney.Value.ToString():"")" />
-                                    <span class="input-group-addon input-sm">至</span>
-                                    <input type="text" name="MaxMoney" placeholder="最大值" class="form-control input-sm" value="@(parameter.MaxMoney.HasValue?parameter.MaxMoney.Value.ToString():"")" />
-                                </div>
-                            </div>
+<div class="col-md-3 col-xs-3 well" style="padding:0px;">
+    <fieldset><legend>到账查询设置</legend></fieldset>
+    <form method="get">
+        <input type="hidden" name="Association" value="@(parameter.Association.HasValue?parameter.Association.Value.GetDescription():"")" />
+        <div class="row">
+            <div class="col-md-12 col-xs-12 col-sm-12">
+                <div class="form-group">
+                    <label class="control-label">到账时间：</label>
+                    <div class="col-md-12">
+                        <div class="input-group">
+                            <input type="text" name="StartTime" placeholder="起始时间" class="form-control datetimepicker input-sm" value="@(parameter.StartTime.HasValue?parameter.StartTime.Value.ToString("yyyy-MM-dd"):"")" />
+                            <span class="input-group-addon input-sm">至</span>
+                            <input type="text" name="EndTime" placeholder="结束时间" class="form-control datetimepicker input-sm" value="@(parameter.EndTime.HasValue?parameter.EndTime.Value.ToString("yyyy-MM-dd"):"")" />
                         </div>
                     </div>
-                    <div class="col-md-6 col-xs-6 col-sm-6">     
-                        <div class="form-group">
-                            <label class="control-label">对方户名：</label>
-                            <div class="col-md-12">
-                                <div class="input-group">
-                                    <div class="input-group-btn" role="group">
-                                        <button type="button" class="btn btn-sm btn-@(string.IsNullOrEmpty(parameter.OtherSide)?"success":"default")" name="OtherSide">全部</button>
-                                    </div>
-                                    <input type="text" name="OtherSide" placeholder="对方户名关键字" class="form-control input-sm" value="@(parameter.OtherSide)" />
-                                </div>
-                            </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">到账金额：</label>
+                    <div class="col-md-12">
+                        <div class="input-group">
+                            <input type="text" name="MinMoney" placeholder="最小值" class="form-control input-sm" value="@(parameter.MinMoney.HasValue ? parameter.MinMoney.Value.ToString():"")" />
+                            <span class="input-group-addon input-sm">至</span>
+                            <input type="text" name="MaxMoney" placeholder="最大值" class="form-control input-sm" value="@(parameter.MaxMoney.HasValue?parameter.MaxMoney.Value.ToString():"")" />
                         </div>
                     </div>
-                    <div class="col-md-6 col-xs-6 col-sm-6">
-                        <div class="form-group">
-                            <label class="control-label">银行备注：</label>
-                            <div class="col-md-12">
-                                <div class="input-group" role="group">
-                                    <div class="input-group-btn" role="group">
-                                        <button type="button" class="btn btn-sm btn-@(string.IsNullOrEmpty(parameter.Remark)?"success":"default")" name="Remark">全部</button>
-                                    </div>
-                                    <input type="text" name="Remark" placeholder="银行备注关键字" class="form-control input-sm" value="@(parameter.Remark)" />
-                                </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">对方户名：</label>
+                    <div class="col-md-12">
+                        <div class="input-group">
+                            <div class="input-group-btn" role="group">
+                                <button type="button" class="btn btn-sm btn-@(string.IsNullOrEmpty(parameter.OtherSide)?"success":"default")" name="OtherSide">全部</button>
                             </div>
+                            <input type="text" name="OtherSide" placeholder="对方户名关键字" class="form-control input-sm" value="@(parameter.OtherSide)" />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">银行备注：</label>
+                    <div class="col-md-12">
+                        <div class="input-group" role="group">
+                            <div class="input-group-btn" role="group">
+                                <button type="button" class="btn btn-sm btn-@(string.IsNullOrEmpty(parameter.Remark)?"success":"default")" name="Remark">全部</button>
+                            </div>
+                            <input type="text" name="Remark" placeholder="银行备注关键字" class="form-control input-sm" value="@(parameter.Remark)" />
                         </div>
                     </div>
                 </div>
@@ -88,66 +75,38 @@
                         </div>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
-        <div class="col-md-12" style="padding:0px;">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>到账日期</th>
-                        <th>到账金额（元）</th>
-                        <th>对方户名</th>
-                        <th>银行备注</th>
-                        <th>发票关联情况</th>
-                       
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var billAccount in BillAccounts)
-                    {
-                        <tr>
-                            <td>@(billAccount.Time.ToShortDateString())</td>
-                            <td>@(billAccount.Money)</td>
-                            <td>@(billAccount.Account)</td>
-                            <td>@(billAccount.Remark)</td>
-                            <td>
-                                @(billAccount.Association.GetDescription())
-                                <button type="button" class="btn btn-success btn-xs" data-toggle="modal" data-target="#Relate@(billAccount.ID)"><i class="glyphicon glyphicon-screenshot"></i>关联</button>
-                                <div class="modal fade" id="Relate@(billAccount.ID)" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                                    <div class="modal-dialog modal-lg" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                <h4 class="modal-title">关联</h4>
-                                            </div>
-                                            <div class="modal-body">
-
-                                            </div>
-                                            <div class="modal-footer">
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-                           
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div class="col-md-6 col-xs-6 col-sm-6">
-        <div class="col-md-12 col-xs-12 well">
-            <fieldset><legend>发票查询设置</legend></fieldset>
-            <form>
-
-            </form>
-        </div>
-        <div class="col-md-12">
-
-        </div>
-    </div>
+    </form>
+</div>
+<div class="col-md-9 col-xs-9">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>到账编号</th>
+                <th>到账日期</th>
+                <th>到账金额（元）</th>
+                <th>对方户名</th>
+                <th>银行备注</th>
+                <th>关联情况</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var billAccount in BillAccounts)
+            {
+                <tr>
+                    <td><a href="/Finance/BillAccountDetail?id=@(billAccount.ID)">@(billAccount.Coding)</a></td>
+                    <td>@(billAccount.Time.ToShortDateString())</td>
+                    <td>@(billAccount.Money)</td>
+                    <td>@(billAccount.Account)</td>
+                    <td>@(billAccount.Remark)</td>
+                    <td>
+                        @(billAccount.Association.GetDescription())
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>
 
 

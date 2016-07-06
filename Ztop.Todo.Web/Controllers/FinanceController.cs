@@ -10,10 +10,11 @@ namespace Ztop.Todo.Web.Controllers
 {
     public class FinanceController : ControllerBase
     {
+        
         // GET: Finance
         public ActionResult Index()
         {
-            ViewBag.List = Core.ContractManager.Get();
+            ViewBag.List = Core.ContractManager.Search(new ContractParameter() { Deleted = false, UserName = Identity.Project ? Identity.Name : null });
             ViewBag.Bills = Core.BillManager.Search();
             ViewBag.BillAccount = Core.BillAccountManager.Search(new BillAccountParameter() { Page = new PageParameter(1, 20) });
             ViewBag.Invoices = Core.InvoiceManager.Search(new InvoiceParameter() { Status = InvoiceState.Have, Instance = false });
@@ -129,7 +130,16 @@ namespace Ztop.Todo.Web.Controllers
         /// <returns></returns>
         public ActionResult Change(int id,InvoiceState state)
         {
-            return Core.InvoiceManager.Change(id, state)? SuccessJsonResult() : ErrorJsonResult("修改发票状态失败！");
+            var cid = Core.InvoiceManager.Change(id, state);
+            if (cid > 0)
+            {
+                return Core.ContractManager.UpdateState(cid) ? SuccessJsonResult() : ErrorJsonResult("更新合同发票开具情况失败！");
+            }
+            else
+            {
+                return ErrorJsonResult("修改发票状态失败！");
+            }
+            
         }
 
 
@@ -216,11 +226,7 @@ namespace Ztop.Todo.Web.Controllers
                 OtherSide = otherside,
                 Remark = remark
             };
-            if (!string.IsNullOrEmpty(association))
-            {
-                parameter.Association = EnumHelper.GetEnum<Association>(association);
-            }
-            var list= Core.BillAccountManager.Search(parameter);
+            var list= Core.BillAccountManager.Search(parameter).Where(e=>e.Association!=Association.Full);
             return Json(list, JsonRequestBehavior.AllowGet);
         }
 
@@ -368,13 +374,10 @@ namespace Ztop.Todo.Web.Controllers
             return View(); 
         }
 
-        public ActionResult BillSearch()
-        {
-            return View();
-        }
 
-        public ActionResult DetailInvoiceBill(int IBID)
+        public ActionResult BillAccountDetail(int id)
         {
+            ViewBag.BillAccount = Core.BillAccountManager.Get(id, true);
             return View();
         }
 

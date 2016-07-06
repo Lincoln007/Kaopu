@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Security;
 using Ztop.Todo.ActiveDirectory;
+using Ztop.Todo.Common;
 using Ztop.Todo.Model;
 using Ztop.Todo.Web.Common;
 
@@ -13,6 +14,10 @@ namespace Ztop.Todo.Web
     {
         private const string _cookieName = ".user";
         private static List<string> _directors = XmlHelper.GetDirectors();
+        private static List<string> _projects = ProjectHelper.GetProjects();
+        private static List<string> _finances = ProjectHelper.GetFinances();
+        private static List<string> _admins = ProjectHelper.GetAdmins();
+        private static List<string> _markets = ProjectHelper.GetMarkerts();
 
         public static string GenerateToken(this HttpContextBase context, User user)
         {
@@ -55,13 +60,18 @@ namespace Ztop.Todo.Web
                     if (values.Length == 4)
                     {
                         var type = GroupType.Guest;
+                        var name = values[1];
                         return new UserIdentity
                         {
                             UserID = int.Parse(values[0]),
-                            Name = values[1],
+                            Name = name,
                             GroupType = Enum.TryParse(values[2], out type) ? type : GroupType.Guest,
                             sAMAccountName=values[3],
-                            Director=_directors.Contains(values[1])?true:false
+                            Director=_directors.Contains(name),
+                            Project=_projects.Contains(name),
+                            Finance=_finances.Contains(name),
+                            Admin=_admins.Contains(name),
+                            Market=_markets.Contains(name)
                         };
                     }
                 }

@@ -88,6 +88,9 @@
                     <h4 class="modal-title">项目合同</h4>
                 </div>
                 <div class="modal-body">
+                    <div class="alert alert-danger" role="alert">
+                        <span>警告框</span>
+                    </div>
                     <form class="form-inline">
                         <div class="form-group">
                             <label class="sr-only">时间：</label>
@@ -140,6 +143,7 @@
 
 
 <script>
+    $("div.alert.alert-danger").hide();
     $(function () {
 
         $("input.datetimepicker").datetimepicker({
@@ -159,6 +163,13 @@
                 company: company
             },function (data) {
                 $("#Contract-Result").empty();
+                $("div.alert.alert-danger").hide();
+                $("div.alert.alert-danger>span").html("");
+                if (data.length == 0) {
+                    $("div.alert.alert-danger>span").html("未查询到相关项目合同！");
+                    $("div.alert.alert-danger").show(500);
+                    return false;
+                }
                 var html = "";
                 $.each(data, function (index, value) {
                     var appendhtml = "<tr index='"+value.ID+"'><td name='Name"+value.ID+"'>" + value.Name + "</td><td>" + value.Company + "</td><td>" + value.Money + "</td><td name='"+value.ID+"'><i class='glyphicon glyphicon-refresh'></i></td></tr>";

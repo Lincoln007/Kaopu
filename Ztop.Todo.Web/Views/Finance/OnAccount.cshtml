@@ -10,9 +10,12 @@
 <div class="row">
     <div class="col-md-6 col-xs-6 col-sm-6" style="padding:10px;">
         <div class="col-md-12 well" style="padding:0px;">
-            <fieldset><legend>到账查询设置</legend></fieldset>
+            <fieldset><legend>可关联到账查询设置</legend></fieldset>
+            <div class="alert alert-danger" role="alert" id="BA-Info">
+                <span>警告框</span>
+            </div>
             <form method="get" action="" id="BA-Search">
-                <input type="hidden" name="Association" />
+               
                 <div class="row">
                     <div class="col-md-12 col-xs-12 col-sm-12">
                         <div class="form-group">
@@ -63,18 +66,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="control-label">发票关联：</label>
-                    <div class="col-md-12">
-                        <div class="btn-group" role="group">
-                            <button type="button" class="btn btn-sm btn-success" name="Association">全部</button>
-                            @foreach (Association association in Enum.GetValues(typeof(Association)))
-                            {
-                                <button type="button" class="btn btn-sm btn-default" name="Association">@(association.GetDescription())</button>
-                            }
-                        </div>
-                    </div>
-                </div>
+               
                 <hr />
                 <div class="form-group">
                     <div class="col-md-12">
@@ -87,7 +79,10 @@
     </div>
     <div class="col-md-6 col-xs-6 col-sm-6" style="padding:10px;">
         <div class="col-md-12 well" style="padding:0px;">
-            <fieldset><legend>发票查询设置</legend></fieldset>
+            <fieldset><legend>已开可关联发票查询设置</legend></fieldset>
+            <div class="alert alert-danger" role="alert" id="Invoice-Info">
+                <span>警告框</span>
+            </div>
             <form method="get" action="" id="Invoice-Search">
                 <input type="hidden" name="Department" />
                 <input type="hidden" name="ZtopCompany" />
@@ -194,10 +189,11 @@
         <table class="table table-bordered">
             <thead>
                 <tr>
+                    <th>项目合同</th>
                     <th>发票内容</th>
                     <th>发票金额（元）</th>
                     <th>开票时间</th>
-                    <th>关联状态</th>
+                    <th>状态</th>
                 </tr>
             </thead>
             <tbody id="Invoice"></tbody>
@@ -207,11 +203,19 @@
 </div>
 
 <script>
+    $("#BA-Info").hide();
+    $("#Invoice-Info").hide();
     $(function () {
         $("#BA-Search").submit(function () {
+            $("#BA-Info").hide();
             var values = $(this).serialize();
             $.getJSON("/Finance/GetJsonBillAccount", values, function (data) {
                 $("#BillAccount").empty();
+                if (data.length == 0) {
+                    $("#BA-Info>span").html("未查询到相关到账信息记录！");
+                    $("#BA-Info").show(500);
+                    return false;
+                }
                 $.each(data, function (index, value) {
                     var timeString = value.Time.replace("/Date(", "").replace(")/", "");
                     var currentTime = new Date();
@@ -245,7 +249,8 @@
                         $.request("/Finance/Relate", data, function (json) {
                             alert(json.content);
                             if (json.result == 1) {
-                                $("#Invoice>tr.success").remove();
+                                $("#BillAccount").hide(500).html("");
+                                $("#Invoice>tr.success").hide(500).remove();
                                 $("#Relate-form input[name='BID']").val("");
                                 $("#Relate-form input[name='IID']").val("");
                             }
@@ -259,15 +264,21 @@
             return false;
         });
         $("#Invoice-Search").submit(function () {
+            $("#Invoice-Info").hide();
             var value = $(this).serialize();
             $.getJSON("/Finance/GetJsonInvoice", value, function (data) {
                 $("#Invoice").empty();
+                if (data.length == 0) {
+                    $("#Invoice-Info>span").html("未查询到相关发票信息记录！");
+                    $("#Invoice-Info").show(500);
+                    return false;
+                }
                 $.each(data, function (Index, value) {
                     if (value.FillTime != null) {
                         var timeString = value.FillTime.replace("/Date(", "").replace(")/", "");
                         var currentTime = new Date();
                         currentTime.setTime(timeString);
-                        $("#Invoice").append("<tr Index='"+value.ID+"' Money='"+value.Money+"'><td>" + value.Content + "</td><td>" + value.Money + "</td><td>" + currentTime.toLocaleDateString() + "</td><td><i class='glyphicon glyphicon-refresh' name='CSS"+value.ID+"'></i></td></tr>");
+                        $("#Invoice").append("<tr Index='"+value.ID+"' Money='"+value.Money+"'><td>"+value.Contract.Name+"</td><td>" + value.Content + "</td><td>" + value.Money + "</td><td>" + currentTime.toLocaleDateString() + "</td><td><i class='glyphicon glyphicon-refresh' name='CSS"+value.ID+"'></i></td></tr>");
                     }
                 });
 

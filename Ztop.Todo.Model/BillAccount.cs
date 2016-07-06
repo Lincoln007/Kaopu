@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -22,6 +23,8 @@ namespace Ztop.Todo.Model
         [MaxLength(1023)]
         public string Remark { get; set; }
         public Association Association { get; set; }
+        [NotMapped]
+        public List<Invoice> Invoices { get; set; }
     }
 
     public enum Association

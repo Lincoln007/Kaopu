@@ -20,11 +20,16 @@ namespace Ztop.Todo.Manager
         }
         
 
-        public BillAccount Get(int id)
+        public BillAccount Get(int id,bool hasStance=false)
         {
             using (var db = GetDbContext())
             {
-                return db.BillAccounts.Find(id);
+                var billAccount = db.BillAccounts.FirstOrDefault(e => e.ID == id);
+                if (billAccount != null && hasStance)
+                {
+                    billAccount.Invoices = db.Invoices.Where(e => e.BAID == id).ToList();
+                }
+                return billAccount;
             }
         }
 

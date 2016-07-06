@@ -33,6 +33,10 @@ namespace Ztop.Todo.Model
         /// 申请人所在部门
         /// </summary>
         public string Department { get; set; }
+        /// <summary>
+        /// 用户名
+        /// </summary>
+        public string UserName { get; set; }
         public PageParameter Page { get; set; }
     }
 }

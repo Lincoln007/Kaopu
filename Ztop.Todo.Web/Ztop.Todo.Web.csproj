@@ -216,6 +216,7 @@
     <Content Include="Excels\Bank.xls" />
     <None Include="Properties\PublishProfiles\TODO.pubxml" />
     <None Include="Scripts\jquery-1.9.1.intellisense.js" />
+    <Content Include="ProjectInfo.xml" />
     <Content Include="Scripts\BarBase.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -294,12 +295,11 @@
     <Content Include="Views\Finance\DetailInvoice.cshtml" />
     <Content Include="Views\Finance\ContractSearch.cshtml" />
     <Content Include="Views\Finance\CreateInvoice.cshtml" />
-    <Content Include="Views\Finance\BillSearch.cshtml" />
-    <Content Include="Views\Finance\DetailInvoiceBill.cshtml" />
     <Content Include="Views\Report\Review.cshtml" />
     <Content Include="Views\Finance\Relate.cshtml" />
     <Content Include="Views\Finance\BillAccountSearch.cshtml" />
     <Content Include="Views\Finance\OnAccount.cshtml" />
+    <Content Include="Views\Finance\BillAccountDetail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

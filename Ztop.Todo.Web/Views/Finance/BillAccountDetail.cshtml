@@ -1,0 +1,72 @@
+﻿
+@{
+    ViewBag.Title = "查看到账详情";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    BillAccount billaccount = ViewBag.BillAccount;
+}
+<hr />
+<div class="btn-group" role="group">
+    <button type="button" class="btn btn-default" onclick="history.back();"><i class="glyphicon glyphicon-arrow-left"></i>返回</button>
+</div>
+<hr />
+<ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#BA" aria-controls="BA" role="tab" data-toggle="tab">到账详情</a></li>
+    <li role="presentation"><a href="#Invoice" aria-controls="Invoice" role="tab" data-toggle="tab">发票详情</a></li>
+</ul>
+<div class="tab-content">
+    <div class="tab-pane fade in active" role="tabpanel" id="BA">
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <th>到账编号</th>
+                    <td>@(billaccount.Coding)</td>
+                    <th>到账日期</th>
+                    <td>@(billaccount.Time.ToLongDateString())</td>
+                </tr>
+                <tr>
+                    <th>对方户名</th>
+                    <td>@(billaccount.Account)</td>
+                    <th>到账金额（元）</th>
+                    <td>@(billaccount.Money)</td>
+                </tr>
+                <tr>
+                    <th>银行备注</th>
+                    <td colspan="3"></td>
+                </tr>
+                <tr>
+                    <th>发票关联情况</th>
+                    <td><span class="label label-@(billaccount.Association==Association.None?"default":billaccount.Association==Association.Full?"success":"warning")">@(billaccount.Association.GetDescription())</span></td>
+                    <th>可关联金额（元）</th>
+                    <td>@(billaccount.Leave)</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="tab-pane fade" role="tabpanel" id="Invoice">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>开票公司</th>
+                    <th>对方单位</th>
+                    <th>发票金额（元）</th>
+                    <th>发票开出时间</th>
+                    <th>银行备注</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var invoice in billaccount.Invoices)
+                {
+                    <tr>
+                        <td>@(invoice.ZtopCompany.GetDescription())</td>
+                        <td>@(invoice.OtherSideCompany)</td>
+                        <td>@(invoice.Money)</td>
+                        <td>@(invoice.FillTime.HasValue ? invoice.FillTime.Value.ToLongDateString() : "-")</td>
+                        <td>@(invoice.Remark)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        
+    </div>
+</div>
+

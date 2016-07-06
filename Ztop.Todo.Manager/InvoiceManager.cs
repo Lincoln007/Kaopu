@@ -83,19 +83,19 @@ namespace Ztop.Todo.Manager
                 return invoice.CID;
             }
         }
-        public bool Change(int id,InvoiceState state)
+        public int Change(int id,InvoiceState state)
         {
             using (var db = GetDbContext())
             {
                 var invoice = db.Invoices.Find(id);
                 if (invoice == null)
                 {
-                    return false;
+                    return -1;
                 }
 
                 invoice.State = state;
                 db.SaveChanges();
-                return true;
+                return invoice.CID;
             }
         }
         public List<Invoice> Search(InvoiceParameter parameter)
@@ -255,10 +255,16 @@ namespace Ztop.Todo.Manager
             var a = 0;
             var iids = iidString.Split(',');
             double relateSum = .0;
+            var list = new List<int>();
+            var cidList = new List<int>();
             using (var db = GetDbContext())
             {
                 var billAccount = db.BillAccounts.FirstOrDefault(e => e.ID == bid);
                 if (billAccount == null)
+                {
+                    return false;
+                }
+                if (billAccount.Leave <= 0)
                 {
                     return false;
                 }
@@ -275,17 +281,38 @@ namespace Ztop.Todo.Manager
                             }
                             else
                             {
-                                invoice.BAID = bid;
-                                db.SaveChanges();
+                                list.Add(a);
+                                cidList.Add(invoice.CID);
                                 relateSum += invoice.Money;
                             }
                         }
                     }
                 }
-                billAccount.Leave = billAccount.Leave - relateSum;
-                db.SaveChanges();
+                if (billAccount.Leave >= relateSum)
+                {
+                    foreach(var index in list)
+                    {
+                        var invoice = db.Invoices.FirstOrDefault(e => e.ID == index);
+                        if (invoice != null)
+                        {
+                            invoice.BAID = bid;
+                            db.SaveChanges();
+                        }
+                    }
+                    billAccount.Leave = billAccount.Leave - relateSum;
+                    billAccount.Association = billAccount.Leave > 0 ? (billAccount.Money > billAccount.Leave ? Association.Part : Association.None) : Association.Full;
+                    db.SaveChanges();
+                }
+                else
+                {
+                    return false;
+                }
             }
-               
+            cidList = cidList.Distinct().ToList();
+            foreach(var index in cidList)
+            {
+                Core.ContractManager.UpdateRecevied(index);
+            }
             return true;
         }
     }

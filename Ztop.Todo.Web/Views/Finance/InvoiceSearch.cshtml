@@ -99,6 +99,10 @@
                             <button type="button" class="btn btn-sm btn-@(parameter.Recevied.HasValue?"default":"success")" name="Recevied">全部</button>
                             @foreach (Recevied received in Enum.GetValues(typeof(Recevied)))
                             {
+                                if (received == Recevied.Part)
+                                {
+                                    continue;
+                                }
                                 <button type="button" class="btn btn-sm btn-@(parameter.Recevied.HasValue&&parameter.Recevied.Value==received?"success":"default")" name="Recevied">@(received.GetDescription())</button>
                             }
                         </div>
@@ -132,15 +136,15 @@
     <table class="table table-hover">
         <thead>
             <tr>
-                <th>开票时间</th>
+                <th>开票申请时间</th>
                 <th>开票申请人</th>
                 <th>所在部门</th>
                 <th>开票单位</th>
                 <th>对方单位</th>
                 <th>发票总金额（元）</th>
-                <th>已到账金额（元）</th>
-                <th>未完成金额（元）</th>
-                <th>发票详情</th>
+                <th>发票状态</th>
+                <th>开票时间</th>
+                <th>到账情况</th>
             </tr>
         </thead>
         @foreach(var invoice in results)
@@ -152,9 +156,10 @@
                 <td>@(invoice.ZtopCompany.GetDescription())</td>
                 <td>@(invoice.OtherSideCompany)</td>
                 <td>@(invoice.Money)</td>
-                <td></td>
-                <td></td>
-                <td><a href="/Finance/DetailInvoice?id=@(invoice.ID)"><i class="glyphicon glyphicon-send"></i></a></td>
+                <td>@(invoice.State.GetDescription())</td>
+                <td>@(invoice.FillTime.HasValue ? invoice.FillTime.Value.ToLongDateString() : "-")</td>
+                <td>@(invoice.State==InvoiceState.Have?(invoice.BAID>0?"到账":"未到账"):"-")</td>
+                @*<td><a href="/Finance/DetailInvoice?id=@(invoice.ID)"><i class="glyphicon glyphicon-send"></i></a></td>*@
             </tr>
         }
     </table>

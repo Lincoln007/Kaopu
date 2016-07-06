@@ -3,7 +3,7 @@
     ViewBag.Title = "项目财务跟踪系统";
     Layout = "~/Views/Shared/_Layout.cshtml";
     List<Contract> list = ViewBag.List;
-    List<Bill> Bills = ViewBag.Bills;
+   // List<Bill> Bills = ViewBag.Bills;
     List<BillAccount> BillAccounts = ViewBag.BillAccount;
     List<Invoice> invoices = ViewBag.Invoices;
 }
@@ -145,12 +145,12 @@
         <div class="panel panel-red">
             <div class="panel panel-heading">
                 <h3 class="panel-title text-center">银行到账 </h3>
-
             </div>
             <div class="panel-body">
                 <a href="#" style="float:right;"><i class="glyphicon glyphicon-info-sign"></i>更多</a>
                 <table class="table table-bordered">
                     <tr>
+                        <th>到账编号</th>
                         <th>对方单位</th>
                         <th>到账时间</th>
                         <th>到账金额（元）</th>
@@ -158,6 +158,7 @@
                     @foreach(var billAccount in BillAccounts)
                     {
                         <tr>
+                            <td><a href="/Finance/BillAccountDetail?id=@(billAccount.ID)">@(billAccount.Coding)</a></td>
                             <td>@(billAccount.Account)</td>
                             <td>@(billAccount.Time.ToShortDateString())</td>
                             <td>@(billAccount.Money)</td>
@@ -192,7 +193,7 @@
                             <td>@(item.Applicant)</td>
                             <td>@(item.Money)</td>
                             <td>@(item.State.GetDescription())</td>
-                            <td>@(item.Recevied.GetDescription())</td>
+                            <td></td>
                         </tr>
                     }
                 </table>
