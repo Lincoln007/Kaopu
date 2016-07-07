@@ -2,8 +2,8 @@
 @{
     ViewBag.Title = "到账查询";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    List<BillAccount> BillAccounts = ViewBag.Result;
-    BillAccountParameter parameter = ViewBag.Parameter;
+    List<Bill> List = ViewBag.Result;
+    BillParamter parameter = ViewBag.Parameter;
 }
 
 <div class="col-md-3 col-xs-3 well" style="padding:0px;">
@@ -92,10 +92,10 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var billAccount in BillAccounts)
+            @foreach (var billAccount in List)
             {
                 <tr>
-                    <td><a href="/Finance/BillAccountDetail?id=@(billAccount.ID)">@(billAccount.Coding)</a></td>
+                    <td><a href="/Finance/BillAccountDetail?id=@(billAccount.ID)">@(billAccount.ID)</a></td>
                     <td>@(billAccount.Time.ToShortDateString())</td>
                     <td>@(billAccount.Money)</td>
                     <td>@(billAccount.Account)</td>

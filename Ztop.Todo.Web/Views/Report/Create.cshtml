@@ -21,13 +21,13 @@
                 Html.RenderPartial("SubmitButton");
             }
 
-            <button class="btn btn-success" type="submit">
+            <button class="btn btn-sm btn-success" type="submit">
                 <em class="glyphicon glyphicon-floppy-disk"></em> 保存返回
             </button>
-            <button type="button" class="btn btn-default" onclick="history.back();"><em class="glyphicon glyphicon-arrow-left"></em> 返回</button>
+            <button type="button" class="btn btn-sm btn-default" onclick="history.back();"><em class="glyphicon glyphicon-arrow-left"></em> 返回</button>
             @if (sheet.ID != 0)
             {
-                <button class="btn btn-danger" type="button">
+                <button class="btn btn-sm btn-danger" type="button">
                     <em class="glyphicon glyphicon-remove-circle"></em> 删除
                 </button>
             }
@@ -41,7 +41,7 @@
                         <th>单据编号</th>
                         <td>@(sheet.SerialNumber.Coding) </td>
                         <th>报销日期</th>
-                        <td><input type="text" class="form-control" value="@(DateTime.Now.ToString("yyyy-MM-dd"))" name="Time" readonly="readonly" /></td>
+                        <td><input type="text" class="form-control input-sm" value="@(DateTime.Now.ToString("yyyy-MM-dd"))" name="Time" readonly="readonly" /></td>
                     </tr>
                     <tr>
                         <th>报销人</th>
@@ -50,14 +50,14 @@
                         </td>
                         <th>报销金额合计</th>
                         <td>
-                            <input type="text" name="Money" value="@(sheet.Money)" class="form-control" onclick="@(sheet.Type==SheetType.Errand?"SumErrand()":"SumDialy()")" readonly="readonly" />
+                            <input type="text" name="Money" value="@(sheet.Money)" class="form-control input-sm" onclick="@(sheet.Type==SheetType.Errand?"SumErrand()":"SumDialy()")" readonly="readonly" />
                         </td>
                     </tr>
                     <tr>
                         <th>发票张数</th>
-                        <td><input type="number" name="Count" value="@(sheet.Count)" class="form-control" min="0" /></td>
+                        <td><input type="number" name="Count" value="@(sheet.Count)" class="form-control input-sm" min="0" /></td>
                         <th>备注</th>
-                        <td><input type="text" name="Remarks" style="width:100%" value="@(sheet.Remarks)" class="form-control" /></td>
+                        <td><input type="text" name="Remarks" style="width:100%" value="@(sheet.Remarks)" class="form-control input-sm" /></td>
                     </tr>
                 </tbody>
             </table>
@@ -74,13 +74,13 @@
             @{
                 Html.RenderPartial("SubmitButton");
             }
-            <button class="btn btn-success" type="submit">
+            <button class="btn btn-sm btn-success" type="submit">
                 <em class="glyphicon glyphicon-floppy-disk"></em> 保存返回
             </button>
-            <button type="button" class="btn btn-default" onclick="history.back();"><em class="glyphicon glyphicon-arrow-left"></em> 返回</button>
+            <button type="button" class="btn btn-sm btn-default" onclick="history.back();"><em class="glyphicon glyphicon-arrow-left"></em> 返回</button>
             @if (sheet.ID != 0)
             {
-                <button class="btn btn-danger" type="button">
+                <button class="btn btn-sm btn-danger" type="button">
                     <em class="glyphicon glyphicon-remove-circle"></em> 删除
                 </button>
             }

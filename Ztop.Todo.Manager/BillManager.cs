@@ -33,7 +33,6 @@ namespace Ztop.Todo.Manager
             {
                 var bill = new Bill()
                 {
-                    Coding = coding[i],
                     Time = time[i],
                     Money = money[i],
                     Account = account[i],
@@ -282,6 +281,44 @@ namespace Ztop.Todo.Manager
             file.SaveAs(saveFileFullPath);
             return saveFileFullPath;
             
+        }
+
+        public List<Bill> Search(BillParamter parameter)
+        {
+            using (var db = GetDbContext())
+            {
+                var query = db.Bills.AsQueryable();
+                if (parameter.MinMoney.HasValue)
+                {
+                    query = query.Where(e => e.Money >= parameter.MinMoney.Value);
+                }
+                if (parameter.MaxMoney.HasValue)
+                {
+                    query = query.Where(e => e.Money <= parameter.MaxMoney.Value);
+                }
+                if (parameter.StartTime.HasValue)
+                {
+                    query = query.Where(e => e.Time >= parameter.StartTime.Value);
+                }
+                if (parameter.EndTime.HasValue)
+                {
+                    query = query.Where(e => e.Time <= parameter.EndTime.Value);
+                }
+                if (!string.IsNullOrEmpty(parameter.OtherSide))
+                {
+                    query = query.Where(e => e.Account.Contains(parameter.OtherSide));
+                }
+                if (parameter.Association.HasValue)
+                {
+                    query = query.Where(e => e.Association == parameter.Association.Value);
+                }
+                if (!string.IsNullOrEmpty(parameter.Remark))
+                {
+                    query = query.Where(e => e.Remark.Contains(parameter.Remark));
+                }
+                query = query.OrderBy(e => e.ID).SetPage(parameter.Page);
+                return query.ToList();
+            }
         }
 
         

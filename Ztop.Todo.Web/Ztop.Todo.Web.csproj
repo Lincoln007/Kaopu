@@ -297,9 +297,12 @@
     <Content Include="Views\Finance\CreateInvoice.cshtml" />
     <Content Include="Views\Report\Review.cshtml" />
     <Content Include="Views\Finance\Relate.cshtml" />
-    <Content Include="Views\Finance\BillAccountSearch.cshtml" />
+    <Content Include="Views\Finance\BillSearch.cshtml" />
     <Content Include="Views\Finance\OnAccount.cshtml" />
     <Content Include="Views\Finance\BillAccountDetail.cshtml" />
+    <Content Include="Views\Finance\CreateArticle.cshtml" />
+    <Content Include="Views\Finance\ArticleSearch.cshtml" />
+    <Content Include="Views\Finance\ArticleContract.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

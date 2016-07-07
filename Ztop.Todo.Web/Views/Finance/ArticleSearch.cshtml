@@ -1,0 +1,47 @@
+﻿
+@{
+    ViewBag.Title = "项目查询";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-md-6 col-xs-6 well" style="padding:0px;">
+    <fieldset><legend>查询设置</legend></fieldset>
+    <form method="get">
+        <div class="row">
+            <div class="col-md-6 col-sm-6 col-xs-6">
+                <div class="form-group">
+                    <label class="control-label">项目名称：</label>
+                    <div class="col-md-12">
+                        <div class="input-group">
+                            <div class="input-group-btn" role="group">
+                                <button type="button" class="btn btn-sm btn-success">全部</button>
+                            </div>
+                            <input type="text" name="Name" class="form-control input-sm" placeholder="项目名称" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xs-6 col-sm-6">
+
+            </div>
+            <div class="col-md-12 col-xs-12 col-sm-12">
+
+            </div>
+            <hr />
+            <div class="col-md-12">
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <div class="btn-group">
+                            <button type="submit" class="btn btn-sm btn-success"><i class="glyphicon glyphicon-search"></i>立即查询</button>
+                            <button type="button" class="btn btn-sm btn-default" onclick="history.back();"><i class="glyphicon glyphicon-arrow-left"></i>返回</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          
+           
+          
+        </div>
+    </form>
+</div>
+

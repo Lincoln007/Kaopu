@@ -135,7 +135,7 @@
              
                     <td>
                         <div class="col-md-7 col-xs-7" style="padding:0px;">
-                            <select name="Category" class="form-control" targetIndex="@(serial-1)">
+                            <select name="Category" class="form-control input-sm" targetIndex="@(serial-1)">
                                 <option value="">请选择</option>
                                 @foreach (Category category in Enum.GetValues(typeof(Category)))
                                 {
@@ -146,7 +146,7 @@
                         @if (subtance.SecondCategory.HasValue)
                         {
                             <div class="col-md-5 col-xs-5" style="padding:0px;" id="@(serial-1)">
-                                <select name="SecondCategory" class="form-control">
+                                <select name="SecondCategory" class="form-control input-sm">
                                     @foreach (SecondCategory secondCategory in Enum.GetValues(typeof(SecondCategory)))
                                     {
                                         if (subtance.Category == Category.FixedAsssets)
@@ -206,8 +206,8 @@
                        
                        
                     </td>
-                    <td><input type="text" name="Detail" style="width:100%" value="@(subtance.Details)" class="form-control" /></td>
-                    <td><input type="text" name="Price" value="@(subtance.Price)" class="form-control" /></td>
+                    <td><input type="text" name="Detail" style="width:100%" value="@(subtance.Details)" class="form-control input-sm" /></td>
+                    <td><input type="text" name="Price" value="@(subtance.Price)" class="form-control input-sm" /></td>
                 </tr>
             }
         }
@@ -217,7 +217,7 @@
   
                 <td> 
                     <div class="col-md-7 col-xs-7" style="padding:0px;">
-                        <select class="form-control" name="Category" targetIndex="@(i+1)">
+                        <select class="form-control input-sm" name="Category" targetIndex="@(i+1)">
                             <option value="">请选择</option>
                             @foreach (Category category in Enum.GetValues(typeof(Category)))
                             {
@@ -229,8 +229,8 @@
                       
                     </div>
                 </td>
-                <td><input type="text" name="Detail" style="width:100%" class="form-control" /></td>
-                <td><input type="text" name="Price" class="form-control" /></td>
+                <td><input type="text" name="Detail" style="width:100%" class="form-control input-sm" /></td>
+                <td><input type="text" name="Price" class="form-control input-sm" /></td>
             </tr>
         }
     </tbody>
@@ -238,7 +238,7 @@
 
 <div style="display:none">
    <div id="FixedAsssets">
-        <select name="SecondCategory" class="form-control">
+        <select name="SecondCategory" class="form-control input-sm">
             @foreach (SecondCategory category in Enum.GetValues(typeof(SecondCategory)))
             {
                 if (((int)category) < 2)
@@ -250,7 +250,7 @@
         </select>
     </div>
    <div id="Equipment">
-        <select name="SecondCategory" class="form-control">
+        <select name="SecondCategory" class="form-control input-sm">
             @foreach (SecondCategory category in Enum.GetValues(typeof(SecondCategory)))
             {
                 if (((int)category) > 1)
@@ -265,7 +265,7 @@
         </select>
     </div>
    <div id="Traffic">
-       <select name="SecondCategory" class="form-control">
+       <select name="SecondCategory" class="form-control input-sm">
            @foreach (SecondCategory category in Enum.GetValues(typeof(SecondCategory)))
            {
                if (((int)category) > 4)
@@ -280,7 +280,7 @@
        </select>
    </div>
    <div id="Express">
-       <select name="SecondCategory" class="form-control">
+       <select name="SecondCategory" class="form-control input-sm">
            @foreach (SecondCategory category in Enum.GetValues(typeof(SecondCategory)))
            {
                if (((int)category) > 6)
@@ -295,7 +295,7 @@
        </select>
    </div>
    <div id="Print">
-       <select name="SecondCategory" class="form-control">
+       <select name="SecondCategory" class="form-control input-sm">
            @foreach (SecondCategory category in Enum.GetValues(typeof(SecondCategory)))
            {
                if (((int)category) > 8)
@@ -310,7 +310,7 @@
        </select>
    </div>
    <div id="Welfare">
-       <select name="SecondCategory" class="form-control">
+       <select name="SecondCategory" class="form-control input-sm">
            @foreach (SecondCategory category in Enum.GetValues(typeof(SecondCategory)))
            {
                if (((int)category) > 11)
@@ -325,7 +325,7 @@
        </select>
    </div>
    <div id="Bidding">
-       <select name="SecondCategory" class="form-control">
+       <select name="SecondCategory" class="form-control input-sm">
            @foreach (SecondCategory category in Enum.GetValues(typeof(SecondCategory)))
            {
                if (((int)category) > 13)

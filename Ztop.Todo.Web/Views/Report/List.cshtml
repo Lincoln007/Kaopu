@@ -21,7 +21,7 @@
                 <div class="btn-group" role="group">
                     @foreach (Time time in Enum.GetValues(typeof(Time)))
                     {
-                        <button type="button" class="btn btn-@(parameter.Time==time?"primary":"default")" name="Time">@(time.ToString())</button>
+                        <button type="button" class="btn btn-sm btn-@(parameter.Time==time?"primary":"default")" name="Time">@(time.ToString())</button>
                     }
                 </div>
             </div>
@@ -37,7 +37,7 @@
             </select>
         </div>
         <div class="form-group">
-            <button type="submit" class="btn btn-success">立即查询</button>
+            <button type="submit" class="btn btn-sm btn-success">立即查询</button>
         </div>
     </form>
 

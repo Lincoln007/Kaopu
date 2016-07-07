@@ -126,14 +126,14 @@
             <tr>
                 <th class="col-md-1 col-xs-1">出差地点</th>
                 <td class="col-md-5 col-xs-5">
-                    <input type="text" class="form-control" name="Place" value="@(Model.Place)" placeholder="出差地点" />
+                    <input type="text" class="form-control input-sm" name="Place" value="@(Model.Place)" placeholder="出差地点" />
                 </td>
                 <th class="col-md-1 col-xs-1">出差人员</th>
                 <td class="col-md-5 col-xs-5">
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="出差人员" readonly="readonly" name="Persons" value="@(Model.Persons)" />
+                        <input type="text" class="form-control input-sm" placeholder="出差人员" readonly="readonly" name="Persons" value="@(Model.Persons)" />
                         <span class="input-group-btn">
-                            <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#Users"><i class="glyphicon glyphicon-zoom-in"></i>人员选择</button>
+                            <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#Users"><i class="glyphicon glyphicon-zoom-in"></i>人员选择</button>
                         </span>
                     </div>
                     <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" id="Users">
@@ -161,7 +161,7 @@
                                                         {
                                                             if (entry != null)
                                                             {
-                                                                <td>
+                                                                <td style="padding:0px;">
                                                                     <label class="checkbox-inline">
                                                                         <input type="checkbox" value="@(entry.DisplayName)" name="Person" @(checkpersons.Contains(entry.DisplayName) ? "checked=checked" : "") />@(entry.DisplayName)
                                                                     </label>
@@ -176,8 +176,9 @@
 
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove-sign"></i>取消</button>
-                                    <button type="button" class="btn btn-primary" name="Person-OK" data-dismiss="modal"><i class="glyphicon glyphicon-ok-sign"></i>确定</button>
+                                    <button type="button" class="btn btn-sm btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove-sign"></i>取消</button>
+                                    <button type="button" class="btn btn-sm btn-primary" name="Person-OK" data-dismiss="modal"><i class="glyphicon glyphicon-ok-sign"></i>确定</button>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -188,9 +189,9 @@
                 <th>交通费用</th>
                 <td>
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="交通费用" readonly="readonly" name="Traffic" value="@(Model.Traffic)" />
+                        <input type="text" class="form-control input-sm" placeholder="交通费用" readonly="readonly" name="Traffic" value="@(Model.Traffic)" />
                         <span class="input-group-btn">
-                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#Traffic"><i class="glyphicon glyphicon-zoom-in"></i>费用详情</button>
+                            <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#Traffic"><i class="glyphicon glyphicon-zoom-in"></i>费用详情</button>
                         </span>
                     </div>
                     <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" id="Traffic">
@@ -201,6 +202,92 @@
                                     <h4 class="modal-title">交通费用详情</h4>
                                 </div>
                                 <div class="modal-body container-fluid">
+                                    <ul class="nav nav-tabs" role="tablist">
+                                        <li role="presentation" class="active"><a href="#Bus" aria-controls="Bus" data-toggle="tab" role="tab">公共交通</a></li>
+                                        <li role="presentation"><a href="#Car" aria-controls="Car" data-toggle="tab" role="tab">自驾车</a></li>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <div class="tab-pane fade in active" id="Bus" role="tabpanel">
+                                            @foreach (BusType type in Enum.GetValues(typeof(BusType)))
+                                            {
+                                                if (type == BusType.Company)
+                                                {
+                                                    break;
+                                                }
+                                                <div class="col-md-6 col-xs-6" style="padding:5px;margin-bottom:5px;margin-top:5px;">
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon input-sm">
+                                                            <input type="checkbox" name="BusType" value="@(type)" />@(type.GetDescription())
+                                                        </span>
+                                                        <input type="text" class="form-control input-sm" name="Cost@(type)" placeholder="金额" />
+                                                        <span class="input-group-addon input-sm">元</span>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                        <div class="tab-pane fade" id="Car"role="tabpanel">
+                                            <div class="col-md-12 col-xs-12" style="padding:10px;margin-top:5px;margin-bottom:5px;">
+                                                <div class="input-group" style="margin-top:10px;">
+                                                    <span class="input-group-addon input-sm">
+                                                        <input type="checkbox" name="BusType" value="@(BusType.Company)" />@(BusType.Company.GetDescription())
+                                                    </span>
+                                                    <input type="text" class="form-control input-sm" name="Cost@(BusType.Company)" placeholder="金额" readonly="readonly" />
+                                                    <span class="input-group-addon input-sm">元</span>
+                                                    <span class="input-group-addon input-sm">里程</span>
+                                                    <input type="text" class="form-control input-sm" name="KiloMeters" placeholder="公里数" targetType="@(BusType.Company)" />
+                                                    <span class="input-group-addon input-sm">公里</span>
+                                                </div>
+                                                <div class="input-group" style="margin-top:10px;">
+                                                    <span class="input-group-addon input-sm">过路费</span>
+                                                    <input type="text" class="form-control input-sm" name="Toll" placeholder="过路费" targetType="Company" />
+                                                    <span class="input-group-addon input-sm">元</span>
+                                                    <span class="input-group-addon input-sm">车牌</span>
+                                                    <select name="Plate" class="form-control input-sm">
+                                                        <option value="">请选择车牌</option>
+                                                        <option value="浙AZN022">浙AZN022</option>
+                                                        <option value="浙A4RS85">浙A4RS85</option>
+                                                    </select>
+                                                </div>
+                                                <div class="input-group" style="margin-top:10px;">
+                                                    <span class="input-group-addon input-sm">油费</span>
+                                                    <input type="text" name="Petrol" class="form-control input-sm" placeholder="油费" />
+                                                    <span class="input-group-addon input-sm">元</span>
+                                                    <span class="input-group-addon input-sm">司机</span>
+                                                    <select name="Driver" class="form-control input-sm">
+                                                        @foreach (Driver driver in Enum.GetValues(typeof(Driver)))
+                                                        {
+                                                            <option value="@(driver)">@(driver)</option>
+                                                        }
+                                                    </select>
+                                                    <span class="input-group-addon input-sm">车补</span>
+                                                    <input type="text" class="form-control input-sm" name="CarPetty" placeholder="车补" readonly="readonly" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12 col-xs-12" style="padding:10px;margin-top:5px;margin-bottom:5px;">
+                                                <div class="input-group" style="margin-top:10px;">
+                                                    <span class="input-group-addon input-sm">
+                                                        <input type="checkbox" name="BusType" value="@(BusType.Personal)" />@(BusType.Personal.GetDescription())
+                                                    </span>
+                                                    <input type="text" class="form-control input-sm" name="Cost@(BusType.Personal)" placeholder="金额" readonly="readonly" />
+                                                    <span class="input-group-addon input-sm">元</span>
+                                                    <span class="input-group-addon input-sm">里程</span>
+                                                    <input type="text" class="form-control input-sm" name="KiloMeters" placeholder="公里数" targetType="@(BusType.Personal)" />
+                                                    <span class="input-group-addon input-sm">公里</span>
+                                                </div>
+                                                <div class="input-group" style="margin-top:10px;">
+                                                    <span class="input-group-addon input-sm">过路费</span>
+                                                    <input type="text" class="form-control input-sm" name="Toll" placeholder="过路费" targetType="Personal" />
+                                                    <span class="input-group-addon input-sm">元</span>
+                                                    <span class="input-group-addon input-sm">车牌</span>
+                                                    <input type="text" class="form-control input-sm" name="Plate" placeholder="车牌" />
+                                                </div>
+                                            </div>
+                                        </div> 
+                                    </div>
+                                    
+
+
+
                                     <div class="form-group">
                                         <label class="control-label col-md-2 col-xs-2">交通：</label>
                                         <div class="col-md-8 col-xs-8">
@@ -308,8 +395,8 @@
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove-sign"></i>取消</button>
-                                    <button type="button" class="btn btn-primary" name="Traffic-OK" data-dismiss="modal"><i class="glyphicon glyphicon-ok-sign"></i>确定</button>
+                                    <button type="button" class="btn btn-sm btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove-sign"></i>取消</button>
+                                    <button type="button" class="btn btn-sm btn-primary" name="Traffic-OK" data-dismiss="modal"><i class="glyphicon glyphicon-ok-sign"></i>确定</button>
                                 </div>
                             </div>
                         </div>
@@ -319,9 +406,9 @@
                 <td>
                     <duv class="input-group">
                         <input type="hidden" name="Lines" value="@(Model.Errands==null?"":string.Join(";",Model.Errands.Select(e=>e.ID).ToArray()))" />
-                        <input type="text" class="form-control" placeholder="出差补贴" readonly="readonly" name="SubSidy" value="@(Model.SubSidy)" />
+                        <input type="text" class="form-control input-sm" placeholder="出差补贴" readonly="readonly" name="SubSidy" value="@(Model.SubSidy)" />
                         <span class="input-group-btn">
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#SubSide"><i class="glyphicon glyphicon-zoom-in"></i>补贴详情</button>
+                            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#SubSide"><i class="glyphicon glyphicon-zoom-in"></i>补贴详情</button>
                         </span>
                     </duv>
                     <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" id="SubSide">
@@ -366,13 +453,13 @@
                                                         <td>
                                                             <input type="hidden" name="Peoples@(errand.ID)" value="@(errand.Peoples)" />
                                                             <input type="hidden" name="Days@(errand.ID)" value="@(errand.Days)" />
-                                                            <input type="text" name="Users@(errand.ID)" class="form-control" value="@(errand.Users)" readonly="readonly" targetIndex="@(errand.ID)" />
+                                                            <input type="text" name="Users@(errand.ID)" class="form-control input-sm" value="@(errand.Users)" readonly="readonly" targetIndex="@(errand.ID)" />
                                                         </td>
                                                         <td>
                                                             <div class="input-group">
-                                                                <input type="text" class="form-control datetimepicker" name="StartTime@(errand.ID)" placeholder="开始日期" targetIndex="@(errand.ID)" value="@(errand.StartTime.ToString("yyyy-MM-dd"))" />
-                                                                <span class="input-group-addon">至</span>
-                                                                <input type="text" class="form-control datetimepicker" name="EndTime@(errand.ID)" placeholder="结束日期" targetIndex="@(errand.ID)" value="@(errand.EndTime.ToString("yyyy-MM-dd"))" />
+                                                                <input type="text" class="form-control datetimepicker input-sm" name="StartTime@(errand.ID)" placeholder="开始日期" targetIndex="@(errand.ID)" value="@(errand.StartTime.ToString("yyyy-MM-dd"))" />
+                                                                <span class="input-group-addon input-sm">至</span>
+                                                                <input type="text" class="form-control datetimepicker input-sm" name="EndTime@(errand.ID)" placeholder="结束日期" targetIndex="@(errand.ID)" value="@(errand.EndTime.ToString("yyyy-MM-dd"))" />
                                                             </div>
                                                         </td>
                                                         <td>
@@ -386,8 +473,8 @@
 
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove-sign"></i>取消</button>
-                                    <button type="button" class="btn btn-primary" name="SubSide-OK" data-dismiss="modal"><i class="glyphicon glyphicon-ok-sign"></i>确定</button>
+                                    <button type="button" class="btn btn-sm btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove-sign"></i>取消</button>
+                                    <button type="button" class="btn btn-sm btn-primary" name="SubSide-OK" data-dismiss="modal"><i class="glyphicon glyphicon-ok-sign"></i>确定</button>
                                 </div>
                             </div>
                         </div>
@@ -398,17 +485,17 @@
                 <th>出差住宿</th>
                 <td>
                     <div class="input-group">
-                        <input type="text" class="form-control" name="Hotel" value="@(Model.Hotel)" />
-                        <span class="input-group-addon">元</span>
+                        <input type="text" class="form-control input-sm" name="Hotel" value="@(Model.Hotel)" />
+                        <span class="input-group-addon input-sm">元</span>
                     </div>
                 </td>
                 <th>其他内容</th>
                 <td>
                     <div class="input-group">
-                        <input type="text" class="form-control" name="Mark" placeholder="内容" value="@(Model.Mark)" />
-                        <span class="input-group-addon">金额：</span>
-                        <input type="text" class="form-control" name="Other" placeholder="" value="@(Model.Other)" />
-                        <span class="input-group-addon">元</span>
+                        <input type="text" class="form-control input-sm" name="Mark" placeholder="内容" value="@(Model.Mark)" />
+                        <span class="input-group-addon input-sm">金额：</span>
+                        <input type="text" class="form-control input-sm" name="Other" placeholder="" value="@(Model.Other)" />
+                        <span class="input-group-addon input-sm">元</span>
                     </div>
 
                 </td>
@@ -515,13 +602,13 @@
                 <td>
                     <input type="hidden" name="Peoples{Index}" />
                     <input type="hidden" name="Days{Index}" />
-                    <input type="text" name="Users{Index}" class="form-control" value="{Value}" readonly="readonly" targetIndex="{Index}" />
+                    <input type="text" name="Users{Index}" class="form-control input-sm" value="{Value}" readonly="readonly" targetIndex="{Index}" />
                 </td>
                 <td>
                     <div class="input-group">
-                        <input type="text" class="form-control datetimepicker" name="StartTime{Index}" placeholder="开始日期" targetIndex="{Index}" />
-                        <span class="input-group-addon">至</span>
-                        <input type="text" class="form-control datetimepicker" name="EndTime{Index}" placeholder="结束日期" targetIndex="{Index}" />
+                        <input type="text" class="form-control datetimepicker input-sm" name="StartTime{Index}" placeholder="开始日期" targetIndex="{Index}" />
+                        <span class="input-group-addon input-sm">至</span>
+                        <input type="text" class="form-control datetimepicker input-sm" name="EndTime{Index}" placeholder="结束日期" targetIndex="{Index}" />
                     </div>
                 </td>
                 <td>

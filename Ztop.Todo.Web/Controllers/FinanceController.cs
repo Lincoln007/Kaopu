@@ -193,10 +193,12 @@ namespace Ztop.Todo.Web.Controllers
 
 
         [HttpPost]
-        public ActionResult SaveBillAccount(BillAccount billaccount)
+        public ActionResult SaveBillAccount(Bill bill)
         {
-            billaccount.Leave = billaccount.Money;
-            Core.BillAccountManager.Save(billaccount);
+            bill.Budget = Budget.Income;
+            bill.Leave = bill.Money;
+            bill.Summary = bill.Remark;
+            Core.BillManager.Save(bill);
             return SuccessJsonResult();
         }
 
@@ -215,9 +217,9 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
         [HttpGet]
-        public ActionResult GetJsonBillAccount(DateTime?startTime=null,DateTime? endTime=null,double?minMoney=null,double?maxMoney=null,string otherside=null,string remark=null,string association=null)
+        public ActionResult GetJsonBill(DateTime?startTime=null,DateTime? endTime=null,double?minMoney=null,double?maxMoney=null,string otherside=null,string remark=null,string association=null)
         {
-            var parameter = new BillAccountParameter()
+            var parameter = new BillParamter()
             {
                 StartTime = startTime,
                 EndTime = endTime,
@@ -226,7 +228,7 @@ namespace Ztop.Todo.Web.Controllers
                 OtherSide = otherside,
                 Remark = remark
             };
-            var list= Core.BillAccountManager.Search(parameter).Where(e=>e.Association!=Association.Full);
+            var list = Core.BillManager.Search(parameter).Where(e => e.Association != Association.Full);
             return Json(list, JsonRequestBehavior.AllowGet);
         }
 
@@ -268,23 +270,24 @@ namespace Ztop.Todo.Web.Controllers
             return Core.InvoiceManager.Relate(bid, iid) ? SuccessJsonResult() : ErrorJsonResult("关联发票失败！");
         }
 
-        public ActionResult BillAccountSearch(DateTime? startTime=null,DateTime? endTime=null,double? minMoney=null,double? maxMoney=null,string otherside=null,string remark=null,string association=null,int page=1)
+        public ActionResult BillSearch(DateTime? startTime=null,DateTime? endTime=null,double? minMoney=null,double? maxMoney=null,string otherside=null,string remark=null,string association=null,int page=1)
         {
-            var parameter = new BillAccountParameter()
+            var parameter = new BillParamter()
             {
                 StartTime = startTime,
                 EndTime = endTime,
                 MinMoney = minMoney,
                 MaxMoney = maxMoney,
                 OtherSide = otherside,
-                Remark = remark,
-                Page=new PageParameter(page,20)
+                Remark=remark,
+                Page = new PageParameter(page, 20)
             };
             if (!string.IsNullOrEmpty(association))
             {
                 parameter.Association = EnumHelper.GetEnum<Association>(association);
             }
-            ViewBag.Result = Core.BillAccountManager.Search(parameter);
+
+            ViewBag.Result = Core.BillManager.Search(parameter);
             ViewBag.Parameter = parameter;
 
             return View();
@@ -378,6 +381,20 @@ namespace Ztop.Todo.Web.Controllers
         public ActionResult BillAccountDetail(int id)
         {
             ViewBag.BillAccount = Core.BillAccountManager.Get(id, true);
+            return View();
+        }
+
+        public ActionResult CreateArticle()
+        {
+            return View();
+        }
+
+        public ActionResult ArticleSearch()
+        {
+            return View();
+        }
+        public ActionResult ArticleContract()
+        {
             return View();
         }
 

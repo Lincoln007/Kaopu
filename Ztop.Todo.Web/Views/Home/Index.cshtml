@@ -134,7 +134,7 @@ else
                     最新接收的任务
                 </h4>
                 <ul class="list-group">
-                    @foreach (var item in ReceiveNewTasks)
+                    @foreach (var item in ReceiveNewTasks.OrderByDescending(e=>e.LeaveTime))
                 {
                         <li class="list-group-item">
                             @if (item.ScheduledTime.HasValue && DateTime.Compare(DateTime.Now, item.ScheduledTime.Value) > 0)
@@ -163,7 +163,7 @@ else
                     最近需要完成的任务
                 </h4>
                 <ul class="list-group">
-                    @foreach (var item in ReceiveUndoneTasks)
+                    @foreach (var item in ReceiveUndoneTasks.OrderByDescending(e=>e.LeaveTime))
                 {
                         <li class="list-group-item">
                             @if (item.ScheduledTime.HasValue && DateTime.Compare(DateTime.Now, item.ScheduledTime.Value) > 0)
@@ -196,7 +196,7 @@ else
                     下达未完成的任务
                 </h4>
                 <ul class="list-group">
-                    @foreach (var item in CreatedUndoneTasks)
+                    @foreach (var item in CreatedUndoneTasks.OrderByDescending(e=>e.LeaveTime))
                 {
                         <li class="list-group-item">
                             @if (item.ScheduledTime.HasValue && DateTime.Compare(DateTime.Now, item.ScheduledTime.Value) > 0)
@@ -217,7 +217,7 @@ else
                     }
                 </ul>
             </td>
-            <td style="width:50%;">
+            @*<td style="width:50%;">
                 <h4>
                     下达已完成的任务
                 </h4>
@@ -245,7 +245,7 @@ else
                         </li>
                     }
                 </ul>
-            </td>
+            </td>*@
         </tr>
     </table>
 }

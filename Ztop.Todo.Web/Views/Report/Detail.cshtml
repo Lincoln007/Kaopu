@@ -15,7 +15,7 @@
         <h3>报销单详情</h3>
        @if (sheet.Controler == Identity.Name&&sheet.Status!=Status.RollBack&&sheet.Status!=Status.OutLine)
        {
-        <button type="button" class="btn btn-primary  btn-checked">
+        <button type="button" class="btn btn-sm btn-primary  btn-checked">
             <em class="glyphicon glyphicon-ok">审核通过</em>
         </button>
        }
@@ -30,13 +30,13 @@
                     @{
                         Html.RenderPartial("SubmitButton");
                     }
-                    <a href="/Report/Create?id=@(sheet.ID)" class="btn btn-primary">
+                    <a href="/Report/Create?id=@(sheet.ID)" class="btn btn-sm btn-primary">
                         <em class="glyphicon glyphicon-edit"></em>修改
                     </a>
-                    <button type="button" class="btn btn-danger btn-delete">
+                    <button type="button" class="btn btn-sm btn-danger btn-delete">
                         <em class="glyphicon glyphicon-remove"></em>删除
                     </button>
-                    <button type="button" class="btn btn-default" onclick="history.back();"><em class="glyphicon glyphicon-arrow-left"></em> 返回</button>
+                    <button type="button" class="btn btn-sm btn-default" onclick="history.back();"><em class="glyphicon glyphicon-arrow-left"></em> 返回</button>
                 </form>
             }
         }

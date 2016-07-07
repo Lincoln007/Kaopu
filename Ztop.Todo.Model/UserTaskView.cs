@@ -30,6 +30,15 @@ namespace Ztop.Todo.Model
 
         public DateTime? ScheduledTime { get; set; }
 
+        [NotMapped]
+        public TimeSpan LeaveTime
+        {
+            get
+            {
+                return ScheduledTime.HasValue ? ScheduledTime.Value - DateTime.Now : DateTime.MaxValue - DateTime.Now;
+            }
+        }
+
         public bool HasRead { get; set; }
 
         public DateTime CreateTime { get; set; }
