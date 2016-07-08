@@ -1,0 +1,41 @@
+﻿
+@{
+    ViewBag.Title = "项目查看";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    Article article = ViewBag.Article;
+}
+
+<hr />
+
+<div class="btn-group" role="group">
+    <button type="button" class="btn btn-default" onclick="history.back()"><i class="glyphicon glyphicon-arrow-left"></i>返回</button>
+</div>
+<hr />
+
+
+<ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#Article" aria-controls="Article" role="tab" data-toggle="tab">项目信息</a></li>
+    <li role="presentation"><a href="#Contract" aria-controls="Contract" role="tab" data-toggle="tab">合同信息</a></li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade in active" id="Article" role="tabpanel">
+        <table class="table table-bordered">
+            <tr>
+                <th>项目名称</th>
+                <td>@(article.Name)</td>
+                <th>对方单位</th>
+                <td>@(article.OtherSide)</td>
+            </tr>
+            <tr>
+                <th>意向金额（元）</th>
+                <td>@(article.Money)</td>
+                <th>备注</th>
+                <td>@(article.Remark)</td>
+            </tr>
+        </table>
+    </div>
+    <div class="tab-pane fade" id="Contract" role="tabpanel">
+
+    </div>
+</div>

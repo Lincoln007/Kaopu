@@ -4,25 +4,172 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<form class="form-horizontal" action="" method="post">
+<form class="form-horizontal" action="/Finance/SaveArticle" method="post" id="Article-form">
     <h3 class="text-center">录入项目</h3>
     <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-danger" role="alert" id="Article-Error">
+                <span>警告框</span>
+            </div>
+            <div class="alert alert-success" role="alert" id="Article-Info">
+                <span>成功框</span>
+            </div>
+        </div>
+       
         <div class="col-md-6 col-xs-6 col-sm-6">
             <div class="form-group">
                 <label class="control-label col-md-4">项目名称：</label>
                 <div class="col-md-8">
-                    <input type="text" name="Name" class="form-control" placeholder="项目名称" />
+                    <input type="text" name="Name" class="form-control" placeholder="项目名称" required />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">意向金额：</label>
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <input type="text" name="Money" placeholder="意向金额" class="form-control" />
+                        <span class="input-group-addon">元</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">关联合同：</label>
+                <div class="col-md-8">
+                    <div class="input-group" role="group">
+                        <input type="text" name="" class="form-control" placeholder="" readonly="readonly" />
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#Contract"><i class="glyphicon glyphicon-send"></i></button>
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="col-md-6 col-xs-6 col-sm-6">
             <div class="form-group">
-                <label class="control-label col-md-4"></label>
+                <label class="control-label col-md-4">对方单位：</label>
                 <div class="col-md-8">
-
+                    <input type="text" name="OtherSide" class="form-control" placeholder="对方单位" required />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">备注：</label>
+                <div class="col-md-8">
+                    <textarea name="Remark" class="form-control" rows="4"></textarea>
                 </div>
             </div>
         </div>
+        <div class="col-md-12 col-xs-12 col-sm-12">
+            <div class="form-group">
+                <div class="col-md-10 col-md-offset-2">
+                    <div class="btn-group" role="group">
+                        <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i>录入项目</button>
+                        <button type="button" class="btn btn-default" onclick="history.back();"><i class="glyphicon glyphicon-arrow-left"></i>返回</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
     </div>
 </form>
+<div class="fade modal" id="Contract" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">关联合同</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-3 col-xs-3 col-sm-3" style="padding:5px;">
+                        <div class="col-md-12 well" style="padding:0px;">
+                            <fieldset><legend>合同查询设置</legend></fieldset>
+                            <div class="alert alert-danger" role="alert">
+                                <span></span>
+                            </div>
+                            <form method="get" id="">
+                                <div class="form-group">
+                                    <label class="control-label">合同名称：</label>
+                                    <div class="col-md-12">
+                                        <div class="input-group">
+                                            <div class="input-group-btn">
+                                                <button type="button" class="btn btn-sm btn-success" name="Name">全部</button>
+                                            </div>
+                                            <input type="text" name="Name" class="form-control input-sm" placeholder="合同名称" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">对方单位：</label>
+                                    <div class="col-md-12">
+                                        <div class="input-group">
+                                            <div class="input-group-btn">
+                                                <button type="button" class="btn btn-sm btn-success" name="OtherSide">全部</button>
+                                            </div>
+                                            <input type="text" name="OtherSide" class="form-control input-sm" placeholder="对方单位" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">合同起始时间：</label>
+                                    <div class="col-md-12">
+                                        <div class="input-group">
+                                            <input type="text" name="StartTime" class="form-control datetimepicker input-sm" placeholder="起始时间" />
+                                            <span class="input-group-addon input-sm">至</span>
+                                            <input type="text" name="EndTime" class="form-control datetimepicker input-sm" placeholder="结束时间" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">合同金额：</label>
+                                    <div class="col-md-12">
+                                        <div class="input-group">
+                                            <input type="text" name="MinMoney" class="form-control input-sm" placeholder="最小值" />
+                                            <span class="input-group-addon input-sm">至</span>
+                                            <input type="text" name="MaxMoney" class="form-control input-sm" placeholder="最大值" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">签署单位：</label>
+                                    <div class="col-md-12">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-sm btn-success" name="ZtopCompany">全部</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-md-9 col-xs-9 col-sm-9">
 
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $("#Article-Error").hide();
+    $("#Article-Info").hide();
+    $(function () {
+        $("#Article-form").submit(function () {
+            $("#Article-Error").hide();
+            $("#Article-Info").hide();
+            var data = $(this).serialize();
+            $.request("/Finance/SaveArticle", data, function (json) {
+                if (json.result == 0) {
+                    $("#Article-Error>span").html(json.content);
+                    $("#Article-Error").show(500);
+                    return false;
+                } else {
+                    $("#Article-Info>span").html(json.content);
+                    $("#Article-Info").show(500);
+                }
+            });
+            return false;
+        });
+    });
+</script>

@@ -36,7 +36,7 @@ namespace Ztop.Todo.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult SaveContract(Contract contract,int[] leaves)
+        public ActionResult SaveContract(Contract contract,int[] articleid,string articlename, int[] leaves)
         {
             if (string.IsNullOrEmpty(contract.Department))
             {
@@ -51,6 +51,7 @@ namespace Ztop.Todo.Web.Controllers
             {
                 Core.ContractFileManager.SaveContractFile(HttpContext, id);
             }
+            Core.ContractArticleManager.Update(id, articleid);
             return RedirectToAction("Detail", new { id = id });
         }
 
@@ -62,6 +63,11 @@ namespace Ztop.Todo.Web.Controllers
             {
                 contract.Invoices = Core.InvoiceManager.GetByCID(contract.ID);
                 contract.ContractFiles = Core.ContractFileManager.GetContractFiles(contract.ID);
+                var CAList = Core.ContractArticleManager.GetByContractID(contract.ID);
+                if (CAList != null && CAList.Count > 0)
+                {
+                    contract.Articles = Core.ArticleManager.GetByIDList(CAList.Select(e=>e.ArticleID).ToList());
+                }
             }
             ViewBag.Contract = contract;
             return View();
@@ -388,9 +394,49 @@ namespace Ztop.Todo.Web.Controllers
         {
             return View();
         }
-
-        public ActionResult ArticleSearch()
+        [HttpPost]
+        public ActionResult SaveArticle(Article article)
         {
+            if (Core.ArticleManager.Exist(article))
+            {
+                return ErrorJsonResult("系统中已经存在相同名称和对方单位的项目，请核对！");
+            }
+            Core.ArticleManager.Save(article);
+            return SuccessJsonResult();
+        }
+
+        public ActionResult DetailArticle(int id)
+        {
+            ViewBag.Article = Core.ArticleManager.Get(id);
+            return View();
+        }
+        
+        [HttpGet]
+        public ActionResult GetJsonArticle(string name=null,string otherside=null,double? minmoney=null,double? maxmoney=null)
+        {
+            var parameter = new ArticleParameter()
+            {
+                Name = name,
+                OtherSide = otherside,
+                MinMoney = minmoney,
+                MaxMoney = maxmoney
+            };
+            var list = Core.ArticleManager.Search(parameter);
+            return Json(list, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult ArticleSearch(string name=null,string otherside=null,double? minmoney=null,double? maxmoney=null,int page=1)
+        {
+            var parameter = new ArticleParameter
+            {
+                Name = name,
+                OtherSide = otherside,
+                MinMoney = minmoney,
+                MaxMoney = maxmoney,
+                Page = new PageParameter(page, 20)
+            };
+            ViewBag.List = Core.ArticleManager.Search(parameter);
+            ViewBag.Parameter = parameter;
             return View();
         }
         public ActionResult ArticleContract()

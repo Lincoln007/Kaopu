@@ -46,6 +46,12 @@
                     <textarea class="form-control" name="PayWay" rows="6">@(contract==null?"":contract.PayWay)</textarea>
                 </div>
             </div>  
+            <div class="form-group">
+                <div class="col-md-8 col-md-offset-4">
+                    <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i> 录入</button>
+                    <button type="button" class="btn btn-default" onclick="history.back();"><i class="glyphicon glyphicon-arrow-left"></i>返回</button>
+                </div>
+            </div>
         </div>
         <div class="col-md-6 col-xs-6">
             <div class="form-group">
@@ -81,6 +87,20 @@
                 </div>
             </div>
             <div class="form-group">
+                <label class="control-label col-md-4">所属项目：</label>
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <div class="ArticleID">
+
+                        </div>
+                        <input type="text" name="ArticleName" class="form-control" readonly="readonly" placeholder="项目" />
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#Article"><i class="glyphicon glyphicon-th"></i></button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
                 <label class="control-label col-md-4">合同相关文件：</label>
                 <div class="col-md-8">
                     <button type="button" class="btn btn-success btn-sm" name="AddFile"><i class="glyphicon glyphicon-plus"></i> 添加文件</button><span class="text-info">仅支持小于100M文件</span>
@@ -100,16 +120,100 @@
                     }
                 </div>
             </div>
-            <div class="form-group">
-                <div class="col-md-8 col-md-offset-4">
-                    <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i> 录入</button>
-                    <button type="button" class="btn btn-default" onclick="history.back();"><i class="glyphicon glyphicon-arrow-left"></i>返回</button>
-                </div>
-            </div>
+          
         </div>
     </div>
   
 </form>
+<div class="fade modal" id="Article" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">关联项目</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-3 col-xs-3 col-sm-3" style="padding:5px;">
+                        <div class="col-md-12 well" style="padding:0px;">
+                            <fieldset><legend>项目查询设置</legend></fieldset>
+                            <div class="alert alert-danger" role="alert" id="Article-Error">
+                                <span></span>
+                            </div>
+                            <form method="get" id="Article-Search">
+                                <div class="form-group">
+                                    <label class="control-label">项目名称：</label>
+                                    <div class="col-md-12">
+                                        <div class="input-group">
+                                            <div class="input-group-btn">
+                                                <button type="button" class="btn btn-sm btn-success" name="Name">全部</button>
+                                            </div>
+                                            <input type="text" name="Name" class="form-control input-sm" placeholder="项目名称" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">对方单位：</label>
+                                    <div class="col-md-12">
+                                        <div class="input-group">
+                                            <div class="input-group-btn">
+                                                <button type="button" class="btn btn-sm btn-success" name="OtherSide">全部</button>
+                                            </div>
+                                            <input type="text" name="OtherSide" class="form-control input-sm" placeholder="对方单位" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">意愿金额：</label>
+                                    <div class="col-md-12">
+                                        <div class="input-group">
+                                            <input type="text" name="MinMoney" class="form-control input-sm" placeholder="最小值" />
+                                            <span class="input-group-addon input-sm">至</span>
+                                            <input type="text" name="MaxMoney" class="form-control input-sm" placeholder="最大值" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <button type="submit" class="btn btn-sm btn-success"><i class="glyphicon glyphicon-search"></i>立即查询</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <h4>关联项目</h4>
+                        <table class="table" >
+                            <tbody id="Select-Article">
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-9 col-xs-9 col-sm-9">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>项目名称</th>
+                                    <th>对方单位</th>
+                                    <th>意愿金额（元）</th>
+                                    <th>选取状态</th>
+                                </tr>
+                            </thead>
+                            <tbody id="Article-Result">
+                               
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove-circle"></i>取消</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" name="APlus"><i class="glyphicon glyphicon-ok-circle"></i>确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div style="display:none">
     <div id="Files">
         <div class="input-group" style="margin-top:10px;">
@@ -124,6 +228,7 @@
 
 
 <script>
+    $("#Article-Error").hide();
     var fileHtml = $("#Files").html();
     $(function () {
         var index = 0;
@@ -138,9 +243,49 @@
         $("button.btn-remove").click(function () {
             $(this).parent().parent().remove();
         });
-        $(".datetimepicker").datetimepicker({
-            timepicker: false,
-            format: 'Y-m-d'
+
+        $("#Article-Search").submit(function () {
+            $("#Article-Error").hide();
+            var values = $(this).serialize();
+            $.getJSON("/Finance/GetJsonArticle", values, function (data) {
+                $("#Article-Result").empty();
+                if (data.length == 0) {
+                    $("#Article-Error>span").html("未查询到相关项目信息");
+                    $("#Article-Error").show(500);
+                    return false;
+                }
+                $.each(data, function (index, value) {
+                    $("#Article-Result").append("<tr><td name='Name"+value.ID+"'>" + value.Name + "</td><td>" + value.OtherSide + "</td><td>" + value.Money + "</td><td><button type='button' class='btn btn-sm btn-success' targetIndex='"+value.ID+"'><i class='glyphicon glyphicon-plus'></i>关联</button></td></tr>");
+                });
+                $("#Article-Result>tr>td>button").unbind("click").bind("click", function () {
+                    var ID = $(this).attr("targetIndex");
+                    var name = $("td[name='Name" + ID + "']").text();
+                    $("#Select-Article").append("<tr><td><div class='input-group'><input type='text' name='Name' class='form-control input-sm' value='" + name + "' readonly='readonly' /><input type='hidden' name='AID' value='" + ID + "' /><span class='input-group-btn'><button type='button' class='btn btn-sm btn-danger btn-remove'><i class='glyphicon glyphicon-remove-circle'></i></button></span></div></td></tr>");
+                    $("#Select-Article button.btn-remove").unbind("click").bind("click", function () {
+                        $(this).parent().parent().parent().parent().remove();
+                    });
+                });
+            });
+            return false;
         });
+
+        $("button[name='APlus']").click(function () {
+            var selectName = [];
+            $("#Select-Article input[name='Name']").each(function () {
+                var val = $(this).val();
+                if (val!=undefined&&val!=NaN) {
+                    selectName.push(val);
+                }
+            });
+            $("div.ArticleID").empty();
+            $("#Select-Article input[name='AID']").each(function () {
+                var index = $(this).val();
+                if (!isNaN(index)) {
+                    $("div.ArticleID").append("<input name='ArticleID' type='hidden' value='" + index + "' />");
+                }
+            });
+            $("input[name='ArticleName']").val(selectName.join(';'));
+        });
+
     })
 </script>

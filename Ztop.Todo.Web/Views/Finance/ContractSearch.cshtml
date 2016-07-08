@@ -41,7 +41,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label">项目起始时间：</label>
+                    <label class="control-label">合同起始时间：</label>
                     <div class="col-md-12">
                         <div class="input-group">
                             <input type="text" name="StartTime" class="form-control datetimepicker input-sm" placeholder="起始时间" value="@(parameter.StartTime.HasValue?parameter.StartTime.Value.ToString("yyyy-MM-dd"):"")" />
@@ -88,7 +88,7 @@
             </div>
         </div>       
         <div class="form-group">
-            <label class="control-label">项目所在部门：</label>
+            <label class="control-label">合同所在部门：</label>
             <div class="col-md-12">
                 <div class="btn-group" role="group">
                     <button type="button" class="btn btn-sm btn-@(string.IsNullOrEmpty(parameter.Department)?"success":"default")" name="Department">全部</button>

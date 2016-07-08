@@ -78,12 +78,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArticleManager.cs" />
     <Compile Include="AttachmentManager.cs" />
     <Compile Include="AuthorizeManager.cs" />
     <Compile Include="BankManager.cs" />
     <Compile Include="BillAccountManager.cs" />
     <Compile Include="BillManager.cs" />
     <Compile Include="CommentManager.cs" />
+    <Compile Include="ContractArticleManager.cs" />
     <Compile Include="ContractFileManager.cs" />
     <Compile Include="ContractManager.cs" />
     <Compile Include="DataBookManager.cs" />

@@ -1,0 +1,41 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Ztop.Todo.Model;
+
+namespace Ztop.Todo.Manager
+{
+    public class ContractArticleManager:ManagerBase
+    {
+        public void Update(int contractid,int[] articleid)
+        {
+            using (var db = GetDbContext())
+            {
+                var old = db.ContractArticles.Where(e => e.ContractID == contractid).ToList();
+                if (old != null && old.Count > 0)
+                {
+                    db.ContractArticles.RemoveRange(old);
+                    db.SaveChanges();
+                }
+                foreach(var id in articleid.Distinct())
+                {
+                    db.ContractArticles.Add(new ContractArticle
+                    {
+                        ContractID = contractid,
+                        ArticleID = id
+                    });
+                    db.SaveChanges();
+                }
+            }
+        }
+        public List<ContractArticle> GetByContractID(int contractID)
+        {
+            using (var db = GetDbContext())
+            {
+                return db.ContractArticles.Where(e => e.ContractID == contractID).ToList();
+            }
+        }
+    }
+}

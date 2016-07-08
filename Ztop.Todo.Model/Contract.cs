@@ -89,6 +89,11 @@ namespace Ztop.Todo.Model
 
         [NotMapped]
         public List<Invoice> Invoices { get; set; }
+        /// <summary>
+        /// 项目
+        /// </summary>
+        [NotMapped]
+        public List<Article> Articles { get; set; }
     }
 
     public enum ZtopCompany
