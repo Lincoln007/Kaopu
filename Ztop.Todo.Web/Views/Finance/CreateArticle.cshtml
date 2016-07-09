@@ -71,6 +71,8 @@
         
     </div>
 </form>
+
+
 <div class="fade modal" id="Contract" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -83,10 +85,11 @@
                     <div class="col-md-3 col-xs-3 col-sm-3" style="padding:5px;">
                         <div class="col-md-12 well" style="padding:0px;">
                             <fieldset><legend>合同查询设置</legend></fieldset>
-                            <div class="alert alert-danger" role="alert">
+                            <div class="alert alert-danger" role="alert" id="Contract-Error">
                                 <span></span>
                             </div>
-                            <form method="get" id="">
+                            <form method="get" id="Contract-Search">
+                                <input type="hidden" name="ZtopCompany" />
                                 <div class="form-group">
                                     <label class="control-label">合同名称：</label>
                                     <div class="col-md-12">
@@ -134,14 +137,41 @@
                                     <div class="col-md-12">
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-sm btn-success" name="ZtopCompany">全部</button>
+                                            @foreach (ZtopCompany company in Enum.GetValues(typeof(ZtopCompany)))
+                                            {
+                                                <button type="button" class="btn btn-sm btn-default" name="ZtopCompany">@(company.GetDescription())</button>
+                                            }
                                         </div>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <button type="submit" class="btn btn-sm btn-success"><i class="glyphicon glyphicon-search"></i>立即查询</button>
                                     </div>
                                 </div>
                             </form>
                         </div>
+                        <h4>关联合同</h4>
+                        <table class="table">
+                            <tbody id="Select-Contract">
+
+                            </tbody>
+                        </table>
                     </div>
                     <div class="col-md-9 col-xs-9 col-sm-9">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>合同名称</th>
+                                    <th>对方单位</th>
+                                    <th>关联</th>
+                                </tr>
+                            </thead>
+                            <tbody id="Contract-Result">
 
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -154,6 +184,7 @@
 <script>
     $("#Article-Error").hide();
     $("#Article-Info").hide();
+    $("#Contract-Error").hide();
     $(function () {
         $("#Article-form").submit(function () {
             $("#Article-Error").hide();
@@ -171,5 +202,31 @@
             });
             return false;
         });
+        $("#Contract-Search").submit(function () {
+            $("#Contract-Error").hide();
+            $("#Contract-Result").html("");
+            var values = $(this).serialize();
+            $.getJSON("/Finance/GetJsonContract", values, function (data) {
+                if (data.length == 0) {
+                    $("#Contract-Error>span").html("未查询到相关合同信息");
+                    $("#Contract-Error").show(500);
+                    return false;
+                }
+               
+                $.each(data, function (index, value) {
+                    $("#Contract-Result").append("<tr><td name='Name"+value.ID+"'>" + value.Name + "</td><td>" + value.Company + "</td><td><button type='button' class='btn btn-sm btn-success' targetID='"+value.ID+"'><i class='glyphicon glyphicon-plus'></i>关联</button></td></tr>");
+                });
+
+                $("#Contract-Result button").unbind("click").bind("click", function () {
+                    var ID = $(this).attr("targetID");
+                    var name = $("td[name='Name" + ID + "']").text();
+                    $("#Select-Contract").append("<tr><td></td></tr>")
+
+                });
+                return false;
+            });
+            return false;
+        });
+      
     });
 </script>

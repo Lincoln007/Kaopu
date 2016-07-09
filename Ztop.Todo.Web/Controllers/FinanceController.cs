@@ -341,6 +341,26 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
 
+        [HttpGet]
+        public ActionResult GetJsonContract(string name=null,string otherside=null,DateTime? starttime=null,DateTime?endtime=null,double? minmoney=null,double? maxmoney=null,string ztopcompany=null)
+        {
+            var parameter = new ContractParameter()
+            {
+                Name = name,
+                OtherSide = otherside,
+                StartTime = starttime,
+                EndTime = endtime,
+                MinMoney = minmoney,
+                MaxMoney = maxmoney
+            };
+            if (!string.IsNullOrEmpty(ztopcompany))
+            {
+                parameter.ZtopCompany = EnumHelper.GetEnum<ZtopCompany>(ztopcompany);
+            }
+            var list = Core.ContractManager.Search(parameter);
+            return Json(list, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult ContractSearch(string name=null,string OtherSide=null,DateTime? startime=null,DateTime? endtime=null,string status=null,string recevied=null,double? minmoney=null,double? maxmoney=null,string department=null, string archived=null,string ztopcompany=null, int page=1)
         {
             var parameter = new ContractParameter()
