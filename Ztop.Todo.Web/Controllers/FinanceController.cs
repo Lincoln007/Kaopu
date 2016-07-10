@@ -29,6 +29,11 @@ namespace Ztop.Todo.Web.Controllers
                 if (contract != null)
                 {
                     contract.ContractFiles = Core.ContractFileManager.GetContractFiles(contract.ID);
+                    var AList = Core.ContractArticleManager.GetByContractID(contract.ID);
+                    if (AList != null && AList.Count > 0)
+                    {
+                        contract.Articles = Core.ArticleManager.GetByIDList(AList.Select(e=>e.ArticleID).ToList());
+                    }
                 }
                 ViewBag.Contract = contract;
             }
@@ -51,7 +56,10 @@ namespace Ztop.Todo.Web.Controllers
             {
                 Core.ContractFileManager.SaveContractFile(HttpContext, id);
             }
-            Core.ContractArticleManager.Update(id, articleid);
+            if (articleid != null)
+            {
+                Core.ContractArticleManager.UpdateContract(id, articleid);
+            }
             return RedirectToAction("Detail", new { id = id });
         }
 
@@ -415,13 +423,18 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult SaveArticle(Article article)
+        public ActionResult SaveArticle(Article article,int[] contractid,string contractName)
         {
             if (Core.ArticleManager.Exist(article))
             {
                 return ErrorJsonResult("系统中已经存在相同名称和对方单位的项目，请核对！");
             }
-            Core.ArticleManager.Save(article);
+            var id = Core.ArticleManager.Save(article);
+            if (contractid != null)
+            {
+                Core.ContractArticleManager.UpdateArticle(id, contractid);
+            }
+           
             return SuccessJsonResult();
         }
 

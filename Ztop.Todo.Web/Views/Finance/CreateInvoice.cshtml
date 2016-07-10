@@ -88,42 +88,67 @@
                     <h4 class="modal-title">项目合同</h4>
                 </div>
                 <div class="modal-body">
-                    <div class="alert alert-danger" role="alert">
-                        <span>警告框</span>
-                    </div>
-                    <form class="form-inline">
-                        <div class="form-group">
-                            <label class="sr-only">时间：</label>
-                            <div class="input-group">
-                                <input type="text" name="StartTime" class="form-control datetimepicker" placeholder="起始时间" />
-                                <span class="input-group-addon">至</span>
-                                <input type="text" name="EndTime" class="form-control datetimepicker" placeholder="结束时间" />
+                    <div class="row">
+                        <div class="col-md-4 col-xs-4 col-sm-4 well" style="padding:5px;">
+                            <div class="alert alert-danger" role="alert">
+                                <span>警告框</span>
                             </div>
+                            <form>
+                                <div class="form-group">
+                                    <label class="control-label">时间：</label>
+                                    <div class="col-md-12">
+                                        <div class="input-group">
+                                            <input type="text" name="StartTime" class="form-control datetimepicker input-sm" placeholder="起始时间" />
+                                            <span class="input-group-addon input-sm">至</span>
+                                            <input type="text" name="EndTime" class="form-control datetimepicker input-sm" placeholder="结束时间" />
+                                        </div>
+                                    </div>
+                                   
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">合同名称：</label>
+                                    <div class="col-md-12">
+                                        <div class="input-group">
+                                            <div class="input-group-btn">
+                                                <button type="button" class="btn btn-sm btn-success" name="Name">全部</button>
+                                            </div>
+                                            <input type="text" class="form-control input-sm" name="Name" placeholder="合同名称关键字" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">对方单位：</label>
+                                    <div class="col-md-12">
+                                        <div class="input-group">
+                                            <div class="input-group-btn">
+                                                <button type="button" name="Company" class="btn btn-sm btn-success">全部</button>
+                                            </div>
+                                            <input type="text" class="form-control input-sm" name="Company" placeholder="对方单位关键字" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <button type="button" class="btn btn-sm btn-success btn-search"><i class="glyphicon glyphicon-search"></i>筛选</button>
+                                    </div>
+                                </div>
+                               
+                            </form>
                         </div>
-                        <div class="form-group">
-                            <label class="sr-only">合同名称：</label>
-                            <input type="text" class="form-control" name="Name" placeholder="合同名称关键字" />
+                        <div class="col-md-8 col-xs-8 col-sm-8" style="padding:5px;">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>合同名称</th>
+                                        <th>对方单位</th>
+                                        <th>合同金额（元）</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="Contract-Result"></tbody>
+                            </table>
                         </div>
-                        <div class="form-group">
-                            <label class="sr-only">对方单位：</label>
-                            <input type="text" class="form-control" name="Company" placeholder="对方单位关键字" />
-                        </div>
-                        <button type="button" class="btn btn-success btn-search"><i class="glyphicon glyphicon-search"></i>筛选</button>
-                    </form>
-                    <div class="">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>合同名称</th>
-                                    <th>对方单位</th>
-                                    <th>合同金额（元）</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody id="Contract-Result">
-
-                            </tbody>
-                        </table>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -145,11 +170,6 @@
 <script>
     $("div.alert.alert-danger").hide();
     $(function () {
-
-        $("input.datetimepicker").datetimepicker({
-            timepicker: false,
-            format:'Y-m-d'
-        });
 
         $("button.btn-search").click(function () {
             var startTime = $("input[name='StartTime']").val();

@@ -91,9 +91,15 @@
                 <div class="col-md-8">
                     <div class="input-group">
                         <div class="ArticleID">
-
+                            @if (contract != null && contract.Articles != null)
+                            {
+                                foreach(var article in contract.Articles)
+                                {
+                                    <input type="hidden" name="ArticleID" value="@(article.ID)" />
+                                }
+                            }
                         </div>
-                        <input type="text" name="ArticleName" class="form-control" readonly="readonly" placeholder="项目" />
+                        <input type="text" name="ArticleName" class="form-control" readonly="readonly" placeholder="项目" value="@(contract!=null&&contract.Articles!=null?string.Join(";",contract.Articles.Select(e=>e.Name).ToList()):"")"/>
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#Article"><i class="glyphicon glyphicon-th"></i></button>
                         </span>
@@ -184,7 +190,23 @@
                         <h4>关联项目</h4>
                         <table class="table" >
                             <tbody id="Select-Article">
-
+                                @if (contract != null && contract.Articles != null)
+                                {
+                                    foreach(var article in contract.Articles)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="input-group">
+                                                    <input type="text" name="Name" class="form-control input-sm" value="@(article.Name)" readonly="readonly" />
+                                                    <input type="hidden" name="AID" value="@(article.ID)" />
+                                                    <span class="input-group-btn">
+                                                        <button type="button" class="btn btn-sm btn-danger"><i class="glyphicon glyphicon-remove-circle"></i></button>
+                                                    </span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
                             </tbody>
                         </table>
                     </div>
@@ -260,13 +282,17 @@
                 $("#Article-Result>tr>td>button").unbind("click").bind("click", function () {
                     var ID = $(this).attr("targetIndex");
                     var name = $("td[name='Name" + ID + "']").text();
-                    $("#Select-Article").append("<tr><td><div class='input-group'><input type='text' name='Name' class='form-control input-sm' value='" + name + "' readonly='readonly' /><input type='hidden' name='AID' value='" + ID + "' /><span class='input-group-btn'><button type='button' class='btn btn-sm btn-danger btn-remove'><i class='glyphicon glyphicon-remove-circle'></i></button></span></div></td></tr>");
-                    $("#Select-Article button.btn-remove").unbind("click").bind("click", function () {
+                    $("#Select-Article").append("<tr><td><div class='input-group'><input type='text' name='Name' class='form-control input-sm' value='" + name + "' readonly='readonly' /><input type='hidden' name='AID' value='" + ID + "' /><span class='input-group-btn'><button type='button' class='btn btn-sm btn-danger'><i class='glyphicon glyphicon-remove-circle'></i></button></span></div></td></tr>");
+                    $("#Select-Article button.btn-danger").unbind("click").bind("click", function () {
                         $(this).parent().parent().parent().parent().remove();
                     });
                 });
             });
             return false;
+        });
+
+        $("#Select-Article button.btn-danger").click(function () {
+            $(this).parent().parent().parent().parent().remove();
         });
 
         $("button[name='APlus']").click(function () {
