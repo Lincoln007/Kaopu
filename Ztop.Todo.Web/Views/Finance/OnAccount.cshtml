@@ -41,10 +41,70 @@
                         <div class="alert alert-danger" role="alert">
                             <span></span>
                         </div>
-                         
+                        <form method="get" id="Bill-Search">
+                            <div class="form-group">
+                                <label class="control-label">到账时间：</label>
+                                <div class="col-md-12">
+                                    <div class="input-group">
+                                        <input type="text" name="StartTime" placeholder="起始时间" class="form-control datetimepicker input-sm" />
+                                        <span class="input-group-addon input-sm">至</span>
+                                        <input type="text" name="EndTime" placeholder="结束时间" class="form-control datetimepicker input-sm" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">到账金额：</label>
+                                <div class="col-md-12">
+                                    <div class="input-group">
+                                        <input type="text" name="MinMoney" placeholder="最小值" class="form-control input-sm" />
+                                        <span class="input-group-addon input-sm">至</span>
+                                        <input type="text" name="MaxMoney" placeholder="最大值" class="form-control input-sm" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">对方户名：</label>
+                                <div class="col-md-12">
+                                    <div class="input-group">
+                                        <div class="input-group-btn" role="group">
+                                            <button type="button" class="btn btn-sm btn-success" name="OtherSide">全部</button>
+                                        </div>
+                                        <input type="text" name="OtherSide" placeholder="对方户名关键字" class="form-control input-sm" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">银行备注：</label>
+                                <div class="col-md-12">
+                                    <div class="input-group" role="group">
+                                        <div class="input-group-btn" role="group">
+                                            <button type="button" class="btn btn-sm btn-success" name="Remark">全部</button>
+                                        </div>
+                                        <input type="text" name="Remark" placeholder="银行备注关键字" class="form-control input-sm" />
+                                    </div>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <button type="submit" class="btn btn-sm btn-success"><i class="glyphicon glyphicon-search"></i> 立即查询</button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                    <div class="col-md-8">
-
+                    <div class="col-md-8 col-xs-8 col-sm-8">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>到账日期</th>
+                                    <th>到账金额（元）</th>
+                                    <th>对方户名</th>
+                                    <th>可关联金额（元）</th>
+                                    <th>发票关联</th>
+                                </tr>
+                            </thead>
+                            <tbody id="Bill"></tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -65,8 +125,138 @@
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-md-3">
-
+                    <div class="col-md-3 col-xs-3 col-sm-3 well" style="padding:0px;">
+                        <fieldset><legend>合同查询设置</legend></fieldset>
+                        <div class="alert alert-danger" role="alert">
+                            <span>警告框</span>
+                        </div>
+                        <form method="get" id="Contract-Search">
+                            <input type="hidden" name="Recevied" />
+                            <input type="hidden" name="Status" />
+                            <input type="hidden" name="Department" />
+                            <input type="hidden" name="ZtopCompany" />
+                            <input type="hidden" name="Archived" />
+                            <div class="form-group">
+                                <label class="control-label">合同名称:</label>
+                                <div class="col-md-12">
+                                    <div class="input-group" role="group">
+                                        <div class="input-group-btn">
+                                            <button type="button" class="btn btn-sm btn-success" name="Name">全部</button>
+                                        </div>
+                                        <input type="text" name="Name" class="form-control input-sm" placeholder="合同名称" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">对方单位：</label>
+                                <div class="col-md-12">
+                                    <div class="input-group">
+                                        <div class="input-group-btn" role="group">
+                                            <button type="button" class="btn btn-sm btn-success" name="OtherSide">全部</button>
+                                        </div>
+                                        <input type="text" class="form-control input-sm" placeholder="对方单位" name="OtherSide" value="" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">到账情况：</label>
+                                <div class="col-md-12">
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-sm btn-success" name="Recevied">全部</button>
+                                        @foreach (Recevied recevied in Enum.GetValues(typeof(Recevied)))
+                                        {
+                                            <button type="button" class="btn btn-sm btn-default" name="Recevied">@(recevied.GetDescription())</button>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">合同金额：</label>
+                                <div class="col-md-12">
+                                    <div class="input-group">
+                                        <input type="text" name="MinMoney" class="form-control input-sm" placeholder="最小值" value="" />
+                                        <span class="input-group-addon input-sm">至</span>
+                                        <input type="text" name="MaxMoney" class="form-control input-sm" placeholder="最大值" value="" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">发票开具情况：</label>
+                                <div class="col-md-12">
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-sm btn-success" name="Status">全部</button>
+                                        @foreach (ContractState state in Enum.GetValues(typeof(ContractState)))
+                                        {
+                                            <button type="button" class="btn btn-sm btn-default" name="Status">@(state.GetDescription())</button>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">合同起始时间：</label>
+                                <div class="col-md-12">
+                                    <div class="input-group">
+                                        <input type="text" name="StartTime" class="form-control datetimepicker input-sm" placeholder="起始时间" value="" />
+                                        <span class="input-group-addon input-sm">至</span>
+                                        <input type="text" name="EndTime" class="form-control datetimepicker input-sm" placeholder="结束时间" value="" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">合同所属部门：</label>
+                                <div class="col-md-12">
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-sm btn-success" name="Department">全部</button>
+                                        @foreach (var department in Department)
+                                        {
+                                            <button type="button" class="btn btn-sm btn-default" name="Department">@(department)</button>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">合同状态：</label>
+                                <div class="col-md-12">
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-sm btn-success" name="Archived">全部</button>
+                                        <button type="button" class="btn btn-sm btn-default" name="Archived">未归档</button>
+                                        <button type="button" class="btn btn-sm btn-default" name="Archived">归档</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">签署单位：</label>
+                                <div class="col-md-12">
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-sm btn-success" name="ZtopCompany">全部</button>
+                                        @foreach (ZtopCompany company in Enum.GetValues(typeof(ZtopCompany)))
+                                        {
+                                            <button type="button" class="btn btn-sm btn-default" name="ZtopCompany">@(company.GetDescription())</button>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <button type="submit" class="btn btn-sm btn-success"><i class="glyphicon glyphicon-search"></i> 立即查询</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-8 col-xs-8 col-sm-8">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>合同名称</th>
+                                    <th>甲方</th>
+                                    <th>合同金额（元）</th>
+                                    <th>未到账金额（元）</th>
+                                    <th>状态</th>
+                                </tr>
+                            </thead>
+                            <tbody id="Contract-Result"></tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -78,252 +268,20 @@
     </div>
 </div>
 
-
-
-
-<div class="row">
-    <div class="col-md-6 col-xs-6 col-sm-6" style="padding:10px;">
-        <div class="col-md-12 well" style="padding:0px;">
-            <fieldset><legend>可关联到账查询设置</legend></fieldset>
-            <div class="alert alert-danger" role="alert" id="Bill-Info">
-                <span>警告框</span>
-            </div>
-            <form method="get" id="Bill-Search">
-               
-                <div class="row">
-                    <div class="col-md-12 col-xs-12 col-sm-12">
-                        <div class="form-group">
-                            <label class="control-label">到账时间：</label>
-                            <div class="col-md-12">
-                                <div class="input-group">
-                                    <input type="text" name="StartTime" placeholder="起始时间" class="form-control datetimepicker input-sm"  />
-                                    <span class="input-group-addon input-sm">至</span>
-                                    <input type="text" name="EndTime" placeholder="结束时间" class="form-control datetimepicker input-sm" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label">到账金额：</label>
-                            <div class="col-md-12">
-                                <div class="input-group">
-                                    <input type="text" name="MinMoney" placeholder="最小值" class="form-control input-sm"  />
-                                    <span class="input-group-addon input-sm">至</span>
-                                    <input type="text" name="MaxMoney" placeholder="最大值" class="form-control input-sm"  />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-xs-6 col-sm-6">
-                        <div class="form-group">
-                            <label class="control-label">对方户名：</label>
-                            <div class="col-md-12">
-                                <div class="input-group">
-                                    <div class="input-group-btn" role="group">
-                                        <button type="button" class="btn btn-sm btn-success" name="OtherSide">全部</button>
-                                    </div>
-                                    <input type="text" name="OtherSide" placeholder="对方户名关键字" class="form-control input-sm"  />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-xs-6 col-sm-6">
-                        <div class="form-group">
-                            <label class="control-label">银行备注：</label>
-                            <div class="col-md-12">
-                                <div class="input-group" role="group">
-                                    <div class="input-group-btn" role="group">
-                                        <button type="button" class="btn btn-sm btn-success" name="Remark">全部</button>
-                                    </div>
-                                    <input type="text" name="Remark" placeholder="银行备注关键字" class="form-control input-sm" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-               
-                <hr />
-                <div class="form-group">
-                    <div class="col-md-12">
-                        <button type="submit" class="btn btn-sm btn-success"><i class="glyphicon glyphicon-search"></i> 立即查询</button>
-                    </div>
-                    
-                </div>
-            </form>
-        </div>
-    </div>
-    <div class="col-md-6 col-xs-6 col-sm-6" style="padding:10px;">
-        <div class="col-md-12 well" style="padding:0px;">
-            <fieldset><legend>合同查询设置</legend></fieldset>
-            <div class="alert alert-danger" role="alert" id="Contract-Info">
-                <span>警告框</span>
-            </div>
-            <form method="get"  id="Contract-Search">
-                <input type="hidden" name="Recevied" />
-                <input type="hidden" name="Status" />
-                <input type="hidden" name="Department" />
-                <input type="hidden" name="ZtopCompany" />
-                <input type="hidden" name="Archived" />
-                <div class="row">
-                    <div class="col-md-6 col-xs-6 col-sm-6">
-                        <div class="form-group">
-                            <label class="control-label">合同名称:</label>
-                            <div class="col-md-12">
-                                <div class="input-group" role="group">
-                                    <div class="input-group-btn">
-                                        <button type="button" class="btn btn-sm btn-success" name="Name">全部</button>
-                                    </div>
-                                    <input type="text" name="Name" class="form-control input-sm" placeholder="合同名称" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-xs-6 col-sm-6">
-                        <div class="form-group">
-                            <label class="control-label">对方单位：</label>
-                            <div class="col-md-12">
-                                <div class="input-group">
-                                    <div class="input-group-btn" role="group">
-                                        <button type="button" class="btn btn-sm btn-success" name="OtherSide">全部</button>
-                                    </div>
-                                    <input type="text" class="form-control input-sm" placeholder="对方单位" name="OtherSide" value="" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-12 col-xs-12 col-sm-12">
-                        <div class="form-group">
-                            <label class="control-label">到账情况：</label>
-                            <div class="col-md-12">
-                                <div class="btn-group" role="group">
-                                    <button type="button" class="btn btn-sm btn-success" name="Recevied">全部</button>
-                                    @foreach (Recevied recevied in Enum.GetValues(typeof(Recevied)))
-                                    {
-                                        <button type="button" class="btn btn-sm btn-default" name="Recevied">@(recevied.GetDescription())</button>
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label">合同金额：</label>
-                            <div class="col-md-12">
-                                <div class="input-group">
-                                    <input type="text" name="MinMoney" class="form-control input-sm" placeholder="最小值" value="" />
-                                    <span class="input-group-addon input-sm">至</span>
-                                    <input type="text" name="MaxMoney" class="form-control input-sm" placeholder="最大值" value="" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label">发票开具情况：</label>
-                            <div class="col-md-12">
-                                <div class="btn-group" role="group">
-                                    <button type="button" class="btn btn-sm btn-success" name="Status">全部</button>
-                                    @foreach (ContractState state in Enum.GetValues(typeof(ContractState)))
-                                    {
-                                        <button type="button" class="btn btn-sm btn-default" name="Status">@(state.GetDescription())</button>
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label">合同起始时间：</label>
-                            <div class="col-md-12">
-                                <div class="input-group">
-                                    <input type="text" name="StartTime" class="form-control datetimepicker input-sm" placeholder="起始时间" value="" />
-                                    <span class="input-group-addon input-sm">至</span>
-                                    <input type="text" name="EndTime" class="form-control datetimepicker input-sm" placeholder="结束时间" value="" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label">合同所属部门：</label>
-                            <div class="col-md-12">
-                                <div class="btn-group" role="group">
-                                    <button type="button" class="btn btn-sm btn-success" name="Department">全部</button>
-                                    @foreach (var department in Department)
-                                    {
-                                        <button type="button" class="btn btn-sm btn-default" name="Department">@(department)</button>
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label">合同状态：</label>
-                            <div class="col-md-12">
-                                <div class="btn-group" role="group">
-                                    <button type="button" class="btn btn-sm btn-success" name="Archived">全部</button>
-                                    <button type="button" class="btn btn-sm btn-default" name="Archived">未归档</button>
-                                    <button type="button" class="btn btn-sm btn-default" name="Archived">归档</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label">签署单位：</label>
-                            <div class="col-md-12">
-                                <div class="btn-group" role="group">
-                                    <button type="button" class="btn btn-sm btn-success" name="ZtopCompany">全部</button>
-                                    @foreach (ZtopCompany company in Enum.GetValues(typeof(ZtopCompany)))
-                                    {
-                                        <button type="button" class="btn btn-sm btn-default" name="ZtopCompany">@(company.GetDescription())</button>
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <br />
-                        <div class="form-group">
-                            <div class="col-md-12">
-                                <button type="submit" class="btn btn-sm btn-success"><i class="glyphicon glyphicon-search"></i> 立即查询</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-             
-                    
-            </form>
-        </div>
-    </div>
-</div>
-
 <hr />
 <div class="row">
-    <div class="col-md-6 col-xs-6 col-sm-6" style="padding:10px;">
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>到账日期</th>
-                    <th>到账金额（元）</th>
-                    <th>对方户名</th>
-                    <th>可关联金额（元）</th>
-                    <th>发票关联</th>
-                </tr>
-            </thead>
-            <tbody id="Bill">
-
-            </tbody>
-        </table>
-    </div>
     <div class="col-md-6 col-xs-6 col-sm-6" style="padding:10px;">
         <form class="form-horizontal" method="post" action="" id="Relate-form">
            
         </form>
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>合同名称</th>
-                    <th>甲方</th>
-                    <th>合同金额（元）</th>
-                    <th>未到账金额（元）</th>
-                    <th>状态</th>
-                </tr>
-            </thead>
-            <tbody id="Contract-Result"></tbody>
-        </table>
     </div>
 </div>
 
 <script>
+    $("div.alert.alert-danger").hide();
+
+
+
     $("#Bill-Info").hide();
     $("#Contract-Info").hide();
     $(function () {
