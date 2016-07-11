@@ -13,6 +13,7 @@ namespace Ztop.Todo.Model
         public string Remark { get; set; }
         public double? MinMoney { get; set; }
         public double? MaxMoney { get; set; }
+        public bool? Deleted { get; set; }
         public PageParameter Page { get; set; }
     }
 }

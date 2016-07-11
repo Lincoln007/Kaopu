@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "录入项目";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    Article article = ViewBag.Article;
 }
 
 <form class="form-horizontal" action="/Finance/SaveArticle" method="post" id="Article-form">
@@ -17,17 +18,18 @@
         </div>
        
         <div class="col-md-6 col-xs-6 col-sm-6">
+            <input type="hidden" name="ID" value="@(article!=null?article.ID.ToString():"")" />
             <div class="form-group">
                 <label class="control-label col-md-4">项目名称：</label>
                 <div class="col-md-8">
-                    <input type="text" name="Name" class="form-control" placeholder="项目名称" required />
+                    <input type="text" name="Name" class="form-control" placeholder="项目名称" required  value="@(article!=null?article.Name:"")" />
                 </div>
             </div>
             <div class="form-group">
                 <label class="control-label col-md-4">意向金额：</label>
                 <div class="col-md-8">
                     <div class="input-group">
-                        <input type="text" name="Money" placeholder="意向金额" class="form-control" />
+                        <input type="text" name="Money" placeholder="意向金额" class="form-control" value="@(article!=null?article.Money.ToString():"")" />
                         <span class="input-group-addon">元</span>
                     </div>
                 </div>
@@ -36,10 +38,17 @@
                 <label class="control-label col-md-4">关联合同：</label>
                 <div class="col-md-8">
                     <div class="ContractID">
+                        @if (article != null && article.Contracts != null)
+                        {
+                            foreach (var contract in article.Contracts)
+                            {
+                                <input type="hidden" name="ContractID" value="@(contract.ID)" />
+                            }
 
+                        }
                     </div>
                     <div class="input-group" role="group">
-                        <input type="text" name="ContractName" class="form-control" placeholder="" readonly="readonly" />
+                        <input type="text" name="ContractName" class="form-control" placeholder="" readonly="readonly" value="@(article!=null&&article.Contracts!=null?string.Join(";",article.Contracts.Select(e=>e.Name).ToArray()):"")" />
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#Contract"><i class="glyphicon glyphicon-send"></i></button>
                         </span>
@@ -51,13 +60,13 @@
             <div class="form-group">
                 <label class="control-label col-md-4">对方单位：</label>
                 <div class="col-md-8">
-                    <input type="text" name="OtherSide" class="form-control" placeholder="对方单位" required />
+                    <input type="text" name="OtherSide" class="form-control" placeholder="对方单位" required value="@(article!=null?article.OtherSide:"")" />
                 </div>
             </div>
             <div class="form-group">
                 <label class="control-label col-md-4">备注：</label>
                 <div class="col-md-8">
-                    <textarea name="Remark" class="form-control" rows="4"></textarea>
+                    <textarea name="Remark" class="form-control" rows="4">@(article!=null?article.Remark:"")</textarea>
                 </div>
             </div>
         </div>
@@ -158,7 +167,23 @@
                         <h4>关联合同</h4>
                         <table class="table">
                             <tbody id="Select-Contract">
-                             
+                             @if (article != null && article.Contracts != null)
+                             {
+                                 foreach(var contract in article.Contracts)
+                                 {
+                                     <tr>
+                                         <td>
+                                             <div class="input-group">
+                                                 <input type="text" name="CName" class="form-control input-sm" value="@(contract.Name)" readonly="readonly" />
+                                                 <input type="hidden" name="CID" value="@(contract.ID)" />
+                                                 <span class="input-group-btn">
+                                                     <button type='button' class='btn btn-sm btn-danger'><i class='glyphicon glyphicon-remove-circle'></i></button>
+                                                 </span>
+                                             </div>
+                                         </td>
+                                     </tr>
+                                 }
+                             }
                             </tbody>
                         </table>
                     </div>
@@ -204,6 +229,7 @@
                 } else {
                     $("#Article-Info>span").html(json.content);
                     $("#Article-Info").show(500);
+                    location.href = "/Finance/DetailArticle?id="+json.data;
                 }
             });
             return false;

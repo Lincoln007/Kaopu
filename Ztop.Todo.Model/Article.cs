@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Ztop.Todo.Model
@@ -14,5 +15,8 @@ namespace Ztop.Todo.Model
         public double Money { get; set; }
         [MaxLength(1023)]
         public string Remark { get; set; }
+        public bool Deleted { get; set; }
+        [NotMapped]
+        public List<Contract> Contracts { get; set; } 
     }
 }

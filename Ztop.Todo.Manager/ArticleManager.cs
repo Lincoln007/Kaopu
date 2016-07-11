@@ -20,10 +20,29 @@ namespace Ztop.Todo.Manager
 
         public int Save(Article article)
         {
+            if (Exist(article) && article.ID > 0)
+            {
+                Edit(article);
+                return article.ID;
+            }
             using (var db = GetDbContext())
             {
                 db.Articles.Add(article);
                 db.SaveChanges();
+                return article.ID;
+            }
+        }
+
+        public int Edit(Article article)
+        {
+            using (var db = GetDbContext())
+            {
+                var entry = db.Articles.Find(article.ID);
+                if (entry != null)
+                {
+                    db.Entry(entry).CurrentValues.SetValues(article);
+                    db.SaveChanges();
+                }
                 return article.ID;
             }
         }
@@ -41,6 +60,10 @@ namespace Ztop.Todo.Manager
             using (var db = GetDbContext())
             {
                 var query = db.Articles.AsQueryable();
+                if (parameter.Deleted.HasValue)
+                {
+                    query = query.Where(e => e.Deleted == parameter.Deleted.Value);
+                }
                 if (!string.IsNullOrEmpty(parameter.Name))
                 {
                     query = query.Where(e => e.Name.Contains(parameter.Name));
@@ -77,6 +100,21 @@ namespace Ztop.Todo.Manager
                 }
             }
             return list;
+        }
+
+        public bool Deleted(int id)
+        {
+            using(var db = GetDbContext())
+            {
+                var article = db.Articles.FirstOrDefault(e => e.ID == id);
+                if (article == null)
+                {
+                    return false;
+                }
+                article.Deleted = true;
+                db.SaveChanges();
+            }
+            return true;
         }
     }
 }

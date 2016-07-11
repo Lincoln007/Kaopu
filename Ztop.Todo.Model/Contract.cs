@@ -81,6 +81,7 @@ namespace Ztop.Todo.Model
         /// 到账情况
         /// </summary>
         public Recevied Recevied { get; set; }
+        public double Leave { get; set; }
         /// <summary>
         /// 合同相关文件
         /// </summary>

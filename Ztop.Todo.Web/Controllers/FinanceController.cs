@@ -18,10 +18,11 @@ namespace Ztop.Todo.Web.Controllers
             ViewBag.Bills = Core.BillManager.Search();
             ViewBag.BillAccount = Core.BillAccountManager.Search(new BillAccountParameter() { Page = new PageParameter(1, 20) });
             ViewBag.Invoices = Core.InvoiceManager.Search(new InvoiceParameter() { Status = InvoiceState.Have, Instance = false });
+            ViewBag.Articles = Core.ArticleManager.Search(new ArticleParameter() { Deleted=false, Page = new PageParameter(1, 20) });
             return View();
         }
 
-        public ActionResult CreateContract(int id=0)
+        public ActionResult CreateContract(int id=0,string otherside=null)
         {
             if (id > 0)
             {
@@ -37,12 +38,17 @@ namespace Ztop.Todo.Web.Controllers
                 }
                 ViewBag.Contract = contract;
             }
+            ViewBag.OtherSide = otherside;
             return View();
         }
 
         [HttpPost]
         public ActionResult SaveContract(Contract contract,int[] articleid,string articlename, int[] leaves)
         {
+            if (contract.ID == 0)
+            {
+                contract.Leave = contract.Money;
+            }
             if (string.IsNullOrEmpty(contract.Department))
             {
                 contract.Department = Core.UserManager.GetGroupName(Identity.Name);
@@ -81,13 +87,6 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
 
-        [HttpPost]
-        public ActionResult Edit(Contract contract)
-        {
-            
-            var id = Core.ContractManager.Edit(contract);
-            return SuccessJsonResult(id);
-        }
 
         public ActionResult Delete(int id)
         {
@@ -204,8 +203,6 @@ namespace Ztop.Todo.Web.Controllers
             return Core.InvoiceManager.Edit(id, ztopcompany, othersidecompany, money, content) ? SuccessJsonResult() : ErrorJsonResult("编辑失败！可能已经用过财务审核，请刷新查看！");
         }
 
-
-
         [HttpPost]
         public ActionResult SaveBillAccount(Bill bill)
         {
@@ -245,45 +242,43 @@ namespace Ztop.Todo.Web.Controllers
             var list = Core.BillManager.Search(parameter).Where(e => e.Association != Association.Full);
             return Json(list, JsonRequestBehavior.AllowGet);
         }
-
-        /// <summary>
-        /// 到账挂入发票的查询  发票状态为已开并且该发票未挂账
-        /// </summary>
-        /// <param name="ztopcompany"></param>
-        /// <param name="department"></param>
-        /// <param name="time"></param>
-        /// <param name="otherside"></param>
-        /// <param name="minmoney"></param>
-        /// <param name="maxmoney"></param>
-        /// <returns></returns>
         [HttpGet]
-        public ActionResult GetJsonInvoice(string ztopcompany=null,string department=null,string time=null,string otherside=null,double?minmoney=null,double? maxmoney=null)
+        public ActionResult GetJsonContract(string name = null, string otherside = null, DateTime? starttime = null, DateTime? endtime = null, double? minmoney = null, double? maxmoney = null, string ztopcompany = null)
         {
-            var parameter = new InvoiceParameter()
+            var parameter = new ContractParameter()
             {
-                Status=InvoiceState.Have,
-                Recevied=Recevied.None,
-                Department = department,
-                Time = time,
+                Name = name,
                 OtherSide = otherside,
+                StartTime = starttime,
+                EndTime = endtime,
                 MinMoney = minmoney,
-                MaxMoney = maxmoney,
-                Instance = true
+                MaxMoney = maxmoney
             };
             if (!string.IsNullOrEmpty(ztopcompany))
             {
                 parameter.ZtopCompany = EnumHelper.GetEnum<ZtopCompany>(ztopcompany);
             }
-            var list= Core.InvoiceManager.Search(parameter);
+            var list = Core.ContractManager.Search(parameter);
             return Json(list, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public ActionResult Relate(int bid,string iid)
+        public ActionResult Relate(int billID,int[] contractID,double[] price)
         {
-            return Core.InvoiceManager.Relate(bid, iid) ? SuccessJsonResult() : ErrorJsonResult("关联发票失败！");
-        }
+            var bill = Core.BillManager.GetBill(billID);
+            if (bill == null||contractID==null||price==null||contractID.Count()!=price.Count())
+            {
+                return ErrorJsonResult("未找到相关到账信息或者未找到相关合同信息，请核对！");
+            }
+            if (bill.Leave >= price.Sum())
+            {
 
+            }else
+            {
+                return ErrorJsonResult("关联金额超出到账可关联金额，请核对");
+            }
+            return SuccessJsonResult();
+        }
         public ActionResult BillSearch(DateTime? startTime=null,DateTime? endTime=null,double? minMoney=null,double? maxMoney=null,string otherside=null,string remark=null,string association=null,int page=1)
         {
             var parameter = new BillParamter()
@@ -349,25 +344,6 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
 
-        [HttpGet]
-        public ActionResult GetJsonContract(string name=null,string otherside=null,DateTime? starttime=null,DateTime?endtime=null,double? minmoney=null,double? maxmoney=null,string ztopcompany=null)
-        {
-            var parameter = new ContractParameter()
-            {
-                Name = name,
-                OtherSide = otherside,
-                StartTime = starttime,
-                EndTime = endtime,
-                MinMoney = minmoney,
-                MaxMoney = maxmoney
-            };
-            if (!string.IsNullOrEmpty(ztopcompany))
-            {
-                parameter.ZtopCompany = EnumHelper.GetEnum<ZtopCompany>(ztopcompany);
-            }
-            var list = Core.ContractManager.Search(parameter);
-            return Json(list, JsonRequestBehavior.AllowGet);
-        }
 
         public ActionResult ContractSearch(string name=null,string OtherSide=null,DateTime? startime=null,DateTime? endtime=null,string status=null,string recevied=null,double? minmoney=null,double? maxmoney=null,string department=null, string archived=null,string ztopcompany=null, int page=1)
         {
@@ -418,30 +394,52 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
 
-        public ActionResult CreateArticle()
+        public ActionResult CreateArticle(int id=0)
         {
+            if (id > 0)
+            {
+                var article = Core.ArticleManager.Get(id);
+                if (article != null)
+                {
+                    var Clist = Core.ContractArticleManager.GetByArticleID(article.ID);
+                    if (Clist != null && Clist.Count > 0)
+                    {
+                        article.Contracts = Core.ContractManager.GetByIDList(Clist.Select(e => e.ContractID).ToList());
+                    }
+                }
+                ViewBag.Article = article;
+            }
             return View();
         }
         [HttpPost]
         public ActionResult SaveArticle(Article article,int[] contractid,string contractName)
         {
-            if (Core.ArticleManager.Exist(article))
-            {
-                return ErrorJsonResult("系统中已经存在相同名称和对方单位的项目，请核对！");
-            }
             var id = Core.ArticleManager.Save(article);
             if (contractid != null)
             {
                 Core.ContractArticleManager.UpdateArticle(id, contractid);
-            }
-           
-            return SuccessJsonResult();
+            }  
+            return SuccessJsonResult(id);
         }
 
         public ActionResult DetailArticle(int id)
         {
-            ViewBag.Article = Core.ArticleManager.Get(id);
+            var article = Core.ArticleManager.Get(id);
+            if (article != null)
+            {
+                var CList = Core.ContractArticleManager.GetByArticleID(article.ID);
+                if (CList != null && CList.Count > 0)
+                {
+                    article.Contracts = Core.ContractManager.GetByIDList(CList.Select(e=>e.ContractID).ToList());
+                }
+            }
+            ViewBag.Article = article;
             return View();
+        }
+
+        public ActionResult DeletedArticle(int id)
+        {
+            return Core.ArticleManager.Deleted(id) ? SuccessJsonResult() : ErrorJsonResult("删除失败！参数错误，未找到相关项目信息");
         }
         
         [HttpGet]
@@ -470,10 +468,6 @@ namespace Ztop.Todo.Web.Controllers
             };
             ViewBag.List = Core.ArticleManager.Search(parameter);
             ViewBag.Parameter = parameter;
-            return View();
-        }
-        public ActionResult ArticleContract()
-        {
             return View();
         }
 

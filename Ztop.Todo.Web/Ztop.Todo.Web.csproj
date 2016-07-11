@@ -302,7 +302,6 @@
     <Content Include="Views\Finance\BillAccountDetail.cshtml" />
     <Content Include="Views\Finance\CreateArticle.cshtml" />
     <Content Include="Views\Finance\ArticleSearch.cshtml" />
-    <Content Include="Views\Finance\ArticleContract.cshtml" />
     <Content Include="Views\Finance\DetailArticle.cshtml" />
   </ItemGroup>
   <ItemGroup>

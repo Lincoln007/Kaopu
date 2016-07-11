@@ -31,7 +31,6 @@ namespace Ztop.Todo.Manager
             {
                 Edit(contract);
                 return contract.ID;
-                //throw new Exception(string.Format("当前系统存在合同编号：{0} 合同名称：{1}", contract.Coding, contract.Name));
             }
 
             using (var db = GetDbContext())
@@ -214,6 +213,23 @@ namespace Ztop.Todo.Manager
                 db.SaveChanges();
             }
             return true;
+        }
+
+        public List<Contract> GetByIDList(List<int> idList)
+        {
+            var list = new List<Contract>();
+            using (var db = GetDbContext())
+            {
+                foreach(var id in idList)
+                {
+                    var entry = db.Contracts.FirstOrDefault(e => e.ID == id);
+                    if (entry != null)
+                    {
+                        list.Add(entry);
+                    }
+                }
+            }
+            return list;
         }
 
        

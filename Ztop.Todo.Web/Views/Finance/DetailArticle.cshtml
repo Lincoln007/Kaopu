@@ -8,6 +8,9 @@
 <hr />
 
 <div class="btn-group" role="group">
+    <a href="/Finance/CreateArticle?id=@(article.ID)" class="btn btn-primary"><i class="glyphicon glyphicon-edit"></i>编辑项目</a>
+    <a href="/Finance/CreateContract?OtherSide=@(article.OtherSide)" class="btn btn-success"><i class="glyphicon glyphicon-export"></i>创建合同</a>
+    <button class="btn btn-danger btn-remove" TargetIndex="@(article.ID)"><i class="glyphicon glyphicon-remove"></i>删除项目</button>
     <button type="button" class="btn btn-default" onclick="history.back()"><i class="glyphicon glyphicon-arrow-left"></i>返回</button>
 </div>
 <hr />
@@ -36,6 +39,55 @@
         </table>
     </div>
     <div class="tab-pane fade" id="Contract" role="tabpanel">
-
+        @if (article != null && article.Contracts != null)
+        {
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>合同名称</th>
+                        <th>对方单位</th>
+                        <th>签署单位</th>
+                        <th>合同起始时间</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var contract in article.Contracts)
+                    {
+                        <tr>
+                            <td><a href="/Finance/Detail?id=@(contract.ID)">@(contract.Name)</a></td>
+                            <td>@(contract.Company)</td>
+                            <td>@(contract.ZtopCompany.GetDescription())</td>
+                            <td>@(contract.StartTime.ToLongDateString())</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert alert-warning" role="alert">
+                <span>当前项目未关联合同</span>
+            </div>
+        }
+      
     </div>
 </div>
+
+<script>
+    $(function () {
+        $("button.btn-remove").click(function () {
+            if (confirm("您确定要删除项目？")) {
+                var index = $(this).attr("TargetIndex");
+                $.request("/Finance/DeletedArticle?id=" + index, null, function (json) {
+                    alert(json.content);
+                    if (json.result == 1) {
+                        location.href = "/Finance/Index";
+                    }
+                    return false;
+                });
+            } else {
+                return false;
+            }
+        });
+    });
+</script>

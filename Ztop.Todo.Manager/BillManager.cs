@@ -321,6 +321,14 @@ namespace Ztop.Todo.Manager
             }
         }
 
+        public Bill GetBill(int id)
+        {
+            using (var db = GetDbContext())
+            {
+                return db.Bills.Find(id);
+            }
+        }
+
         
     }
 }

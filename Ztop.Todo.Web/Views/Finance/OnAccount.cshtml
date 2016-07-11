@@ -5,6 +5,81 @@
     List<string> Department = ViewBag.Department;
 }
 
+<div class="row">
+    <form class="form-horizontal">
+        <div class="col-md-6 col-xs-6 col-sm-6">
+            <h3 class="text-center">到账</h3>
+            <button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#Bill-Search"><i class="glyphicon glyphicon-search"></i>选择到账</button>
+        </div>
+        <div class="col-md-6 col-xs-6 col-sm-6">
+            <h3 class="text-center">合同</h3>
+            <button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#Contract-Search"><i class="glyphicon glyphicon-search"></i>选择合同</button>
+        </div>
+        <hr />
+        <div class="col-md-12 col-xs-12 col-sm-12">
+            <div class="form-group">  
+                <div class="col-md-3 col-md-offset-9"  style="float:right;">
+                    <button type="button" class="btn btn-default" onclick="history.back()"><i class="glyphicon glyphicon-remove-circle"></i>返回</button>
+                    <button type="button" class="btn btn-primary" ><i class="glyphicon glyphicon-ok-circle"></i>关联</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="modal fade" id="Bill-Search" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">选择到账</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-3 col-xs-3 col-sm-3 well" style="padding:0px;">
+                        <fieldset><legend>可关联到账查询设置</legend></fieldset>
+                        <div class="alert alert-danger" role="alert">
+                            <span></span>
+                        </div>
+                         
+                    </div>
+                    <div class="col-md-8">
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove-circle"></i> 取消</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="glyphicon glyphicon-ok-circle"></i> 确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="Contract-Search" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">选择到账</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-3">
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove-circle"></i> 取消</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="glyphicon glyphicon-ok-circle"></i> 确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 
 <div class="row">
     <div class="col-md-6 col-xs-6 col-sm-6" style="padding:10px;">
@@ -13,7 +88,7 @@
             <div class="alert alert-danger" role="alert" id="Bill-Info">
                 <span>警告框</span>
             </div>
-            <form method="get" action="" id="Bill-Search">
+            <form method="get" id="Bill-Search">
                
                 <div class="row">
                     <div class="col-md-12 col-xs-12 col-sm-12">
@@ -82,126 +157,129 @@
             <div class="alert alert-danger" role="alert" id="Contract-Info">
                 <span>警告框</span>
             </div>
-            <form method="get" action="" id="Contract-Search">
+            <form method="get"  id="Contract-Search">
                 <input type="hidden" name="Recevied" />
                 <input type="hidden" name="Status" />
                 <input type="hidden" name="Department" />
                 <input type="hidden" name="ZtopCompany" />
                 <input type="hidden" name="Archived" />
-                <div class="col-md-6 col-xs-6 col-sm-6">
-                    <div class="form-group">
-                        <label class="control-label">合同名称:</label>
-                        <div class="col-md-12">
-                            <div class="input-group" role="group">
-                                <div class="input-group-btn">
-                                    <button type="button" class="btn btn-sm btn-success" name="Name">全部</button>
+                <div class="row">
+                    <div class="col-md-6 col-xs-6 col-sm-6">
+                        <div class="form-group">
+                            <label class="control-label">合同名称:</label>
+                            <div class="col-md-12">
+                                <div class="input-group" role="group">
+                                    <div class="input-group-btn">
+                                        <button type="button" class="btn btn-sm btn-success" name="Name">全部</button>
+                                    </div>
+                                    <input type="text" name="Name" class="form-control input-sm" placeholder="合同名称" />
                                 </div>
-                                <input type="text" name="Name" class="form-control input-sm" placeholder="合同名称" />
                             </div>
                         </div>
-                    </div>     
-                </div>
-                <div class="col-md-6 col-xs-6 col-sm-6">
-                    <div class="form-group">
-                        <label class="control-label">对方单位：</label>
-                        <div class="col-md-12">
-                            <div class="input-group">
-                                <div class="input-group-btn" role="group">
-                                    <button type="button" class="btn btn-sm btn-success" name="OtherSide">全部</button>
+                    </div>
+                    <div class="col-md-6 col-xs-6 col-sm-6">
+                        <div class="form-group">
+                            <label class="control-label">对方单位：</label>
+                            <div class="col-md-12">
+                                <div class="input-group">
+                                    <div class="input-group-btn" role="group">
+                                        <button type="button" class="btn btn-sm btn-success" name="OtherSide">全部</button>
+                                    </div>
+                                    <input type="text" class="form-control input-sm" placeholder="对方单位" name="OtherSide" value="" />
                                 </div>
-                                <input type="text" class="form-control input-sm" placeholder="对方单位" name="OtherSide" value="" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-xs-12 col-sm-12">
+                        <div class="form-group">
+                            <label class="control-label">到账情况：</label>
+                            <div class="col-md-12">
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-sm btn-success" name="Recevied">全部</button>
+                                    @foreach (Recevied recevied in Enum.GetValues(typeof(Recevied)))
+                                    {
+                                        <button type="button" class="btn btn-sm btn-default" name="Recevied">@(recevied.GetDescription())</button>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">合同金额：</label>
+                            <div class="col-md-12">
+                                <div class="input-group">
+                                    <input type="text" name="MinMoney" class="form-control input-sm" placeholder="最小值" value="" />
+                                    <span class="input-group-addon input-sm">至</span>
+                                    <input type="text" name="MaxMoney" class="form-control input-sm" placeholder="最大值" value="" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">发票开具情况：</label>
+                            <div class="col-md-12">
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-sm btn-success" name="Status">全部</button>
+                                    @foreach (ContractState state in Enum.GetValues(typeof(ContractState)))
+                                    {
+                                        <button type="button" class="btn btn-sm btn-default" name="Status">@(state.GetDescription())</button>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">合同起始时间：</label>
+                            <div class="col-md-12">
+                                <div class="input-group">
+                                    <input type="text" name="StartTime" class="form-control datetimepicker input-sm" placeholder="起始时间" value="" />
+                                    <span class="input-group-addon input-sm">至</span>
+                                    <input type="text" name="EndTime" class="form-control datetimepicker input-sm" placeholder="结束时间" value="" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">合同所属部门：</label>
+                            <div class="col-md-12">
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-sm btn-success" name="Department">全部</button>
+                                    @foreach (var department in Department)
+                                    {
+                                        <button type="button" class="btn btn-sm btn-default" name="Department">@(department)</button>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">合同状态：</label>
+                            <div class="col-md-12">
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-sm btn-success" name="Archived">全部</button>
+                                    <button type="button" class="btn btn-sm btn-default" name="Archived">未归档</button>
+                                    <button type="button" class="btn btn-sm btn-default" name="Archived">归档</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">签署单位：</label>
+                            <div class="col-md-12">
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-sm btn-success" name="ZtopCompany">全部</button>
+                                    @foreach (ZtopCompany company in Enum.GetValues(typeof(ZtopCompany)))
+                                    {
+                                        <button type="button" class="btn btn-sm btn-default" name="ZtopCompany">@(company.GetDescription())</button>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <br />
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <button type="submit" class="btn btn-sm btn-success"><i class="glyphicon glyphicon-search"></i> 立即查询</button>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-12 col-xs-12 col-sm-12">
-                    <div class="form-group">
-                        <label class="control-label">到账情况：</label>
-                        <div class="col-md-12">
-                            <div class="btn-group" role="group">
-                                <button type="button" class="btn btn-sm btn-success" name="Recevied">全部</button>
-                                @foreach (Recevied recevied in Enum.GetValues(typeof(Recevied)))
-                                {
-                                    <button type="button" class="btn btn-sm btn-default" name="Recevied">@(recevied.GetDescription())</button>
-                                }
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">合同金额：</label>
-                        <div class="col-md-12">
-                            <div class="input-group">
-                                <input type="text" name="MinMoney" class="form-control input-sm" placeholder="最小值" value="" />
-                                <span class="input-group-addon input-sm">至</span>
-                                <input type="text" name="MaxMoney" class="form-control input-sm" placeholder="最大值" value="" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">发票开具情况：</label>
-                        <div class="col-md-12">
-                            <div class="btn-group" role="group">
-                                <button type="button" class="btn btn-sm btn-success" name="Status">全部</button>
-                                @foreach (ContractState state in Enum.GetValues(typeof(ContractState)))
-                                {
-                                    <button type="button" class="btn btn-sm btn-default" name="Status">@(state.GetDescription())</button>
-                                }
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">合同起始时间：</label>
-                        <div class="col-md-12">
-                            <div class="input-group">
-                                <input type="text" name="StartTime" class="form-control datetimepicker input-sm" placeholder="起始时间" value="" />
-                                <span class="input-group-addon input-sm">至</span>
-                                <input type="text" name="EndTime" class="form-control datetimepicker input-sm" placeholder="结束时间" value="" />
-                            </div>
-                        </div>
-                    </div>  
-                    <div class="form-group">
-                        <label class="control-label">合同所属部门：</label>
-                        <div class="col-md-12">
-                            <div class="btn-group" role="group">
-                                <button type="button" class="btn btn-sm btn-success" name="Department">全部</button>
-                                @foreach (var department in Department)
-                                {
-                                    <button type="button" class="btn btn-sm btn-default" name="Department">@(department)</button>
-                                }
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">合同状态：</label>
-                        <div class="col-md-12">
-                            <div class="btn-group" role="group">
-                                <button type="button" class="btn btn-sm btn-success" name="Archived">全部</button>
-                                <button type="button" class="btn btn-sm btn-default" name="Archived">未归档</button>
-                                <button type="button" class="btn btn-sm btn-default" name="Archived">归档</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">签署单位：</label>
-                        <div class="col-md-12">
-                            <div class="btn-group" role="group">
-                                <button type="button" class="btn btn-sm btn-success" name="ZtopCompany">全部</button>
-                                @foreach (ZtopCompany company in Enum.GetValues(typeof(ZtopCompany)))
-                                {
-                                    <button type="button" class="btn btn-sm btn-default" name="ZtopCompany">@(company.GetDescription())</button>
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <br />
-                    <div class="form-group">
-                        <div class="col-md-12">
-                            <button type="submit" class="btn btn-sm btn-success"><i class="glyphicon glyphicon-search"></i> 立即查询</button>
-                        </div>
-                    </div>
-                </div>
+             
                     
             </form>
         </div>
@@ -228,22 +306,20 @@
     </div>
     <div class="col-md-6 col-xs-6 col-sm-6" style="padding:10px;">
         <form class="form-horizontal" method="post" action="" id="Relate-form">
-           <input type="hidden" name="BID" />
-            <input type="hidden" name="IID" />
+           
         </form>
         <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th>项目合同</th>
-                    <th>发票内容</th>
-                    <th>发票金额（元）</th>
-                    <th>开票时间</th>
+                    <th>合同名称</th>
+                    <th>甲方</th>
+                    <th>合同金额（元）</th>
+                    <th>未到账金额（元）</th>
                     <th>状态</th>
                 </tr>
             </thead>
-            <tbody id="Invoice"></tbody>
+            <tbody id="Contract-Result"></tbody>
         </table>
-       
     </div>
 </div>
 
@@ -251,6 +327,7 @@
     $("#Bill-Info").hide();
     $("#Contract-Info").hide();
     $(function () {
+
         $("#Bill-Search").submit(function () {
             $("#Bill-Info").hide();
             var values = $(this).serialize();
@@ -269,75 +346,48 @@
                 });
 
                 $("#Bill button.btn-relate").unbind("click").bind("click", function () {
-                    var money = parseFloat($(this).attr("name").replace("Money", ""));
-                    if (isNaN(money)) {
-                        alert("无法获取当前到账记录金额，请刷新系统重试！");
-                        return false;
-                    }
-                    var items = [];
-                    var sum = 0;
-                    $("#Invoice>tr.success").each(function () {
-                        var index = parseInt($(this).attr("Index"));
-                        var a = parseFloat($(this).attr("Money"));
-                        if (!isNaN(index) && !isNaN(a)) {
-                            sum += a;
-                            items.push(index);
+                    $("#Relate-form").empty();
+                    var Index = $(this).attr("Index");
+                    $("#Relate-form").append("<div><input type='hidden' name='BillID' value='" + Index + "' /></div>");
+                    $("#Contract-Result input[name='Price']").each(function () {
+                        var value = $(this).val();
+                        if (value != undefined && value != NaN) {
+                            var index = $(this).attr("targetIndex");
+                            $("#Relate-form").append("<div><input type='hidden' name='ContractID' value='"+index+"' /><input type='hidden' name='Price' value='"+value+"' /></div>");
                         }
                     });
-                    if (money < sum) {
-                        alert("超出可关联金额！请核对");
-                        return false;
-                    } else {
-                        $("#Relate-form input[name='BID']").val($(this).attr("Index"));
-                        $("#Relate-form input[name='IID']").val(items.join());
-                        var data = $("#Relate-form").serialize();
-                        $.request("/Finance/Relate", data, function (json) {
-                            alert(json.content);
-                            if (json.result == 1) {
-                                $("#Bill").hide(500).html("");
-                                $("#Invoice>tr.success").hide(500).remove();
-                                $("#Relate-form input[name='BID']").val("");
-                                $("#Relate-form input[name='IID']").val("");
-                            }
-                            return false;
-                        });
-                    }
+                    var data = $("#Relate-form").serialize();
+                    $.request("/Finance/Relate", data, function (json) {
+
+                    });
+
+
+
+
+
+
+
+
                 });
 
                 return false;
             });
             return false;
         });
-        $("#Invoice-Search").submit(function () {
-            $("#Invoice-Info").hide();
-            var value = $(this).serialize();
-            $.getJSON("/Finance/GetJsonInvoice", value, function (data) {
-                $("#Invoice").empty();
+
+        $("#Contract-Search").submit(function () {
+            $("#Contract-Info").hide();
+            var values = $(this).serialize();
+            $.getJSON("/Finance/GetJsonContract", values, function (data) {
                 if (data.length == 0) {
-                    $("#Invoice-Info>span").html("未查询到相关发票信息记录！");
-                    $("#Invoice-Info").show(500);
+                    $("#Contract-Info>span").html("未找到相关合同记录！");
+                    $("#Contract-Info").show(500);
                     return false;
                 }
-                $.each(data, function (Index, value) {
-                    if (value.FillTime != null) {
-                        var timeString = value.FillTime.replace("/Date(", "").replace(")/", "");
-                        var currentTime = new Date();
-                        currentTime.setTime(timeString);
-                        $("#Invoice").append("<tr Index='"+value.ID+"' Money='"+value.Money+"'><td>"+value.Contract.Name+"</td><td>" + value.Content + "</td><td>" + value.Money + "</td><td>" + currentTime.toLocaleDateString() + "</td><td><i class='glyphicon glyphicon-refresh' name='CSS"+value.ID+"'></i></td></tr>");
-                    }
+                $("#Contract-Result").empty();
+                $.each(data, function (index, value) {
+                    $("#Contract-Result").append("<tr><td>" + value.Name + "</td><td>" + value.Company + "</td><td>" + value.Money + "</td><td>"+value.Leave+"</td><td><input type='text' name='Price' class='form-control input-sm' targetIndex='"+value.ID+"' /></td></tr>");
                 });
-
-                $("#Invoice>tr").unbind("click").bind("click", function () {
-                    var index = $(this).attr("Index");
-                    if (!$(this).hasClass("success")) {
-                        $(this).addClass("success");
-                        $("i[name='CSS" + index + "']").removeClass("glyphicon-refresh").addClass("glyphicon-ok");
-                    } else {
-                        $(this).removeClass("success");
-                        $("i[name='CSS" + index + "']").removeClass("glyphicon-ok").addClass("glyphicon-refresh");
-                    }
-                });
-                return false;
             });
             return false;
         });
