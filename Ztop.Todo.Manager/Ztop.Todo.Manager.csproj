@@ -83,6 +83,7 @@
     <Compile Include="AuthorizeManager.cs" />
     <Compile Include="BankManager.cs" />
     <Compile Include="BillAccountManager.cs" />
+    <Compile Include="BillContractManager.cs" />
     <Compile Include="BillManager.cs" />
     <Compile Include="CommentManager.cs" />
     <Compile Include="ContractArticleManager.cs" />
