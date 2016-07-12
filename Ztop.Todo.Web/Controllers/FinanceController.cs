@@ -271,6 +271,16 @@ namespace Ztop.Todo.Web.Controllers
             }
             if (bill.Leave >= contract_price.Sum())
             {
+                var billList = Core.BillContractManager.Get(bill.ID, contract_id, contract_price);
+                if (billList.Count > 0)
+                {
+                    Core.BillContractManager.AddRange(billList);
+                    if (!Core.BillManager.UpdateLeave(bill_id, billList.Sum(e => e.Price)))
+                    {
+                        return ErrorJsonResult("更新到账信息表失败！");
+                    }
+
+                }
 
             }else
             {

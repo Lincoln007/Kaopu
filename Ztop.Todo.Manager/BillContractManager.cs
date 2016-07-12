@@ -31,7 +31,7 @@ namespace Ztop.Todo.Manager
             return list;
         }
 
-        public void Update(List<BillContract> list)
+        public void AddRange(List<BillContract> list)
         {
             using (var db = GetDbContext())
             {

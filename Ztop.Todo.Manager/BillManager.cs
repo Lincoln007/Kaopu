@@ -329,6 +329,21 @@ namespace Ztop.Todo.Manager
             }
         }
 
+        public bool UpdateLeave(int bill_id,double sum)
+        {
+            using (var db = GetDbContext())
+            {
+                var bill = db.Bills.FirstOrDefault(e => e.ID == bill_id);
+                if (bill == null||bill.Leave<sum)
+                {
+                    return false;
+                }
+                bill.Leave = bill.Leave - sum;
+                db.SaveChanges();
+            }
+            return true;
+        }
+
         
     }
 }

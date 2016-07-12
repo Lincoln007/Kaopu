@@ -215,6 +215,20 @@ namespace Ztop.Todo.Manager
             return true;
         }
 
+        public bool UpdateRecevied(int id)
+        {
+            using (var db = GetDbContext())
+            {
+                var contract = db.Contracts.Find(id);
+                if (contract == null)
+                {
+                    return false;
+                }
+                var billContracts = db.BillContracts.Where(e => e.ContractID == id).ToList();
+
+            }
+        }
+
         public List<Contract> GetByIDList(List<int> idList)
         {
             var list = new List<Contract>();
