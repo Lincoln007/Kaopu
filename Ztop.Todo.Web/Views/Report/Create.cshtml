@@ -39,7 +39,7 @@
                 <tbody>
                     <tr>
                         <th>单据编号</th>
-                        <td>@(sheet.SerialNumber.Coding) </td>
+                        <td>@(sheet.SerialNumber!=null?sheet.SerialNumber.Coding:"00000000") </td>
                         <th>报销日期</th>
                         <td><input type="text" class="form-control input-sm" value="@(DateTime.Now.ToString("yyyy-MM-dd"))" name="Time" readonly="readonly" /></td>
                     </tr>

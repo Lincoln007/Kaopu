@@ -6,21 +6,37 @@
 }
 
 <div class="row">
-    <form class="form-horizontal">
+  
+    <form class="form-horizontal" method="post">
+        <div class="col-md-12 col-xs-12 col-sm-12">
+            <div class="alert alert-danger" role="alert" id="Error">
+                <span></span>
+            </div>
+        </div>
+     
         <div class="col-md-6 col-xs-6 col-sm-6">
             <h3 class="text-center">到账</h3>
             <button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#Bill-Search"><i class="glyphicon glyphicon-search"></i>选择到账</button>
+            <hr />
+            <div class="Select-Bill">
+               <div class="alert alert-warning" role="alert">
+                   <span>当前未选择到账，请选择到账</span>
+               </div>
+            </div>
         </div>
         <div class="col-md-6 col-xs-6 col-sm-6">
             <h3 class="text-center">合同</h3>
             <button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#Contract-Search"><i class="glyphicon glyphicon-search"></i>选择合同</button>
+            <hr />
+            <ul class="list-group Select-Contract">
+            </ul>
         </div>
         <hr />
         <div class="col-md-12 col-xs-12 col-sm-12">
             <div class="form-group">  
                 <div class="col-md-3 col-md-offset-9"  style="float:right;">
                     <button type="button" class="btn btn-default" onclick="history.back()"><i class="glyphicon glyphicon-remove-circle"></i>返回</button>
-                    <button type="button" class="btn btn-primary" ><i class="glyphicon glyphicon-ok-circle"></i>关联</button>
+                    <button type="submit" class="btn btn-primary" ><i class="glyphicon glyphicon-ok-circle"></i>关联</button>
                 </div>
             </div>
         </div>
@@ -38,10 +54,10 @@
                 <div class="row">
                     <div class="col-md-3 col-xs-3 col-sm-3 well" style="padding:0px;">
                         <fieldset><legend>可关联到账查询设置</legend></fieldset>
-                        <div class="alert alert-danger" role="alert">
+                        <div class="alert alert-danger" role="alert" id="Bill-Info">
                             <span></span>
                         </div>
-                        <form method="get" id="Bill-Search">
+                        <form method="get" id="Bill-Search-form">
                             <div class="form-group">
                                 <label class="control-label">到账时间：</label>
                                 <div class="col-md-12">
@@ -99,6 +115,7 @@
                                     <th>到账日期</th>
                                     <th>到账金额（元）</th>
                                     <th>对方户名</th>
+                                    <th>备注</th>
                                     <th>可关联金额（元）</th>
                                     <th>发票关联</th>
                                 </tr>
@@ -127,10 +144,10 @@
                 <div class="row">
                     <div class="col-md-3 col-xs-3 col-sm-3 well" style="padding:0px;">
                         <fieldset><legend>合同查询设置</legend></fieldset>
-                        <div class="alert alert-danger" role="alert">
+                        <div class="alert alert-danger" role="alert" id="Contract-Info">
                             <span>警告框</span>
                         </div>
-                        <form method="get" id="Contract-Search">
+                        <form method="get" id="Contract-Search-form">
                             <input type="hidden" name="Recevied" />
                             <input type="hidden" name="Status" />
                             <input type="hidden" name="Department" />
@@ -249,13 +266,16 @@
                             <thead>
                                 <tr>
                                     <th>合同名称</th>
-                                    <th>甲方</th>
+                                    <th>对方单位</th>
+                                    <th>合同起始时间</th>
                                     <th>合同金额（元）</th>
                                     <th>未到账金额（元）</th>
-                                    <th>状态</th>
+                                    <th>关联操作</th>
                                 </tr>
                             </thead>
-                            <tbody id="Contract-Result"></tbody>
+                            <tbody id="Contract-Result">
+
+                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -268,28 +288,118 @@
     </div>
 </div>
 
-<hr />
-<div class="row">
-    <div class="col-md-6 col-xs-6 col-sm-6" style="padding:10px;">
-        <form class="form-horizontal" method="post" action="" id="Relate-form">
-           
-        </form>
+
+<div class="hidden">
+    <div class="Bill">
+        <input type="hidden" name="Bill_ID" value="{Index}" />
+        <div class="form-group">
+            <label class="control-label col-xs-4 col-md-4 col-sm-4">到账时间：</label>
+            <div class="col-md-8 col-sm-8 col-xs-8">
+                <input type="text" readonly="readonly" name="Bill_Time" class="form-control" value="{Time}" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-xs-4 col-md-4 col-sm-4">到账金额：</label>
+            <div class="col-md-8 col-xs-8 col-sm-8">
+                <div class="input-group">
+                    <input type="text" readonly="readonly" name="Bill_Money" class="form-control" value="{Money}" />
+                    <span class="input-group-addon">元</span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-xs-4 col-md-4 col-xs-4">对方户名：</label>
+            <div class="col-md-8 col-xs-8 col-sm-8">
+                <input type="text" readonly="readonly" name="Bill_OtherSide" class="form-control" value="{OtherSide}" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4 col-xs-4 col-sm-4">备注：</label>
+            <div class="col-md-8 col-xs-8 col-sm-8">
+                <textarea name="Bill_Remark" readonly="readonly" class="form-control">{Remark}</textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-xs-4 col-md-4 col-sm-4">可关联金额：</label>
+            <div class="col-md-8 col-xs-8 col-sm-8">
+                <div class="input-group">
+                    <input type="text" name="Bill_Leave" readonly="readonly" class="form-control" value="{Leave}" />
+                    <span class="input-group-addon">元</span>
+                </div>
+            </div>
+        </div>
     </div>
+    <ul class="list-group Contract">
+        <li class="list-group-item" style="padding:0px;padding-right:5px;">
+            <input type="hidden" name="Contract_ID" value="{Index}" />
+            <div class="form-group">
+                <label class="control-label col-md-4 col-xs-4 col-sm-4"></label>
+                <div class="col-md-8 col-xs-8 col-sm-8">
+                    <button type="button" class="btn btn-sm btn-danger pull-right btn-destory"><i class="glyphicon glyphicon-remove-circle"></i></button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4 col-xs-4 col-sm-4">合同名称：</label>
+                <div class="col-md-8 col-xs-8 col-sm-8">
+                    <input type="text" name="Contract_Name" class="form-control" readonly="readonly" value="{Name}" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4 col-xs-4 col-sm-4">合同起始时间：</label>
+                <div class="col-md-8 col-xs-8 col-sm-8">
+                    <input type="text" name="Contract_StartTime" class="form-control" readonly="readonly" value="{StartTime}" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4 col-xs-4 col-sm-4">对方单位：</label>
+                <div class="col-md-8 col-xs-8 col-sm-8">
+                    <input type="text" name="Contract_OtherSide" class="form-control" readonly="readonly" value="{OtherSide}" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4 col-xs-4 col-sm-4">合同金额：</label>
+                <div class="col-md-8 col-xs-8 col-sm-8">
+                    <div class="input-group">
+                        <input type="text" name="Contract_Money" class="form-control" readonly="readonly" value="{Money}" />
+                        <span class="input-group-addon">元</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4 col-xs-4 col-sm-4">未到账金额：</label>
+                <div class="col-md-8 col-xs-8 col-sm-8">
+                    <div class="input-group">
+                        <input type="text" name="Contract_Leave" class="form-control" readonly="readonly" value="{Leave}" />
+                        <span class="input-group-addon">元</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4 col-xs-4 col-sm-4">本次到账金额：</label>
+                <div class="col-md-8 col-xs-8 col-sm-8">
+                    <div class="input-group">
+                        <input type="text" name="Contract_Price" class="form-control" required  />
+                        <span class="input-group-addon">元</span>
+                    </div>
+                </div>
+            </div>
+        </li>
+    </ul>
 </div>
 
 <script>
-    $("div.alert.alert-danger").hide();
-
+    //$("div.alert.alert-danger").hide();
+    var billHtml = $("div.Bill").html();
+    var contractHtml = $("ul.list-group.Contract").html();
 
 
     $("#Bill-Info").hide();
     $("#Contract-Info").hide();
     $(function () {
-
-        $("#Bill-Search").submit(function () {
+        $("#Bill-Search-form").submit(function () {
             $("#Bill-Info").hide();
-            var values = $(this).serialize();
-            $.getJSON("/Finance/GetJsonBill", values, function (data) {
+            var VALUE = $(this).serialize();
+            $.getJSON("/Finance/GetJsonBill", VALUE, function (data) {
                 $("#Bill").empty();
                 if (data.length == 0) {
                     $("#Bill-Info>span").html("未查询到相关到账信息记录！");
@@ -300,43 +410,33 @@
                     var timeString = value.Time.replace("/Date(", "").replace(")/", "");
                     var currentTime = new Date();
                     currentTime.setTime(timeString);
-                    $("#Bill").append("<tr><td>" + currentTime.toLocaleDateString() + "</td><td>" + value.Money + "</td><td>" + value.Account + "</td><td>" + value.Leave + "</td><td><button type='button' class='btn btn-sm btn-success btn-relate' name='Money"+value.Leave+"' Index='"+value.ID+"'>关联</button></td></tr>")
+                    $("#Bill").append("<tr><td Name='Time'>" + currentTime.toLocaleDateString() + "</td><td name='Money'>" + value.Money + "</td><td name='OtherSide'>" + value.Account + "</td><td name='Remark'>"+value.Remark+"</td><td name='Leave'>" + value.Leave + "</td><td><button type='button' class='btn btn-sm btn-success btn-relate' name='Money" + value.Leave + "' Index='" + value.ID + "'><i class='glyphicon glyphicon-refresh'></i>关联</button></td></tr>")
                 });
 
                 $("#Bill button.btn-relate").unbind("click").bind("click", function () {
-                    $("#Relate-form").empty();
+                    var replaceHtml = billHtml;
                     var Index = $(this).attr("Index");
-                    $("#Relate-form").append("<div><input type='hidden' name='BillID' value='" + Index + "' /></div>");
-                    $("#Contract-Result input[name='Price']").each(function () {
-                        var value = $(this).val();
-                        if (value != undefined && value != NaN) {
-                            var index = $(this).attr("targetIndex");
-                            $("#Relate-form").append("<div><input type='hidden' name='ContractID' value='"+index+"' /><input type='hidden' name='Price' value='"+value+"' /></div>");
+                    replaceHtml = replaceHtml.replace("{Index}", Index);
+                    var childrens = $(this).parent().parent().children("td");
+                    $.each(childrens, function (index, node) {
+                        var name = $(this).attr("name");
+                        if (name != undefined) {
+                            replaceHtml = replaceHtml.replace("{" + name + "}", $(this).text());
                         }
                     });
-                    var data = $("#Relate-form").serialize();
-                    $.request("/Finance/Relate", data, function (json) {
-
-                    });
-
-
-
-
-
-
-
-
+                    $("div.Select-Bill").html(replaceHtml);
+                    $("#Bill button.btn-relate>i").removeClass("glyphicon-refresh").removeClass("glyphicon-ok").addClass("glyphicon-remove");
+                    $(this).children("i").removeClass("glyphicon-remove").addClass("glyphicon-ok");
                 });
-
                 return false;
             });
             return false;
         });
 
-        $("#Contract-Search").submit(function () {
+        $("#Contract-Search-form").submit(function () {
             $("#Contract-Info").hide();
-            var values = $(this).serialize();
-            $.getJSON("/Finance/GetJsonContract", values, function (data) {
+            var VALUE = $(this).serialize();
+            $.getJSON("/Finance/GetJsonContract", VALUE, function (data) {
                 if (data.length == 0) {
                     $("#Contract-Info>span").html("未找到相关合同记录！");
                     $("#Contract-Info").show(500);
@@ -344,8 +444,30 @@
                 }
                 $("#Contract-Result").empty();
                 $.each(data, function (index, value) {
-                    $("#Contract-Result").append("<tr><td>" + value.Name + "</td><td>" + value.Company + "</td><td>" + value.Money + "</td><td>"+value.Leave+"</td><td><input type='text' name='Price' class='form-control input-sm' targetIndex='"+value.ID+"' /></td></tr>");
+                    var timeString = value.StartTime.replace("/Date(", "").replace(")/", "");
+                    var currentTime = new Date();
+                    currentTime.setTime(timeString);
+                    $("#Contract-Result").append("<tr><td name='Name'>" + value.Name + "</td><td name='OtherSide'>" + value.Company + "</td><td name='StartTime'>"+currentTime.toLocaleDateString()+"</td><td name='Money'>" + value.Money + "</td><td name='Leave'>" + value.Leave + "</td><td><button type='button' class='btn btn-sm btn-success btn-Contract' Index='"+value.ID+"' >关联</button></td></tr>");
                 });
+
+                $("#Contract-Result button.btn-Contract").unbind("click").bind("click", function () {
+                    var replaceHtml = contractHtml;
+                    var Index = $(this).attr("Index");
+                    replaceHtml = replaceHtml.replace("{Index}", Index);
+                    var chilrens = $(this).parent().parent().children("td");
+                    $.each(chilrens, function (index, node) {
+                        var name = $(this).attr("name");
+                        if (name != undefined) {
+                            replaceHtml = replaceHtml.replace("{" + name + "}", $(this).text());
+                        }
+                    });
+                    $("ul.Select-Contract").append(replaceHtml);
+                    $("ul.Select-Contract button.btn-destory").unbind("click").bind("click", function () {
+                        $(this).parent().parent().parent().remove();
+                    });
+
+                });
+                return false;
             });
             return false;
         });

@@ -55,5 +55,6 @@ namespace Ztop.Todo.Manager
         public BillAccountManager BillAccountManager { get; private set; }
         public ArticleManager ArticleManager { get; private set; }
         public ContractArticleManager ContractArticleManager { get; private set; }
+        public BillContractManager BillContractManager { get; private set; }
     }
 }

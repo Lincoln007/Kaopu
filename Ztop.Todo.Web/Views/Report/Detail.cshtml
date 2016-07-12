@@ -46,7 +46,7 @@
              {
                  if (sheet.Controler == sheet.Checkers)
                  {
-                      <button type="button" class="btn btn-danger" id="Revoke">
+                      <button type="button" class="btn btn-sm btn-danger" id="Revoke">
                                     <em class="glyphicon glyphicon-log-out"></em>撤回
                                 </button>
                   }
@@ -63,18 +63,18 @@
                         Html.RenderPartial("WithDrawal", sheet);
                    }
                }
-               <button type="button" class="btn btn-default" onclick="history.back();"><em class="glyphicon glyphicon-arrow-left"></em> 返回</button>
+               <button type="button" class="btn btn-sm btn-default" onclick="history.back();"><em class="glyphicon glyphicon-arrow-left"></em> 返回</button>
          }
          else if (sheet.Status == Status.Examined)
          {
-               <button type="button" class="btn btn-default" onclick="history.back();"><em class="glyphicon glyphicon-arrow-left"></em> 返回</button>
+               <button type="button" class="btn btn-sm btn-default" onclick="history.back();"><em class="glyphicon glyphicon-arrow-left"></em> 返回</button>
          }
          else if (sheet.Status == Status.Filing&&Identity.Name==XmlHelper.GetFinance())
          {
-                <button class="btn btn-default" type="button" onclick="javascript: Preview()">
+                <button class="btn btn-sm btn-default" type="button" onclick="javascript: Preview()">
                       <em class="glyphicon glyphicon-print"></em> 打印
                 </button>
-                <button type="button" class="btn btn-default" onclick="history.back();"><em class="glyphicon glyphicon-arrow-left"></em> 返回</button>
+                <button type="button" class="btn btn-sm btn-default" onclick="history.back();"><em class="glyphicon glyphicon-arrow-left"></em> 返回</button>
          }
 
     </div>
@@ -87,11 +87,12 @@
                 <tbody>
                     <tr>
                         <td>单据编号</td>
-                        <td>@(sheet.SerialNumber.Coding)</td>
+                        <td>@(sheet.SerialNumber!=null?sheet.SerialNumber.Coding:"00000000")</td>
                         <td>条形码</td>
-                        <td>
-                            &nbsp; <img src="/@(sheet.SerialNumber.BarCode)" />  &nbsp;
-                        </td>
+                        @if (sheet.SerialNumber != null)
+                        {
+                            <td>  &nbsp; <img src="/@(sheet.SerialNumber.BarCode)" />  &nbsp;</td>
+                        }
                     </tr>
                     <tr>
                         <td>报销人</td>
@@ -147,7 +148,11 @@
         }
         else
         {
-            Html.RenderPartial("Errand", sheet.Evection);
+            if (sheet.Evection != null)
+            {
+                Html.RenderPartial("Errand", sheet.Evection);
+            }
+
         }
         <div class="hidden">
             报销合计：@(sheet.Money) 元

@@ -11,7 +11,7 @@ namespace Ztop.Todo.Model
         public int ID { get; set; }
         public int ContractID { get; set; }
         public int BillID { get; set; }
-        public double Money { get; set; }
+        public double Price { get; set; }
         [NotMapped]
         public Contract Contract { get; set; }
         [NotMapped]

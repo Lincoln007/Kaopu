@@ -223,7 +223,6 @@ namespace Ztop.Todo.Web.Controllers
 
         public ActionResult OnAccount()
         {
-            ViewBag.Results = Core.BillAccountManager.Search(new BillAccountParameter() { Association = Association.None });
             ViewBag.Department = Core.UserManager.GetUserGroups().Select(e => e.Name).ToList();
             return View();
         }
@@ -263,14 +262,14 @@ namespace Ztop.Todo.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult Relate(int billID,int[] contractID,double[] price)
+        public ActionResult Relate(int bill_id,int[] contract_id,double[] contract_price)
         {
-            var bill = Core.BillManager.GetBill(billID);
-            if (bill == null||contractID==null||price==null||contractID.Count()!=price.Count())
+            var bill = Core.BillManager.GetBill(bill_id);
+            if (bill == null||contract_id==null||contract_price==null||contract_id.Count()!=contract_price.Count())
             {
                 return ErrorJsonResult("未找到相关到账信息或者未找到相关合同信息，请核对！");
             }
-            if (bill.Leave >= price.Sum())
+            if (bill.Leave >= contract_price.Sum())
             {
 
             }else

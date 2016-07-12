@@ -56,8 +56,12 @@ namespace Ztop.Todo.Manager
                     else
                     {
                         model.Evection = db.Evections.FirstOrDefault(e => e.SID == id);//获取出差报销分项清单
-                        model.Evection.Errands = db.Errands.Where(e => e.EID == model.Evection.ID).ToList();//获取出差人数列表
-                        model.Evection.TCosts = db.Traffics.Where(e => e.EID == model.Evection.ID).ToList();//获取用车类型列表
+                        if (model.Evection != null)
+                        {
+                            model.Evection.Errands = db.Errands.Where(e => e.EID == model.Evection.ID).ToList();//获取出差人数列表
+                            model.Evection.TCosts = db.Traffics.Where(e => e.EID == model.Evection.ID).ToList();//获取用车类型列表
+                        }
+                      
                     }
                     
                     model.Verifys = db.Verifys.Where(e => e.SID == id).OrderBy(e => e.ID).ToList();
