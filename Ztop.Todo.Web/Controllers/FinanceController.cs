@@ -257,7 +257,7 @@ namespace Ztop.Todo.Web.Controllers
             {
                 parameter.ZtopCompany = EnumHelper.GetEnum<ZtopCompany>(ztopcompany);
             }
-            var list = Core.ContractManager.Search(parameter);
+            var list = Core.ContractManager.Search(parameter).Where(e=>e.Leave>0).ToList();
             return Json(list, JsonRequestBehavior.AllowGet);
         }
 

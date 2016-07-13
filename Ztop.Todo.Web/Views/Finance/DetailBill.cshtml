@@ -19,11 +19,11 @@
 
 <div class="tab-content">
     <div class="tab-pane fade in active" id="Bill" role="tabpanel">
-        <table class="table table-bordered">
+        <table class="table table-bordered table-striped">
             <tr>
                 <th>到账日期</th>
                 <td>@(bill.Time.ToLongDateString())</td>
-                <th>到账金额</th>
+                <th>到账金额[元]</th>
                 <td>@(bill.Money)</td>
             </tr>
             <tr>
@@ -35,7 +35,7 @@
             <tr>
                 <th>合同到账状态</th>
                 <td><label class="label label-@(bill.Association==Association.None?"default":bill.Association==Association.Full?"success":"info")">@(bill.Association.GetDescription())</label></td>
-                <th>未关联金额</th>
+                <th>未关联金额[元]</th>
                 <td>@(bill.Leave)</td>
             </tr>
         </table>
@@ -43,15 +43,15 @@
     <div class="tab-pane fade" id="Contract" role="tabpanel">
         @if (bill.BillContracts != null)
         {
-            <table class="table table-bordered">
+            <table class="table table-bordered table-striped table-condensed">
                 <thead>
-                    <tr>
+                    <tr class="info">
                         <th>合同名称</th>
                         <th>合同起始时间</th>
                         <th>对方单位</th>
                         <th>合同所属组织</th>
-                        <th>合同金额（元）</th>
-                        <th>到账金额</th>
+                        <th>合同金额[元]</th>
+                        <th>到账金额[元]</th>
                     </tr>
                 </thead>
                 <tbody>

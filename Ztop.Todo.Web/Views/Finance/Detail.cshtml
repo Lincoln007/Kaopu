@@ -146,7 +146,7 @@
 
 <div class="tab-content">
     <div class="tab-pane fade in active" id="contract" role="tabpanel">
-        <table class="table table-bordered">
+        <table class="table table-bordered table-striped">
             <tr>
                 <th>合同编号</th>
                 <td>@(contract.Coding)</td>
@@ -220,9 +220,9 @@
     <div class="tab-pane fade" id="Article" role="tabpanel">
         @if (contract.Articles != null)
         {
-            <table class="table table-bordered">
+            <table class="table table-bordered table-striped table-condensed">
                 <thead>
-                    <tr>
+                    <tr class="info">
                         <th>项目名称</th>
                         <th>对方单位</th>
                         <th>意向金额（元）</th>
@@ -252,9 +252,9 @@
     <div class="tab-pane fade" id="applyinvoice" role="tabpanel">
         @if (contract.Invoices != null&&contract.Invoices.Count!=0)
         {
-            <table class="table table-bordered table-hover">
+            <table class="table table-bordered table-striped table-striped">
                 <thead>
-                    <tr>
+                    <tr class="info">
                         <th>开票编号</th>
                         <th>申请时间</th>
                         <th>申请人</th>
@@ -412,9 +412,9 @@
     <div class="tab-pane fade" id="invoice" role="tabpanel">
         @if (contract.Invoices != null && contract.Invoices.Count != 0)
         {         
-            <table class="table table-bordered">
+            <table class="table table-bordered table-striped">
                 <thead>
-                    <tr>
+                    <tr class="info">
                         <th>发票开出时间</th>
                         <th>发票编号</th>
                         <th>对方单位</th>
@@ -495,7 +495,7 @@
         {
             foreach(var billcontract in contract.BillContracts)
             {
-                <table class="table table-bordered">
+                <table class="table table-bordered table-striped">
                     <tr>
                         <th>到账时间</th>
                         <td>@(billcontract.Bill.Time.ToLongDateString())</td>

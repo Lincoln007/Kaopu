@@ -71,7 +71,7 @@
             @foreach(var article in list)
             {
                 <tr>
-                    <td>@(article.Name)</td>
+                    <td><a href="/Finance/DetailArticle?id=@(article.ID)">@(article.Name)</a> </td>
                     <td>@(article.OtherSide)</td>
                     <td>@(article.Money)</td>
                 </tr>

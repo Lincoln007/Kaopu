@@ -23,7 +23,7 @@
 
 <div class="tab-content">
     <div class="tab-pane fade in active" id="Article" role="tabpanel">
-        <table class="table table-bordered">
+        <table class="table table-bordered table-striped">
             <tr>
                 <th>项目名称</th>
                 <td>@(article.Name)</td>
@@ -41,9 +41,9 @@
     <div class="tab-pane fade" id="Contract" role="tabpanel">
         @if (article != null && article.Contracts != null)
         {
-            <table class="table table-bordered">
+            <table class="table table-bordered table-striped table-condensed">
                 <thead>
-                    <tr>
+                    <tr class="info">
                         <th>合同名称</th>
                         <th>对方单位</th>
                         <th>签署单位</th>
