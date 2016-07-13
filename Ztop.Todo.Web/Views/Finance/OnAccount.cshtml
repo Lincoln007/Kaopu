@@ -7,7 +7,7 @@
 
 <div class="row">
   
-    <form class="form-horizontal" method="post">
+    <form class="form-horizontal" method="post" id="Bill-Contract">
         <div class="col-md-12 col-xs-12 col-sm-12">
             <div class="alert alert-danger" role="alert" id="Error">
                 <span></span>
@@ -388,11 +388,10 @@
 </div>
 
 <script>
-    //$("div.alert.alert-danger").hide();
     var billHtml = $("div.Bill").html();
     var contractHtml = $("ul.list-group.Contract").html();
 
-
+    $("#Error").hide();
     $("#Bill-Info").hide();
     $("#Contract-Info").hide();
     $(function () {
@@ -467,6 +466,25 @@
                     });
 
                 });
+                return false;
+            });
+            return false;
+        });
+
+        $("#Bill-Contract").submit(function () {
+            $("#Error").hide();
+            var VALUE = $(this).serialize();
+            $.request("/Finance/Relate", VALUE, function (json) {
+                if (json.result == 0) {
+                    $("#Error>span").html(json.content);
+                    $("#Error").show(500);
+                    return false;
+                } else {
+                    alert(json.content);
+                    location.href = "/Finance/DetailBill?id=" + json.data;
+                }
+          
+                
                 return false;
             });
             return false;

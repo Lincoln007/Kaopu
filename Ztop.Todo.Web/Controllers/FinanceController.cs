@@ -15,8 +15,7 @@ namespace Ztop.Todo.Web.Controllers
         public ActionResult Index()
         {
             ViewBag.List = Core.ContractManager.Search(new ContractParameter() { Deleted = false, UserName = Identity.Project ? Identity.Name : null });
-            ViewBag.Bills = Core.BillManager.Search();
-            ViewBag.BillAccount = Core.BillAccountManager.Search(new BillAccountParameter() { Page = new PageParameter(1, 20) });
+            ViewBag.Bills = Core.BillManager.Search(new BillParamter() { Page = new PageParameter(1, 20) });
             ViewBag.Invoices = Core.InvoiceManager.Search(new InvoiceParameter() { Status = InvoiceState.Have, Instance = false });
             ViewBag.Articles = Core.ArticleManager.Search(new ArticleParameter() { Deleted=false, Page = new PageParameter(1, 20) });
             return View();
@@ -82,6 +81,7 @@ namespace Ztop.Todo.Web.Controllers
                 {
                     contract.Articles = Core.ArticleManager.GetByIDList(CAList.Select(e=>e.ArticleID).ToList());
                 }
+                contract.BillContracts = Core.BillContractManager.GetByContractID(contract.ID);
             }
             ViewBag.Contract = contract;
             return View();
@@ -279,15 +279,31 @@ namespace Ztop.Todo.Web.Controllers
                     {
                         return ErrorJsonResult("更新到账信息表失败！");
                     }
-
+                    foreach(var contractid in billList.Select(e => e.ContractID).Distinct())
+                    {
+                        Core.ContractManager.UpdateRecevied(contractid);
+                    }
                 }
 
             }else
             {
                 return ErrorJsonResult("关联金额超出到账可关联金额，请核对");
             }
-            return SuccessJsonResult();
+            return SuccessJsonResult(bill.ID);
         }
+
+
+        public ActionResult DetailBill(int id)
+        {
+            var bill = Core.BillManager.GetBill(id);
+            if (bill != null)
+            {
+                bill.BillContracts = Core.BillContractManager.GetByBillID(bill.ID);
+            }
+            ViewBag.Bill = bill;
+            return View();
+        }
+
         public ActionResult BillSearch(DateTime? startTime=null,DateTime? endTime=null,double? minMoney=null,double? maxMoney=null,string otherside=null,string remark=null,string association=null,int page=1)
         {
             var parameter = new BillParamter()
@@ -396,12 +412,6 @@ namespace Ztop.Todo.Web.Controllers
             return View(); 
         }
 
-
-        public ActionResult BillAccountDetail(int id)
-        {
-            ViewBag.BillAccount = Core.BillAccountManager.Get(id, true);
-            return View();
-        }
 
         public ActionResult CreateArticle(int id=0)
         {

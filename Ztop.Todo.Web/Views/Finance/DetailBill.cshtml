@@ -1,0 +1,81 @@
+﻿
+@{
+    ViewBag.Title = "到账信息详情";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    Bill bill = ViewBag.Bill??new Bill();
+}
+
+<hr />
+<div class="btn-group">
+    <button type="button" class="btn btn-default" onclick="history.back()" ><i class="glyphicon glyphicon-arrow-left"></i>返回</button>
+</div>
+
+<hr />
+
+<ul class="nav nav-tabs">
+    <li role="presentation" class="active"><a href="#Bill" aria-controls="Bill" role="tab" data-toggle="tab">到账详情</a></li>
+    <li role="presentation"><a href="#Contract" aria-controls="Contract" role="tab" data-toggle="tab">金额合同</a></li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade in active" id="Bill" role="tabpanel">
+        <table class="table table-bordered">
+            <tr>
+                <th>到账日期</th>
+                <td>@(bill.Time.ToLongDateString())</td>
+                <th>到账金额</th>
+                <td>@(bill.Money)</td>
+            </tr>
+            <tr>
+                <th>对方户名</th>
+                <td>@(bill.Account)</td>
+                <th>银行备注</th>
+                <td>@(bill.Remark)</td>
+            </tr>
+            <tr>
+                <th>合同到账状态</th>
+                <td><label class="label label-@(bill.Association==Association.None?"default":bill.Association==Association.Full?"success":"info")">@(bill.Association.GetDescription())</label></td>
+                <th>未关联金额</th>
+                <td>@(bill.Leave)</td>
+            </tr>
+        </table>
+    </div>
+    <div class="tab-pane fade" id="Contract" role="tabpanel">
+        @if (bill.BillContracts != null)
+        {
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>合同名称</th>
+                        <th>合同起始时间</th>
+                        <th>对方单位</th>
+                        <th>合同所属组织</th>
+                        <th>合同金额（元）</th>
+                        <th>到账金额</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var billcontract in bill.BillContracts)
+                    {
+                        <tr>
+                            <td><a href="/Finance/Detail?id=@(billcontract.Contract.ID)">@(billcontract.Contract.Name)</a> </td>
+                            <td>@(billcontract.Contract.StartTime.ToLongDateString())</td>
+                            <td>@(billcontract.Contract.Company)</td>
+                            <td>@(billcontract.Contract.ZtopCompany.GetDescription())</td>
+                            <td>@(billcontract.Contract.Money)</td>
+                            <td>@(billcontract.Price)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert alert-warning" role="alert">
+                <span>当前到账未关联合同</span>
+            </div>
+        }
+    </div>
+</div>
+
+

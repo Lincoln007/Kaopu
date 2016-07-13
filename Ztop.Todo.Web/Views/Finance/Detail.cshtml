@@ -141,6 +141,7 @@
     <li role="presentation"><a href="#Article" aria-controls="Article" role="tab" data-toggle="tab">项目信息</a></li>
     <li role="presentation"><a href="#applyinvoice" aria-controls="applyinvoice" role="tab" data-toggle="tab">发票申请记录</a></li>
     <li role="presentation"><a href="#invoice" aria-controls="invoice" role="tab" data-toggle="tab">发票开出记录</a></li>
+    <li role="presentation"><a href="#BillContract" aria-controls="BillContract" role="tab" data-toggle="tab">到账情况</a></li>
 </ul>
 
 <div class="tab-content">
@@ -201,7 +202,7 @@
             <tr>
                 <th>相关文件</th>
                 <td colspan="3">
-                    <table class="table table-bordered">
+                    <table class="table">
                         @foreach (var file in contract.ContractFiles)
                         {
                             <tr>
@@ -249,7 +250,7 @@
         }
     </div>
     <div class="tab-pane fade" id="applyinvoice" role="tabpanel">
-        @if (contract.Invoices != null)
+        @if (contract.Invoices != null&&contract.Invoices.Count!=0)
         {
             <table class="table table-bordered table-hover">
                 <thead>
@@ -401,6 +402,11 @@
                     }
                 </tbody>
             </table>
+        }else
+        {
+            <div class="alert alert-warning" role="alert">
+                <span>当前合同无发票申请记录</span>
+            </div>
         }
     </div>
     <div class="tab-pane fade" id="invoice" role="tabpanel">
@@ -476,6 +482,44 @@
                     }
                 </tbody>
             </table>
+        }
+        else
+        {
+            <div class="alert alert-warning" role="alert">
+                <span>当前合同未开出发票</span>
+            </div>
+        }
+    </div>
+    <div class="tab-pane fade" id="BillContract" role="tabpanel">
+        @if (contract.BillContracts != null && contract.BillContracts.Count != 0)
+        {
+            foreach(var billcontract in contract.BillContracts)
+            {
+                <table class="table table-bordered">
+                    <tr>
+                        <th>到账时间</th>
+                        <td>@(billcontract.Bill.Time.ToLongDateString())</td>
+                        <th>到账金额（元）</th>
+                        <td>@(billcontract.Bill.Money)</td>
+                    </tr>
+                    <tr>
+                        <th>对方户名</th>
+                        <td>@(billcontract.Bill.Account)</td>
+                        <th>银行备注</th>
+                        <td>@(billcontract.Bill.Remark)</td>
+                    </tr>
+                    <tr>
+                        <th>合同到账金额（元）</th>
+                        <td colspan="3">@(billcontract.Price)</td>
+                    </tr>
+                </table>
+            }
+        }
+        else
+        {
+            <div class="alert alert-warning" role="alert">
+                <span>当前合同未有银行到账记录</span>
+            </div>
         }
     </div>
 </div>

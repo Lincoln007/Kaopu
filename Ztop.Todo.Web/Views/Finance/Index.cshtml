@@ -3,9 +3,9 @@
     ViewBag.Title = "项目财务跟踪系统";
     Layout = "~/Views/Shared/_Layout.cshtml";
     List<Contract> list = ViewBag.List;
-    List<BillAccount> BillAccounts = ViewBag.BillAccount;
     List<Invoice> invoices = ViewBag.Invoices;
     List<Article> Articles = ViewBag.Articles;
+    List<Bill> Bills = ViewBag.Bills;
 }
 
 
@@ -179,18 +179,16 @@
                 <a href="/Finance/BillAccountSearch" style="float:right;"><i class="glyphicon glyphicon-info-sign"></i>更多</a>
                 <table class="table table-bordered">
                     <tr>
-                        <th>到账编号</th>
-                        <th>对方单位</th>
                         <th>到账时间</th>
                         <th>到账金额（元）</th>
+                        <th>对方单位</th>
                     </tr>
-                    @foreach(var billAccount in BillAccounts)
+                    @foreach(var bill in Bills)
                     {
                         <tr>
-                            <td><a href="/Finance/BillAccountDetail?id=@(billAccount.ID)">@(billAccount.Coding)</a></td>
-                            <td>@(billAccount.Account)</td>
-                            <td>@(billAccount.Time.ToShortDateString())</td>
-                            <td>@(billAccount.Money)</td>
+                            <td><a href="/Finance/DetailBill?id=@(bill.ID)">@(bill.Time.ToLongDateString())</a></td>
+                            <td>@(bill.Money)</td>
+                            <td>@(bill.Account)</td>
                         </tr>
                     }
                 </table>

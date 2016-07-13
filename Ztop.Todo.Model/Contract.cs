@@ -95,6 +95,8 @@ namespace Ztop.Todo.Model
         /// </summary>
         [NotMapped]
         public List<Article> Articles { get; set; }
+        [NotMapped]
+        public List<BillContract> BillContracts { get; set; }
     }
 
     public enum ZtopCompany

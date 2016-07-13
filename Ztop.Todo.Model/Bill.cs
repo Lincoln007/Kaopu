@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -53,5 +54,7 @@ namespace Ztop.Todo.Model
         public int BID { get; set; }
         public double Leave { get; set; }
         public Association Association { get; set; }
+        [NotMapped]
+        public List<BillContract> BillContracts { get; set; }
     }
 }

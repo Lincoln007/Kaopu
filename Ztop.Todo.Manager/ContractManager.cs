@@ -192,28 +192,28 @@ namespace Ztop.Todo.Manager
             }
             return true;
         }
-        public bool UpdateRecevied(int id)
-        {
-            using (var db = GetDbContext())
-            {
-                var contract = db.Contracts.FirstOrDefault(e => e.ID == id);
-                if (contract == null)
-                {
-                    return false;
-                }
-                var invoices = db.Invoices.Where(e => e.CID == id && e.State == InvoiceState.Have && e.BAID > 0).ToList();
-                if (invoices.Count == 0)
-                {
-                    contract.Recevied = Recevied.None;
-                }
-                else
-                {
-                    contract.Recevied = Math.Abs(contract.Money - invoices.Sum(e => e.Money)) < 0.01 ? Recevied.ALL : Recevied.Part;
-                }
-                db.SaveChanges();
-            }
-            return true;
-        }
+        //public bool UpdateRecevied(int id)
+        //{
+        //    using (var db = GetDbContext())
+        //    {
+        //        var contract = db.Contracts.FirstOrDefault(e => e.ID == id);
+        //        if (contract == null)
+        //        {
+        //            return false;
+        //        }
+        //        var invoices = db.Invoices.Where(e => e.CID == id && e.State == InvoiceState.Have && e.BAID > 0).ToList();
+        //        if (invoices.Count == 0)
+        //        {
+        //            contract.Recevied = Recevied.None;
+        //        }
+        //        else
+        //        {
+        //            contract.Recevied = Math.Abs(contract.Money - invoices.Sum(e => e.Money)) < 0.01 ? Recevied.ALL : Recevied.Part;
+        //        }
+        //        db.SaveChanges();
+        //    }
+        //    return true;
+        //}
 
         public bool UpdateRecevied(int id)
         {
@@ -225,8 +225,22 @@ namespace Ztop.Todo.Manager
                     return false;
                 }
                 var billContracts = db.BillContracts.Where(e => e.ContractID == id).ToList();
-
+                if (billContracts.Count == 0)
+                {
+                    contract.Recevied = Recevied.None;
+                }
+                else
+                {
+                    contract.Leave = contract.Money - billContracts.Sum(e => e.Price);
+                    if (Math.Abs(contract.Leave - 0) < 0.01)
+                    {
+                        contract.Archived = true;
+                    }
+                    contract.Recevied = contract.Leave < 0.01 ? Recevied.ALL : Recevied.Part;
+                }
+                db.SaveChanges();
             }
+            return true;
         }
 
         public List<Contract> GetByIDList(List<int> idList)

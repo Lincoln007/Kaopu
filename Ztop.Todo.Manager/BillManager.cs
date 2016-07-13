@@ -339,6 +339,7 @@ namespace Ztop.Todo.Manager
                     return false;
                 }
                 bill.Leave = bill.Leave - sum;
+                bill.Association = bill.Leave > 0 ? (bill.Money > bill.Leave ? Association.Part : Association.Full) : Association.Full;
                 db.SaveChanges();
             }
             return true;
