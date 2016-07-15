@@ -94,6 +94,14 @@ namespace Ztop.Todo.Web.Controllers
             }
             else//出差报销
             {
+                if (string.IsNullOrEmpty(evection.Persons))
+                {
+                    throw new ArgumentException("出差报销，出差人员不能为空！");
+                }
+                if (string.IsNullOrEmpty(evection.Way))
+                {
+                    throw new ArgumentException("出差交通方式未选择！");
+                }
                 evection.Errands = Core.SubstanceManager.GetErrands(HttpContext,lines);
                 evection.TCosts = Core.SubstanceManager.GetTraffic(HttpContext, busType,driver,CarPetty);
                 sheet.Evection = evection;

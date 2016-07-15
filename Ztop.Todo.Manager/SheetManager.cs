@@ -24,12 +24,16 @@ namespace Ztop.Todo.Manager
         {
             if (id == 0)
             {
-                return new Sheet
+                var newSheet = new Sheet
                 {
                     Type = type,
+                    Number = string.Format("{0}{1}", DateTime.Now.Year.ToString("0000"), DateTime.Now.Month.ToString("00")),
                     Evection = type == SheetType.Errand ? new Evection() : null,
+                    Coding = DateTime.Now.Ticks.ToString(),
                     SerialNumber = Core.SerialNumberManager.GetNewModel(name)
                 };
+                newSheet.NumberExt = GetNumberExt(newSheet.Number);
+                return newSheet;
             }
             var sheet = GetAllModel(id);
             if (sheet == null)
@@ -37,8 +41,17 @@ namespace Ztop.Todo.Manager
                 throw new ArgumentException("参数错误，未找到相关报销单信息");
             }
             return sheet;
-
         }
+
+        public int GetNumberExt(string number)
+        {
+            using (var db = GetDbContext())
+            {
+                var last = db.Sheets.Where(e => e.Number == number).OrderByDescending(e=>e.ID).FirstOrDefault();
+                return last == null ? 1 : last.NumberExt + 1;
+            }
+        }
+
         public Sheet GetAllModel(int id)
         {
             if (id == 0) return null;

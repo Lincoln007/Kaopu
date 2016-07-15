@@ -14,7 +14,6 @@
 <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active"><a href="#Invoice" aria-controls="Invoice" role="tab" data-toggle="tab">发票详情</a></li>
     <li role="presentation"><a href="#Contract" aria-controls="Contract" role="tab" data-toggle="tab">合同详情</a></li>
-    <li role="presentation"><a href="#BillAccount" aria-controls="BillAccount"role="tab" data-toggle="tab">到账详情</a></li>
 </ul>
 <div class="tab-content">
     <div class="tab-pane fade in active" role="tabpanel" id="Invoice">
@@ -121,39 +120,6 @@
                 </tr>
             </tbody>
         </table>
-    </div>
-    <div class="tab-pane fade" role="tabpanel" id="BillAccount">
-        @if (invoice.BillAccount != null)
-        {
-            <table class="table table-bordered">
-                <tbody>
-                    <tr>
-                        <th>到账编号</th>
-                        <td><a href="/Finance/BillAccountDetail?id=@(invoice.BillAccount.ID)">@(invoice.BillAccount.Coding)</a> </td>  
-                        <th>到账日期</th>
-                        <td>@(invoice.BillAccount.Time.ToLongDateString())</td>              
-                    </tr>
-                    <tr>
-                        <th>到账金额（元）</th>
-                        <td>@(invoice.BillAccount.Money)</td>
-                        <th>对方户名</th>
-                        <td>@(invoice.BillAccount.Account)</td>
-                    </tr>
-                    <tr>
-                        <th>银行备注</th>
-                        <td colspan="3">@(invoice.BillAccount.Remark)</td>
-                    </tr>
-                    <tr>
-                        <th>发票关联情况</th>
-                        <td>
-                            <span class="label label-@(invoice.BillAccount.Association==Association.None?"default":invoice.BillAccount.Association==Association.Full?"success":"info")">@(invoice.BillAccount.Association.GetDescription())</span>
-                        </td>
-                        <th>可关联金额（元）</th>
-                        <td>@(invoice.BillAccount.Leave)</td>
-                    </tr>
-                </tbody>
-            </table>
-        }
     </div>
 </div>
 

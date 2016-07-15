@@ -19,11 +19,20 @@ namespace Ztop.Todo.Model
         [Key]
         [DatabaseGenerated(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
+        public string Number { get; set; }
+        public int NumberExt { get; set; }
+
+
         /// <summary>
         /// 单据编号  实例值  流水单据编号
         /// </summary>
         [NotMapped]
         public SerialNumber SerialNumber { get; set; }
+        /// <summary>
+        /// 单据编号
+        /// </summary>
+        public string Coding { get; set; }
+
         /// <summary>
         /// 报销人
         /// </summary>

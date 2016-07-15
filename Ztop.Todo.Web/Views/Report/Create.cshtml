@@ -12,7 +12,6 @@
         <input type="hidden" name="Number" value="@(sheet.SerialNumber.Number)" />
         <input type="hidden" name="NumberExt" value="@(sheet.SerialNumber.NumberExt)" />
         <input type="hidden" name="BarCode" value="@(sheet.SerialNumber.BarCode)" />
-        <input type="hidden" name="Name" value="@(Identity.Name)" />
         <input type="hidden" name="ID" value="@(sheet.ID)" />
         <input type="hidden" name="Type" value="@(sheet.Type)" />
 
@@ -39,14 +38,14 @@
                 <tbody>
                     <tr>
                         <th>单据编号</th>
-                        <td>@(sheet.SerialNumber!=null?sheet.SerialNumber.Coding:"00000000") </td>
+                        <td><input type="text" class="form-control input-sm" value="@(sheet.Coding)" name="Coding" readonly="readonly" /></td>
                         <th>报销日期</th>
                         <td><input type="text" class="form-control input-sm" value="@(DateTime.Now.ToString("yyyy-MM-dd"))" name="Time" readonly="readonly" /></td>
                     </tr>
                     <tr>
                         <th>报销人</th>
                         <td>
-                            @(Identity.Name)
+                            <input type="text" name="Name" class="form-control input-sm" value="@(Identity.Name)" readonly="readonly" />
                         </td>
                         <th>报销金额合计</th>
                         <td>
