@@ -22,14 +22,22 @@ namespace Ztop.Todo.Model
         public string Number { get; set; }
         public int NumberExt { get; set; }
 
+        [NotMapped]
+        public string PrintNumber
+        {
+            get
+            {
+                return string.Format("{0}{1}", Number, NumberExt.ToString("0000"));
+            }
+        }
 
         /// <summary>
         /// 单据编号  实例值  流水单据编号
         /// </summary>
-        [NotMapped]
-        public SerialNumber SerialNumber { get; set; }
+        //[NotMapped]
+       // public SerialNumber SerialNumber { get; set; }
         /// <summary>
-        /// 单据编号
+        /// 流水单据编号
         /// </summary>
         public string Coding { get; set; }
 

@@ -64,7 +64,7 @@ namespace Ztop.Todo.Manager
                         var sheet = db.Sheets.Find(sid);
                         if (sheet != null)
                         {
-                            sheet.SerialNumber = db.SerialNumbers.FirstOrDefault(e => e.SID == sheet.ID);
+                            //sheet.SerialNumber = db.SerialNumbers.FirstOrDefault(e => e.SID == sheet.ID);
                             list.Add(sheet);
                         }
                     }
@@ -79,7 +79,7 @@ namespace Ztop.Todo.Manager
             var query = checks.AsQueryable();
             if (!string.IsNullOrEmpty(parameter.Coding))
             {
-                query = query.Where(e => e.SerialNumber.Coding.Contains(parameter.Coding));
+               // query = query.Where(e => e.SerialNumber.Coding.Contains(parameter.Coding));
             }
 
             if (parameter.MinMoney.HasValue&& parameter.MinMoney.Value > 0)

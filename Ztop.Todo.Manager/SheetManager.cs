@@ -20,7 +20,7 @@ namespace Ztop.Todo.Manager
                 return db.Sheets.FirstOrDefault(e => e.ID == id);
             }
         }
-        public Sheet GetSerialNumberModel(int id,SheetType type,string name)
+        public Sheet GetSheet(int id,SheetType type,string name)
         {
             if (id == 0)
             {
@@ -29,10 +29,8 @@ namespace Ztop.Todo.Manager
                     Type = type,
                     Number = string.Format("{0}{1}", DateTime.Now.Year.ToString("0000"), DateTime.Now.Month.ToString("00")),
                     Evection = type == SheetType.Errand ? new Evection() : null,
-                    Coding = DateTime.Now.Ticks.ToString(),
-                    SerialNumber = Core.SerialNumberManager.GetNewModel(name)
+                    Coding = DateTime.Now.Ticks.ToString()
                 };
-                newSheet.NumberExt = GetNumberExt(newSheet.Number);
                 return newSheet;
             }
             var sheet = GetAllModel(id);
@@ -61,7 +59,7 @@ namespace Ztop.Todo.Manager
                 if (model != null)
                 {
                     //获取流水单据编号
-                    model.SerialNumber = db.SerialNumbers.FirstOrDefault(e => e.SID == model.ID);
+                    //model.SerialNumber = db.SerialNumbers.FirstOrDefault(e => e.SID == model.ID);
                     if (model.Type == SheetType.Daily)
                     {
                         model.Substances = db.Substances.Where(e => e.SID == id).OrderBy(e => e.ID).ToList();
@@ -89,6 +87,10 @@ namespace Ztop.Todo.Manager
         public void Save(Sheet sheet)
         {
             if (sheet == null) return;
+            if (sheet.NumberExt == 0)
+            {
+                sheet.NumberExt = GetNumberExt(sheet.Number);
+            }
             using (var db = GetDbContext())
             {
                 if (sheet.ID == 0)
@@ -218,7 +220,7 @@ namespace Ztop.Todo.Manager
             var list = GetSheets();
             foreach(var sheet in list)
             {
-                sheet.SerialNumber = GetSerialNumber(sheet.ID);
+               // sheet.SerialNumber = GetSerialNumber(sheet.ID);
             }
             return list;
         }
@@ -293,7 +295,8 @@ namespace Ztop.Todo.Manager
         {
             if (string.IsNullOrEmpty(key))
                 return null;
-            return GetSheets(new SheetQueryParameter() { Status = Status.Filing }).Where(e => e.SerialNumber.Coding.Contains(key)).ToList();
+            return GetSheets(new SheetQueryParameter() { Status = Status.Filing }).Where(e => e.Coding.Contains(key)).ToList();
+           // return GetSheets(new SheetQueryParameter() { Status = Status.Filing }).Where(e => e.SerialNumber.Coding.Contains(key)).ToList();
         }
         public List<Sheet> GetSheets(QueryParameter parameter,string name)
         {

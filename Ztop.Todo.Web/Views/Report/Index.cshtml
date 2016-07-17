@@ -31,7 +31,7 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th>单据编号</th>
+                            <th>流水单据编号</th>
                             <th>报销日期</th>
                             <th>报销金额[元]</th>
                         </tr>
@@ -41,7 +41,7 @@
                             foreach (var item in OutList)
                             {
                                 <tr>
-                                    <td><a href="/Report/Detail?id=@(item.ID)">@(item.SerialNumber!=null ?item.SerialNumber.Coding:"00000000")</a> </td>
+                                    <td><a href="/Report/Detail?id=@(item.ID)">@(item.Coding)</a> </td>
                                     <td>@(item.Time.ToShortDateString())</td>
                                     <td>@(item.Money)</td>
                                 </tr>
@@ -78,7 +78,7 @@
                             foreach (var item in ExaminingList)
                             {
                                 <tr>
-                                    <td><a href="/Report/Detail?id=@(item.ID)" class="@(item.Status==Status.RollBack?"text-danger":"")">@(item.SerialNumber!=null?item.SerialNumber.Coding:"00000000")</a> </td>
+                                    <td><a href="/Report/Detail?id=@(item.ID)" class="@(item.Status==Status.RollBack?"text-danger":"")">@(item.PrintNumber)</a> </td>
                                     <td>@(item.Time.ToShortDateString())</td>
                                     <td>@(item.Money)</td>
                                     <td>@(item.Status.GetDescription())</td>
@@ -118,7 +118,7 @@
                             foreach (var item in ExaminList)
                             {
                                 <tr>
-                                    <td><a href="/Report/Detail?id=@(item.ID)">@(item.SerialNumber!=null? item.SerialNumber.Coding:"00000000")</a> </td>
+                                    <td><a href="/Report/Detail?id=@(item.ID)">@(item.PrintNumber)</a> </td>
                                     <td>@(item.Time.ToShortDateString())</td>
                                     <td>@(item.Money)</td>
                                 </tr>
@@ -160,7 +160,7 @@
                                 foreach (var sheet in WaitForMe.Where(e => e.Status != Status.Filing))
                                 {
                                     <tr>
-                                        <td><a href="/Report/Detail?id=@(sheet.ID)">@(sheet.SerialNumber!=null? sheet.SerialNumber.Coding:"00000000")</a></td>
+                                        <td><a href="/Report/Detail?id=@(sheet.ID)">@(sheet.PrintNumber)</a></td>
                                         <td>@(sheet.Time.ToShortDateString())</td>
                                         <td>@(sheet.Money)</td>
                                         <td>@(sheet.Name)</td>
@@ -199,7 +199,7 @@
                             @foreach(var sheet in MyCheck)
                             {
                                 <tr>
-                                    <td><a href="/Report/Detail?id=@(sheet.ID)">@(sheet.SerialNumber!=null? sheet.SerialNumber.Coding:"00000000")</a></td>
+                                    <td><a href="/Report/Detail?id=@(sheet.ID)">@(sheet.PrintNumber)</a></td>
                                     <td>@(sheet.Time.ToShortDateString())</td>
                                     <td>@(sheet.Money)</td>
                                     <td>@(sheet.Name)</td>
@@ -237,7 +237,7 @@
                                 foreach (var sheet in WaitForMe.Where(e => e.Status == Status.Filing))
                                 {
                                     <tr>
-                                        <td><a href="/Report/Detail?id=@(sheet.ID)">@(sheet.SerialNumber.Coding)</a></td>
+                                        <td><a href="/Report/Detail?id=@(sheet.ID)">@(sheet.PrintNumber)</a></td>
                                         <td>@(sheet.Time.ToShortDateString())</td>
                                         <td>@(sheet.Money)</td>
                                         <td>@(sheet.Name)</td>

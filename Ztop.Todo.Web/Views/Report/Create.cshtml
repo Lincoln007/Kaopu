@@ -8,13 +8,10 @@
 <div class="col-md-10 col-md-offset-1">
     <form method="post" id="form-Create" action="/Report/Save" class="form-horizontal" enctype="multipart/form-data">
         <h2 class="text-center">报销单填写</h2>
-        <input type="hidden" name="SNID" value="@(sheet.SerialNumber.ID)" />
-        <input type="hidden" name="Number" value="@(sheet.SerialNumber.Number)" />
-        <input type="hidden" name="NumberExt" value="@(sheet.SerialNumber.NumberExt)" />
-        <input type="hidden" name="BarCode" value="@(sheet.SerialNumber.BarCode)" />
         <input type="hidden" name="ID" value="@(sheet.ID)" />
         <input type="hidden" name="Type" value="@(sheet.Type)" />
-
+        <input type="hidden" name="Number" value="@(sheet.Number)" />
+        <input type="hidden" name="NumberExt" value="@(sheet.NumberExt)" />
         <div class="col-md-12 col-xs-12 col-sm-12">
             @{
                 Html.RenderPartial("SubmitButton");
@@ -37,7 +34,7 @@
             <table class="table table-bordered" style="margin:0px;">
                 <tbody>
                     <tr>
-                        <th>单据编号</th>
+                        <th>流水单据编号</th>
                         <td><input type="text" class="form-control input-sm" value="@(sheet.Coding)" name="Coding" readonly="readonly" /></td>
                         <th>报销日期</th>
                         <td><input type="text" class="form-control input-sm" value="@(DateTime.Now.ToString("yyyy-MM-dd"))" name="Time" readonly="readonly" /></td>

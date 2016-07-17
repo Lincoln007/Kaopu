@@ -39,7 +39,7 @@ namespace Ztop.Todo.Web.Controllers
         /// <returns></returns>
         public ActionResult Create(SheetType type=SheetType.Daily,int id=0)
         {
-            ViewBag.Sheet = Core.SheetManager.GetSerialNumberModel(id,type,Identity.Name);
+            ViewBag.Sheet = Core.SheetManager.GetSheet(id,type,Identity.Name);
             ViewBag.Groups = Core.UserManager.GetUserGroups();
             ViewBag.Users = Core.UserManager.GetAllUsers();
             return View();
@@ -80,12 +80,8 @@ namespace Ztop.Todo.Web.Controllers
         /// <param name="DirectorVal"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult Save(SerialNumber serialNumber,Sheet sheet,int snid,string DirectorVal,Evection evection,string[] busType,string lines,double CarPetty=.0,Driver driver=Driver.无)
+        public ActionResult Save(Sheet sheet,string DirectorVal,Evection evection,string[] busType,string lines,double CarPetty=.0,Driver driver=Driver.无)
         {
-            if (snid == 0)
-            {
-                throw new ArgumentException("参数错误，未找到单据编号信息");
-            }
             double sum = .0;
             if (sheet.Type == SheetType.Daily)//日常报销
             {
@@ -114,9 +110,9 @@ namespace Ztop.Todo.Web.Controllers
 
             Save(sheet, DirectorVal);
 
-            serialNumber.ID = snid;
-            serialNumber.SID = sheet.ID;
-            Core.SerialNumberManager.Update(serialNumber);
+            //serialNumber.ID = snid;
+            //serialNumber.SID = sheet.ID;
+            //Core.SerialNumberManager.Update(serialNumber);
             return SuccessJsonResult();
         }
         [HttpPost]
