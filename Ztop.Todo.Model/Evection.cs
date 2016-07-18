@@ -23,6 +23,10 @@ namespace Ztop.Todo.Model
         /// </summary>
         public string Place { get; set; }
         /// <summary>
+        /// 出差事由
+        /// </summary>
+        public string Reason { get; set; }
+        /// <summary>
         /// 公里数
         /// </summary>
         //public double KiloMeters { get; set; }

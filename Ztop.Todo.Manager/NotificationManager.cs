@@ -34,6 +34,19 @@ namespace Ztop.Todo.Manager
                                 model.Path = "/Task/Detail/?id=" + userTask.ID + "#comment-" + model.ID;
                             }
                             break;
+                        case InfoType.Sheet:
+                            {
+                                var sheet = Core.SheetManager.GetModel(model.InfoID);
+                                var sender = Core.UserManager.GetUser(model.SenderID);
+                                model.Description = sender.DisplayName + "提交了报销";
+                                model.Path = "/Report/Detail/?id=" + sheet.ID;
+                            }
+                            break;
+                        case InfoType.Review:
+                            {
+
+                            }
+                            break;
                     }
                 }
                 return model;
@@ -96,6 +109,18 @@ namespace Ztop.Todo.Manager
                 });
             }
         }
+        private void AddSheetNotification(Model.Sheet sheet)
+        {
+            var receiver = Core.UserManager.GetUser(sheet.Controler);
+            var sender = Core.UserManager.GetUser(sheet.Name);
+            AddNotification(new Notification
+            {
+                InfoID = sheet.ID,
+                InfoType = InfoType.Sheet,
+                ReceiverID = receiver.ID,
+                SenderID = sender.ID
+            });
+        }
 
         public void Add(object info)
         {
@@ -108,6 +133,9 @@ namespace Ztop.Todo.Manager
                     break;
                 case InfoType.Task:
                     AddTaskNotification((Model.Task)info);
+                    break;
+                case InfoType.Sheet:
+                    AddSheetNotification((Model.Sheet)info);
                     break;
             }
         }

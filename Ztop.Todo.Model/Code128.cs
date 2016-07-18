@@ -318,10 +318,15 @@ namespace Ztop.Todo.Model
             var _code = new Code128();
             _code.ValueFont = new Font("宋体", 20);
             System.Drawing.Bitmap imaTemp = _code.GetCodeImage(str, Code128.Encode.Code128A);
-            var name = System.IO.Path.Combine(Directory, DateTime.Now.Ticks.ToString() + ".png");
+            //var name = System.IO.Path.Combine(Directory, DateTime.Now.Ticks.ToString() + ".png");
+            var name = GetBarCodeFileName(str);
             var fullPath = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, name);
             imaTemp.Save(fullPath, System.Drawing.Imaging.ImageFormat.Png);
             return name;
+        }
+        public static string GetBarCodeFileName(string str)
+        {
+            return System.IO.Path.Combine(Directory, str + ".png");
         }
     }
 }

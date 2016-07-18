@@ -15,9 +15,9 @@
             <div class="col-md-12">
                 <div class="input-group" role="group">
                     <div class="input-group-btn" role="group">
-                        <button type="button" class="btn btn-@(string.IsNullOrEmpty(parameter.Coding)?"success":"default")" name="Coding">全部</button>
+                        <button type="button" class="btn btn-sm btn-@(string.IsNullOrEmpty(parameter.Coding)?"success":"default")" name="Coding">全部</button>
                     </div>
-                   <input type="text" class="form-control" name="Coding" placeholder="单据编号关键字" value="@(parameter.Coding)" />
+                   <input type="text" class="form-control input-sm" name="Coding" placeholder="单据编号关键字" value="@(parameter.Coding)" />
                 </div>
             </div>
         </div>
@@ -25,11 +25,11 @@
             <label class="control-label">时间：</label>
             <div class="col-md-12">
                 <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-@(string.IsNullOrEmpty(parameter.Time)?"success":"default")" name="Time">全部</button>
-                    <button type="button" class="btn btn-@(parameter.Time=="一周内"?"success":"default")" name="Time" >一周内</button>
-                    <button type="button" class="btn btn-@(parameter.Time=="一个月内"?"success":"default")" name="Time">一个月内</button>
-                    <button type="button" class="btn btn-@(parameter.Time=="半年内"?"success":"default")" name="Time">半年内</button>
-                    <button type="button" class="btn btn-@(parameter.Time=="一年内"?"success":"default")" name="Time">一年内</button>
+                    <button type="button" class="btn btn-sm btn-@(string.IsNullOrEmpty(parameter.Time)?"success":"default")" name="Time">全部</button>
+                    <button type="button" class="btn btn-sm btn-@(parameter.Time=="一周内"?"success":"default")" name="Time" >一周内</button>
+                    <button type="button" class="btn btn-sm btn-@(parameter.Time=="一个月内"?"success":"default")" name="Time">一个月内</button>
+                    <button type="button" class="btn btn-sm btn-@(parameter.Time=="半年内"?"success":"default")" name="Time">半年内</button>
+                    <button type="button" class="btn btn-sm btn-@(parameter.Time=="一年内"?"success":"default")" name="Time">一年内</button>
                 </div>
             </div>
         </div>
@@ -37,9 +37,9 @@
             <label class="control-label">金额：</label>
             <div class="col-md-12">
                 <div class="input-group">
-                    <input type="text" class="form-control" name="MinMoney" placeholder="最小值" />
-                    <span class="input-group-addon">至</span>
-                    <input type="text" name="MaxMoney" class="form-control" placeholder="最大值" value="@(parameter.MaxMoney)" />
+                    <input type="text" class="form-control input-sm" name="MinMoney" placeholder="最小值" />
+                    <span class="input-group-addon input-sm">至</span>
+                    <input type="text" name="MaxMoney" class="form-control input-sm" placeholder="最大值" value="@(parameter.MaxMoney)" />
                 </div>
             </div>
         </div>
@@ -48,16 +48,16 @@
             <div class="col-md-12">
                 <div class="input-group" role="group">
                     <div class="input-group-btn" role="group">
-                        <button type="button" class="btn btn-@(string.IsNullOrEmpty(parameter.Creater)?"success":"default")" name="Creater">全部</button>
+                        <button type="button" class="btn btn-sm btn-@(string.IsNullOrEmpty(parameter.Creater)?"success":"default")" name="Creater">全部</button>
                     </div>
-                    <input type="text" class="form-control" name="Creater" placeholder="报销人关键字" value="@(parameter.Creater)" />
+                    <input type="text" class="form-control input-sm" name="Creater" placeholder="报销人关键字" value="@(parameter.Creater)" />
                 </div>
             </div>
         </div>
         <div class="form-group">
             <label class="control-label">排序：</label>
             <div class="col-md-12">
-                <select name="Order" class="form-control">
+                <select name="Order" class="form-control input-sm">
                     @foreach (Order order in Enum.GetValues(typeof(Order)))
                     {
                         <option value="@(order)" @(parameter.Order==order?"selected=selected":"")>@(order.GetDescription())</option>
@@ -70,8 +70,8 @@
         <div class="form-group">
             <div class="col-md-12">
                 <div class="btn-group" role="group">
-                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-search"></i> 立即查询</button>
-                    <button type="button" class="btn btn-default" onclick="history.back();"><i class="glyphicon glyphicon-arrow-left"></i>返回</button>
+                    <button type="submit" class="btn btn-sm btn-success"><i class="glyphicon glyphicon-search"></i> 立即查询</button>
+                    <button type="button" class="btn btn-sm btn-default" onclick="history.back();"><i class="glyphicon glyphicon-arrow-left"></i>返回</button>
                 </div>
             </div>
         </div>
@@ -79,12 +79,13 @@
 </div>
 
 <div class="col-md-8">
-    <table class="table table-hover">
+    <table class="table table-striped table-condensed">
         <thead>
             <tr>
                 <th>单据编号</th>
                 <th>报销日期</th>
-                <th>报销金额（元）</th>
+                <th>报销金额[元]</th>
+                <th>备注</th>
                 <th>报销人</th>
             </tr>
         </thead>
@@ -92,9 +93,10 @@
             @foreach(var sheet in sheets)
             {
                 <tr>
-                    <td><a href="/Report/Detail?id=@(sheet.ID)">@(sheet.SerialNumber.Coding)</a></td>
-                    <td>@(sheet.Time.ToShortDateString())</td>
+                    <td><a href="/Report/Detail?id=@(sheet.ID)">@(sheet.PrintNumber)</a></td>
+                    <td>@(sheet.Time.ToLongDateString())</td>
                     <td>@(sheet.Money)</td>
+                    <td>@(sheet.Remarks)</td>
                     <td>@(sheet.Name)</td>
                 </tr>
             }
@@ -104,27 +106,27 @@
 
 <script>
     $(function () {
-        $(".btn-group>button").click(function () {
-            var name = $(this).attr("name");
-            var val = $(this).text();
-            if (val == "全部") {
-                val = "";
-            }
-            $(".btn-group>button[name='"+name+"']").removeClass("btn-success").addClass("btn-default");
-            $(this).removeClass("btn-default").addClass("btn-success");
-            $("input[name='" + name + "']").val(val);
-        });
+        //$(".btn-group>button").click(function () {
+        //    var name = $(this).attr("name");
+        //    var val = $(this).text();
+        //    if (val == "全部") {
+        //        val = "";
+        //    }
+        //    $(".btn-group>button[name='"+name+"']").removeClass("btn-success").addClass("btn-default");
+        //    $(this).removeClass("btn-default").addClass("btn-success");
+        //    $("input[name='" + name + "']").val(val);
+        //});
 
-        $(".input-group-btn>button").click(function () {
-            var name = $(this).attr("name");
-            $(this).removeClass("btn-default").addClass("btn-success");
-            $(".input-group>input[name='" + name + "']").val("");
-        });
+        //$(".input-group-btn>button").click(function () {
+        //    var name = $(this).attr("name");
+        //    $(this).removeClass("btn-default").addClass("btn-success");
+        //    $(".input-group>input[name='" + name + "']").val("");
+        //});
 
-        $(".input-group>input").click(function () {
-            var name = $(this).attr("name");
-            $(".input-group-btn>button[name='" + name + "']").removeClass("btn-success").addClass("btn-default");
-        });
+        //$(".input-group>input").click(function () {
+        //    var name = $(this).attr("name");
+        //    $(".input-group-btn>button[name='" + name + "']").removeClass("btn-success").addClass("btn-default");
+        //});
         
     });
 </script>

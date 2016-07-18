@@ -79,6 +79,7 @@ namespace Ztop.Todo.Manager
             var query = checks.AsQueryable();
             if (!string.IsNullOrEmpty(parameter.Coding))
             {
+                query = query.Where(e => e.PrintNumber.Contains(parameter.Coding));
                // query = query.Where(e => e.SerialNumber.Coding.Contains(parameter.Coding));
             }
 

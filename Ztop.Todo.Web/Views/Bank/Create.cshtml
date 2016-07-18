@@ -28,17 +28,17 @@
     </h2>
     <div class="col-md-12">
         <h3 class="text-center">@(company==Company.Evaluation?"房地产评估咨询有限公司":"土地规划设计咨询有限公司") </h3>
-        <button class="btn btn-success" type="button" name="Save"><i class="glyphicon glyphicon-upload" ></i> 保存</button>
-        <button type="button" class="btn btn-primary" TargetName="@(company.ToString())" name="Plus"><i class="glyphicon glyphicon-plus"></i>添加</button>
+        <button class="btn btn-sm btn-success" type="button" name="Save"><i class="glyphicon glyphicon-upload" ></i> 保存</button>
+        <button type="button" class="btn btn-sm btn-primary" TargetName="@(company.ToString())" name="Plus"><i class="glyphicon glyphicon-plus"></i>添加</button>
         <input type="hidden" name="Company" value="@(company)" />
         <span class="text-info">上个月账户余额：@(PreBank.Balance)  元</span>
-        <table class="table table-striped">
+        <table class="table table-striped table-condensed">
             <thead>
                 <tr>
                     <th>交易日期</th>
-                    <th>支出（元）</th>
-                    <th>收入（元）</th>
-                    <th>账户余额（元）</th>
+                    <th>支出[元]</th>
+                    <th>收入[元]</th>
+                    <th>账户余额[元]</th>
                     <th>对方单位</th>
                     <th>摘要</th>
                     <th>类别</th>
@@ -52,15 +52,15 @@
             </tbody>
             <tfoot id="@(company.ToString())">
                 <tr>
-                    <td><input type="text" name="Time" class="form-control" placeholder="交易日期" /></td>
-                    <td><input type="text" name="Pay" class="form-control" placeholder="支出" targetIndex="0" id="Pay0"/></td>
-                    <td><input type="text" name="Income" class="form-control" placeholder="收入" targetIndex="0" id="Income0" /></td>
-                    <td><input type="text" name="Balance" class="form-control" placeholder="账户余额" id="Balance0" readonly="readonly" /></td>
-                    <td><input type="text" name="Account" class="form-control" placeholder="对方单位" /></td>
-                    <td><input type="text" name="Summary" class="form-control" placeholder="摘要" /></td>
+                    <td><input type="text" name="Time" class="form-control input-sm" placeholder="交易日期" /></td>
+                    <td><input type="text" name="Pay" class="form-control input-sm" placeholder="支出" targetIndex="0" id="Pay0"/></td>
+                    <td><input type="text" name="Income" class="form-control input-sm" placeholder="收入" targetIndex="0" id="Income0" /></td>
+                    <td><input type="text" name="Balance" class="form-control input-sm" placeholder="账户余额" id="Balance0" readonly="readonly" /></td>
+                    <td><input type="text" name="Account" class="form-control input-sm" placeholder="对方单位" /></td>
+                    <td><input type="text" name="Summary" class="form-control input-sm" placeholder="摘要" /></td>
                     <td style="width:20%;">
                         <div class="col-md-6" style="padding:0px;">
-                            <select name="Cost" class="form-control" id="Cost0">
+                            <select name="Cost" class="form-control input-sm" id="Cost0">
                                 @foreach (Cost cost in Enum.GetValues(typeof(Cost)))
                                 {
                                     if (cost == Cost.Posting)
@@ -90,24 +90,24 @@
     <input type="hidden" name="Company" value="@(company)" />
     <div class="form-group">
         <label for="">银行对账单Excel文件：</label>
-        <input type="file" class="form-control" name="file" />
+        <input type="file" class="form-control input-sm" name="file" />
     </div>
-    <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-floppy-open"></i> 上传分析</button>
+    <button type="submit" class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-floppy-open"></i> 上传分析</button>
 </form>
 
 <div style="display:none">
     <table >
         <tbody id="add">
             <tr>
-                <td><input type="text" name="Time" class="form-control" placeholder="交易日期" /></td>
-                <td><input type="text" name="Pay" class="form-control" placeholder="支出" targetIndex="{Index}" /></td>
-                <td><input type="text" name="Income" class="form-control" placeholder="收入" targetIndex="{Index}" /></td>
-                <td><input type="text" name="Balance" class="form-control" placeholder="账户余额" id="Balance{Index}" readonly="readonly" /></td>
-                <td><input type="text" name="Account" class="form-control" placeholder="对方单位" /></td>
-                <td><input type="text" name="Summary" class="form-control" placeholder="摘要" /></td>
+                <td><input type="text" name="Time" class="form-control input-sm" placeholder="交易日期" /></td>
+                <td><input type="text" name="Pay" class="form-control input-sm" placeholder="支出" targetIndex="{Index}" /></td>
+                <td><input type="text" name="Income" class="form-control input-sm" placeholder="收入" targetIndex="{Index}" /></td>
+                <td><input type="text" name="Balance" class="form-control input-sm" placeholder="账户余额" id="Balance{Index}" readonly="readonly" /></td>
+                <td><input type="text" name="Account" class="form-control input-sm" placeholder="对方单位" /></td>
+                <td><input type="text" name="Summary" class="form-control input-sm" placeholder="摘要" /></td>
                 <td style="width:20%;">
                     <div class="col-md-6" style="padding:0px;">
-                        <select name="Cost" class="form-control" id="Cost{Index}">
+                        <select name="Cost" class="form-control input-sm" id="Cost{Index}">
                             @foreach (Cost cost in Enum.GetValues(typeof(Cost)))
                             {
                                 if (cost == Cost.Posting)
@@ -127,7 +127,7 @@
         </tbody>
        
     </table>
-    <select name="Cost" class="form-control" id="Income">
+    <select name="Cost" class="form-control input-sm" id="Income">
         @foreach (Cost cost in Enum.GetValues(typeof(Cost)))
             {
                 if (cost == Cost.Posting)
@@ -137,7 +137,7 @@
                 <option value="@(cost)">@(cost.GetDescription())</option>
         }
     </select>
-    <select name="Cost" class="form-control" id="Pay">
+    <select name="Cost" class="form-control input-sm" id="Pay">
         @foreach (Cost cost in Enum.GetValues(typeof(Cost)))
         {
             var index = (int)cost;

@@ -70,6 +70,10 @@ namespace Ztop.Todo.Web.Controllers
                 };
                 Core.VerifyManager.Save(verify);
             }
+            if (!string.IsNullOrEmpty(DirectorVal))
+            {
+                Core.NotificationManager.Add(sheet);
+            }
         }
         /// <summary>
         /// 填写报销单初期（保存报销单 但是不提交上级）

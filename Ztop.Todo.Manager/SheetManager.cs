@@ -91,6 +91,10 @@ namespace Ztop.Todo.Manager
             {
                 sheet.NumberExt = GetNumberExt(sheet.Number);
             }
+            if (string.IsNullOrEmpty(sheet.BarCode))
+            {
+                sheet.BarCode = BarCode.GetBarCodePath(sheet.PrintNumber);
+            }
             using (var db = GetDbContext())
             {
                 if (sheet.ID == 0)
@@ -295,7 +299,7 @@ namespace Ztop.Todo.Manager
         {
             if (string.IsNullOrEmpty(key))
                 return null;
-            return GetSheets(new SheetQueryParameter() { Status = Status.Filing }).Where(e => e.Coding.Contains(key)).ToList();
+            return GetSheets(new SheetQueryParameter() { Status = Status.Filing }).Where(e => e.PrintNumber.Contains(key)).ToList();
            // return GetSheets(new SheetQueryParameter() { Status = Status.Filing }).Where(e => e.SerialNumber.Coding.Contains(key)).ToList();
         }
         public List<Sheet> GetSheets(QueryParameter parameter,string name)

@@ -12,31 +12,40 @@
 <div>
     @if (flag)
     {
-        <table class="table table-bordered table-hover" style="margin:0px;">
+        <table class="table table-bordered table-striped table-condensed" style="margin:0px;">
             <tr>
-                <th class="col-md-1 col-xs-1">出差地点</th>
-                <td class="col-md-5 col-xs-5">
+                <th>出差地点</th>
+                <td>
                     @(Model.Place)
                 </td>
-                <th class="col-md-1 col-xs-1">出差人员</th>
-                <td class="col-md-5 col-xs-5">
-                    @(Model.Persons)
+                <th>事由/项目</th>
+                <td>
+                    @(Model.Reason)
                 </td>
+              
             </tr>
             <tr>
-                <th>交通费用</th>
-                <td>@(Model.Traffic) 元</td>
+                <th>出差人员</th>
+                <td>
+                    @(Model.Persons)
+                </td>
                 <th>出差补贴</th>
                 <td>@(Model.SubSidy) 元</td>
             </tr>
             <tr>
+                <th>交通费用</th>
+                <td>@(Model.Traffic) 元</td>
                 <th>出差住宿</th>
                 <td>@(Model.Hotel) 元</td>
+            </tr>
+            <tr>
                 <th>其他内容</th>
-                <td> 内容： @(Model.Mark) 金额：@(Model.Other) 元</td>
+                <td>@(Model.Mark) </td>
+                <th>其他金额</th>
+                <td>@(Model.Other) 元</td>
             </tr>
         </table>
-        <table class="table table-bordered table-hover" style="margin:0px;">
+        <table class="table table-bordered table-striped table-condensed" style="margin:0px;">
             <thead>
                 <tr>
                     <th>人员</th>
@@ -46,19 +55,32 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var errand in Model.Errands)
+                @if (Model.Errands == null || Model.Errands.Count == 0)
                 {
                     <tr>
-                        <td>@(errand.Users)</td>
-                        <td>@(errand.StartTime.ToString("yyyy-MM-dd")) 至 @(errand.EndTime.ToString("yyyy-MM-dd"))</td>
-                        <td>@(errand.Peoples)</td>
-                        <td>@(errand.Days)</td>
+                        <td>/</td>
+                        <td>/</td>
+                        <td>/</td>
+                        <td>/</td>
                     </tr>
                 }
+                else
+                {
+                    foreach (var errand in Model.Errands)
+                    {
+                        <tr>
+                            <td>@(errand.Users)</td>
+                            <td>@(errand.StartTime.ToString("yyyy-MM-dd")) 至 @(errand.EndTime.ToString("yyyy-MM-dd"))</td>
+                            <td>@(errand.Peoples)</td>
+                            <td>@(errand.Days)</td>
+                        </tr>
+                    }
+                }
+                
             </tbody>
         </table>
 
-        <table class="table table-bordered table-hover" style="margin:0px;">
+        <table class="table table-bordered table-striped table-condensed" style="margin:0px;">
             <thead>
                 <tr>
                     <th>交通名称</th>
@@ -122,12 +144,18 @@
     }
     else
     {
-        <table class="table table-bordered" style="margin:0px;">
+        <table class="table table-bordered table-condensed" style="margin:0px;">
             <tr>
                 <th class="col-md-1 col-xs-1">出差地点</th>
                 <td class="col-md-5 col-xs-5">
                     <input type="text" class="form-control input-sm" name="Place" value="@(Model.Place)" placeholder="出差地点" />
                 </td>
+                <th  class="col-md-1 col-xs-1">事由/项目</th>
+                <td class="col-md-5 col-xs-5">
+                    <input type="text" class="form-control input-sm" name="Reason" value="@(Model.Reason)" placeholder="事由/项目" />
+                </td>
+            </tr>
+            <tr>
                 <th class="col-md-1 col-xs-1">出差人员</th>
                 <td class="col-md-5 col-xs-5">
                     <div class="input-group">
@@ -178,7 +206,85 @@
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-sm btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove-sign"></i>取消</button>
                                     <button type="button" class="btn btn-sm btn-primary" name="Person-OK" data-dismiss="modal"><i class="glyphicon glyphicon-ok-sign"></i>确定</button>
-                                    
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <th>出差补贴</th>
+                <td>
+                    <duv class="input-group">
+                        <input type="hidden" name="Lines" value="@(Model.Errands==null?"":string.Join(";",Model.Errands.Select(e=>e.ID).ToArray()))" />
+                        <input type="text" class="form-control input-sm" placeholder="出差补贴" readonly="readonly" name="SubSidy" value="@(Model.SubSidy)" />
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#SubSide"><i class="glyphicon glyphicon-zoom-in"></i>补贴详情</button>
+                        </span>
+                    </duv>
+                    <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" id="SubSide">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title">补贴详情</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-2 col-xs-2">人员：</label>
+                                        <div class="col-md-7 col-xs-7" id="ViewSubSide">
+                                            @if (!string.IsNullOrEmpty(Model.Persons))
+                                            {
+                                                foreach (var user in Model.Persons.Split(';'))
+                                                {
+                                                    <label class="checkbox-inline">
+                                                        <input type="checkbox" name="mans" value="@(user)" checked="checked" disabled="disabled" />@(user)
+                                                    </label>
+                                                }
+                                            }
+                                        </div>
+                                        <div class="col-md-3 col-xs-3">
+                                            <button type="button" class="btn btn-success btn-sm" name="Keyin"><i class="glyphicon glyphicon-plus"></i>录入时间</button>
+                                        </div>
+                                    </div>
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>人员</th>
+                                                <th style="width:70%;">时间</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="ViewTime">
+                                            @if (Model.Errands != null)
+                                            {
+                                                foreach (var errand in Model.Errands)
+                                                {
+                                                    <tr>
+                                                        <td>
+                                                            <input type="hidden" name="Peoples@(errand.ID)" value="@(errand.Peoples)" />
+                                                            <input type="hidden" name="Days@(errand.ID)" value="@(errand.Days)" />
+                                                            <input type="text" name="Users@(errand.ID)" class="form-control input-sm" value="@(errand.Users)" readonly="readonly" targetIndex="@(errand.ID)" />
+                                                        </td>
+                                                        <td>
+                                                            <div class="input-group">
+                                                                <input type="text" class="form-control datetimepicker input-sm" name="StartTime@(errand.ID)" placeholder="开始日期" targetIndex="@(errand.ID)" value="@(errand.StartTime.ToString("yyyy-MM-dd"))" />
+                                                                <span class="input-group-addon input-sm">至</span>
+                                                                <input type="text" class="form-control datetimepicker input-sm" name="EndTime@(errand.ID)" placeholder="结束日期" targetIndex="@(errand.ID)" value="@(errand.EndTime.ToString("yyyy-MM-dd"))" />
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <button type="button" class="btn btn-danger btn-xs" name="Remove" value="@(errand.Users)"><i class="glyphicon glyphicon-remove-circle"></i></button>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-sm btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove-sign"></i>取消</button>
+                                    <button type="button" class="btn btn-sm btn-primary" name="SubSide-OK" data-dismiss="modal"><i class="glyphicon glyphicon-ok-sign"></i>确定</button>
                                 </div>
                             </div>
                         </div>
@@ -402,86 +508,6 @@
                         </div>
                     </div>
                 </td>
-                <th>出差补贴</th>
-                <td>
-                    <duv class="input-group">
-                        <input type="hidden" name="Lines" value="@(Model.Errands==null?"":string.Join(";",Model.Errands.Select(e=>e.ID).ToArray()))" />
-                        <input type="text" class="form-control input-sm" placeholder="出差补贴" readonly="readonly" name="SubSidy" value="@(Model.SubSidy)" />
-                        <span class="input-group-btn">
-                            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#SubSide"><i class="glyphicon glyphicon-zoom-in"></i>补贴详情</button>
-                        </span>
-                    </duv>
-                    <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" id="SubSide">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    <h4 class="modal-title">补贴详情</h4>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="form-group">
-                                        <label class="control-label col-md-2 col-xs-2">人员：</label>
-                                        <div class="col-md-7 col-xs-7" id="ViewSubSide">
-                                            @if (!string.IsNullOrEmpty(Model.Persons))
-                                            {
-                                                foreach (var user in Model.Persons.Split(';'))
-                                                {
-                                                    <label class="checkbox-inline">
-                                                        <input type="checkbox" name="mans" value="@(user)" checked="checked" disabled="disabled" />@(user)
-                                                    </label>
-                                                }
-                                            }
-                                        </div>
-                                        <div class="col-md-3 col-xs-3">
-                                            <button type="button" class="btn btn-success btn-sm" name="Keyin"><i class="glyphicon glyphicon-plus"></i>录入时间</button>
-                                        </div>
-                                    </div>
-                                    <table class="table table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th>人员</th>
-                                                <th style="width:70%;">时间</th>
-                                                <th></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="ViewTime">
-                                            @if (Model.Errands != null)
-                                            {
-                                                foreach (var errand in Model.Errands)
-                                                {
-                                                    <tr>
-                                                        <td>
-                                                            <input type="hidden" name="Peoples@(errand.ID)" value="@(errand.Peoples)" />
-                                                            <input type="hidden" name="Days@(errand.ID)" value="@(errand.Days)" />
-                                                            <input type="text" name="Users@(errand.ID)" class="form-control input-sm" value="@(errand.Users)" readonly="readonly" targetIndex="@(errand.ID)" />
-                                                        </td>
-                                                        <td>
-                                                            <div class="input-group">
-                                                                <input type="text" class="form-control datetimepicker input-sm" name="StartTime@(errand.ID)" placeholder="开始日期" targetIndex="@(errand.ID)" value="@(errand.StartTime.ToString("yyyy-MM-dd"))" />
-                                                                <span class="input-group-addon input-sm">至</span>
-                                                                <input type="text" class="form-control datetimepicker input-sm" name="EndTime@(errand.ID)" placeholder="结束日期" targetIndex="@(errand.ID)" value="@(errand.EndTime.ToString("yyyy-MM-dd"))" />
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <button type="button" class="btn btn-danger btn-xs" name="Remove" value="@(errand.Users)"><i class="glyphicon glyphicon-remove-circle"></i></button>
-                                                        </td>
-                                                    </tr>
-                                                }
-                                            }
-                                        </tbody>
-                                    </table>
-
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-sm btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove-sign"></i>取消</button>
-                                    <button type="button" class="btn btn-sm btn-primary" name="SubSide-OK" data-dismiss="modal"><i class="glyphicon glyphicon-ok-sign"></i>确定</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
                 <th>出差住宿</th>
                 <td>
                     <div class="input-group">
@@ -489,11 +515,16 @@
                         <span class="input-group-addon input-sm">元</span>
                     </div>
                 </td>
+            </tr>
+            <tr>
+               
                 <th>其他内容</th>
                 <td>
+                    <input type="text" class="form-control input-sm" name="Mark" placeholder="内容" value="@(Model.Mark)" />
+                </td>
+                <th>其他金额</th>
+                <td>
                     <div class="input-group">
-                        <input type="text" class="form-control input-sm" name="Mark" placeholder="内容" value="@(Model.Mark)" />
-                        <span class="input-group-addon input-sm">金额：</span>
                         <input type="text" class="form-control input-sm" name="Other" placeholder="" value="@(Model.Other)" />
                         <span class="input-group-addon input-sm">元</span>
                     </div>

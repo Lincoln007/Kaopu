@@ -65,5 +65,10 @@ namespace Ztop.Todo.Model
         [Description("评论")]
         Comment = 2,
 
+        [Description("报销")]
+        Sheet=3,
+
+        [Description("审核")]
+        Review=4
     }
 }

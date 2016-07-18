@@ -127,11 +127,11 @@
                                 <li><a href="/Report/Index"><i class="fa fa-desktop"></i>欢迎页</a></li>
                                 <li><a href="/Report/Create?type=@(SheetType.Daily)"><i class="fa fa-map-o"></i>日常报销填写</a></li>
                                 <li><a href="/Report/Create?type=@(SheetType.Errand)"><i class="fa fa-plane"></i>出差报销填写</a></li>
-                                @if (Identity.Director||Identity.Name== "靳小阳")
+                                @if (Identity.Director||Identity.Name== "靳小阳"||Identity.Name=="汪建龙")
                                 {
                                     <li><a href="/Report/Review"><i class="glyphicon glyphicon-star"></i>我的审核</a></li>
                                 }
-                                @if (Identity.Name == "申屠杜平")
+                                @if (Identity.Name == "申屠杜平"|| Identity.Name == "汪建龙")
                                 {
                                     <li><a href="/Report/Filing"><i class="fa fa-anchor"></i>报销归档</a></li>
                                 }
@@ -143,11 +143,11 @@
                                         <li><a href="/Report/List?Position=已审核"><i class="fa fa-check-circle"></i> 已完成报销</a></li>
                                     </ul>
                                 </li>
-                                @if (Identity.Name == "袁洋" || Identity.Name == "申屠杜平")
+                                @if (Identity.Name == "袁洋" || Identity.Name == "申屠杜平"||Identity.Name == "汪建龙")
                                 {
                                     <li><a href="/Bank/Index"><i class="glyphicon glyphicon-calendar"></i>银行对账</a></li>
                                 }
-                                @if(Identity.Name== "靳小阳")
+                                @if(Identity.Name== "靳小阳"|| Identity.Name == "汪建龙")
                                 {
                                     <li>
                                         <a href="#"><i class="glyphicon glyphicon-calendar"></i>银行对账<span class="fa arrow"></span></a>

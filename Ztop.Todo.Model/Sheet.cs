@@ -31,6 +31,8 @@ namespace Ztop.Todo.Model
             }
         }
 
+        public string BarCode { get; set; }
+
         /// <summary>
         /// 单据编号  实例值  流水单据编号
         /// </summary>

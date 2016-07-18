@@ -50,5 +50,14 @@ $(function () {
             $(this).prev().children().removeClass("btn-default").addClass("btn-success");
         }
     });
+    $(".input-group>input").focus(function () {
+        $(this).prev().children().removeClass("btn-success").addClass("btn-default");
+    }).blur(function () {
+        var val = $(this).val();
+        if (val == "") {
+            $(this).prev().children().removeClass("btn-default").addClass("btn-success");
+        }
+    });
+
 })
 

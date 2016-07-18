@@ -6,17 +6,17 @@
     QueryParameter parameter = ViewBag.Parameter;
     int serial = 1;
 }
-<div class="col-md-3  well">
+<div class="col-md-3  well" style="padding:0px;">
     <fieldset>
         <legend>查询设置</legend>
     </fieldset>
-    <form id="" style="margin-bottom:5px;" method="get">
+    <form id="" method="get">
         <input type="hidden" name="Creater" value="@(parameter.Creater.ToString())" />
         <input type="hidden" name="Position" value="@(parameter.Status.ToString())" />
         <input type="hidden" name="CurrentTime" value="@(parameter.Time.ToString())" />
         <input type="hidden" name="Checker" value="@(parameter.Checker.ToString())" />
         <div class="form-group">
-            <label class="control-label">时间</label>
+            <label class="control-label">时间:</label>
             <div class="col-md-12">
                 <div class="btn-group" role="group">
                     @foreach (Time time in Enum.GetValues(typeof(Time)))
@@ -28,8 +28,8 @@
           
         </div>
         <div class="form-group">
-            <label class="control-label">排序</label>
-            <select name="Order" class="form-control">
+            <label class="control-label">排序:</label>
+            <select name="Order" class="form-control input-sm">
                 @foreach (Order order in Enum.GetValues(typeof(Order)))
                 {
                     <option value="@(order)" @(parameter.Order == order ? "Selected=selected" : "")>@(order.GetDescription())</option>
@@ -61,7 +61,7 @@
             {
                 <tr>
                     <td>@(serial++)</td>
-                    <td><a href="/Report/Detail?id=@(sheet.ID)">@(sheet.SerialNumber.Coding)</a></td>
+                    <td><a href="/Report/Detail?id=@(sheet.ID)">@(sheet.PrintNumber)</a></td>
                     <td>@(sheet.Time.ToLongDateString())</td>
                     <td>@(sheet.Money)</td>
                     <td>@(sheet.Name)</td>
