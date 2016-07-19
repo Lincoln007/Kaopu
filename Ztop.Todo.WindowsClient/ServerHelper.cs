@@ -31,6 +31,8 @@ namespace Ztop.Todo.WindowsClient
                     server = GetServerUrl();
                     break;
                 case 3:
+                case 4:
+                case 5:
                     server = GetReportServerUrl();
                     break;
             }

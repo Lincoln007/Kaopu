@@ -69,6 +69,9 @@ namespace Ztop.Todo.Model
         Sheet=3,
 
         [Description("审核")]
-        Review=4
+        Verify=4,
+
+        [Description("开票")]
+        Invoice=5
     }
 }

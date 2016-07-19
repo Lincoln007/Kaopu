@@ -108,6 +108,7 @@ namespace Ztop.Todo.Web.Controllers
         public ActionResult SaveInvoice(Invoice invoice)
         {
             var id = Core.InvoiceManager.Save(invoice);
+            Core.NotificationManager.Add(invoice);
             return SuccessJsonResult(invoice);
         }
 

@@ -42,9 +42,22 @@ namespace Ztop.Todo.Manager
                                 model.Path = "/Report/Detail/?id=" + sheet.ID;
                             }
                             break;
-                        case InfoType.Review:
+                        case InfoType.Verify:
                             {
-
+                                var verify = Core.VerifyManager.Get(model.InfoID);
+                                var sheet = Core.SheetManager.GetModel(verify.SID);
+                                var sender = Core.UserManager.GetUser(model.SenderID);
+                                model.Description = sender.DisplayName + "审核通过了" + sheet.PrintNumber;
+                                model.Path = "/Reprot/Detail/?id=" + sheet.ID;
+                            }
+                            break;
+                        case InfoType.Invoice:
+                            {
+                                var invoice = Core.InvoiceManager.Get(model.InfoID);
+                                var contract = Core.ContractManager.Get(invoice.CID);
+                                var sender = Core.UserManager.GetUser(model.SenderID);
+                                model.Description = string.Format("{0}申请给{1}开具{2}的发票", sender.DisplayName, invoice.OtherSideCompany, invoice.Content);
+                                model.Path = "/Finance/Detail/?id=" + contract.ID;
                             }
                             break;
                     }
@@ -59,12 +72,6 @@ namespace Ztop.Todo.Manager
             {
                 db.Notifications.Add(model);
                 db.SaveChanges();
-                //var entity = db.Notifications.FirstOrDefault(e => e.ReceiverID == model.ReceiverID && e.InfoID == model.InfoID);
-                //if (entity == null)
-                //{
-                //    db.Notifications.Add(model);
-                //    db.SaveChanges();
-                //}
             }
         }
 
@@ -86,13 +93,6 @@ namespace Ztop.Todo.Manager
                     SenderID = comment.UserID
                 });
             }
-            //AddNotification(new Notification
-            //{
-            //    InfoID = userTask.ID,
-            //    InfoType = InfoType.Comment,
-            //    ReceiverID = userTask.Task.CreatorID,
-            //    SenderID = comment.UserID,
-            //});
         }
 
         private void AddTaskNotification(Model.Task task)
@@ -111,13 +111,40 @@ namespace Ztop.Todo.Manager
         }
         private void AddSheetNotification(Model.Sheet sheet)
         {
-            var receiver = Core.UserManager.GetUser(sheet.Controler);
-            var sender = Core.UserManager.GetUser(sheet.Name);
+            var receiver = Core.UserManager.UserGet(sheet.Controler);
+            var sender = Core.UserManager.UserGet(sheet.Name);
             AddNotification(new Notification
             {
                 InfoID = sheet.ID,
                 InfoType = InfoType.Sheet,
                 ReceiverID = receiver.ID,
+                SenderID = sender.ID
+            });
+        }
+
+        private void AddVerifyNotification(Model.Verify verify)
+        {
+            var sender = Core.UserManager.UserGet(verify.Name);
+            var sheet = Core.SheetManager.GetModel(verify.SID);
+            var receiver = Core.UserManager.UserGet(sheet.Name);
+            AddNotification(new Notification()
+            {
+                InfoID = verify.ID,
+                InfoType = InfoType.Verify,
+                ReceiverID = receiver.ID,
+                SenderID = sender.ID
+            });
+        }
+
+        private void AddInvoiceNotification(Invoice invoice)
+        {
+            var sender = Core.UserManager.UserGet(invoice.Applicant);
+            var recevier = Core.UserManager.UserGet(System.Configuration.ConfigurationManager.AppSettings["FINANCE"]);
+            AddNotification(new Notification()
+            {
+                InfoID = invoice.ID,
+                InfoType = InfoType.Invoice,
+                ReceiverID = recevier.ID,
                 SenderID = sender.ID
             });
         }
@@ -135,7 +162,13 @@ namespace Ztop.Todo.Manager
                     AddTaskNotification((Model.Task)info);
                     break;
                 case InfoType.Sheet:
-                    AddSheetNotification((Model.Sheet)info);
+                    AddSheetNotification((Sheet)info);
+                    break;
+                case InfoType.Verify:
+                    AddVerifyNotification((Verify)info);
+                    break;
+                case InfoType.Invoice:
+                    AddInvoiceNotification((Invoice)info);
                     break;
             }
         }
@@ -151,13 +184,6 @@ namespace Ztop.Todo.Manager
                 }
 
                 db.SaveChanges();
-
-                //var entity = db.Notifications.FirstOrDefault(e => e.InfoID == infoId && e.InfoType == infoType);
-                //if (entity != null)
-                //{
-                //    entity.HasRead = true;
-                //    db.SaveChanges();
-                //}
             }
         }
     }

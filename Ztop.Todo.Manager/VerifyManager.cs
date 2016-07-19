@@ -126,6 +126,14 @@ namespace Ztop.Todo.Manager
             query = query.SetPage(parameter.Page);
             return query.ToList();
         }
+
+        public Verify Get(int id)
+        {
+            using (var db = GetDbContext())
+            {
+                return db.Verifys.FirstOrDefault(e => e.ID == id);
+            }
+        }
         
     }
 }

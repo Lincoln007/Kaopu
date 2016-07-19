@@ -54,6 +54,20 @@ namespace Ztop.Todo.Manager
             return user;
         }
 
+        public User UserGet(string realname)
+        {
+            if (string.IsNullOrEmpty(realname))
+            {
+                return null;
+            }
+            var user = GetAllUsers().FirstOrDefault(e => e.RealName.ToLower() == realname.ToLower());
+            if (user != null)
+            {
+                user.Type = GetGroupType(user.Username);
+            }
+            return user;
+        }
+
         /// <summary>
         /// 如果更新密码，请在调用方法前【不要】对password属性进行md5
         /// </summary>

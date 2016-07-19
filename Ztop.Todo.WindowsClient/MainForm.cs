@@ -253,7 +253,6 @@ namespace Ztop.Todo.WindowsClient
             try
             {
                 var iniPath = System.Configuration.ConfigurationManager.ConnectionStrings["WUPDATE"].ConnectionString;
-                //var iniPath = System.Configuration.ConfigurationManager.AppSettings["WUPDATE"];
                 if (string.IsNullOrEmpty(iniPath))
                 {
                     iniPath = "Update.ini";
@@ -261,7 +260,6 @@ namespace Ztop.Todo.WindowsClient
                 var filePath = System.IO.Path.Combine(Application.StartupPath, iniPath);
                 IniClass ini = new IniClass(filePath);
                 Ztop.Todo.WindowsClient.WindowsClientUpdate.ServiceSoapClient one = new WindowsClientUpdate.ServiceSoapClient("ServiceSoap","http://10.22.102.3:8060/Service.asmx");
-                //Service service = new Service();
                 string clientVersion = ini.IniReadValue("update", "version");//客户端版本
                 string serviceVersion = one.GetVersion();
                 //string serviceVersion = service.GetVersion();//服务端版本

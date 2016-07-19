@@ -262,8 +262,10 @@ namespace Ztop.Todo.Web.Controllers
                 default:
                     break;
             }
-            Core.VerifyManager.Save(sverify);
             Core.SheetManager.Save(sheet);
+            Core.VerifyManager.Save(sverify);
+            Core.NotificationManager.Add(sverify);
+          
         }
         public ActionResult Check(int id)
         {

@@ -40,6 +40,23 @@ namespace Ztop.Todo.WindowsClient
         }
 
         public Notification Notification { get; private set; }
+        private Model.OASystemClass OASystem
+        {
+            get
+            {
+                switch (Notification.InfoType)
+                {
+                    case 1:
+                    case 2:
+                        return Model.OASystemClass.TaskSystem;
+                    case 3:
+                    case 4:
+                    case 5:
+                    default:
+                        return Model.OASystemClass.ReimburseSystem;
+                }
+            }
+        }
 
         private void NavigationToTaskDetailPage()
         {
@@ -48,7 +65,7 @@ namespace Ztop.Todo.WindowsClient
                 if (form is MainForm)
                 {
                     form.Show();
-                    ((MainForm)form).OpenTask(Notification,Model.OASystemClass.TaskSystem);
+                    ((MainForm)form).OpenTask(Notification,OASystem);
                 }
             }
         }
