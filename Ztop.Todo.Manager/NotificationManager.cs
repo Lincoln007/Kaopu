@@ -39,7 +39,7 @@ namespace Ztop.Todo.Manager
                                 var sheet = Core.SheetManager.GetModel(model.InfoID);
                                 var sender = Core.UserManager.GetUser(model.SenderID);
                                 model.Description = sender.DisplayName + "提交了报销";
-                                model.Path = "/Report/Detail/?id=" + sheet.ID;
+                                model.Path = "/Report/Detail/?id=" + sheet.ID+"&&infoType="+InfoType.Sheet;
                             }
                             break;
                         case InfoType.Verify:
@@ -48,7 +48,7 @@ namespace Ztop.Todo.Manager
                                 var sheet = Core.SheetManager.GetModel(verify.SID);
                                 var sender = Core.UserManager.GetUser(model.SenderID);
                                 model.Description = sender.DisplayName + "审核通过了" + sheet.PrintNumber;
-                                model.Path = "/Reprot/Detail/?id=" + sheet.ID;
+                                model.Path = "/Report/Detail/?id=" + sheet.ID+"&&infoType="+InfoType.Verify;
                             }
                             break;
                         case InfoType.Invoice:
@@ -175,16 +175,44 @@ namespace Ztop.Todo.Manager
 
         public void FlagRead(int infoId, int receiverID)
         {
+            FlagReadBase(infoId, receiverID, InfoType.Comment);
+            FlagReadBase(infoId, receiverID, InfoType.Task);
+            //using (var db = GetDbContext())
+            //{
+            //    var entitys = db.Notifications.Where(e => e.InfoID == infoId&&e.ReceiverID==receiverID&&!e.HasRead);
+            //    foreach(var entity in entitys)
+            //    {
+            //        entity.HasRead = true;
+            //    }
+
+            //    db.SaveChanges();
+            //}
+        }
+
+        private void FlagReadBase(int infoId,int receiverID,InfoType infoType)
+        {
             using (var db = GetDbContext())
             {
-                var entitys = db.Notifications.Where(e => e.InfoID == infoId&&e.ReceiverID==receiverID&&!e.HasRead);
-                foreach(var entity in entitys)
+                var entrys = db.Notifications.Where(e => e.InfoID == infoId && e.ReceiverID == receiverID && e.InfoType == infoType && !e.HasRead);
+                foreach (var entry in entrys)
                 {
-                    entity.HasRead = true;
+                    entry.HasRead = true;
                 }
-
                 db.SaveChanges();
             }
         }
+
+        public void FlagSheetRead(int infoId,int receiverID)
+        {
+            FlagReadBase(infoId, receiverID, InfoType.Sheet);
+        }
+
+        public void FlagVerifyRead(int infoId,int receiverID)
+        {
+            FlagReadBase(infoId, receiverID, InfoType.Verify);
+        }
+
+
+
     }
 }

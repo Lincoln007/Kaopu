@@ -36,7 +36,7 @@ namespace Ztop.Todo.WindowsClient
                     server = GetReportServerUrl();
                     break;
             }
-            return server + "/" + notice.Path;
+            return server + notice.Path;
         }
 
         public static Notification GetNotification()

@@ -1,8 +1,10 @@
-﻿using System;
+﻿using NPOI.SS.UserModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Ztop.Todo.Common;
 using Ztop.Todo.Model;
 
 namespace Ztop.Todo.Manager
@@ -127,6 +129,44 @@ namespace Ztop.Todo.Manager
             return query.ToList();
         }
 
+        public IWorkbook GetWorkbook(List<Sheet> list)
+        {
+            IWorkbook workbook = ExcelClass.GetAbsolutePath(System.Configuration.ConfigurationManager.AppSettings["REPORT"].ToString()).OpenExcel();
+            if (workbook != null)
+            {
+                ISheet sheet = workbook.GetSheetAt(0);
+                if (sheet != null)
+                {
+                    IRow row = sheet.GetRow(1);
+                    if (row != null)
+                    {
+                        var modelRow = row;
+                        var serial = 1;
+                        foreach(var item in list)
+                        {
+                            row = sheet.GetRow(serial);
+                            if (row == null)
+                            {
+                                row = sheet.CreateRow(serial);
+                            }
+                            var cell = ExcelClass.GetCell(row, 0);
+                            cell.SetCellValue(serial++);
+                            ExcelClass.GetCell(row, 1, modelRow).SetCellValue(item.PrintNumber);
+                            ExcelClass.GetCell(row, 2, modelRow).SetCellValue(item.Name);
+                            ExcelClass.GetCell(row, 3, modelRow).SetCellValue(item.Time.ToLongDateString());
+                            ExcelClass.GetCell(row, 4, modelRow).SetCellValue(item.Count);
+                            ExcelClass.GetCell(row, 5, modelRow).SetCellValue(item.Money);
+                            ExcelClass.GetCell(row, 6, modelRow).SetCellValue(item.Remarks);
+                            ExcelClass.GetCell(row, 7, modelRow).SetCellValue(item.Type.GetDescription());
+                            ExcelClass.GetCell(row, 8, modelRow).SetCellValue(item.Status.GetDescription());
+                            ExcelClass.GetCell(row, 9, modelRow).SetCellValue(item.Checkers);
+                            ExcelClass.GetCell(row, 10, modelRow).SetCellValue(item.CheckTime.HasValue ? item.CheckTime.Value.ToLongDateString() : "未审核");
+                        }
+                    }
+                }
+            }
+            return workbook;
+        }
         public Verify Get(int id)
         {
             using (var db = GetDbContext())

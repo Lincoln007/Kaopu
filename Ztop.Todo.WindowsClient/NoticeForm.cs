@@ -37,6 +37,10 @@ namespace Ztop.Todo.WindowsClient
             Notification = notification;
             txtContent.Text = notification.Description;
             txtTime.Text = notification.CreateTime.ToString();
+            if (notification.InfoType >= 3)
+            {
+                this.Text = "报销提醒";
+            }
         }
 
         public Notification Notification { get; private set; }

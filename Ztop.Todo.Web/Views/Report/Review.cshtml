@@ -8,7 +8,7 @@
 
 <div class="col-md-4 well" style="padding:0px;">
     <fieldset><legend>查询设置</legend></fieldset>
-    <form method="get">
+    <form method="get" id="Review-form">
         <input type="hidden" name="Time" value="@(parameter.Time)"/>
         <div class="form-group">
             <label class="control-label">单据编号：</label>
@@ -37,7 +37,7 @@
             <label class="control-label">金额：</label>
             <div class="col-md-12">
                 <div class="input-group">
-                    <input type="text" class="form-control input-sm" name="MinMoney" placeholder="最小值" />
+                    <input type="text" class="form-control input-sm" name="MinMoney" placeholder="最小值" value="@(parameter.MinMoney)" />
                     <span class="input-group-addon input-sm">至</span>
                     <input type="text" name="MaxMoney" class="form-control input-sm" placeholder="最大值" value="@(parameter.MaxMoney)" />
                 </div>
@@ -71,6 +71,7 @@
             <div class="col-md-12">
                 <div class="btn-group" role="group">
                     <button type="submit" class="btn btn-sm btn-success"><i class="glyphicon glyphicon-search"></i> 立即查询</button>
+                    <a href="/Report/DownloadExcel" class="btn btn-sm btn-primary" name="Download"><i class="glyphicon glyphicon-download-alt"></i>导出Excel</a>
                     <button type="button" class="btn btn-sm btn-default" onclick="history.back();"><i class="glyphicon glyphicon-arrow-left"></i>返回</button>
                 </div>
             </div>
@@ -106,6 +107,14 @@
 
 <script>
     $(function () {
+        $("a[name='Download']").click(function () {
+            var values = $("#Review-form").serialize();
+            $(this).attr("href", "/Report/DownloadExcel/?" + values);
+            return true;
+            
+        });
+
+
         //$(".btn-group>button").click(function () {
         //    var name = $(this).attr("name");
         //    var val = $(this).text();

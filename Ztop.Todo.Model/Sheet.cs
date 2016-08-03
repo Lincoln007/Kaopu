@@ -129,7 +129,7 @@ namespace Ztop.Todo.Model
         Filing,
         [Description("已完成")]//审核完成
         Examined,
-        [Description("退回")]
+        [Description("审核不通过")]
         RollBack
     }
     

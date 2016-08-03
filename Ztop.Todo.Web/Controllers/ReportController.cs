@@ -1,5 +1,7 @@
-﻿using System;
+﻿using NPOI.SS.UserModel;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -135,10 +137,21 @@ namespace Ztop.Todo.Web.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public ActionResult Detail(int id)
+        public ActionResult Detail(int id,InfoType? infoType=null)
         {
-            ViewBag.Sheet = Core.SheetManager.GetAllModel(id);
+            var model= Core.SheetManager.GetAllModel(id);
+            ViewBag.Sheet = model;
             ViewBag.Detail = true;
+            if (infoType.HasValue)
+            {
+                if (infoType == InfoType.Sheet)
+                {
+                    Core.NotificationManager.FlagSheetRead(model.ID, Identity.UserID);
+                }else if (infoType == InfoType.Verify)
+                {
+                    Core.NotificationManager.FlagVerifyRead(model.ID, Identity.UserID);
+                }
+            }
             return View();
         }
         /// <summary>
@@ -404,6 +417,27 @@ namespace Ztop.Todo.Web.Controllers
             ViewBag.List = Core.VerifyManager.GetSheetByVerify(parameter);
             ViewBag.Parameter = parameter;
             return View();
+        }
+
+        public ActionResult DownloadExcel(string coding=null,string time=null,double? minMoney=null,double? maxmoney=null,string creator=null,Order order = Order.Time)
+        {
+            var parameter = new SheetVerifyParameter()
+            {
+                Coding = coding,
+                Time = time,
+                MinMoney = minMoney,
+                MaxMoney = maxmoney,
+                Creater = creator,
+                Order = order,
+                Checker = Identity.Name
+            };
+            var list = Core.VerifyManager.GetSheetByVerify(parameter);
+            IWorkbook workbook = Core.VerifyManager.GetWorkbook(list);
+            MemoryStream ms = new MemoryStream();
+            workbook.Write(ms);
+            ms.Flush();
+            byte[] fileContents = ms.ToArray();
+            return File(fileContents, "application/ms-excel", DateTime.Now.ToLongDateString()+".xls");
         }
 
     }

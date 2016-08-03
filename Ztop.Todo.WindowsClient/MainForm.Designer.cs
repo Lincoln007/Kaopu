@@ -83,7 +83,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(137, 12);
             this.label1.TabIndex = 0;
-            this.label1.Text = "版权所有·智拓·v1.0.0";
+            this.label1.Text = "版权所有·智拓·v1.0.1";
             // 
             // webControl1
             // 

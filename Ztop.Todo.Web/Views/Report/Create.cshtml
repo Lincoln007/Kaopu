@@ -5,7 +5,7 @@
     Sheet sheet = ViewBag.Sheet;
 }
 
-<div class="col-md-10 col-md-offset-1">
+<div class="col-md-12">
     <form method="post" id="form-Create" action="/Report/Save" class="form-horizontal" enctype="multipart/form-data">
         <h2 class="text-center">报销单填写</h2>
         <input type="hidden" name="ID" value="@(sheet.ID)" />

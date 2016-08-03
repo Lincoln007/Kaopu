@@ -79,10 +79,11 @@ namespace Ztop.Todo.WindowsClient
         /// <param name="model"></param>
         public void OpenTask(Notification model,OASystemClass oasystemClass)
         {
-            string token = oasystemClass == OASystemClass.TaskSystem ? LoginHelper.GetOAToken() : LoginHelper.GetReToken();
-            WebCore.ResourceInterceptor = new ResourceInterceptor(token);
-            webControl1.Source = new Uri(ServerHelper.GetNotificationUrl(model));
-            OpenWindow();
+            OpenUrl(ServerHelper.GetNotificationUrl(model), oasystemClass);
+            //string token = oasystemClass == OASystemClass.TaskSystem ? LoginHelper.GetOAToken() : LoginHelper.GetReToken();
+            //WebCore.ResourceInterceptor = new ResourceInterceptor(token);
+            //webControl1.Source = new Uri(ServerHelper.GetNotificationUrl(model));
+            //OpenWindow();
         }
         private void OpenWindow()
         {
