@@ -1,4 +1,4 @@
-﻿@using Ztop.Todo.Model;
+﻿ @using Ztop.Todo.Model;
 @using Ztop.Todo.ActiveDirectory;
 @{
     ViewBag.Title = "报销单";
@@ -13,11 +13,20 @@
 {
     <div class="col-md-12 noprint">
         <h3>报销单详情</h3>
-       @if (sheet.Controler == Identity.Name&&sheet.Status!=Status.RollBack&&sheet.Status!=Status.OutLine)
+       @if (sheet.Controler == Identity.Name)
        {
-        <button type="button" class="btn btn-sm btn-primary  btn-checked">
-            <em class="glyphicon glyphicon-ok">审核通过</em>
-        </button>
+           if (sheet.Status==Status.ExaminingDirector||sheet.Status==Status.ExaminingFinance||sheet.Status==Status.ExaminingManager)
+           {
+            <button type="button" class="btn btn-sm btn-primary  btn-checked">
+                <em class="glyphicon glyphicon-ok">审核通过</em>
+            </button>
+           }else if (sheet.Status == Status.Filing)
+           {
+               <button type="button" class="btn btn-sm btn-warning btn-Fill">
+                   <em class="glyphicon glyphicon-ok">报销归档</em>
+               </button>
+           }
+
        }
 
 
@@ -36,7 +45,6 @@
                     <button type="button" class="btn btn-sm btn-danger btn-delete">
                         <em class="glyphicon glyphicon-remove"></em>删除
                     </button>
-                    <button type="button" class="btn btn-sm btn-default" onclick="history.back();"><em class="glyphicon glyphicon-arrow-left"></em> 返回</button>
                 </form>
             }
         }
@@ -55,7 +63,7 @@
               {
                    if (Identity.Name == XmlHelper.GetFinance())
                    {
-                        <button class="btn btn-default" type="button" onclick="javascript: Preview()">
+                        <button class="btn btn-warning btn-sm" type="button" onclick="javascript: Preview()">
                               <em class="glyphicon glyphicon-print"></em> 打印
                         </button>
                    }
@@ -63,18 +71,15 @@
                         Html.RenderPartial("WithDrawal", sheet);
                    }
                }
-               <button type="button" class="btn btn-sm btn-default" onclick="history.back();"><em class="glyphicon glyphicon-arrow-left"></em> 返回</button>
          }
          else if (sheet.Status == Status.Examined)
          {
-               <button type="button" class="btn btn-sm btn-default" onclick="history.back();"><em class="glyphicon glyphicon-arrow-left"></em> 返回</button>
          }
          else if (sheet.Status == Status.Filing&&Identity.Name==XmlHelper.GetFinance())
          {
-                <button class="btn btn-sm btn-default" type="button" onclick="javascript: Preview()">
+                <button class="btn btn-sm btn-warning" type="button" onclick="javascript: Preview()">
                       <em class="glyphicon glyphicon-print"></em> 打印
                 </button>
-                <button type="button" class="btn btn-sm btn-default" onclick="history.back();"><em class="glyphicon glyphicon-arrow-left"></em> 返回</button>
          }
 
     </div>
@@ -87,15 +92,18 @@
                 <tbody>
                     <tr>
                         <th>单据编号</th>
-                        <td>@(sheet.PrintNumber)</td>
-                        <th>条形码</th>
-                        <td>  &nbsp; <img src="/@(sheet.BarCode)" />  &nbsp;</td>
-                    </tr>
-                    <tr>
+                        <td>@(sheet.CheckNumber)</td>
                         <th>报销人</th>
                         <td>@(sheet.Name)</td>
-                        <th>报销日期</th>
-                        <td>@(sheet.Time.ToLongDateString())</td>
+                    </tr>
+                    <tr>
+                        <th>条形码</th>
+                        <td> 
+                             &nbsp; <img src="/@(sheet.BarCode)" />  &nbsp;<br />
+                            &nbsp; &nbsp;<span class="text-center">@(sheet.PrintNumber)</span>
+                        </td>
+                        <th>填报日期</th>
+                        <td>@(sheet.Time.ToLongDateString())</td>           
                     </tr>
                     <tr>
                         <th>报销金额合计(元)</th>
@@ -104,6 +112,7 @@
                         <td>@(sheet.Count)</td>
                     </tr>
                     <tr>
+
                         <th>备注</th>
                         <td colspan="3">
                             @(sheet.Remarks)
@@ -180,7 +189,7 @@
                         报销填单
                     </div>
                     <div class="progress-bar progress-bar-warning" style="width:17%;min-width:2em;">
-                        主管通过
+                        主管核实
                     </div>
                             <div class="progress-bar progress-bar-info progress-bar-striped active" style="width:17%;min-width:2em;">
                                 @(sheet.Status.GetDescription())
@@ -192,10 +201,10 @@
                         报销填单
                     </div>
                     <div class="progress-bar progress-bar-warning" style="width:17%;min-width:2em;">
-                        主管通过
+                        主管核实
                     </div>
                             <div class="progress-bar progress-bar-info" style="width:17%;min-width:2em;">
-                                总经理通过
+                               财务负责人核准
                             </div>
                             <div class="progress-bar progress-bar-striped active" style="width:17%;min-width:2em;">
                                 @(sheet.Status.GetDescription())
@@ -207,13 +216,13 @@
                         报销填单
                     </div>
                     <div class="progress-bar progress-bar-warning" style="width:17%;min-width:2em;">
-                        主管通过
+                        主管核实
                     </div>
                             <div class="progress-bar progress-bar-info" style="width:17%;min-width:2em;">
-                                总经理通过
+                                财务负责人核准
                             </div>
                             <div class="progress-bar" style="width:17%;min-width:2em;">
-                                财务通过
+                                报销确认
                             </div>
                             <div class="progress-bar progress-bar-success progress-bar-striped active" style="width:17%;min-width:2em;">
                                 @(sheet.Status.GetDescription())
@@ -225,13 +234,13 @@
                         报销填单
                     </div>
                     <div class="progress-bar progress-bar-warning" style="width:17%;min-width:2em;">
-                        主管通过
+                        主管核实
                     </div>
                     <div class="progress-bar progress-bar-info" style="width:17%;min-width:2em;">
-                        总经理通过
+                        财务负责人核准
                     </div>
                     <div class="progress-bar" style="width:17%;min-width:2em;">
-                        财务通过
+                        报销确认
                     </div>
                     <div class="progress-bar progress-bar-warning" style="width:17%;min-width:2em;">
                         报销归档
@@ -311,18 +320,14 @@
         var LODOP = getCLodop();
        
         var strStyleCSS = "<style>table{ border-collapse:collapse; border-spacing:0;width:90%} td,th{ border:solid 1px #000; font-size:12px;padding:0;} h3,div{font-size:15px; font-weight:bold;margin:0px;padding:2px;}</style>";
-        //var strStyleCSS = "<link href='/Content/bootstrap.min.css'  type='text/css' rel='stylesheet'";
-        //var strStyleCSS = "";
         var strHTML = strStyleCSS + "<body>" + document.getElementById("Print").innerHTML + "<div class='form-group'><label class='control-label col-md-4'>审核人：________________________</label><label class='control-label col-md-4'>报销人：________________________</label></div></body>";
-        LODOP.PRINT_INITA(1, 1, 770, 660, "打印报销单");
-        //LODOP.ADD_PRINT_TABLE(50, 10, "50%", 220, document.getElementById("Main").innerHTML);
-        //LODOP.ADD_PRINT_TABLE(0, 0, "100%", "80%", strHTML);
-        LODOP.ADD_PRINT_HTM(0, 0, "100%", "80%", strHTML);
-        LODOP.SET_PRINT_PAGESIZE(2, 0, 0, "A5");
-        LODOP.SET_PREVIEW_WINDOW(0, 0, 0, 760, 540, "");
+        LODOP.PRINT_INITA(1, 1, 297, 210, "打印报销单");
+        LODOP.ADD_PRINT_HTM(0, 0, "100%", "90%", strHTML);
+        //LODOP.SET_PRINT_PAGESIZE(2, 0, 0, "A5");
+        LODOP.SET_PRINT_PAGESIZE(1, 2100, 1480, "");
+        //LODOP.SET_PREVIEW_WINDOW(0, 0, 0, 760, 540, "");
         LODOP.SET_PRINT_MODE("FULL_WIDTH_FOR_OVERFLOW", true);
         LODOP.SET_PRINT_MODE("FULL_HEIGHT_FOR_OVERFLOW", true);
-        //LODOP.SET_PRINT_STYLEA(0, "AngleOfPageInside", -90);
         LODOP.PREVIEW();
         //LODOP.PRINT_DESIGN();
     }
@@ -350,6 +355,14 @@
                 })
             }
         });
+        $("button.btn-Fill").click(function () {
+            if (confirm("您确定要归档当前报销单吗？")) {
+                $.request("/Report/Check?id=@(sheet.ID)", null, function () {
+                    window.location.href = "/Report";
+                })
+            }
+        });
+
         $("#Revoke").click(function () {
             if (confirm("您确定撤回当前报销单？")) {
                 $.request("/Report/Revoke?id=@(sheet.ID)", null, function () {

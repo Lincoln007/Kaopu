@@ -53,13 +53,13 @@ namespace Ztop.Todo.Model
     {
         [Description("报销填单")]//报销人
         Create,
-        [Description("主管审核")]//主管
+        [Description("主管核实")]//主管
         Examine,
-        [Description("报销确认")]//申屠
+        [Description("财务负责人核准")]//申屠
         Confirm,
-        [Description("财务负责人核准")]//财务
+        [Description("报销确认")]//财务
         Approved,
-        [Description("报销归档")]//申屠报销归档
+        [Description("归档")]//申屠报销归档
         Filing,
         [Description("撤回")]
         Roll

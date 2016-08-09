@@ -215,9 +215,9 @@ else
                                 <tr>
                                     <td><a href="/task/detail?id=@(item.ID)">@(item.Title)</a> </td>
                                     <td>@(item.ScheduledTime.HasValue ? item.ScheduledTime.Value.ToShortDateString() : "不限")</td>
-                                    @if (parameter.IsCompleted == true)
+                                    @if (parameter.IsCompleted.HasValue&&parameter.IsCompleted.Value==true)
                                     {
-                                        <td><span class="@(item.CompletedTime.Value>item.ScheduledTime.Value?"text-danger":"text-default")">@(item.CompletedTime.Value.ToShortDateString())</span></td>
+                                        <td><span class="@(item.ScheduledTime.HasValue&&item.CompletedTime.Value>item.ScheduledTime.Value?"text-danger":"text-default")">@(item.CompletedTime.Value.ToShortDateString())</span></td>
                                     }
                                     <td>@(!parameter.IsCreator ? item.Creator.DisplayName : item.Receiver.DisplayName)</td>
                                     <td>@(item.CreateTime.ToString("yyyy-MM-dd HH:mm"))</td>

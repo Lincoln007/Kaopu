@@ -100,10 +100,10 @@ namespace Ztop.Todo.Web.Controllers
                 {
                     throw new ArgumentException("出差报销，出差人员不能为空！");
                 }
-                if (string.IsNullOrEmpty(evection.Way))
-                {
-                    throw new ArgumentException("出差交通方式未选择！");
-                }
+                //if (string.IsNullOrEmpty(evection.Way))
+                //{
+                //    throw new ArgumentException("出差交通方式未选择！");
+                //}
                 evection.Errands = Core.SubstanceManager.GetErrands(HttpContext,lines);
                 evection.TCosts = Core.SubstanceManager.GetTraffic(HttpContext, busType,driver,CarPetty);
                 sheet.Evection = evection;
@@ -115,10 +115,6 @@ namespace Ztop.Todo.Web.Controllers
             }
 
             Save(sheet, DirectorVal);
-
-            //serialNumber.ID = snid;
-            //serialNumber.SID = sheet.ID;
-            //Core.SerialNumberManager.Update(serialNumber);
             return SuccessJsonResult();
         }
         [HttpPost]
@@ -137,9 +133,17 @@ namespace Ztop.Todo.Web.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public ActionResult Detail(int id,InfoType? infoType=null)
+        public ActionResult Detail(int id,InfoType? infoType=null,int ?verifyid=null)
         {
             var model= Core.SheetManager.GetAllModel(id);
+            if (model.Status == Status.Filing || model.Status == Status.Examined)
+            {
+                if (!model.CheckExt.HasValue&&model.CheckTime.HasValue)
+                {
+                    model.CheckExt = Core.SheetManager.GetCheckExt(model.CheckTime.Value);
+                    Core.SheetManager.SaveSheet(model);
+                }
+            }
             ViewBag.Sheet = model;
             ViewBag.Detail = true;
             if (infoType.HasValue)
@@ -147,9 +151,9 @@ namespace Ztop.Todo.Web.Controllers
                 if (infoType == InfoType.Sheet)
                 {
                     Core.NotificationManager.FlagSheetRead(model.ID, Identity.UserID);
-                }else if (infoType == InfoType.Verify)
+                }else if (infoType == InfoType.Verify&&verifyid.HasValue)
                 {
-                    Core.NotificationManager.FlagVerifyRead(model.ID, Identity.UserID);
+                    Core.NotificationManager.FlagVerifyRead(verifyid.Value, Identity.UserID);
                 }
             }
             return View();
@@ -265,6 +269,7 @@ namespace Ztop.Todo.Web.Controllers
                     sheet.Status = Status.Filing;
                     sheet.Controler = XmlHelper.GetManager();
                     sheet.CheckTime = DateTime.Now;
+                    sheet.CheckExt = Core.SheetManager.GetCheckExt(sheet.CheckTime.Value);
                     sverify.Step = Step.Approved;
                     break;
                 case Status.Filing:
@@ -277,7 +282,11 @@ namespace Ztop.Todo.Web.Controllers
             }
             Core.SheetManager.Save(sheet);
             Core.VerifyManager.Save(sverify);
-            Core.NotificationManager.Add(sverify);
+            if (sheet.Status != Status.Filing&&sheet.Status!=Status.Examined)
+            {
+                Core.NotificationManager.Add(sverify);
+            }
+           
           
         }
         public ActionResult Check(int id)
@@ -401,12 +410,13 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
 
-        public ActionResult Review(string Coding=null,string Time=null,double? MinMoney=null,double? MaxMoney=null,string Creater=null,Order order=Order.Time,int page=1)
+        public ActionResult Review(string Coding=null,string CheckKey=null,string Time=null,double? MinMoney=null,double? MaxMoney=null,string Creater=null,Order order=Order.Time,int page=1)
         {
             var parameter = new SheetVerifyParameter()
             {
                 Page = new PageParameter(page, 20),
                 Coding = Coding,
+                CheckKey=CheckKey,
                 Time = Time,
                 MinMoney = MinMoney,
                 MaxMoney = MaxMoney,

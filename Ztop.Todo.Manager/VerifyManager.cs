@@ -66,7 +66,6 @@ namespace Ztop.Todo.Manager
                         var sheet = db.Sheets.Find(sid);
                         if (sheet != null)
                         {
-                            //sheet.SerialNumber = db.SerialNumbers.FirstOrDefault(e => e.SID == sheet.ID);
                             list.Add(sheet);
                         }
                     }
@@ -82,7 +81,11 @@ namespace Ztop.Todo.Manager
             if (!string.IsNullOrEmpty(parameter.Coding))
             {
                 query = query.Where(e => e.PrintNumber.Contains(parameter.Coding));
-               // query = query.Where(e => e.SerialNumber.Coding.Contains(parameter.Coding));
+            }
+
+            if (!string.IsNullOrEmpty(parameter.CheckKey))
+            {
+                query = query.Where(e => e.CheckNumber.Contains(parameter.CheckKey));
             }
 
             if (parameter.MinMoney.HasValue&& parameter.MinMoney.Value > 0)
@@ -152,15 +155,16 @@ namespace Ztop.Todo.Manager
                             var cell = ExcelClass.GetCell(row, 0);
                             cell.SetCellValue(serial++);
                             ExcelClass.GetCell(row, 1, modelRow).SetCellValue(item.PrintNumber);
-                            ExcelClass.GetCell(row, 2, modelRow).SetCellValue(item.Name);
-                            ExcelClass.GetCell(row, 3, modelRow).SetCellValue(item.Time.ToLongDateString());
-                            ExcelClass.GetCell(row, 4, modelRow).SetCellValue(item.Count);
-                            ExcelClass.GetCell(row, 5, modelRow).SetCellValue(item.Money);
-                            ExcelClass.GetCell(row, 6, modelRow).SetCellValue(item.Remarks);
-                            ExcelClass.GetCell(row, 7, modelRow).SetCellValue(item.Type.GetDescription());
-                            ExcelClass.GetCell(row, 8, modelRow).SetCellValue(item.Status.GetDescription());
-                            ExcelClass.GetCell(row, 9, modelRow).SetCellValue(item.Checkers);
-                            ExcelClass.GetCell(row, 10, modelRow).SetCellValue(item.CheckTime.HasValue ? item.CheckTime.Value.ToLongDateString() : "未审核");
+                            ExcelClass.GetCell(row, 2, modelRow).SetCellValue(item.CheckNumber);
+                            ExcelClass.GetCell(row, 3, modelRow).SetCellValue(item.Name);
+                            ExcelClass.GetCell(row, 4, modelRow).SetCellValue(item.Time.ToLongDateString());
+                            ExcelClass.GetCell(row, 5, modelRow).SetCellValue(item.Count);
+                            ExcelClass.GetCell(row, 6, modelRow).SetCellValue(item.Money);
+                            ExcelClass.GetCell(row, 7, modelRow).SetCellValue(item.Remarks);
+                            ExcelClass.GetCell(row, 8, modelRow).SetCellValue(item.Type.GetDescription());
+                            ExcelClass.GetCell(row, 9, modelRow).SetCellValue(item.Status.GetDescription());
+                            ExcelClass.GetCell(row, 10, modelRow).SetCellValue(item.Checkers);
+                            ExcelClass.GetCell(row, 11, modelRow).SetCellValue(item.CheckTime.HasValue ? item.CheckTime.Value.ToLongDateString() : "未审核");
                         }
                     }
                 }

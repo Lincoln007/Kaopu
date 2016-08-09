@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Ztop.Todo.Model
+﻿namespace Ztop.Todo.Model
 {
     public class SheetVerifyParameter
     {
         /// <summary>
-        /// 报销单单据编号
+        /// 报销单流水编号
         /// </summary>
         public string Coding { get; set; }
+        /// <summary>
+        /// 单据编号
+        /// </summary>
+        public string CheckKey { get; set; }
         /// <summary>
         /// 审核人
         /// </summary>

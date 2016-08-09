@@ -48,7 +48,7 @@ namespace Ztop.Todo.Manager
                                 var sheet = Core.SheetManager.GetModel(verify.SID);
                                 var sender = Core.UserManager.GetUser(model.SenderID);
                                 model.Description = sender.DisplayName + "审核通过了" + sheet.PrintNumber;
-                                model.Path = "/Report/Detail/?id=" + sheet.ID+"&&infoType="+InfoType.Verify;
+                                model.Path = "/Report/Detail/?id=" + sheet.ID+"&&infoType="+InfoType.Verify+"&&verifyid="+verify.ID;
                             }
                             break;
                         case InfoType.Invoice:

@@ -50,6 +50,15 @@ namespace Ztop.Todo.Manager
             }
         }
 
+        public int GetCheckExt(DateTime time)
+        {
+            using (var db = GetDbContext())
+            {
+                var last = db.Sheets.Where(e => e.CheckTime.HasValue && e.CheckExt.HasValue && e.CheckTime.Value.Year == time.Year && e.CheckTime.Value.Month == time.Month).OrderByDescending(e => e.CheckExt.Value).FirstOrDefault();
+                return last == null ? 1 : last.CheckExt.Value + 1;
+            }
+        }
+
         public Sheet GetAllModel(int id)
         {
             if (id == 0) return null;
@@ -78,6 +87,27 @@ namespace Ztop.Todo.Manager
                     model.Verifys = db.Verifys.Where(e => e.SID == id).OrderBy(e => e.ID).ToList();
                 }
                 return model;
+            }
+        }
+
+        public void SaveSheet(Sheet sheet)
+        {
+            if (sheet == null) return;
+            using (var db = GetDbContext())
+            {
+                if (sheet.ID == 0)
+                {
+                    db.Sheets.Add(sheet);
+                }
+                else
+                {
+                    var entry = db.Sheets.FirstOrDefault(e => e.ID == sheet.ID);
+                    if (entry != null)
+                    {
+                        db.Entry(entry).CurrentValues.SetValues(sheet);
+                    }
+                }
+                db.SaveChanges();
             }
         }
         /// <summary>
@@ -204,6 +234,8 @@ namespace Ztop.Todo.Manager
 
             }
         }
+
+
         private SerialNumber GetSerialNumber(int sid)
         {
             if (sid == 0) return null;

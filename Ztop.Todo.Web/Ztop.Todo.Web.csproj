@@ -225,6 +225,7 @@
     <Content Include="Scripts\CLodopfuncs.js" />
     <Content Include="Scripts\common.js" />
     <Content Include="Scripts\Contract.js" />
+    <Content Include="Scripts\Errand.js" />
     <Content Include="Scripts\jquery-1.9.1.js" />
     <Content Include="Scripts\jquery-1.9.1.min.js" />
     <Content Include="Scripts\jquery.autocomplete.js" />

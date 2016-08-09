@@ -59,7 +59,7 @@ namespace Ztop.Todo.Model
         /// 出差人员  
         /// </summary>
         public string Persons { get; set; }
-        public string Way { get; set; }
+        //public string Way { get; set; }
         public int SID { get; set; }
         [NotMapped]
         public List<Errand> Errands { get; set; }

@@ -30,6 +30,23 @@ namespace Ztop.Todo.Model
                 return string.Format("{0}{1}", Number, NumberExt.ToString("0000"));
             }
         }
+        public int? CheckExt { get; set; }
+
+        [NotMapped]
+        public string CheckNumber
+        {
+            get
+            {
+                if (Status == Status.Filing || Status == Status.Examined)
+                {
+                    if (CheckTime.HasValue&&CheckExt.HasValue)
+                    {
+                        return string.Format("{0}{1}{2}", CheckTime.Value.Year, CheckTime.Value.Month.ToString("00"), CheckExt.Value.ToString("0000"));
+                    }
+                }
+                return "/";
+            }
+        }
 
         public string BarCode { get; set; }
 
