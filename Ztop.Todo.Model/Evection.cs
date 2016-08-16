@@ -114,11 +114,13 @@ namespace Ztop.Todo.Model
         PublicBus,
         [Description("地铁")]
         Metro,
-        [Description("互联网平台用车")]
+        [Description("互联网用车（企业支付）")]
         InternetCar,
         [Description("公司车")]
         Company,
         [Description("自备车")]
-        Personal   
+        Personal,
+        [Description("互联网用车（个人支付）")]
+        InternetCarPersonal
     }
 }

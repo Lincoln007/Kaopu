@@ -31,9 +31,16 @@
         /// </summary>
         public string Creater { get; set; }
         /// <summary>
+        /// 报销内容关键字
+        /// </summary>
+        public string Content { get; set; }
+        public SheetType? SheetType { get; set; }
+        /// <summary>
         /// 时间
         /// </summary>
         public string Time { get; set; }
         public PageParameter Page { get; set; }
     }
+
+    
 }

@@ -78,6 +78,10 @@ namespace Ztop.Todo.Manager
         {
             var checks = GetSheetByVerify(parameter.Checker);
             var query = checks.AsQueryable();
+            if (parameter.SheetType.HasValue)
+            {
+                query = query.Where(e => e.Type == parameter.SheetType.Value);
+            }
             if (!string.IsNullOrEmpty(parameter.Coding))
             {
                 query = query.Where(e => e.PrintNumber.Contains(parameter.Coding));
@@ -127,6 +131,10 @@ namespace Ztop.Todo.Manager
             else
             {
                 query = query.OrderByDescending(e => e.Money);
+            }
+            if (!string.IsNullOrEmpty(parameter.Content))
+            {
+
             }
             query = query.SetPage(parameter.Page);
             return query.ToList();

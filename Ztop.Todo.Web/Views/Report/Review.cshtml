@@ -10,6 +10,7 @@
     <fieldset><legend>查询设置</legend></fieldset>
     <form method="get" id="Review-form">
         <input type="hidden" name="Time" value="@(parameter.Time)"/>
+        <input type="hidden" name="SheetType" value="@(parameter.SheetType.HasValue?parameter.SheetType.Value.GetDescription():"")" />
         <div class="form-group">
             <label class="control-label">系统流水编号：</label>
             <div class="col-md-12">
@@ -66,6 +67,23 @@
             </div>
         </div>
         <div class="form-group">
+            <label class="control-label">报销类型</label>
+            <div class="col-md-12">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-sm btn-@(!parameter.SheetType.HasValue?"success":"default")" name="SheetType">全部</button>
+                    <button type="button" class="btn btn-sm btn-@(parameter.SheetType.HasValue&&parameter.SheetType.Value==SheetType.Daily?"success":"default")" name="SheetType">@(SheetType.Daily.GetDescription())</button>
+                    <button type="button" class="btn btn-sm btn-@(parameter.SheetType.HasValue&&parameter.SheetType.Value==SheetType.Errand?"success":"default")" name="SheetType">@(SheetType.Errand.GetDescription())</button>
+                </div>
+            </div>
+        </div>
+        <div class="form-group" id="ReportContent">
+            <label class="control-label">报销内容</label>
+            <div class="col-md-12" id="Content">
+              
+               
+            </div>
+        </div>
+        <div class="form-group">
             <label class="control-label">排序：</label>
             <div class="col-md-12">
                 <select name="Order" class="form-control input-sm">
@@ -116,6 +134,31 @@
             }
         </tbody>
     </table>
+    @Html.Partial("_pagination", ViewBag.Page as object)
+</div>
+
+
+<div class="hidden">
+    <div id="Daily">
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-sm btn-success" name="Content">全部</button>
+            @foreach (Category categroy in Enum.GetValues(typeof(Category)))
+            {
+                <button type="button" class="btn btn-sm btn-default" name="Content">@(categroy.GetDescription())</button>
+            }
+            <input type="hidden" name="Content" />
+        </div>
+    </div>
+    <div id="Errand">
+        <div class="input-group" role="group">
+            <div class="input-group-btn">
+                <button type="button" class="btn btn-sm btn-success" name="Content">全部</button>
+            </div>
+            <input type="text" name="" class="form-control input-sm" placeholder="地点/项目/事由关键字" />
+        </div>
+      
+
+    </div>
 </div>
 
 <script>
@@ -123,32 +166,52 @@
         $("a[name='Download']").click(function () {
             var values = $("#Review-form").serialize();
             $(this).attr("href", "/Report/DownloadExcel/?" + values);
-            return true;
-            
+            return true; 
         });
 
+        var dailyHtml = $("#Daily").html();
+        var errandHtml = $("#Errand").html();
 
-        //$(".btn-group>button").click(function () {
-        //    var name = $(this).attr("name");
-        //    var val = $(this).text();
-        //    if (val == "全部") {
-        //        val = "";
-        //    }
-        //    $(".btn-group>button[name='"+name+"']").removeClass("btn-success").addClass("btn-default");
-        //    $(this).removeClass("btn-default").addClass("btn-success");
-        //    $("input[name='" + name + "']").val(val);
-        //});
+        $("button[name='SheetType']").click(function () {
+            var val = $(this).text();
+            if (val == "全部") {
+                $("#ReportContent").hide(50);
+                return;
+            } else if (val == "出差报销") {
+                $("#Content").empty().append(errandHtml);
+                $("#ReportContent").show(50);
+            } else if (val == "日常报销") {
+                $("#Content").empty().append(dailyHtml);
+                $("#ReportContent").show(50);
+            }
+            $("#Content .btn-group>button").unbind("click").bind("click", function () {
+                var val = $(this).text();
+                if (val == "全部") {
+                    val = "";
+                }
+                var targetName = $(this).attr("name");
+                if (targetName != undefined) {
+                    $(".btn-group>button[name='" + targetName + "']").removeClass("btn-success").addClass("btn-default");
+                    $(this).removeClass("btn-default").addClass("btn-success");
+                    $("input[name='" + targetName + "']").val(val);
+                }
+            });
 
-        //$(".input-group-btn>button").click(function () {
-        //    var name = $(this).attr("name");
-        //    $(this).removeClass("btn-default").addClass("btn-success");
-        //    $(".input-group>input[name='" + name + "']").val("");
-        //});
+            $("#Content .input-group-btn>button").unbind("click").bind("click", function () {
+                var targetName = $(this).attr("name");
+                $(this).removeClass("btn-default").addClass("btn-success");
+                $("input[name='" + targetName + "']").val("");
+            });
 
-        //$(".input-group>input").click(function () {
-        //    var name = $(this).attr("name");
-        //    $(".input-group-btn>button[name='" + name + "']").removeClass("btn-success").addClass("btn-default");
-        //});
+            $("#Content .input-group>input").unbind("focus").bind("focus", function () {
+                $(this).prev().children().removeClass("btn-success").addClass("btn-default");
+            }).unbind("blur").bind("blur", function () {
+                var val = $(this).val();
+                if (val == "") {
+                    $(this).prev().children().removeClass("btn-default").addClass("btn-success");
+                }
+            });
+        });
         
     });
 </script>

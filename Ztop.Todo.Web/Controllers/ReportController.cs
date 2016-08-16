@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Ztop.Todo.ActiveDirectory;
+using Ztop.Todo.Common;
 using Ztop.Todo.Model;
 
 namespace Ztop.Todo.Web.Controllers
@@ -30,7 +31,7 @@ namespace Ztop.Todo.Web.Controllers
             if(Identity.Director||Identity.Name== "靳小阳")
             {
                 ViewBag.WaitForMe = Core.SheetManager.GetSheets(new SheetQueryParameter { Deleted = false, Controler = Identity.Name }).Where(e => e.Status != Status.Examined && e.Status != Status.OutLine).ToList();
-                ViewBag.Checks = Core.VerifyManager.GetSheetByVerify(Identity.Name);
+                ViewBag.Checks = Core.VerifyManager.GetSheetByVerify(Identity.Name).OrderByDescending(e=>e.Time).Take(20).ToList();
             }
             return View();
         }
@@ -410,7 +411,7 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
 
-        public ActionResult Review(string Coding=null,string CheckKey=null,string Time=null,double? MinMoney=null,double? MaxMoney=null,string Creater=null,Order order=Order.Time,int page=1)
+        public ActionResult Review(string Coding=null,string CheckKey=null,string Time=null,double? MinMoney=null,double? MaxMoney=null,string Creater=null,Order order=Order.Time,int page=1,string sheetType=null)
         {
             var parameter = new SheetVerifyParameter()
             {
@@ -424,12 +425,17 @@ namespace Ztop.Todo.Web.Controllers
                 Order = order,
                 Checker = Identity.Name
             };
+            if (!string.IsNullOrEmpty(sheetType))
+            {
+                parameter.SheetType = EnumHelper.GetEnum<SheetType>(sheetType);
+            }
             ViewBag.List = Core.VerifyManager.GetSheetByVerify(parameter);
             ViewBag.Parameter = parameter;
+            ViewBag.Page = parameter.Page;
             return View();
         }
 
-        public ActionResult DownloadExcel(string coding=null,string time=null,double? minMoney=null,double? maxmoney=null,string creator=null,Order order = Order.Time)
+        public ActionResult DownloadExcel(string coding=null,string time=null,double? minMoney=null,double? maxmoney=null,string creator=null,Order order = Order.Time,string sheetType=null)
         {
             var parameter = new SheetVerifyParameter()
             {
@@ -441,6 +447,10 @@ namespace Ztop.Todo.Web.Controllers
                 Order = order,
                 Checker = Identity.Name
             };
+            if (!string.IsNullOrEmpty(sheetType))
+            {
+                parameter.SheetType = EnumHelper.GetEnum<SheetType>(sheetType);
+            }
             var list = Core.VerifyManager.GetSheetByVerify(parameter);
             IWorkbook workbook = Core.VerifyManager.GetWorkbook(list);
             MemoryStream ms = new MemoryStream();

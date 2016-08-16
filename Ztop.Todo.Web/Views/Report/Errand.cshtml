@@ -318,9 +318,9 @@
                                             @foreach (BusType type in Enum.GetValues(typeof(BusType)))
                                             {
 
-                                                if (type == BusType.Company)
+                                                if (type == BusType.Company||type==BusType.Personal)
                                                 {
-                                                    break;
+                                                    continue;
                                                 }
                                                 var exist = costtypes.ContainsKey(type);
                                                 <div class="col-md-6 col-xs-6" style="padding:5px;margin-bottom:5px;margin-top:5px;">
@@ -466,8 +466,6 @@
 
 
 <script>
-    //var BUSHtml = $("#BUSBUS").html();
-    //var CarHtml = $("#CarCar").html();
     var PManHtml = $("#PMan").html();
     $(function () {
         var mans = [];
@@ -780,10 +778,10 @@
             var sum = 0;
             $("[name='BusType']:checked").each(function () {
                 var type = $(this).val();
-                if (type != "Didi") {
-                    var val = $("[name='Cost" + type + "']").val();
-                    if (val != undefined && val != "undefined" && val != NaN && val != "") {
-                        sum += parseFloat(val);
+                if (type != "InternetCar") {
+                    var cost=parseFloat($("[name='Cost" + type + "']").val());
+                    if(!isNaN(cost)){
+                        sum += cost;
                     }
                 }
             });
