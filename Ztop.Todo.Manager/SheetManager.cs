@@ -235,30 +235,12 @@ namespace Ztop.Todo.Manager
             }
         }
 
-
-        private SerialNumber GetSerialNumber(int sid)
-        {
-            if (sid == 0) return null;
-            using (var db = GetDbContext())
-            {
-                return db.SerialNumbers.FirstOrDefault(e => e.SID == sid);
-            }
-        }
         private List<Sheet> GetSheets()
         {
             using (var db = GetDbContext())
             {
                 return db.Sheets.ToList();
             }
-        }
-        private List<Sheet> GetSerialNumberSheets()
-        {
-            var list = GetSheets();
-            foreach(var sheet in list)
-            {
-               // sheet.SerialNumber = GetSerialNumber(sheet.ID);
-            }
-            return list;
         }
 
         public List<Sheet> GetSheets(int year,int month)
@@ -306,7 +288,7 @@ namespace Ztop.Todo.Manager
         }
         public List<Sheet> GetSheets(SheetQueryParameter parameter)
         {
-            var list = GetSerialNumberSheets();
+            var list = GetSheets();
             var query = list.AsQueryable();
             if (!string.IsNullOrEmpty(parameter.Name))
             {
@@ -336,7 +318,7 @@ namespace Ztop.Todo.Manager
         }
         public List<Sheet> GetSheets(QueryParameter parameter,string name)
         {
-            var list = GetSerialNumberSheets();
+            var list = GetSheets();
             var query = list.AsQueryable();
             query = query.Where(e => e.Deleted == false);
             if (parameter.Type.HasValue)

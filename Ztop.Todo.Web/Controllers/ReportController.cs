@@ -30,7 +30,7 @@ namespace Ztop.Todo.Web.Controllers
             ViewBag.RollBackList = list.Where(e => e.Status == Status.RollBack).Take(10).ToList();
             if(Identity.Director||Identity.Name== "靳小阳")
             {
-                ViewBag.WaitForMe = Core.SheetManager.GetSheets(new SheetQueryParameter { Deleted = false, Controler = Identity.Name }).Where(e => e.Status != Status.Examined && e.Status != Status.OutLine).ToList();
+                ViewBag.WaitForMe = Core.SheetManager.GetSheets(new SheetQueryParameter { Deleted = false, Controler = Identity.Name }).Where(e => e.Status != Status.Examined && e.Status != Status.OutLine&&e.Status!=Status.RollBack).ToList();
                 ViewBag.Checks = Core.VerifyManager.GetSheetByVerify(Identity.Name).OrderByDescending(e=>e.Time).Take(20).ToList();
             }
             return View();
@@ -411,19 +411,20 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
 
-        public ActionResult Review(string Coding=null,string CheckKey=null,string Time=null,double? MinMoney=null,double? MaxMoney=null,string Creater=null,Order order=Order.Time,int page=1,string sheetType=null)
+        public ActionResult Review(string Coding=null,string CheckKey=null,string Time=null,double? MinMoney=null,double? MaxMoney=null,string Creater=null,Order order=Order.Time,int page=1,string sheetType=null,string content=null)
         {
             var parameter = new SheetVerifyParameter()
             {
                 Page = new PageParameter(page, 20),
                 Coding = Coding,
-                CheckKey=CheckKey,
+                CheckKey = CheckKey,
                 Time = Time,
                 MinMoney = MinMoney,
                 MaxMoney = MaxMoney,
                 Creater = Creater,
                 Order = order,
-                Checker = Identity.Name
+                Checker = Identity.Name,
+                Content = content
             };
             if (!string.IsNullOrEmpty(sheetType))
             {

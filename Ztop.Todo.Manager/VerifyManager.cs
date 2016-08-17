@@ -66,7 +66,21 @@ namespace Ztop.Todo.Manager
                         var sheet = db.Sheets.Find(sid);
                         if (sheet != null)
                         {
+                            if (sheet.Type == SheetType.Daily)
+                            {
+                                sheet.Substances = db.Substances.Where(e => e.SID == sheet.ID).OrderBy(e => e.ID).ToList();
+                            }
+                            else
+                            {
+                                sheet.Evection = db.Evections.FirstOrDefault(e => e.SID == sheet.ID);
+                                if (sheet.Evection != null)
+                                {
+                                    sheet.Evection.Errands = db.Errands.Where(e => e.EID == sheet.Evection.ID).ToList();
+                                    sheet.Evection.TCosts = db.Traffics.Where(e => e.EID == sheet.Evection.ID).ToList();
+                                }
+                            }
                             list.Add(sheet);
+                           
                         }
                     }
                 }
@@ -78,10 +92,7 @@ namespace Ztop.Todo.Manager
         {
             var checks = GetSheetByVerify(parameter.Checker);
             var query = checks.AsQueryable();
-            if (parameter.SheetType.HasValue)
-            {
-                query = query.Where(e => e.Type == parameter.SheetType.Value);
-            }
+           
             if (!string.IsNullOrEmpty(parameter.Coding))
             {
                 query = query.Where(e => e.PrintNumber.Contains(parameter.Coding));
@@ -124,6 +135,31 @@ namespace Ztop.Todo.Manager
                 }
                 query = query.Where(e => e.Time <= currentTime);
             }
+           
+            if (parameter.SheetType.HasValue)
+            {
+                query = query.Where(e => e.Type == parameter.SheetType.Value);
+                if (!string.IsNullOrEmpty(parameter.Content))
+                {
+                    if (parameter.SheetType.Value == SheetType.Daily)
+                    {
+
+                        try
+                        {
+                            var category = EnumHelper.GetEnum<Category>(parameter.Content);
+                            query = query.Where(e => e.Substances.Any(k => k.Category == category));
+                        }
+                        catch
+                        {
+
+                        }
+                    }
+                    else if (parameter.SheetType.Value == SheetType.Errand)
+                    {
+                        query = query.Where(e => e.Remarks.Contains(parameter.Content) || e.Evection.Place.Contains(parameter.Content) || e.Evection.Reason.Contains(parameter.Content));
+                    }
+                }
+            }
             if (parameter.Order == Order.Time)
             {
                 query = query.OrderByDescending(e => e.Time);
@@ -131,10 +167,6 @@ namespace Ztop.Todo.Manager
             else
             {
                 query = query.OrderByDescending(e => e.Money);
-            }
-            if (!string.IsNullOrEmpty(parameter.Content))
-            {
-
             }
             query = query.SetPage(parameter.Page);
             return query.ToList();

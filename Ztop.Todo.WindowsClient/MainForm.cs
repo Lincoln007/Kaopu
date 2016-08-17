@@ -36,6 +36,14 @@ namespace Ztop.Todo.WindowsClient
         }
         private void Timer1_Tick(object sender, EventArgs e)
         {
+            try
+            {
+
+            }catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return;
+            }
             var notification = ServerHelper.GetNotification();
             if (notification != null)
             {
