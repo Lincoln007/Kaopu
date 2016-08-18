@@ -57,7 +57,7 @@ namespace Ztop.Todo.Manager
             using (var db = GetDbContext())
             {
                 var list = new List<Sheet>();
-                var query = db.Verifys.Where(e => e.Position == Position.Check && e.Name == name).AsQueryable();
+                var query = db.Verifys.Where(e => e.Position == Position.Check && e.Name == name&&e.Step!=Step.Create).AsQueryable();
                 if (query.Count() > 0)
                 {
                     var result = query.GroupBy(e => e.SID).Select(e => e.Key).ToList();
@@ -156,7 +156,7 @@ namespace Ztop.Todo.Manager
                     }
                     else if (parameter.SheetType.Value == SheetType.Errand)
                     {
-                        query = query.Where(e => e.Remarks.Contains(parameter.Content) || e.Evection.Place.Contains(parameter.Content) || e.Evection.Reason.Contains(parameter.Content));
+                        query = query.Where(e => (!string.IsNullOrEmpty(e.Remarks)&&e.Remarks.Contains(parameter.Content)) || (!string.IsNullOrEmpty(e.Evection.Place)&& e.Evection.Place.Contains(parameter.Content)) || (!string.IsNullOrEmpty(e.Evection.Reason)&&e.Evection.Reason.Contains(parameter.Content)));
                     }
                 }
             }

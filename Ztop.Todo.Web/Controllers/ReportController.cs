@@ -436,7 +436,7 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
 
-        public ActionResult DownloadExcel(string coding=null,string time=null,double? minMoney=null,double? maxmoney=null,string creator=null,Order order = Order.Time,string sheetType=null)
+        public ActionResult DownloadExcel(string coding=null,string time=null,double? minMoney=null,double? maxmoney=null,string creator=null,Order order = Order.Time,string sheetType=null,string content=null)
         {
             var parameter = new SheetVerifyParameter()
             {
@@ -446,7 +446,8 @@ namespace Ztop.Todo.Web.Controllers
                 MaxMoney = maxmoney,
                 Creater = creator,
                 Order = order,
-                Checker = Identity.Name
+                Checker = Identity.Name,
+                Content = content
             };
             if (!string.IsNullOrEmpty(sheetType))
             {

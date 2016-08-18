@@ -5,6 +5,9 @@
     List<User> selectedUsers = ViewBag.Users ?? new List<User>();
 
 }
+<div class="alert alert-danger" role="alert" id="user-alert" style="display:none">
+    <span>警告框</span>
+</div>
 @if (Request.Browser.IsMobileDevice)
 {
  
@@ -68,35 +71,6 @@ else
                 </tr>
             </table>
         }
-        
-        @*<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                @foreach (var g in users)
-                {
-                    var groupId = g.Key;
-                    var group = groups.FirstOrDefault(e => e.ID == groupId) ?? new UserGroup { ID = 0, Name = "未分组" };
-                    <div class="panel panel-default">
-                        <div class="panel-heading" role="tab" id="group-header-@(group.ID)">
-                            <h4 class="panel-title">
-                                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#group-body-@(group.ID)" aria-expanded="true" aria-controls="group-header-@(group.ID)">
-                                    @(group.Name)
-                                </a>
-                            </h4>
-                        </div>
-                        <div id="group-body-@(group.ID)" class="panel-collapse collapse" role="tabpanel" aria-labelledby="group-header-@(group.ID)">
-                            <div class="panel-body">
-                                @foreach (var user in g.Value.Where(e => e.GroupID == group.ID))
-                                {
-                                    if (user.DisplayName == Identity.Name)
-                                    {
-                                        continue;
-                                    }
-                                    <label class="checkbox-inline"><input type="checkbox" name="userIds" value="@(user.ID)" />@(user.DisplayName)</label>
-                                }
-                            </div>
-                        </div>
-                    </div>
-                }
-            </div>*@
     </div>
 }
 

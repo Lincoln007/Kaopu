@@ -76,11 +76,34 @@
                 </div>
             </div>
         </div>
-        <div class="form-group" id="ReportContent">
+        <div class="form-group" id="ReportContent" style="display:@(parameter.SheetType.HasValue?"block":"none")">
             <label class="control-label">报销内容</label>
             <div class="col-md-12" id="Content">
-              
-               
+                @if (parameter.SheetType.HasValue)
+                {
+                    if (parameter.SheetType.Value == SheetType.Daily)
+                    {
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-sm btn-@(string.IsNullOrEmpty(parameter.Content)?"success":"default")" name="Content">全部</button>
+                            @foreach (Category category in Enum.GetValues(typeof(Category)))
+                            {
+                                var ischecked = category.GetDescription() == parameter.Content;
+                                <button type="button" class="btn btn-sm btn-@(!string.IsNullOrEmpty(parameter.Content)&&ischecked?"success":"default")" name="Content">@(category.GetDescription())</button>
+                            }
+                            <input type="hidden" name="Content" />
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="input-group" role="group">
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-sm btn-@(string.IsNullOrEmpty(parameter.Content)?"success":"default")" name="Content">全部</button>
+                            </div>
+                            <input type="text" name="Content" class="form-control input-sm" placeholder="地点/项目/事由关键字" value="@(!string.IsNullOrEmpty(parameter.Content)?parameter.Content:"")" />
+                        </div>
+                    }
+                }
+
             </div>
         </div>
         <div class="form-group">
@@ -172,6 +195,34 @@
         var dailyHtml = $("#Daily").html();
         var errandHtml = $("#Errand").html();
 
+        $("#Content .btn-group>button").click(function () {
+            var val = $(this).text();
+            if (val == "全部") {
+                val = "";
+            }
+            var targetName = $(this).attr("name");
+            if (targetName != undefined) {
+                $(".btn-group>button[name='" + targetName + "']").removeClass("btn-success").addClass("btn-default");
+                $(this).removeClass("btn-default").addClass("btn-success");
+                $("input[name='" + targetName + "']").val(val);
+            }
+        });
+
+        $("#Content .input-group-btn>button").click(function () {
+            var targetName = $(this).attr("name");
+            $(this).removeClass("btn-default").addClass("btn-success");
+            $("input[name='" + targetName + "']").val("");
+        });
+
+        $("#Content .input-group>input").focus(function () {
+            $(this).prev().children().removeClass("btn-success").addClass("btn-default");
+        }).blur(function () {
+            var val = $(this).val();
+            if (val == "") {
+                $(this).prev().children().removeClass("btn-default").addClass("btn-success");
+            }
+        });
+
         $("button[name='SheetType']").click(function () {
             var val = $(this).text();
             if (val == "全部") {
@@ -184,6 +235,8 @@
                 $("#Content").empty().append(dailyHtml);
                 $("#ReportContent").show(50);
             }
+
+
             $("#Content .btn-group>button").unbind("click").bind("click", function () {
                 var val = $(this).text();
                 if (val == "全部") {

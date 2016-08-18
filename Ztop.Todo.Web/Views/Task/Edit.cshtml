@@ -186,6 +186,16 @@
             $(".selected-user").each(function () {
                 selectedUserIds.push($(this).attr("data-userid"));
             });
+            $("#user-alert").hide();
+            var selected = [];
+            $("input[name='userIds']:checked").each(function () {
+                selected.push($(this).val());
+            });
+            if (selected.length == 0) {
+                $("#user-alert>span").html("请选择用户!");
+                $("#user-alert").show(500);
+                return false;
+            }
             $("#txt-userIds").val(selectedUserIds.join());
            // $("#btn-submit").text("正在提交").disabled();
             $("button[name='btn-submit']").text("正在提交").disabled();
