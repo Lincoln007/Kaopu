@@ -163,5 +163,23 @@ namespace Ztop.Todo.Manager
             }
             return list;
         }
+
+        public List<Substancs> GetSubstances(List<Sheet> sheets)
+        {
+            var list = new List<Substancs>();
+            using(var db = GetDbContext())
+            {
+                foreach (var item in sheets)
+                {
+                    var temp = db.Substances.Where(e => e.SID == item.ID).ToList();
+                    if (temp != null && temp.Count != 0)
+                    {
+                        list.AddRange(temp);
+                    }
+                }
+            }
+   
+            return list;
+        }
     }
 }

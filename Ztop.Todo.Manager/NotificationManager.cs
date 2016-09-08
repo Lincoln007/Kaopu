@@ -47,7 +47,7 @@ namespace Ztop.Todo.Manager
                                 var verify = Core.VerifyManager.Get(model.InfoID);
                                 var sheet = Core.SheetManager.GetModel(verify.SID);
                                 var sender = Core.UserManager.GetUser(model.SenderID);
-                                model.Description = sender.DisplayName + "审核通过了" + sheet.PrintNumber;
+                                model.Description = sender.DisplayName + (verify.Position==Position.Check?"审核通过了":"审核退回") + sheet.PrintNumber;
                                 model.Path = "/Report/Detail/?id=" + sheet.ID+"&&infoType="+InfoType.Verify+"&&verifyid="+verify.ID;
                             }
                             break;
@@ -126,7 +126,7 @@ namespace Ztop.Todo.Manager
         {
             var sender = Core.UserManager.UserGet(verify.Name);
             var sheet = Core.SheetManager.GetModel(verify.SID);
-            var receiver = Core.UserManager.UserGet(sheet.Name);
+            var receiver = Core.UserManager.UserGet(sheet.Controler);
             AddNotification(new Notification()
             {
                 InfoID = verify.ID,

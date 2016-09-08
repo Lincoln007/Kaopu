@@ -192,7 +192,7 @@ namespace Ztop.Todo.Manager
                             {
                                 row = sheet.CreateRow(serial);
                             }
-                            var cell = ExcelClass.GetCell(row, 0);
+                            var cell = ExcelClass.GetCell(row, 0,modelRow);
                             cell.SetCellValue(serial++);
                             ExcelClass.GetCell(row, 1, modelRow).SetCellValue(item.PrintNumber);
                             ExcelClass.GetCell(row, 2, modelRow).SetCellValue(item.CheckNumber);
@@ -205,6 +205,10 @@ namespace Ztop.Todo.Manager
                             ExcelClass.GetCell(row, 9, modelRow).SetCellValue(item.Status.GetDescription());
                             ExcelClass.GetCell(row, 10, modelRow).SetCellValue(item.Checkers);
                             ExcelClass.GetCell(row, 11, modelRow).SetCellValue(item.CheckTime.HasValue ? item.CheckTime.Value.ToLongDateString() : "未审核");
+                            if (item.Type == SheetType.Daily&&item.Substances!=null)
+                            {
+                                ExcelClass.GetCell(row, 12, modelRow).SetCellValue(string.Join(";", item.Substances.Select(e => string.Format("{0}:{1}", e.Category.GetDescription(), e.Details)).ToArray()));
+                            }
                         }
                     }
                 }

@@ -22,9 +22,11 @@
     <div class="form-group has-success has-feedback">
         <input class="form-control" name="key" style="height:50px;" onkeyup="showFiling(this.value)"  />
     </div>
+    <div class="alert alert-warning" role="alert" id="filling-result" >
+        <span>成功归档</span>
+    </div>
 </div>
 <div id="Result" class="col-md-12">
-
 </div>
 <div class="hidden" id="Text">
     <div class="modal" id="{Index}">
@@ -84,6 +86,7 @@
 <script>
     var html = document.getElementById("Text").innerHTML;
 
+    $("#filling-result").hide();
     function showFiling(key) {
         if (key.length == 0||key.length!=10) {
             $("#Result").empty();
@@ -104,68 +107,50 @@
                 temp = temp.replace(/{Index}/g, data[i].PrintNumber).replace("{CheckIndex}",data[i].CheckNumber).replace("{ID}", data[i].ID).replace("{Path}", data[i].BarCode).replace("{Name}", data[i].Name).replace("{Money}", data[i].Money).replace("{CheckTime}", timeString);
                 Result += temp;
             }
+            $("#filling-result").hide();
             $("#Result").empty().append(Result);
 
             $("button[name='Filing']").unbind("click").bind("click", function () {
-                var id = $(this).attr("targetId");
-                var data = $("#Form" + id).serialize();
-                $.request("/Report/Check", data, function (json) {
-                    alert("成功归档报销");
-                    $("#" + id).remove();
-                    $("[name='key']").val("").focus();
-                    return false;
-                });
-                return false;
+                CheckFilling();
             })
             $("button[name='Cancel']").unbind("click").bind("click", function () {
                 var id = $(this).attr("targetId");
                 $("#" + id).remove();
             });
 
-            $("[name='key']").val();
+            $("input[name='key']").val("");
 
         });
-
-        //$("button[name='Filing']").submit(function () {
-        //        var id = $(this).attr("targetId");
-        //        var data = $("#Form" + id).serialize();
-        //        $.request("/Report/Check", data, function (json) {
-        //            alert("成功归档报销");
-        //            $("#" + id).remove();
-        //            return false;
-        //        });
-        //        return false;
-
-        //})
-
-        //$.request("/Report/Search", key, function (json) {
-        //    var data = json;
-        //    var Result = "";
-        //    var temp = "";
-        //    for (var i = 0; i < data.length; i++) {
-        //        temp = html;
-        //        var a = data[i].Time.replace("/Date(","").replace(")/","");
-        //        var time = new Date();
-        //        time.setTime(a);
-        //        var timeString = time.getFullYear() + "-" + (time.getMonth() + 1) + "-" + time.getDate();
-        //        temp = temp.replace(/{Index}/g, data[i].SerialNumber.Coding).replace("{ID}",data[i].ID).replace("{Path}",data[i].SerialNumber.BarCode).replace("{Name}", data[i].Name).replace("{Money}", data[i].Money).replace("{Time}", timeString);
-        //        Result += temp;
-        //    }
-        //    $("#Result").empty().append(Result);
-        //    $("button[name='Filing']").unbind("submit").bind("submit", function () {
-        //        var id = $(this).attr("targetId");
-        //        var data = $("#Form" + id).serialize();
-        //        $.request("/Report/Check", data, function (json) {
-        //            alert("成功归档报销");
-        //            $("#" + id).remove();
-        //        });
-               
-        //    });
-        //    $("button[name='Cancel']").unbind("click").bind("click", function () {
-        //        var id = $(this).attr("targetId");
-        //        $("#" + id).remove();
-        //    })
-        //})
     }
+
+    function CheckFilling() {
+        var id = $("#Result button[name='Filing']").attr("targetId");
+        var data = $("#Form" + id).serialize();
+        $.request("/Report/Check", data, function (json) {
+            $("#filling-result>span").html("成功归档报销");
+            $("#filling-result").show(500);
+            $("#" + id).delay(1000).remove();
+            $("[name='key']").val("").focus();
+            return false;
+        });
+        return false;
+    }
+
+    $(function () {
+        $("input[name='key']").focus(function () {
+            $(this).val("");
+        });
+
+        $(document).keydown(function (event) {
+            if (event.keyCode == 13) {
+                var id = $("#Result button[name='Filing']").attr("targetId");
+                if (id != undefined&&document.getElementById("Result").innerHTML != "") {
+                    CheckFilling();
+                    return false;
+                }
+                return false;
+            }
+        });
+    })
 </script>
 

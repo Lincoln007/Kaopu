@@ -25,19 +25,34 @@
                     }
                 </div>
             </div>
-          
+        </div>
+        <div class="form-group">
+            <label class="control-label">金额：</label>
+            <div class="col-md-12">
+                <div class="input-group" role="group">
+                    <input type="text" name="MinMoney" class="form-control input-sm" placeholder="最小值" value="@(parameter.MinMoney.HasValue?parameter.MinMoney.Value.ToString():"")" />
+                    <span class="input-group-addon input-sm">至</span>
+                    <input type="text" name="MaxMoney" class="form-control input-sm" placeholder="最大值"  value="@(parameter.MaxMoney.HasValue?parameter.MaxMoney.Value.ToString():"")"/>
+                </div>
+            </div>
         </div>
         <div class="form-group">
             <label class="control-label">排序:</label>
-            <select name="Order" class="form-control input-sm">
-                @foreach (Order order in Enum.GetValues(typeof(Order)))
-                {
-                    <option value="@(order)" @(parameter.Order == order ? "Selected=selected" : "")>@(order.GetDescription())</option>
-                }
-            </select>
+            <div class="col-md-12">
+                <select name="Order" class="form-control input-sm">
+                    @foreach (Order order in Enum.GetValues(typeof(Order)))
+                    {
+                        <option value="@(order)" @(parameter.Order == order ? "Selected=selected" : "")>@(order.GetDescription())</option>
+                    }
+                </select>
+            </div>
         </div>
+        <br />
         <div class="form-group">
-            <button type="submit" class="btn btn-sm btn-success">立即查询</button>
+            <div class="col-md-12">
+                <button type="submit" class="btn btn-sm btn-success">立即查询</button>
+            </div>
+           
         </div>
     </form>
 

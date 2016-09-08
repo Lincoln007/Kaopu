@@ -39,8 +39,7 @@
     <Person Name="江馨"></Person>
   </Projects>
   <Finances>
-    <Person Name="靳小阳"></Person>
-    <Person Name="俞海峰"></Person>
+    <Person Name="斯灵芝"></Person>
     <Person Name="汪建龙"></Person>
   </Finances>
   <Admins>
@@ -53,6 +52,7 @@
   </Admins>
   <Markets>
     <Person Name="孙夏阳"></Person>
+    <Person Name="蒋雷"></Person>
     <Person Name="汪建龙"></Person>
   </Markets>
 </Managers>

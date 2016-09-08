@@ -85,6 +85,23 @@ namespace Ztop.Todo.Manager
                     }
                     
                     model.Verifys = db.Verifys.Where(e => e.SID == id).OrderBy(e => e.ID).ToList();
+                    model.Similars = db.Sheets.Where(e => e.Type == model.Type && e.Deleted == false && Math.Abs(e.Money - model.Money) < double.Epsilon && e.ID != model.ID).ToList();
+                    foreach(var entry in model.Similars)
+                    {
+                        if (entry.Type == SheetType.Daily)
+                        {
+                            entry.Substances = db.Substances.Where(e => e.SID == entry.ID).OrderBy(e => e.ID).ToList();
+                        }
+                        else
+                        {
+                            entry.Evection = db.Evections.FirstOrDefault(e => e.SID == entry.ID);
+                            if (entry.Evection != null)
+                            {
+                                entry.Evection.Errands = db.Errands.Where(e => e.EID == entry.Evection.ID).ToList();
+                                entry.Evection.TCosts = db.Traffics.Where(e => e.EID == entry.Evection.ID).ToList();
+                            }
+                        }
+                    }
                 }
                 return model;
             }
@@ -333,6 +350,16 @@ namespace Ztop.Todo.Manager
                 query = query.Where(e => e.Name == parameter.Custom.Trim().ToUpper());
             }
 
+
+            if (parameter.MinMoney.HasValue)
+            {
+                query = query.Where(e => e.Money >= parameter.MinMoney.Value);
+            }
+
+            if (parameter.MaxMoney.HasValue)
+            {
+                query = query.Where(e => e.Money <= parameter.MaxMoney.Value);
+            }
             switch (parameter.Status)
             {
                 case StatusPosition.草稿:
@@ -368,11 +395,11 @@ namespace Ztop.Todo.Manager
             }
             if (parameter.Order == Order.Time)
             {
-                query = query.OrderBy(e => e.Time);
+                query = query.OrderByDescending(e=>e.Time);
             }
             else
             {
-                query = query.OrderBy(e => e.Money);
+                query = query.OrderByDescending(e=>e.Money);
             }
             if (parameter.Page != null)
             {
@@ -499,6 +526,17 @@ namespace Ztop.Todo.Manager
             }
             return dict;
         }
-
+        
+        /// <summary>
+        /// 获取完成报销单
+        /// </summary>
+        /// <returns></returns>
+        public List<Sheet> GetCompletes()
+        {
+            using (var db = GetDbContext())
+            {
+                return db.Sheets.Where(e => e.Deleted == false && (e.Status == Status.Examined || e.Status == Status.Filing)).ToList();
+            }
+        }
     }
 }

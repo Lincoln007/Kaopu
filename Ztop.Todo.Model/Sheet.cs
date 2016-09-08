@@ -120,6 +120,8 @@ namespace Ztop.Todo.Model
         /// 财务审核通过时间
         /// </summary>
         public DateTime? CheckTime { get; set; }
+        [NotMapped]
+        public List<Sheet> Similars { get; set; }
 
     }
     public enum SheetType

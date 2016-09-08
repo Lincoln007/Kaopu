@@ -65,6 +65,8 @@ namespace Ztop.Todo.Model
         /// 报销类型   null 全部  日常报销  出差报销
         /// </summary>
         public SheetType? Type { get; set; }
+        public double? MinMoney { get; set; }
+        public double? MaxMoney { get; set; }
         public PageParameter Page { get; set; }
     }
 

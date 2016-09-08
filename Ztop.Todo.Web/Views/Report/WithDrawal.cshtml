@@ -13,7 +13,27 @@
             <form class="form-horizontal" method="post" action="" id="form-WithDrawal">
                 <div class="modal-body">
                     <input type="text" name="id" value="@(Model.ID)" style="display:none" />
-
+                    <div class="form-group">
+                        <label class="control-label col-md-3">退给：</label>
+                        <div class="col-md-9">
+                            @if (Model.Verifys == null || Model.Verifys.Count == 0)
+                            {
+                                <div class="alert alert-danger" role="alert">
+                                    <span>未获取退回用户，请刷新网页！</span>
+                                </div>
+                            }
+                            else
+                            {
+                                var persons = Model.Verifys.Where(e => e.Name != Identity.Name&&(int)e.Step<(int)Model.Status).GroupBy(e => e.Name).Select(e => e.Key).ToList();
+                                foreach(var item in persons)
+                                {
+                                    <label class="radio-inline">
+                                        <input type="radio" name="Person" value="@(item)" />@(item)
+                                    </label>
+                                }
+                            }
+                        </div>
+                    </div>
                     <div class="form-group">
                         <label class="control-label col-md-3">审核不通过原因：</label>
                         <div class="col-md-9">
@@ -35,6 +55,11 @@
     $(function () {
         $("#form-WithDrawal").submit(function () {
             if (confirm("您确定退回当前报销单吗？")) {
+                var person = $("input:radio[name='Person']:checked").val();
+                if (person == null) {
+                    alert("请选择退给用户！");
+                    return false;
+                }
                 var data = $(this).serialize();
                 $.request("/Report/Reversion", data, function (json) {
                     location.href = "/Report";

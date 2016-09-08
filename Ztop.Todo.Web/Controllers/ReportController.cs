@@ -209,7 +209,7 @@ namespace Ztop.Todo.Web.Controllers
         /// </summary>
         /// <param name="sheet"></param>
         /// <param name="reason"></param>
-        private void Reversion(Sheet sheet,string reason)
+        private void Reversion(Sheet sheet,string reason,string person)
         {
             if (sheet.Controler != Identity.Name)
             {
@@ -236,10 +236,18 @@ namespace Ztop.Todo.Web.Controllers
                     break;
                 default:break;
             }
-            sheet.Controler = sheet.Name;
-            sheet.Status = Status.RollBack;
+            sheet.Controler = person;
+            if (person.ToUpper() == sheet.Name.ToUpper())
+            {
+                sheet.Status = Status.RollBack;
+            }
+            else
+            {
+                sheet.Status = sheet.Status - 1;
+            }
             Core.SheetManager.Save(sheet);
             Core.VerifyManager.Save(sverify);
+            Core.NotificationManager.Add(sverify);
         }
         private void Check(Sheet sheet)
         {
@@ -301,17 +309,17 @@ namespace Ztop.Todo.Web.Controllers
             return SuccessJsonResult();
         }
         [HttpPost]
-        public ActionResult Reversion(int id,string Reason)
+        public ActionResult Reversion(int id,string Reason,string person)
         {
             var sheet = Core.SheetManager.GetModel(id);
             if (sheet == null)
             {
                 throw new ArgumentException("参数不正确，未找到相关报销单信息");
             }
-            Reversion(sheet, Reason);
+            Reversion(sheet, Reason,person);
             return SuccessJsonResult();
         } 
-        public ActionResult List(string Creater="我", string Custom = null, string Position="不限", string Checker = "我", string Checker2 = null, string CurrentTime="不限",Order order=Order.Time,int page=1,int rows=10)
+        public ActionResult List(string Creater="我", string Custom = null, string Position="不限", string Checker = "我", string Checker2 = null, string CurrentTime="不限",Order order=Order.Time,int page=1,int rows=10,double? minMoney=null,double? maxMoney=null)
         {
             var queryParameter = new QueryParameter
             {
@@ -322,6 +330,8 @@ namespace Ztop.Todo.Web.Controllers
                 Checker2 = Checker2,
                 Time = (Time)Enum.Parse(typeof(Time), CurrentTime, true),
                 Order = order,
+                MinMoney=minMoney,
+                MaxMoney=maxMoney,
                 Page = new PageParameter(page, rows)
             };
             ViewBag.List = Core.SheetManager.GetSheets(queryParameter, Identity.Name);
@@ -339,6 +349,15 @@ namespace Ztop.Todo.Web.Controllers
             ViewBag.Users = Core.UserManager.GetAllUsers().Select(e => e.RealName).ToList();
             return View();
         }
+
+        public ActionResult Daily()
+        {
+            var complete = Core.SheetManager.GetCompletes().Where(e=>e.Type==SheetType.Daily).ToList();
+            var substances = Core.SubstanceManager.GetSubstances(complete);
+            ViewBag.Dict = substances.GroupBy(e => e.Category).ToDictionary(e => e.Key, e => e.Sum(k => k.Price));
+            return View();
+        }
+
         [HttpPost]
         public ActionResult Statistic(string name,DateTime startTime,DateTime endTime)
         {
@@ -436,7 +455,7 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
 
-        public ActionResult DownloadExcel(string coding=null,string time=null,double? minMoney=null,double? maxmoney=null,string creator=null,Order order = Order.Time,string sheetType=null,string content=null)
+        public ActionResult DownloadExcel(string coding=null,string checkKey=null,string time=null,double? minMoney=null,double? maxmoney=null,string creator=null,Order order = Order.Time,string sheetType=null,string content=null)
         {
             var parameter = new SheetVerifyParameter()
             {
@@ -447,7 +466,8 @@ namespace Ztop.Todo.Web.Controllers
                 Creater = creator,
                 Order = order,
                 Checker = Identity.Name,
-                Content = content
+                Content = content,
+                CheckKey=checkKey
             };
             if (!string.IsNullOrEmpty(sheetType))
             {

@@ -90,7 +90,7 @@
                                 var ischecked = category.GetDescription() == parameter.Content;
                                 <button type="button" class="btn btn-sm btn-@(!string.IsNullOrEmpty(parameter.Content)&&ischecked?"success":"default")" name="Content">@(category.GetDescription())</button>
                             }
-                            <input type="hidden" name="Content" />
+                            <input type="hidden" name="Content" value="@(parameter.Content)" />
                         </div>
                     }
                     else
