@@ -121,8 +121,8 @@
                                 <td>@(cost.Plate)</td>
                                 <td>@(cost.Toll)</td>
                                 <td>/</td>
-                                <td>/</td>
-                                <td>/</td>
+                                <td>@(cost.Driver.GetDescription())</td>
+                                <td>@(cost.CarPetty)</td>
                             </tr>
                         }
                         else
@@ -365,14 +365,14 @@
                                                     <input type="text" name="Petrol" class="form-control input-sm" placeholder="油费" value="@(traffic!=null?traffic.Petrol.ToString():"")"/>
                                                     <span class="input-group-addon input-sm">元</span>
                                                     <span class="input-group-addon input-sm">司机</span>
-                                                    <select name="Driver" class="form-control input-sm">
+                                                    <select name="Driver" class="form-control input-sm" targetIndex="0">
                                                         @foreach (Driver driver in Enum.GetValues(typeof(Driver)))
                                                         {
                                                             <option value="@(driver)" @(traffic!=null&&traffic.Driver==driver?"selected=selected":"")>@(driver)</option>
                                                         }
                                                     </select>
                                                     <span class="input-group-addon input-sm">车补</span>
-                                                    <input type="text" class="form-control input-sm" name="CarPetty" placeholder="车补" readonly="readonly" value="@(traffic!=null?traffic.CarPetty.ToString():"")" />
+                                                    <input type="text" class="form-control input-sm" name="CarPetty" id="CarPetty0" placeholder="车补"  readonly="readonly" value="@(traffic!=null?traffic.CarPetty.ToString():"")" />
                                                 </div>
                                             </div>
                                             <div class="col-md-12 col-xs-12" style="padding:10px;margin-top:5px;margin-bottom:5px;">
@@ -395,6 +395,17 @@
                                                     <span class="input-group-addon input-sm">元</span>
                                                     <span class="input-group-addon input-sm">车牌</span>
                                                     <input type="text" class="form-control input-sm" name="Plate" placeholder="车牌" value="@(personl!=null?personl.Plate.ToString():"")"/>
+                                                </div>
+                                                <div class="input-group" style="margin-top:10px;">
+                                                    <span class="input-group-addon input-sm">司机</span>
+                                                    <select name="Driver" class="form-control input-sm" targetIndex="1">
+                                                        @foreach (Driver driver in Enum.GetValues(typeof(Driver)))
+                                                        {
+                                                            <option value="@(driver)" @(personl != null && personl.Driver == driver ? "selected=selected" : "")>@(driver)</option>
+                                                        }
+                                                    </select>
+                                                    <span class="input-group-addon input-sm">车补</span>
+                                                    <input type="text" class="form-control input-sm" name="CarPetty"  placeholder="车补" id="CarPetty1" readonly="readonly" value="@(personl!=null?personl.CarPetty.ToString():"")" />
                                                 </div>
                                             </div>
                                         </div> 
@@ -818,33 +829,33 @@
         }
 
         //在公司派车中选择司机 自动计算车补
-        $("select[name='Driver']").change(function () {
-            var val = $(this).val();
-            var money = .0;
-            var kile = GetKile();
-            if (isNaN(kile)) {
-                alert("未获取公里数！");
-                return;
-            }
-            if (val == "无") {
-                money = 0;
-            } else if (val == "孙海杰") {
-                money = kile * 0.5;
-            } else {
-                money = kile * 0.2;
-            }
-            $("input[name='CarPetty']").val(money);
-            StatisticCompany();
-        });
+        //$("select[name='Driver']").change(function () {
+        //    var val = $(this).val();
+        //    var money = .0;
+        //    var kile = GetKile();
+        //    if (isNaN(kile)) {
+        //        alert("未获取公里数！");
+        //        return;
+        //    }
+        //    if (val == "无") {
+        //        money = 0;
+        //    } else if (val == "孙海杰") {
+        //        money = kile * 0.5;
+        //    } else {
+        //        money = kile * 0.2;
+        //    }
+        //    $("input[name='CarPetty']").val(money);
+        //    StatisticCompany();
+        //});
         //修改公司车过路费栏  自动统计计算金额
-        $("input[name='Toll']").change(function () {
-            var targetType = $(this).attr("targetType");
-            if (targetType == "Company") {
-                StatisticCompany();
-            }
-        });
+        //$("input[name='Toll']").change(function () {
+        //    var targetType = $(this).attr("targetType");
+        //    if (targetType == "Company") {
+        //        StatisticCompany();
+        //    }
+        //});
 
-        $("input[name='Petrol']").change(StatisticCompany);
+        //$("input[name='Petrol']").change(StatisticCompany);
 
 
         //用户点击公司车和自备车  自动计算金额

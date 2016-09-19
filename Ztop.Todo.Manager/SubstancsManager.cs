@@ -115,7 +115,7 @@ namespace Ztop.Todo.Manager
             //}
             return list;
         }
-        public List<Traffic> GetTraffic(HttpContextBase context,string[] busTypes,Driver driver,double carpetty)
+        public List<Traffic> GetTraffic(HttpContextBase context,string[] busTypes,Driver[] drivers,double[] carpettys)
         {
             if (busTypes == null)
             {
@@ -141,13 +141,15 @@ namespace Ztop.Todo.Manager
                     case BusType.Company:
                         traffic.Toll = double.TryParse(tolls[0], out a) ? a : .0;
                         traffic.Petrol = double.TryParse(petrol[0], out a) ? a : .0;
-                        traffic.Driver = driver;
-                        traffic.CarPetty = carpetty;
+                        traffic.Driver = drivers[0];
+                        traffic.CarPetty = carpettys[0];
                         traffic.Plate = plates[0];
                         traffic.KiloMeters = double.TryParse(context.Request.Form["KiloMeters"].Split(',')[0], out a) ? a: .0;
                         break;
                     case BusType.Personal:
                         traffic.Toll = double.TryParse(tolls[1], out a) ? a : .0;
+                        traffic.Driver = drivers[1];
+                        traffic.CarPetty = carpettys[1];
                         traffic.Plate = plates[1];
                         traffic.KiloMeters = double.TryParse(context.Request.Form["KiloMeters"].Split(',')[1], out a) ? a : .0;
                         break;

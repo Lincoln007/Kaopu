@@ -87,7 +87,7 @@ namespace Ztop.Todo.Web.Controllers
         /// <param name="DirectorVal"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult Save(Sheet sheet,string DirectorVal,Evection evection,string[] busType,string lines,double CarPetty=.0,Driver driver=Driver.无)
+        public ActionResult Save(Sheet sheet,string DirectorVal,Evection evection,string[] busType,string lines,double[] CarPetty,Driver[] driver)
         {
             double sum = .0;
             if (sheet.Type == SheetType.Daily)//日常报销

@@ -7,9 +7,14 @@ $(function () {
 
     //公司车栏中选择司机的时候，自动计算车补
     $("select[name='Driver']").change(function () {
+        var index = parseInt($(this).attr("targetIndex"));
+        if (index == undefined || isNaN(index)) {
+            alert("参数获取失败，请刷新网页");
+            return false;
+        }
         var money = .0;
-        var kilo = parseFloat($("input[name='KiloMeters']")[0].value);
-        if (kilo != NaN && kilo != undefined) {
+        var kilo = parseFloat($("input[name='KiloMeters']")[index].value);
+        if (!isNaN(kilo) && kilo != undefined) {
             var driver = $(this).val();
             if (driver == "无") {
                 money = 0;
@@ -18,8 +23,15 @@ $(function () {
             } else {
                 money = kilo * 0.2;
             }
-            $("input[name='CarPetty']").val(money);
-            StatisticCompany();
+            //var ID = index + "#CarPetty";
+            //$(ID).val(money);
+            $("#CarPetty" + index).val(money);
+            if (index == 0) {
+                StatisticCompany();
+            } else {
+                StatisticPersonal();
+            }
+            
         } else {
             alert("未获取公里数，无法计算车补金额！");
         }
@@ -75,7 +87,7 @@ function StatisticTraffic() {
 //自动统计公司车的金额
 function StatisticCompany() {
     var sum = 0;
-    var carPetty = parseFloat($("input[name='CarPetty']").val());
+    var carPetty = parseFloat($("input[name='CarPetty']")[0].value);
     if (!isNaN(carPetty)) {
         sum += carPetty;
     }
@@ -94,7 +106,12 @@ function StatisticCompany() {
 function StatisticPersonal() {
     var sum = 0;
     var kile = parseFloat($("input[name='KiloMeters']")[1].value);
-    if (!isNaN(kile)) {
-        $("input[name='CostPersonal']").val(kile * 1.5);
+    if(!isNaN(kile)){
+        sum += kile * 1.5;
     }
+    var petty = parseFloat($("input[name='CarPetty']")[1].value);
+    if (!isNaN(petty)) {
+        sum += petty;
+    }
+    $("input[name='CostPersonal']").val(sum);
 }

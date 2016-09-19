@@ -105,22 +105,26 @@
                                 {
                                     <li><a href="/Home/Daily"><i class="glyphicon glyphicon-eye-open"></i>更新日志</a></li>
                                 }
-                                <li>
-                                    <a href="#"><i class="glyphicon glyphicon-usd"></i>项目管理系统<span class="fa arrow"></span></a>
-                                    <ul class="nav nav-second-level">
-                                        <li><a href="/Finance/Index"><i class="fa fa-desktop"></i>欢迎页</a></li>
-                                        <li><a href="/Finance/CreateContract"><i class="glyphicon glyphicon-new-window"></i>录入合同</a></li>
-                                        <li><a href="/Finance/CreateArticle"><i class="glyphicon glyphicon-book"></i>录入项目</a></li>
-                                        <li><a href="/Finance/ArticleSearch"><i class="glyphicon glyphicon-search"></i>项目查询</a></li>
-                                        <li><a href="/Finance/CreateInvoice"><i class="glyphicon glyphicon-piggy-bank"></i>申请开票</a></li>
-                                        <li><a href="/Finance/ContractSearch"><i class="glyphicon glyphicon-search"></i>合同查询</a></li>
-                                        <li><a href="/Finance/CreateEntry"><i class="glyphicon glyphicon-credit-card"></i>财务入账</a></li>
-                                        <li><a href="/Finance/OnAccount"><i class="glyphicon glyphicon-flag"></i>合同挂账</a></li>
-                                        <li><a href="/Finance/BillSearch"><i class="glyphicon glyphicon-search"></i>到账查询</a></li>
-                                        <li><a href="/Finance/InvoiceSearch"><i class="glyphicon glyphicon-search"></i>发票查询</a></li>
-                                        
-                                    </ul>
-                                </li>*@
+                                @if (Identity.Project || Identity.Finance || Identity.Admin || Identity.Market)
+                                {
+                                    <li>
+                                        <a href="#"><i class="glyphicon glyphicon-usd"></i>项目管理系统<span class="fa arrow"></span></a>
+                                        <ul class="nav nav-second-level">
+                                            <li><a href="/Finance/Index"><i class="fa fa-desktop"></i>欢迎页</a></li>
+                                            <li><a href="/Finance/CreateContract"><i class="glyphicon glyphicon-new-window"></i>录入合同</a></li>
+                                            <li><a href="/Finance/CreateArticle"><i class="glyphicon glyphicon-book"></i>录入项目</a></li>
+                                            <li><a href="/Finance/ArticleSearch"><i class="glyphicon glyphicon-search"></i>项目查询</a></li>
+                                            <li><a href="/Finance/CreateInvoice"><i class="glyphicon glyphicon-piggy-bank"></i>申请开票</a></li>
+                                            <li><a href="/Finance/ContractSearch"><i class="glyphicon glyphicon-search"></i>合同查询</a></li>
+                                            <li><a href="/Finance/CreateEntry"><i class="glyphicon glyphicon-credit-card"></i>财务入账</a></li>
+                                            <li><a href="/Finance/OnAccount"><i class="glyphicon glyphicon-flag"></i>合同挂账</a></li>
+                                            <li><a href="/Finance/BillSearch"><i class="glyphicon glyphicon-search"></i>到账查询</a></li>
+                                            <li><a href="/Finance/InvoiceSearch"><i class="glyphicon glyphicon-search"></i>发票查询</a></li>
+
+                                        </ul>
+                                    </li>
+                                }*@
+
 
 
 
