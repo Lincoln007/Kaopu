@@ -1,0 +1,82 @@
+﻿
+@{
+    ViewBag.Title = "设置初始余额";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-md-8 col-md-offset-2">
+    <div class="alert alert-warning" role="alert">
+        <span>请谨慎设置账户余额！</span>
+    </div>
+    <div class="alert alert-danger" role="alert" id="Error" style="display:none">
+        <span></span>
+    </div>
+    <form class="form-horizontal" id="Set" method="post">
+        <div class="form-group">
+            <label class="control-label col-md-3">公司:</label>
+            <div class="col-md-8">
+                <label class="radio-inline">
+                    <input type="radio" name="Company" value="@(Company.Evaluation)" />@(Company.Evaluation.GetDescription())
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="Company" value="@(Company.Projection)" />@(Company.Projection.GetDescription())
+                </label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">年份：</label>
+            <div class="col-md-8">
+                <select name="Year" class="form-control">
+                    @for (var i = DateTime.Now.Year; i > 2010; i--)
+                    {
+                        <option value="@(i)">@(i)</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">月份：</label>
+            <div class="col-md-8">
+                <select name="Month" class="form-control">
+                    @for (var i = 1; i < 12; i++)
+                    {
+                        <option value="@(i)" @(i == (DateTime.Now.Month - 1) ? "selected=selected" : "")>@(i)</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">账户余额【元】:</label>
+            <div class="col-md-8">
+                <input type="text" name="Balance" class="form-control" />
+            </div>
+        </div>
+        <div class="col-md-8 col-md-offset-3">
+            <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i> 设置</button>
+        </div>
+
+    </form>
+</div>
+
+
+<script>
+    $(function () {
+        $("#Set").submit(function () {
+            $("#Error").hide();
+            var data = $(this).serialize();
+            $.request("/Bank/SetBalance", data, function (json) {
+                if (json.result == 0) {
+                    $("#Error>span").html(json.content);
+                    $("#Error").show(500);
+                    return false;
+                } else if (json.result == 1) {
+                    alert("成功设置");
+                    location.href = "/Bank";
+                }
+                return false;
+            });
+            return false;
+        });
+    });
+</script>
+

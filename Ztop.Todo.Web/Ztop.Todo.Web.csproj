@@ -305,6 +305,7 @@
     <Content Include="Views\Finance\ArticleSearch.cshtml" />
     <Content Include="Views\Finance\DetailArticle.cshtml" />
     <Content Include="Views\Finance\DetailBill.cshtml" />
+    <Content Include="Views\Bank\SetBalance.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

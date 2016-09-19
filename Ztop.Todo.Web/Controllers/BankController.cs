@@ -145,5 +145,25 @@ namespace Ztop.Todo.Web.Controllers
             var bank = Core.BankManager.GetBank(year, month, company);
             return Json(bank, JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult SetBalance()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult SetBalance(int year,int month,double balance,Company company)
+        {
+            var currrent = Core.BankManager.GetBank(year, month, company);
+            if (currrent != null)
+            {
+                if (currrent.Balance > 0)
+                {
+                    return ErrorJsonResult(string.Format("当前系统中查询到{0}的{1}年{2}月的账户余额不为零，无法进行设置", company.GetDescription(), year, month));
+                }
+            }
+            Core.BankManager.Save(new Bank { Year = year, Month = month, Company = company, Balance = balance });
+            return SuccessJsonResult();
+        }
     }
 }

@@ -16,5 +16,23 @@ namespace Ztop.Todo.Manager
                 return db.Banks.FirstOrDefault(e => e.Year == year && e.Month == month && e.Company == company);
             }
         }
+
+        public void Save(Bank bank)
+        {
+            using (var db = GetDbContext())
+            {
+                var temp = db.Banks.FirstOrDefault(e => e.Year == bank.Year && e.Month == bank.Month && e.Company == bank.Company);
+
+                if (temp == null)
+                {
+                    db.Banks.Add(bank);
+                }
+                else
+                {
+                    temp.Balance = bank.Balance;
+                }
+                db.SaveChanges();
+            }
+        }
     }
 }
