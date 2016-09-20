@@ -103,6 +103,7 @@
     <Compile Include="Evection.cs" />
     <Compile Include="Invoice.cs" />
     <Compile Include="InvoiceParameter.cs" />
+    <Compile Include="iPad.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="Notification.cs" />
     <Compile Include="PageParameter.cs" />

@@ -1,0 +1,49 @@
+﻿
+@{
+    ViewBag.Title = "录入平板";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3 class="text-center">录入平板</h3>
+
+<form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
+    <div class="row">
+        <div class="col-md-6 col-xs-6">
+            <div class="form-group">
+                <label class="control-label col-md-4">平板名称：</label>
+                <div class="col-md-8">
+                    <input type="text" name="Name" placeholder="平板名称" class="form-control" /> 
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">平板序列号：</label>
+                <div class="col-md-8">
+                    <input type="text" name="" placeholder="序列号" class="form-control" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">购买时间：</label>
+                <div class="col-md-8">
+                    <input type="text" name="Time" placeholder="购买时间" class="form-control datetimepicker"  readonly="readonly"/>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xs-6">
+            <div class="form-group">
+                <label class="control-label col-md-4">平板类型：</label>
+                <div class="col-md-8">
+                    <select name="Type" class="form-control">
+                        
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">平板容量：</label>
+                <div class="col-md-8">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+

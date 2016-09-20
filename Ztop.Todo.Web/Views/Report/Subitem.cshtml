@@ -167,7 +167,7 @@
                                         {
                                             if (((int)secondCategory) > 4 && ((int)secondCategory) < 7)
                                             {
-                                                <option value="@secondCategory)" @(subtance.SecondCategory.Value == secondCategory ? "selected=selected" : "")>@(secondCategory.GetDescription())</option>
+                                                <option value="@(secondCategory)" @(subtance.SecondCategory.Value == secondCategory ? "selected=selected" : "")>@(secondCategory.GetDescription())</option>
                                             }
                                         }
                                         else if (subtance.Category == Category.Express)

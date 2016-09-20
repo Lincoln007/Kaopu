@@ -159,6 +159,7 @@
     <Compile Include="Controllers\FinanceController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\AuthorityController.cs" />
+    <Compile Include="Controllers\iPadController.cs" />
     <Compile Include="Controllers\NotificationController.cs" />
     <Compile Include="Controllers\QueryController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
@@ -306,6 +307,7 @@
     <Content Include="Views\Finance\DetailArticle.cshtml" />
     <Content Include="Views\Finance\DetailBill.cshtml" />
     <Content Include="Views\Bank\SetBalance.cshtml" />
+    <Content Include="Views\iPad\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
