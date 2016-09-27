@@ -1,20 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Ztop.Todo.Model
 {
+    [Table("ipads")]
     public class iPad
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
         public string Name { get; set; }
         public DateTime Time { get; set; }
         public string SerialNumber { get; set; }
+        [Column(TypeName ="int")]
         public iPadType Type { get; set; }
+        [Column(TypeName ="int")]
         public Space Space { get; set; }
+        public string Buyer { get; set; }
+        public string Account { get; set; }
+        [Column(TypeName ="int")]
+        public InternetWay Way { get; set; }
+        public int? IID { get; set; }
 
     }
 
@@ -45,5 +57,10 @@ namespace Ztop.Todo.Model
         OneHundredAndTwentyEight,
         [Description("256G")]
         TwoHundredAndFivetySix
+    }
+    public enum InternetWay
+    {
+        WLAN,
+        WLAN_Cellular
     }
 }

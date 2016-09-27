@@ -56,5 +56,7 @@ namespace Ztop.Todo.Manager
         public ArticleManager ArticleManager { get; private set; }
         public ContractArticleManager ContractArticleManager { get; private set; }
         public BillContractManager BillContractManager { get; private set; }
+        public iPadManager iPadManager { get; private set; }
+        public iPad_InvoiceManager iPad_InvoiceManager { get; set; }
     }
 }

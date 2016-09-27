@@ -1,0 +1,117 @@
+﻿
+@{
+    ViewBag.Title = "平板列表";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<iPad> list = ViewBag.List;
+}
+
+<h3 class="text-center">杭州陆吾科技信息咨询有限公司 平板清单</h3>
+
+<div class="btn-group">
+    <a data-toggle="modal" data-target="#Modal" href="/iPad/Create" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i>录入平板</a>
+    <a data-toggle="modal" data-target="#Modal" href="/iPad/CreateInvoice" class="btn btn-warning"><i class="glyphicon glyphicon-plus-sign"></i>录入发票</a>
+    <a data-toggle="modal" data-target="#Modal" href="/iPad/CreateContract" class="btn btn-success"><i class="glyphicon glyphicon-book"></i>录入合同</a>
+    <a href="/iPad/Index" class="btn btn-default"><i class="glyphicon glyphicon-refresh"></i>刷新</a>
+</div>
+<div class="alert alert-success" role="alert" id="Index" style="display:none;">
+    <span></span>
+</div>
+<hr />
+<ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#iPad" role="tab" data-toggle="tab">平板列表</a></li>
+    <li role="presentation"><a href="#Invoice" role="tab" data-toggle="tab">发票</a></li>
+    <li role="presentation"><a href="#Contract" role="tab" data-toggle="tab">项目合同</a></li>
+</ul>
+<div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="iPad">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>平板名称</th>
+                    <th>平板序列号</th>
+                    <th>Apple ID</th>
+                    <th>平板类型</th>
+                    <th>平板容量</th>
+                    <th>网络连接方式</th>
+                    <th>购买时间</th>
+                    <th>购买人</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ipad in list)
+                {
+                    <tr>
+                        <td>@(ipad.ID)</td>
+                        <td>@(ipad.Name)</td>
+                        <td>@(ipad.SerialNumber)</td>
+                        <td>@(ipad.Account)</td>
+                        <td>@(ipad.Type.GetDescription())</td>
+                        <td>@(ipad.Space.GetDescription())</td>
+                        <td>@(ipad.Way)</td>
+                        <td>@(ipad.Time.ToLongDateString())</td>
+                        <td>@(ipad.Buyer)</td>
+                        <td>
+                            <a href="/iPad/Create?id=@(ipad.ID)&&edit=true" class="btn btn-primary btn-xs"  data-toggle="modal" data-target="#Modal"><i class="glyphicon glyphicon-edit"></i>编辑</a>
+                            <a href="/iPad/Delete?id=@(ipad.ID)" class="btn btn-danger btn-xs btn-delete"><i class="glyphicon glyphicon-remove"></i>删除</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div role="tabpanel" class="tab-pane" id="Invoice">
+
+    </div>
+    <div role="tabpanel" class="tab-pane" id="Contract">
+
+    </div>
+</div>
+
+
+
+
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true" id="Modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $(".btn-delete").click(function () {
+            if (confirm("您确定要删除吗？")) {
+                $("#Index").hide();
+                var href = $(this).attr("href");
+                var parentNode = $(this).parent().parent();
+                $.request(href, null, function (json) {
+                    $("#Index").removeClass("alert-danger").removeClass("alert-success");
+                    if (json.result == 1) {
+                        $("#Index").addClass("alert-success");
+                        $("#Index>span").html("删除成功");
+                        $("#Index").show(500);
+                        parentNode.remove();
+                    } else {
+                        $("#Index").addClass("alert-danger");
+                        $("#Index>span").html(json.content);
+                        $("#Index").show(500);
+                        return false;
+                    }
+                   
+
+                });
+                return false;
+            } else {
+                return false;
+            }
+        });
+
+        $(".btn-group>a").click(function () {
+            $("#Modal>.modal-content").empty();
+        });
+    });
+</script>
+

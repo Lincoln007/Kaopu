@@ -1,49 +1,122 @@
 ﻿
 @{
     ViewBag.Title = "录入平板";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = null;
+    iPad ipad = ViewBag.iPad;
+    bool edit = ViewBag.Edit;
+    // Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h3 class="text-center">录入平板</h3>
 
-<form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
+<form class="form-horizontal" action="/iPad/Create" method="post" enctype="multipart/form-data" id="iPad-form">
+    <div class="alert alert-success" role="alert" id="Message" style="display:none">
+        <span></span>
+    </div>
     <div class="row">
-        <div class="col-md-6 col-xs-6">
+        <div class="col-md-12 col-xs-12">
+            <input type="hidden" name="Edit" value="@(edit?"true":"false")" />
+            <input type="hidden" name="ID" value="@(ipad!=null?ipad.ID.ToString():"")" />
             <div class="form-group">
-                <label class="control-label col-md-4">平板名称：</label>
+                <label class="control-label col-md-3">平板名称：</label>
                 <div class="col-md-8">
-                    <input type="text" name="Name" placeholder="平板名称" class="form-control" /> 
+                    <input type="text" name="Name" placeholder="平板名称" class="form-control" value="@(ipad!=null?ipad.Name:"")"/> 
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-md-4">平板序列号：</label>
+                <label class="control-label col-md-3">平板序列号：</label>
                 <div class="col-md-8">
-                    <input type="text" name="" placeholder="序列号" class="form-control" />
+                    <input type="text" name="SerialNumber" placeholder="序列号" class="form-control" value="@(ipad!=null?ipad.SerialNumber:"")"/>
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-md-4">购买时间：</label>
+                <label class="control-label col-md-3">Apple ID:</label>
                 <div class="col-md-8">
-                    <input type="text" name="Time" placeholder="购买时间" class="form-control datetimepicker"  readonly="readonly"/>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 col-xs-6">
-            <div class="form-group">
-                <label class="control-label col-md-4">平板类型：</label>
-                <div class="col-md-8">
-                    <select name="Type" class="form-control">
-                        
-                    </select>
+                    <input type="text" name="Account" placeholder="Apple ID" class="form-control" value="@(ipad!=null?ipad.Account:"")" />
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-md-4">平板容量：</label>
+                <label class="control-label col-md-3">购买人：</label>
                 <div class="col-md-8">
+                    <input type="text" name="Buyer" class="form-control" placeholder="购买人"  value="@(ipad!=null?ipad.Buyer:"")"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">购买时间：</label>
+                <div class="col-md-8">
+                    <input type="text" name="Time" placeholder="购买时间" class="form-control datetimepicker"  readonly="readonly" @(ipad != null?"value="+ipad.Time.ToString():"")/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">平板类型：</label>
+                <div class="col-md-8">
+                    @foreach (iPadType type in Enum.GetValues(typeof(iPadType)))
+                    {
+                        <label class="radio-inline">
+                            <input type="radio" name="Type" value="@(type)"  @(ipad!=null&&ipad.Type==type?"checked=checked":"")/>@(type.GetDescription())
+                        </label>
+                    }
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">平板容量：</label>
+                <div class="col-md-8">
+                    @foreach (Space space in Enum.GetValues(typeof(Space)))
+                    {
+                        <label class="radio-inline">
+                            <input type="radio" name="Space" value="@(space)" @(ipad!=null&&ipad.Space==space?"checked=checked":"") />@(space.GetDescription())
+                        </label>
+                    }
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">网络连接方式：</label>
+                <div class="col-md-8">
+                    @foreach(InternetWay way in Enum.GetValues(typeof(InternetWay)))
+                    {
+                        <label class="radio-inline">
+                            <input type="radio" name="Way" value="@(way)" @(ipad!=null&&ipad.Way==way?"checked=checked":"") />@(way.ToString())
+                        </label>
+                    }
+                </div>
+            </div>
 
+            <div class="form-group">
+                <div class="col-md-8 col-md-offset-3">
+                    <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i>添加</button>
+                    <button type="button" class="btn btn-default" onclick="history.back()"><i class="glyphicon glyphicon-arrow-left"></i>返回</button>
                 </div>
             </div>
         </div>
     </div>
 </form>
+
+<script>
+    $(function () {
+
+        $("input.datetimepicker").datetimepicker({
+            timepicker: false,
+            format: 'Y-m-d'
+        });
+
+        $("#iPad-form").submit(function () {
+            $("#Message").hide();
+            var data = $(this).serialize();
+            $.request("/iPad/Create", data, function (json) {
+                $("#Message").removeClass("alert-danger").removeClass("alter-success");
+                if (json.result == 1) {
+                    $("#Message").addClass("alert-success");
+                    $("#Message>span").html("操作成功");
+                  
+                } else {
+                    $("#Message").addClass("alert-danger");
+                    $("#Message>span").html(json.content);
+                }
+                $("#Message").show(500);
+                return false;
+            });
+            return false;
+        });
+    });
+</script>
 

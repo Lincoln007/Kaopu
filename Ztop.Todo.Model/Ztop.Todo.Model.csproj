@@ -104,6 +104,8 @@
     <Compile Include="Invoice.cs" />
     <Compile Include="InvoiceParameter.cs" />
     <Compile Include="iPad.cs" />
+    <Compile Include="iPadContract.cs" />
+    <Compile Include="iPadInvoice.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="Notification.cs" />
     <Compile Include="PageParameter.cs" />

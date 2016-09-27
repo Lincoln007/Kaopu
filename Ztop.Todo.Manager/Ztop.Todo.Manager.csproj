@@ -92,6 +92,8 @@
     <Compile Include="DataBookManager.cs" />
     <Compile Include="DataContext.cs" />
     <Compile Include="InvoiceManager.cs" />
+    <Compile Include="iPadManager.cs" />
+    <Compile Include="iPad_InvoiceManager.cs" />
     <Compile Include="ManagerBase.cs" />
     <Compile Include="ManagerCore.cs" />
     <Compile Include="MessageManager.cs" />

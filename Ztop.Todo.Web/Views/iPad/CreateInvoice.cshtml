@@ -1,0 +1,63 @@
+﻿
+<script src="~/Scripts/Contract.js"></script>
+@{
+    ViewBag.Title = "录入发票";
+    List<iPad> list = ViewBag.List;
+    Layout = null;
+}
+
+<h3 class="text-center">录入发票</h3>
+<form class="form-horizontal" method="post" action="">
+    <div class="row">
+        <div class="col-md-12 col-xs-12">
+            <div class="form-group">
+                <label class="control-label col-md-3">开票时间：</label>
+                <div class="col-md-8">
+                    <input type="text" name="Time" placeholder="开票时间" class="form-control datetimepicker" readonly="readonly" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">发票编号：</label>
+                <div class="col-md-8">
+                    <input type="text" name="Number" placeholder="发票编号" class="form-control" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">发票金额【元】：</label>
+                <div class="col-md-8">
+                    <input type="text" name="Money" placeholder="发票金额" class="form-control" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">电子文件：</label>
+                <div class="col-md-8">
+                    <input type="file" name="" placeholder="电子文件" class="form-control"  />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">平板个数：</label>
+                <div class="col-md-8">
+                    <input type="text" name="Count" placeholder="个数" class="form-control" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">关联平板:</label>
+                <div class="col-md-8">
+                    @foreach (var ipad in list)
+                    {
+                        <label class="checkbox-inline">
+                            <input type="checkbox" name="IID" value="@(ipad.ID)" />@(ipad.Name)
+                        </label>
+                    }
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-8 col-md-offset-3">
+                    <button type="button" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i>确定</button>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</form>
+

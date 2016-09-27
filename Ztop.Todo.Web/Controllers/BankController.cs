@@ -119,14 +119,18 @@ namespace Ztop.Todo.Web.Controllers
             var bank = Core.BillManager.GetBank(year, month, company);
             var file = HttpContext.Request.Files[0];
             var saveFullFilePath = Core.BillManager.Upload(file);
-            var bills = BillClass.Analyze(saveFullFilePath, bank.ID);
+            var errors = new List<string>();
+            var bills = BillClass.Analyze(saveFullFilePath, bank.ID,ref errors);
+            if (errors.Count > 0)
+            {
+                throw new ArgumentException(string.Join("\r\n", errors.ToArray()));
+            }
             try
             {
                 Core.BillManager.UpDateBills(bills, bank.ID);
             }catch(Exception ex)
             {
                 throw new ArgumentException(ex.ToString());
-
             }
             return RedirectToAction("Detail", new { id = bank.ID });
         }

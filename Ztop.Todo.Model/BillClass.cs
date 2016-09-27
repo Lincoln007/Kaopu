@@ -10,7 +10,7 @@ namespace Ztop.Todo.Model
 {
     public static class BillClass
     {
-        public static List<Bill> Analyze(string filePath,int bid)
+        public static List<Bill> Analyze(string filePath,int bid,ref List<string> errors)
         {
             var list = new List<Bill>();
             IWorkbook workbook = filePath.OpenExcel();
@@ -27,10 +27,15 @@ namespace Ztop.Todo.Model
                         {
                             continue;
                         }
-                        var bill = Analyze(row,bid);
+                        var error = string.Empty;
+                        var bill = Analyze(row,bid,ref error);
                         if (bill != null)
                         {
                             list.Add(bill);
+                        }
+                        else
+                        {
+                            errors.Add(string.Format("在识别Excel中第{0}行中数据，存在错误：{1};", i + 1, error));
                         }
                     }
                 }
@@ -39,7 +44,7 @@ namespace Ztop.Todo.Model
         }
 
 
-        public static Bill Analyze(IRow row,int bid)
+        public static Bill Analyze(IRow row,int bid,ref string error)
         {
             ICell[] cells = new ICell[7];
             for(var i = 1; i < 8; i++)
@@ -50,6 +55,7 @@ namespace Ztop.Todo.Model
             DateTime currentTime;
             if (cells[0] == null)
             {
+                error = string.Format("未填写时间，无法进行录入系统");
                 return null;
             }
             else
@@ -78,6 +84,7 @@ namespace Ztop.Todo.Model
             }
             if (income > 0 && pay > 0)//当支出收入同时填写时，为错误，返回null
             {
+                error = string.Format("同时填写了支出和收入");
                 return null;
             }
             var budget = income > 0 ? Budget.Income : Budget.Expense;
@@ -160,6 +167,7 @@ namespace Ztop.Todo.Model
                     category = Category.Other;
                     break;
                 default:
+                    error = "类别填写不正确，类别应填写为：实际收入，还款、保证金退款、过账、借款、备用金、保证金支出、日常办公、固定资产、耗材、交通费、维修维护、邮电费、印刷装订、招待费、福利费、评审费、招投标费、财务费和其他";
                     return null;
             }
 
@@ -201,7 +209,7 @@ namespace Ztop.Todo.Model
                     }; 
                 }
             }
-
+            error = "支出、收入与对应的类别不符";
             return null;
         }
     }

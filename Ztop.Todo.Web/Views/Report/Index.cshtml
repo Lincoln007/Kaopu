@@ -200,16 +200,18 @@
                         <thead>
                             <tr>
                                 <th>系统流水编号</th>
+                                <th>单据编号</th>
                                 <th>填报日期</th>
                                 <th>报销金额[元]</th>
                                 <th>报销人</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach(var sheet in MyCheck)
+                            @foreach(var sheet in MyCheck.OrderByDescending(e=>e.CheckNumber))
                             {
                                 <tr>
                                     <td><a href="/Report/Detail?id=@(sheet.ID)">@(sheet.PrintNumber)</a></td>
+                                    <td>@(sheet.CheckNumber)</td>
                                     <td>@(sheet.Time.ToLongDateString())</td>
                                     <td>@(sheet.Money)</td>
                                     <td>@(sheet.Name)</td>
