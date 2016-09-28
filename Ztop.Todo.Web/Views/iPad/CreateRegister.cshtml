@@ -1,0 +1,114 @@
+﻿@*<script src="~/Scripts/jquery-1.9.1.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/jquery.datetimepicker.js"></script>
+<script src="~/Scripts/Contract.js"></script>*@
+@{
+    ViewBag.Title = "平板使用登记";
+    List<iPad> list = ViewBag.List;
+    Layout = null;
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3 class="text-center">平板使用登记</h3>
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert" role="alert" id="Message" style="display:none">
+            <span></span>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <h4 class="text-center">iPad 使用注意事项</h4>
+    <div class="col-md-10 col-md-offset-1">
+        <p>1、iPad平板电脑为杭州陆吾科技信息咨询有限公司所有，除在工作用途以外，不得私人使用娱乐；</p>
+        <p>2、公司给每台平板电脑配置了钢化膜以及平板保护壳，在使用平板电脑期间，请注意保护好平板！如有破损，请自行赔偿！</p>
+        <p>3、在使用平板电脑期间，除室外工作使用GPS，禁止连接外网或Wifi等其他一切网络；</p>
+        <p>4、在使用平板电脑期间，禁止删除《陆吾移动GIS》软件，如有删除，请自行赔偿金额；</p>
+        <p>5、在使用平板电脑期间，禁止升级IOS固件；</p>
+        <p>6、在使用平板电脑期间，禁止绑定私人Apple ID账号；</p>
+    </div>
+</div>
+<form class="form-horizontal" method="post" action="" id="Register-form">
+   
+    <div class="row">
+        <h4 class="text-center">详情</h4>
+        <input type="hidden" name="Enter" value="@(Identity.Name)" />
+        <input type="hidden" name="Time" value="@(DateTime.Now)" />
+        <div class="col-md-12 col-xs-12">
+            <div class="form-group">
+                <label class="control-label col-md-4">项目名称【必填】:</label>
+                <div class="col-md-7">
+                    <input type="text" name="Name" class="form-control" placeholder="项目名称" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">用途/说明【必填】：</label>
+                <div class="col-md-7">
+                    <input type="text" name="Mark" class="form-control" placeholder="用途/说明" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">领取人【必填】：</label>
+                <div class="col-md-7">
+                    <input type="text" name="Borrower" class="form-control" placeholder="领取人" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">领取平板【必填】：</label>
+                <div class="col-md-7">
+                    @foreach(var ipad in list)
+                    {
+                        <label class="checkbox-inline">
+                            <input type="checkbox" name="iPads" value="@(ipad.ID)" />@(ipad.Name)
+                        </label>
+                    }
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">领取时间【必填】：</label>
+                <div class="col-md-7">
+                    <input type="text" name="BorrowTime" class="form-control datetimepicker" placeholder="领取时间" readonly="readonly" />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-7 col-md-offset-4">
+                    <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i>确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</form>
+
+<script>
+    $(function () {
+
+        $("input.datetimepicker").datetimepicker({
+            timepicker: false,
+            format: 'Y-m-d'
+        });
+
+        $("#Register-form").submit(function () {
+            var messageNode = $("#Message");
+            messageNode.hide();
+            var data = $(this).serialize();
+            $.request("/iPad/SaveRegister", data, function (json) {
+                messageNode.removeClass("alert-danger").removeClass("alert-success");
+                if (json.result == 1) {
+                    messageNode.addClass("alert-success");
+                    messageNode.children("span").html("成功登记");
+                    return false;
+                } else {
+                    messageNode.addClass("alert-danger");
+                    messageNode.children("span").html(json.content);
+                    return false;
+                }
+                messageNode.show(500);
+                return false;
+            });
+            return false;
+        });
+    });
+</script>
+

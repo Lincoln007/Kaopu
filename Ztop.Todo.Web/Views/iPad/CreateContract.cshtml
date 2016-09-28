@@ -1,8 +1,79 @@
-﻿
+﻿<script src="~/Scripts/Contract.js"></script>
 @{
     ViewBag.Title = "录入合同";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = null;
+    List<iPad> list = ViewBag.List;
+    //Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h3 class="text-center">录入合同</h3>
+<form class="form-horizontal" method="post" action="">
+    <div class="row">
+        <div class="col-md-12 col-xs-12">
+            <div class="form-group">
+                <label class="control-label col-md-3">合同名称：</label>
+                <div class="col-md-8">
+                    <input type="text" name="Name" class="form-control" placeholder="合同名称" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">合同登记编号：</label>
+                <div class="col-md-8">
+                    <input type="text" name="Number" class="form-control" placeholder="合同登记编号" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">委托方（甲方）：</label>
+                <div class="col-md-8">
+                    <input type="text" name="PartA" class="form-control" placeholder="委托方（甲方）" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">开发方（乙方）：</label>
+                <div class="col-md-8">
+                    <input type="text" name="PartB" class="form-control" placeholder="开放方（乙方）"  value="杭州陆吾科技信息咨询有限公司"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">签订地点：</label>
+                <div class="col-md-8">
+                    <input type="text" name="Place" class="form-control" placeholder="签订地点" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">签订时间：</label>
+                <div class="col-md-8">
+                    <input type="text" name="Time" class="form-control datetimepicker" placeholder="签订时间" readonly="readonly" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">有效期：</label>
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <input type="text" name="StartTime" class="form-control datetimepicker" placeholder="起始时间"  readonly="readonly"/>
+                        <span class="input-group-addon">至</span>
+                        <input type="text" name="EndTime" class="form-control datetimepicker" placeholder="结束时间"  readonly="readonly"/>
+                    </div>
+                </div> 
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">扫描件：</label>
+                <div class="col-md-8">
+                    <input type="file" name="File" class="form-control" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">项目平板：</label>
+                <div class="col-md-8">
+                    @foreach(var ipad in list)
+                    {
+                        <label class="checkbox-inline">
+                            <input type="checkbox" name="iPad" value="@(ipad.ID)" />@(ipad.Name)
+                        </label>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
 

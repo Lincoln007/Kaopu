@@ -1,0 +1,88 @@
+﻿
+@{
+    ViewBag.Title = "分析结果";
+    Bank bank = ViewBag.Bank;
+    List<string> errors = ViewBag.Errors;
+    List<Bill> bills = ViewBag.Bills;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3 class="text-center">Excel分析结果</h3>
+
+@if (errors.Count > 0)
+{
+    <div class="alert alert-danger" role="alert">
+        @for(var i = 0; i < errors.Count; i++)
+        {
+            <p>@(i+1)、@(errors[i])</p>
+        }
+    </div>
+}
+
+<form class="form-horizontal" method="post" action="/Bank/" id="Result-form">
+    <table class="table table-striped table-condensed">
+        <thead>
+            <tr>
+                <th>交易日期</th>
+                <th>支出[元]</th>
+                <th>收入[元]</th>
+                <th>账户余额[元]</th>
+                <th>对方单位</th>
+                <th>摘要</th>
+                <th>类别</th>
+                <td></td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var item in bills)
+            {
+                <tr>
+                    <td><input type="text" name="Time" class="form-control input-sm" value="@(item.Time.ToLongDateString())" readonly="readonly" /></td>
+                    <td><input type="text" name="Pay" class="form-control input-sm" value="@(item.Budget==Budget.Expense?item.Money.ToString():"")" readonly="readonly" /></td>
+                    <td><input type="text" name="Income" class="form-control  input-sm" value="@(item.Budget==Budget.Income?item.Money.ToString():"")"  readonly="readonly"/></td>
+                    <td><input type="text" name="Balance" class="form-control input-sm" value="@(item.Balance)" readonly="readonly" /></td>
+                    <td><input type="text" name="Account" class="form-control input-sm" value="@(item.Account)" readonly="readonly" /></td>
+                    <td><input type="text" name="Summary" class="form-control input-sm" value="@(item.Remark)"  readonly="readonly"/></td>
+                    <td>
+                        <select name="Cost" class="form-control input-sm"  disabled>
+                            @foreach(Cost cost in Enum.GetValues(typeof(Cost)))
+                            {
+                                <option value="@(cost)" @(item.Cost==cost?"selected=selected":"")>@(cost.GetDescription())</option>
+                            }
+                        </select>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="btn-group">
+        <button type="submit" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-ok"></i>确认无误并导入系统</button>
+        <button type="button" class="btn btn-default btn-sm" onclick="history.back()"><i class="glyphicon glyphicon-arrow-left"></i>返回</button>
+    </div>
+</form>
+
+<script>
+    $(function () {
+        $("#Result-form").submit(function () {
+            var values=@(bills);
+            @if (errors.Count > 0)
+            {
+                <text>
+            if (confirm("当前分析存在错误，您确定要导入系统吗？"))
+                {
+                $.request("",{},function(json){
+                    
+                });
+                }
+                else
+                {
+                    return false;
+                }
+            </text>
+
+            }
+        });
+    });
+</script>
+
+

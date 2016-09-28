@@ -1,0 +1,98 @@
+﻿
+@{
+    Layout = null;
+}
+
+
+<h3 class="text-center">导入月账单</h3>
+<div class="alert alert-danger" role="alert" id="Message" style="display:none;">
+    <span></span>
+</div>
+
+<form class="form-horizontal" method="post" action="/Bank/Input"  enctype="multipart/form-data" id="Bill-form">
+    <div class="row">
+        <div class="col-md-12 col-xs-12">
+            <div class="form-group">
+                <label class="control-label col-md-3">公司【必选】：</label>
+                <div class="col-md-8">
+                    <label class="radio-inline">
+                        <input type="radio" name="Company" value="@(Company.Evaluation)" />@(Company.Evaluation.GetDescription())
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" name="Company" value="@(Company.Projection)" />@(Company.Projection.GetDescription())
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">年份【必选】：</label>
+                <div class="col-md-8">
+                    <select name="Year" class="form-control">
+                        @for (var i = DateTime.Now.Year; i > 2010; i--)
+                        {
+                            <option value="@(i)">@(i)</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">月份【必选】：</label>
+                <div class="col-md-8">
+                    <select name="Month" class="form-control">
+                        @for (var i = 1; i <= 12; i++)
+                        {
+                            <option value="@(i)" @(i == (DateTime.Now.Month - 1) ? "selected=selected" : "")>@(i)</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">Excel文件：</label>
+                <div class="col-md-8">
+                    <input type="file" name="File" class="form-control" />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-8 col-md-offset-3">
+                    <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i>确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+    $(function () {
+        var flag = 0;
+        function CheckExist() {
+            var data = $("#Bill-form").serialize();
+            $.getJSON("/Bank/Check", data, function (json) {
+                if (json.ID==0) {
+                    $("#Message").hide();
+                    flag = 1;
+                } else {
+                    $("#Message>span").html("当前系统已存在记录，无法录入Excel账单！");
+                    $("#Message").show(500);
+                    flag = 0;
+                }
+            });
+        }
+
+        $("input[name='Company']").change(function () {
+            CheckExist();
+        });
+
+        $("select[name='Year']").change(function () {
+            CheckExist();
+        });
+
+        $("Select[name='Month']").change(function () {
+            CheckExist();
+        });
+        $("#Bill-form").submit(function () {
+            if (flag == 0) {
+                return false;
+            }
+        })
+
+    });
+</script>

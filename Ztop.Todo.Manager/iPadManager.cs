@@ -78,5 +78,41 @@ namespace Ztop.Todo.Manager
                 db.SaveChanges();
             }
         }
+
+        public bool CheckUse(int[] ids)
+        {
+            if (ids == null) return false;
+            using (var db = GetDbContext())
+            {
+                foreach(var id in ids)
+                {
+                    var entry = db.iPads.Find(id);
+                    if (entry == null||entry.Statue!=iPadStatue.Vacant)
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        public bool Update(int[] ids,iPadStatue statue)
+        {
+            if (ids == null) return false;
+            using (var db = GetDbContext())
+            {
+                foreach(var id in ids)
+                {
+                    var entry = db.iPads.Find(id);
+                    if (entry == null)
+                    {
+                        return false;
+                    }
+                    entry.Statue = statue;
+                    db.SaveChanges();
+                }
+            }
+
+            return true;
+        }
     }
 }

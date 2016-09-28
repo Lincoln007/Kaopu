@@ -3,6 +3,7 @@
     ViewBag.Title = "平板列表";
     Layout = "~/Views/Shared/_Layout.cshtml";
     List<iPad> list = ViewBag.List;
+    List<iPadRegister> Registers = ViewBag.Registers;
 }
 
 <h3 class="text-center">杭州陆吾科技信息咨询有限公司 平板清单</h3>
@@ -11,6 +12,7 @@
     <a data-toggle="modal" data-target="#Modal" href="/iPad/Create" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i>录入平板</a>
     <a data-toggle="modal" data-target="#Modal" href="/iPad/CreateInvoice" class="btn btn-warning"><i class="glyphicon glyphicon-plus-sign"></i>录入发票</a>
     <a data-toggle="modal" data-target="#Modal" href="/iPad/CreateContract" class="btn btn-success"><i class="glyphicon glyphicon-book"></i>录入合同</a>
+    <a data-toggle="modal" data-target="#Modal" href="/iPad/CreateRegister" class="btn btn-danger"><i class="glyphicon glyphicon-apple"></i>使用登记</a>
     <a href="/iPad/Index" class="btn btn-default"><i class="glyphicon glyphicon-refresh"></i>刷新</a>
 </div>
 <div class="alert alert-success" role="alert" id="Index" style="display:none;">
@@ -19,7 +21,8 @@
 <hr />
 <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active"><a href="#iPad" role="tab" data-toggle="tab">平板列表</a></li>
-    <li role="presentation"><a href="#Invoice" role="tab" data-toggle="tab">发票</a></li>
+    <li role="presentation"><a href="#Register" role="tab" data-toggle="tab">使用登记</a></li>
+    <li role="presentation"><a href="#Invoice" role="tab" data-toggle="tab">平板发票</a></li>
     <li role="presentation"><a href="#Contract" role="tab" data-toggle="tab">项目合同</a></li>
 </ul>
 <div class="tab-content">
@@ -34,8 +37,10 @@
                     <th>平板类型</th>
                     <th>平板容量</th>
                     <th>网络连接方式</th>
+                    <th>使用状态</th>
                     <th>购买时间</th>
                     <th>购买人</th>
+                    <th>信息录入人</th>
                     <th>操作</th>
                 </tr>
             </thead>
@@ -50,8 +55,10 @@
                         <td>@(ipad.Type.GetDescription())</td>
                         <td>@(ipad.Space.GetDescription())</td>
                         <td>@(ipad.Way)</td>
+                        <td>@(ipad.Statue.GetDescription())</td>
                         <td>@(ipad.Time.ToLongDateString())</td>
                         <td>@(ipad.Buyer)</td>
+                        <td>@(ipad.Enter)</td>
                         <td>
                             <a href="/iPad/Create?id=@(ipad.ID)&&edit=true" class="btn btn-primary btn-xs"  data-toggle="modal" data-target="#Modal"><i class="glyphicon glyphicon-edit"></i>编辑</a>
                             <a href="/iPad/Delete?id=@(ipad.ID)" class="btn btn-danger btn-xs btn-delete"><i class="glyphicon glyphicon-remove"></i>删除</a>
@@ -61,6 +68,38 @@
             </tbody>
         </table>
     </div>
+    <div role="tabpanel" class="tab-pane" id="Register">
+        <table class="table table-condensed table-striped">
+            <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>领取编号</th>
+                    <th>项目名称</th>
+                    <th>用途/说明</th>
+                    <th>领取人</th>
+                    <th>领取时间</th>
+                    <th>领取平板</th>
+                    <th>使用状态</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var register in Registers)
+                {
+                    <tr>
+                        <td>@(register.ID)</td>
+                        <td>@(register.Number)</td>
+                        <td>@(register.Name)</td>
+                        <td>@(register.Mark)</td>
+                        <td>@(register.Borrower)</td>
+                        <td>@(register.BorrowTime.ToLongDateString())</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
     <div role="tabpanel" class="tab-pane" id="Invoice">
 
     </div>
@@ -109,9 +148,10 @@
             }
         });
 
-        $(".btn-group>a").click(function () {
-            $("#Modal>.modal-content").empty();
-        });
+
+        $("#Modal").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        })
     });
 </script>
 

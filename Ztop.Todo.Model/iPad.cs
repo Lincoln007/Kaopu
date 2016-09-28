@@ -27,6 +27,9 @@ namespace Ztop.Todo.Model
         [Column(TypeName ="int")]
         public InternetWay Way { get; set; }
         public int? IID { get; set; }
+        [Column(TypeName ="int")]
+        public iPadStatue Statue { get; set; }
+        public string Enter { get; set; }
 
     }
 
@@ -62,5 +65,15 @@ namespace Ztop.Todo.Model
     {
         WLAN,
         WLAN_Cellular
+    }
+
+    public enum iPadStatue
+    {
+        [Description("闲置")]
+        Vacant,
+        [Description("外借")]
+        Borrow,
+        [Description("项目使用")]
+        Deliver
     }
 }

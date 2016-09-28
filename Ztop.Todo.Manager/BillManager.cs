@@ -98,6 +98,14 @@ namespace Ztop.Todo.Manager
                 return entry != null;
             }
         }
+        
+        public Bank Get(int year,int month,Company company)
+        {
+            using (var db = GetDbContext())
+            {
+                return db.Banks.FirstOrDefault(e => e.Year == year && e.Company == company && e.Month == month);
+            }
+        }
 
         public Bank GetBank(int year,int month,Company company)
         {

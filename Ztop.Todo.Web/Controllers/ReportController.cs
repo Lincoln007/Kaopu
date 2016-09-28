@@ -209,33 +209,37 @@ namespace Ztop.Todo.Web.Controllers
         /// </summary>
         /// <param name="sheet"></param>
         /// <param name="reason"></param>
-        private void Reversion(Sheet sheet,string reason,string person)
+        private void Reversion(Sheet sheet,string reason,string person,Step? step=null)
         {
-            if (sheet.Controler != Identity.Name)
-            {
-                throw new ArgumentException("当前您无法进行退回操作");
-            }
             var sverify = new Verify
             {
                 Name = Identity.Name,
                 SID = sheet.ID,
                 Time = DateTime.Now,
                 Position = Position.RollBack,
-                Reason=reason
+                Reason=reason,
             };
-            switch (sheet.Status)
+            if (step.HasValue)
             {
-                case Status.ExaminingDirector:
-                    sverify.Step = Step.Examine;
-                    break;
-                case Status.ExaminingManager:
-                    sverify.Step = Step.Confirm;
-                    break;
-                case Status.ExaminingFinance:
-                    sverify.Step = Step.Approved;
-                    break;
-                default:break;
+                sverify.Step = step.Value;
             }
+            else
+            {
+                switch (sheet.Status)
+                {
+                    case Status.ExaminingDirector:
+                        sverify.Step = Step.Examine;
+                        break;
+                    case Status.ExaminingManager:
+                        sverify.Step = Step.Confirm;
+                        break;
+                    case Status.ExaminingFinance:
+                        sverify.Step = Step.Approved;
+                        break;
+                    default: break;
+                }
+            }
+           
             sheet.Controler = person;
             if (person.ToUpper() == sheet.Name.ToUpper())
             {
@@ -316,9 +320,33 @@ namespace Ztop.Todo.Web.Controllers
             {
                 throw new ArgumentException("参数不正确，未找到相关报销单信息");
             }
+            if (sheet.Controler != Identity.Name)
+            {
+                throw new ArgumentException("当前您无法进行退回操作");
+            }
             Reversion(sheet, Reason,person);
             return SuccessJsonResult();
         } 
+
+
+        public ActionResult CancelCheck(int id)
+        {
+            var model = Core.SheetManager.GetAllModel(id);
+            if (model == null)
+            {
+                throw new ArgumentException("未找到相关报销单，或已经删除");
+            }
+            if (model.Status == Status.ExaminingFinance)
+            {
+                Reversion(model, "主动撤销通过", Identity.Name,Step.Confirm);
+                return RedirectToAction("Detail", new { id = id });
+            }
+            else
+            {
+                throw new ArgumentException("该报销单已经被上级审核通过！无法进行取消通过操作");
+            }
+            
+        }
         public ActionResult List(string Creater="我", string Custom = null, string Position="不限", string Checker = "我", string Checker2 = null, string CurrentTime="不限",Order order=Order.Time,int page=1,int rows=10,double? minMoney=null,double? maxMoney=null)
         {
             var queryParameter = new QueryParameter

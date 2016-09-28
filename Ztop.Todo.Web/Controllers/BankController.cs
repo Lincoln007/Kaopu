@@ -169,5 +169,43 @@ namespace Ztop.Todo.Web.Controllers
             Core.BankManager.Save(new Bank { Year = year, Month = month, Company = company, Balance = balance });
             return SuccessJsonResult();
         }
+
+        #region
+        public ActionResult InputFile()
+        {
+            return View();
+        }
+
+        public ActionResult Check(int year,int month,Company company)
+        {
+            var bank = Core.BillManager.Get(year, month, company)??new Bank();
+            return Json(bank, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult Input(int year, int month, Company company)
+        {
+            var file = HttpContext.Request.Files[0];
+            if (file == null)
+            {
+                throw new ArgumentException("请上传Excel文件");
+            }
+
+            var saveFullFilePath = Core.BillManager.Upload(file);
+            var errors = new List<string>();
+            var bills = BillClass.Analyze(saveFullFilePath, ref errors);
+            ViewBag.Bank = new Bank { Year = year, Month = month, Company = company };
+            ViewBag.Bills = bills;
+            ViewBag.Errors = errors;
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult CheckInput(int year,int month,Company company,List<Bill> bills)
+        {
+            return SuccessJsonResult();
+        }
+
+        #endregion
     }
 }

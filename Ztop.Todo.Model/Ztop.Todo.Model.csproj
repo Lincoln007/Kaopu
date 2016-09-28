@@ -106,12 +106,14 @@
     <Compile Include="iPad.cs" />
     <Compile Include="iPadContract.cs" />
     <Compile Include="iPadInvoice.cs" />
+    <Compile Include="iPadRegister.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="Notification.cs" />
     <Compile Include="PageParameter.cs" />
     <Compile Include="ParameterBase.cs" />
     <Compile Include="PieData.cs" />
     <Compile Include="Record.cs" />
+    <Compile Include="Register_iPad.cs" />
     <Compile Include="SerialNumber.cs" />
     <Compile Include="Sheet.cs" />
     <Compile Include="SheetQueryParameter.cs" />

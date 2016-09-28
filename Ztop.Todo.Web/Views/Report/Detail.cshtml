@@ -31,6 +31,11 @@
                 }
             }
 
+            if (sheet.Status == Status.ExaminingFinance&&Identity.Name=="申屠杜平")
+            {
+                <a href="/Report/CancelCheck?id=@(sheet.ID)" class="btn btn-danger btn-sm"><em class="glyphicon glyphicon-log-out"></em>撤销通过</a>
+            }
+
 
             if (sheet.Status == Status.OutLine || sheet.Status == Status.RollBack)//草稿  或者退回
             {

@@ -17,39 +17,40 @@
         <div class="col-md-12 col-xs-12">
             <input type="hidden" name="Edit" value="@(edit?"true":"false")" />
             <input type="hidden" name="ID" value="@(ipad!=null?ipad.ID.ToString():"")" />
+            <input type="hidden" name="Enter" value="@(Identity.Name)" />
             <div class="form-group">
-                <label class="control-label col-md-3">平板名称：</label>
-                <div class="col-md-8">
+                <label class="control-label col-md-4">平板名称【必填】：</label>
+                <div class="col-md-7">
                     <input type="text" name="Name" placeholder="平板名称" class="form-control" value="@(ipad!=null?ipad.Name:"")"/> 
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-md-3">平板序列号：</label>
-                <div class="col-md-8">
-                    <input type="text" name="SerialNumber" placeholder="序列号" class="form-control" value="@(ipad!=null?ipad.SerialNumber:"")"/>
+                <label class="control-label col-md-4">平板序列号【必填】：</label>
+                <div class="col-md-7">
+                    <input type="text" name="SerialNumber" placeholder="序列号" class="form-control" value="@(ipad!=null?ipad.SerialNumber:"")" maxlength="12" />
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-md-3">Apple ID:</label>
-                <div class="col-md-8">
+                <label class="control-label col-md-4">Apple ID【必填】:</label>
+                <div class="col-md-7">
                     <input type="text" name="Account" placeholder="Apple ID" class="form-control" value="@(ipad!=null?ipad.Account:"")" />
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-md-3">购买人：</label>
-                <div class="col-md-8">
+                <label class="control-label col-md-4">购买人【必填】：</label>
+                <div class="col-md-7">
                     <input type="text" name="Buyer" class="form-control" placeholder="购买人"  value="@(ipad!=null?ipad.Buyer:"")"/>
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-md-3">购买时间：</label>
-                <div class="col-md-8">
+                <label class="control-label col-md-4">购买时间【必填】：</label>
+                <div class="col-md-7">
                     <input type="text" name="Time" placeholder="购买时间" class="form-control datetimepicker"  readonly="readonly" @(ipad != null?"value="+ipad.Time.ToString():"")/>
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-md-3">平板类型：</label>
-                <div class="col-md-8">
+                <label class="control-label col-md-4">平板类型【必选】：</label>
+                <div class="col-md-7">
                     @foreach (iPadType type in Enum.GetValues(typeof(iPadType)))
                     {
                         <label class="radio-inline">
@@ -59,8 +60,8 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-md-3">平板容量：</label>
-                <div class="col-md-8">
+                <label class="control-label col-md-4">平板容量【必选】：</label>
+                <div class="col-md-7">
                     @foreach (Space space in Enum.GetValues(typeof(Space)))
                     {
                         <label class="radio-inline">
@@ -70,8 +71,8 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-md-3">网络连接方式：</label>
-                <div class="col-md-8">
+                <label class="control-label col-md-4">网络连接方式【必选】：</label>
+                <div class="col-md-7">
                     @foreach(InternetWay way in Enum.GetValues(typeof(InternetWay)))
                     {
                         <label class="radio-inline">
@@ -82,7 +83,7 @@
             </div>
 
             <div class="form-group">
-                <div class="col-md-8 col-md-offset-3">
+                <div class="col-md-7 col-md-offset-4">
                     <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i>添加</button>
                     <button type="button" class="btn btn-default" onclick="history.back()"><i class="glyphicon glyphicon-arrow-left"></i>返回</button>
                 </div>

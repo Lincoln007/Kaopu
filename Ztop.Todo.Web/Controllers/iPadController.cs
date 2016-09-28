@@ -13,6 +13,8 @@ namespace Ztop.Todo.Web.Controllers
         public ActionResult Index()
         {
             ViewBag.List = Core.iPadManager.Get();
+            ViewBag.Registers = Core.iPad_registerManager.Get();
+            
             return View();
         }
 
@@ -59,7 +61,37 @@ namespace Ztop.Todo.Web.Controllers
 
         public ActionResult CreateContract()
         {
+            ViewBag.List = Core.iPadManager.Get().Where(e => e.Statue == iPadStatue.Vacant).ToList();
             return View();
+        }
+
+        public ActionResult CreateRegister(int id=0)
+        {
+            ViewBag.Register = Core.iPad_registerManager.Get(id);
+            ViewBag.List = Core.iPadManager.Get().Where(e => e.Statue == iPadStatue.Vacant).ToList();
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult SaveRegister(iPadRegister register,int[] ipads)
+        {
+            if (!Core.iPadManager.CheckUse(ipads))
+            {
+                return ErrorJsonResult("未读取到平板信息或者平板不可借用，请重试");
+            }
+            try
+            {
+                var rid=Core.iPad_registerManager.Save(register);
+                if (!Core.iPadManager.Update(ipads, iPadStatue.Borrow))
+                {
+                    return ErrorJsonResult("更改平板状态失败，请检查iPad使用状态");
+                }
+                Core.Register_iPadManager.Add(ipads, rid);
+            }catch(Exception ex)
+            {
+                return ErrorJsonResult(ex.ToString());
+            }
+            return SuccessJsonResult();
         }
 
 

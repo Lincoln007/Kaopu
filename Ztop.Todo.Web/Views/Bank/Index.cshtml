@@ -12,6 +12,35 @@
     <h2>@(Identity.Name)  您好! &nbsp;&nbsp;</h2>
 </div>
 
+<div class="btn-group">
+    <a data-toggle="modal" data-target="#Modal" href="/Bank/InputFile" class="btn btn-primary btn-sm" ><i class="glyphicon glyphicon-plus-sign"></i>录入月末账单Excel</a>
+    <a data-toggle="modal" data-target="#Modal" href="/Bank/SetBalance" class="btn btn-warning btn-sm"><i class="glyphicon glyphicon-warning-sign"></i>设置初始余额</a>
+</div>
+
+<hr />
+
+<div class="row">
+
+</div>
+
+
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true" id="Modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $("#Modal").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        })
+    });
+</script>
+
+
 
 <div class="col-md-3">
     <div class="panel panel-green">
