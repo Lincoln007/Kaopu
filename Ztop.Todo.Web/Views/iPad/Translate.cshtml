@@ -1,0 +1,72 @@
+﻿@{ 
+    Layout = null;
+    List<iPadContract> contracts = ViewBag.Contracts;
+    iPadRegister register = ViewBag.Register;
+}
+
+<h3 class="text-center">作为项目使用</h3>
+<div class="alert" role="alert" id="Message" style="display:none;">
+    <span></span>
+</div>
+<form class="form-horizontal" method="post" action="" id="Translate-form">
+    <input type="hidden" name="RID" value="@(register.ID)" />
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label class="control-label col-md-4">项目：</label>
+                <div class="col-md-7">
+                    @foreach (var contract in contracts)
+                    {
+                        <label class="radio-inline">
+                            <input type="radio" name="CID" value="@(contract.ID)"  />@(contract.Name)
+                        </label>
+                    }
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">平板：</label>
+                <div class="col-md-7">
+                    @foreach (var ipad in register.iPads)
+                    {
+                        if (ipad != null)
+                        {
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="iPadID" value="@(ipad.ID)" checked />@(ipad.Name)
+                            </label>
+                        }
+                    }
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-7 col-md-offset-4">
+                    <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i>确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+    $(function () {
+        $("#Translate-form").submit(function () {
+            var messageNode = $("#Message");
+            messageNode.hide();
+            var data=$(this).serialize();
+            $.request("/iPad/Translate", data, function (json) {
+                messageNode.removeClass("alert-danger").removeClass("alert-success");
+                if (json.result==1) {
+                    messageNode.addClass("alert-success");
+                    messageNode.children("span").html("成功转为项目平板");
+                } else {
+                    messageNode.addClass("alert-danger");
+                    messageNode.children("span").html(json.content);
+                }
+                messageNode.show(500);
+                return false;
+            });
+            return false;
+        });
+    });
+</script>
+

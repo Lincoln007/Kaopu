@@ -24,6 +24,7 @@
                     {
                         <tr>
                             <td>@(entry.iPad.Name)</td>
+                            <td>@(entry.Revert.GetDescription())</td>
                             <td>@(entry.Restorer)</td>
                             <td>@(entry.Time.HasValue ? entry.Time.Value.ToLongDateString() : "/")</td>
                         </tr>
@@ -54,6 +55,7 @@
                                 <td>@(item.iPad.Type.GetDescription())</td>
                                 <td>@(item.iPad.Space.GetDescription())</td>
                                 <td>@(item.iPad.Way.GetDescription())</td>
+                                <td>@(item.iPad.Color.GetDescription())</td>
                             </tr>
                         }
 
