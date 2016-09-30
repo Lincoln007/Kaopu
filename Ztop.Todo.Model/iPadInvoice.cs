@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Ztop.Todo.Model
 {
-    [Table("ipad_Invoces")]
+    [Table("ipad_invoices")]
     public class iPadInvoice
     {
         [Key]
@@ -17,5 +17,37 @@ namespace Ztop.Todo.Model
         public DateTime Time { get; set; }
         public string Number { get; set; }
         public double Money { get; set; }
+        public string File { get; set; }
+        [NotMapped]
+        public int Count
+        {
+            get
+            {
+                if (iPads == null)
+                {
+                    return 0;
+                }
+                else
+                {
+                    return iPads.Count;
+                }
+            }
+        }
+        public string Buyer { get; set; }
+        public string Enter { get; set; }
+        [NotMapped]
+        public List<Register_iPad> Relations { get; set; }
+        [NotMapped]
+        public List<iPad> iPads
+        {
+            get
+            {
+                if (Relations == null)
+                {
+                    return null;
+                }
+                return Relations.Select(e => e.iPad).ToList();
+            }
+        }
     }
 }

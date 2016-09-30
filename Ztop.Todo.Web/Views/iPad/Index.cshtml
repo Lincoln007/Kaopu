@@ -4,6 +4,8 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     List<iPad> list = ViewBag.List;
     List<iPadRegister> Registers = ViewBag.Registers;
+    List<iPadContract> Contracts = ViewBag.Contracts;
+    List<iPadInvoice> Invoices = ViewBag.Invoices;
 }
 
 <h3 class="text-center">杭州陆吾科技信息咨询有限公司 平板清单</h3>
@@ -37,6 +39,7 @@
                     <th>平板类型</th>
                     <th>平板容量</th>
                     <th>网络连接方式</th>
+                    <th>颜色</th>
                     <th>使用状态</th>
                     <th>购买时间</th>
                     <th>购买人</th>
@@ -55,7 +58,10 @@
                         <td>@(ipad.Type.GetDescription())</td>
                         <td>@(ipad.Space.GetDescription())</td>
                         <td>@(ipad.Way)</td>
-                        <td>@(ipad.Statue.GetDescription())</td>
+                        <td>@(ipad.Color)</td>
+                        <td>
+                            <a  href="#" class="btn @(ipad.Statue==iPadStatue.Vacant?"btn-default":(ipad.Statue==iPadStatue.Borrow?"btn-warning":"btn-success")) btn-xs"  data-toggle="modal" data-target="#Modal">@(ipad.Statue.GetDescription())</a>
+                        </td>
                         <td>@(ipad.Time.ToLongDateString())</td>
                         <td>@(ipad.Buyer)</td>
                         <td>@(ipad.Enter)</td>
@@ -74,12 +80,13 @@
                 <tr>
                     <th>序号</th>
                     <th>领取编号</th>
-                    <th>项目名称</th>
+                    <th>项目名称/地方</th>
                     <th>用途/说明</th>
                     <th>领取人</th>
                     <th>领取时间</th>
                     <th>领取平板</th>
                     <th>使用状态</th>
+                    <th>操作</th>
                 </tr>
             </thead>
             <tbody>
@@ -92,8 +99,28 @@
                         <td>@(register.Mark)</td>
                         <td>@(register.Borrower)</td>
                         <td>@(register.BorrowTime.ToLongDateString())</td>
-                        <td></td>
-                        <td></td>
+                        <td>
+                            @foreach (var ipad in register.iPads)
+                            {
+                                if (ipad != null)
+                                {
+                                    <label class="label label-default">@(ipad.Name)</label>
+                                }
+
+                            }
+                        </td>
+                        <td>
+                            <a data-toggle="modal" data-target="#Modal" href="/iPad/DetailRelation?rid=@(register.ID)&&relation=@(Relation.Register_iPad)" class="btn @(register.Revert?"btn-success":"btn-danger") btn-xs"><i class="glyphicon glyphicon-flash"></i>@(register.Revert?"已归还":"借用中")</a>
+                        </td>
+                        <td>
+                            
+                            @if (!register.Revert)
+                            {
+                                <a  data-toggle="modal" data-target="#Modal" href="/iPad/CreateRegister?id=@(register.ID)" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i>编辑</a>
+                                <a  data-toggle="modal" data-target="#Modal" href="/iPad/Restore?rid=@(register.ID)" class="btn btn-success btn-xs"><i class="glyphicon glyphicon-warning-sign"></i>归还</a>
+                                <a  data-toggle="modal" data-target="#Modal" href="/iPad/Translate?rid=@(register.ID)" class="btn btn-warning btn-xs"><i class="glyphicon glyphicon-share-alt"></i>作为项目使用</a>
+                            }
+                        </td>
                     </tr>
                 }
             </tbody>
@@ -101,10 +128,89 @@
     </div>
 
     <div role="tabpanel" class="tab-pane" id="Invoice">
-
+        <table class="table table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>开票时间</th>
+                    <th>发票编号</th>
+                    <th>发票金额【元】</th>
+                    <th>购买回执</th>
+                    <th>平板个数</th>
+                    <th>采购人</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var item in Invoices)
+                {
+                    <tr>
+                        <td>@(item.ID)</td>
+                        <td>@(item.Time.ToLongDateString())</td>
+                        <td>@(item.Number)</td>
+                        <td>@(item.Money)</td>
+                        <td>
+                            <a href="/@(item.File)" class="btn btn-success btn-xs"><i class="glyphicon glyphicon-download-alt"></i>查看</a>
+                        </td>
+                        <td>@(item.Count)</td>
+                        <td>@(item.Buyer)</td>
+                        <td>
+                            <a href="/iPad/DetailRelation?rid=@(item.ID)&&relation=@(Relation.Invoice_iPad)" class="btn btn-success btn-xs"  data-toggle="modal" data-target="#Modal"><i class="glyphicon glyphicon-send"></i>平板详情</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
     <div role="tabpanel" class="tab-pane" id="Contract">
-
+        <table class="table table-condensed table-striped">
+            <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>名称</th>
+                    <th>合同编号</th>
+                    <th>委托方（甲方）</th>
+                    <th>开发放（乙方）</th>
+                    <th>签订地点</th>
+                    <th>签订时间</th>
+                    <th>有效期</th>
+                    <th>项目平板</th>
+                    <th>扫描件</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var item in Contracts)
+                {
+                    <tr>
+                        <td>@(item.ID)</td>
+                        <td>@(item.Name)</td>
+                        <td>@(item.Number)</td>
+                        <td>@(item.PartA)</td>
+                        <td>@(item.PartB)</td>
+                        <td>@(item.Place)</td>
+                        <td>@(item.Time.HasValue?item.Time.Value.ToLongDateString():"/")</td>
+                        <td>@(string.Format("{0}至{1}",item.StartTime.HasValue?item.StartTime.Value.ToLongDateString():"/",item.EndTime.HasValue?item.EndTime.Value.ToLongDateString():"/"))</td>
+                        <td>
+                           <a data-toggle="modal" data-target="#Modal" href="/iPad/DetailRelation?rid=@(item.ID)&&relation=@(Relation.Contract_iPad)" class="btn btn-success btn-xs"><i class="glyphicon glyphicon-flash"></i>详情</a>
+                        </td>
+                        <td>
+                            @if (string.IsNullOrEmpty(item.File))
+                            {
+                                <label class="label label-default">目前还没有上传扫描件</label>
+                            }
+                            else
+                            {
+                                <label class="label label-warning"><a href="/@(item.File)"><i class="glyphicon glyphicon-download-alt"></i>下载查看</a> </label>
+                            }
+                        </td>
+                        <td>
+                            <a href="" class="btn btn-primary btn-xs"  data-toggle="modal" data-target="#Modal" ><i class="glyphicon glyphicon-plus"></i>录入平板</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 </div>
 

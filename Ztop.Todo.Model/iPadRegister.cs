@@ -40,9 +40,32 @@ namespace Ztop.Todo.Model
         public string Borrower { get; set; }
         public DateTime BorrowTime { get; set; }
         public string Enter { get; set; }
-        public bool Revert { get; set; }
         [NotMapped]
-        public List<iPad> iPads { get; set; }
+        public bool Revert
+        {
+            get
+            {
+                if (Register_iPads == null)
+                {
+                    return false;
+                }
+                return Register_iPads.Where(e => e.Revert == iPadRevert.Using).Count() == 0;
+            }
+        }
+        [NotMapped]
+        public List<Register_iPad> Register_iPads { get; set; }
+        [NotMapped]
+        public List<iPad> iPads
+        {
+            get
+            {
+                if (Register_iPads == null)
+                {
+                    return null;
+                }
+                return Register_iPads.Select(e => e.iPad).ToList();
+            }
+        }
 
     }
 }

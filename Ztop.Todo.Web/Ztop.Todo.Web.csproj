@@ -314,6 +314,10 @@
     <Content Include="Views\iPad\CreateRegister.cshtml" />
     <Content Include="Views\Bank\InputFile.cshtml" />
     <Content Include="Views\Bank\Input.cshtml" />
+    <Content Include="Views\iPad\Restore.cshtml" />
+    <Content Include="Views\iPad\DetailRelation.cshtml" />
+    <Content Include="Views\iPad\Fate.cshtml" />
+    <Content Include="Views\iPad\Translate.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

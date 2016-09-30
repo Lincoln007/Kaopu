@@ -1,0 +1,86 @@
+﻿
+@{
+    ViewBag.Title = "归还";
+    iPadRegister register = ViewBag.Register;
+    Layout = null;
+}
+
+<h3 class="text-center">归还平板</h3>
+<div class="alert" role="alert" id="Message" style="display:none;">
+    <span></span>
+</div>
+<div class="row">
+    <h4 class="text-center">iPad 归还注意事项</h4>
+    <div class="col-md-10 col-md-offset-1">
+        <p>1、请核实iPad平板电脑是否有破损；</p>
+        <p>2、请核实iPad平板电脑是否能正常使用；</p>
+        <p>3、请核实是否有其他账号绑定在iPad平板电脑中；</p>
+        <p>4、请核实iPad平板电脑中《陆吾移动GIS》软件是否被删除；</p>
+        <p>5、请核实IOS固件；</p>
+        <p>6、请核实iPad电脑中是否有新的App应用程序；</p>
+    </div>
+</div>
+<form class="form-horizontal" method="post" action="" id="Restore-form">
+    <div class="row">
+        <div class="col-md-12">
+            <input type="hidden" name="rid" value="@(register.ID)" />
+            <div class="form-group">
+                <label class="control-label col-md-4">归还平板【必选】：</label>
+                <div class="col-md-7">
+                    @foreach(var item in register.Register_iPads.Where(e => !e.Revert))
+                    {
+                        <label class="checkbox-inline">
+                            <input type="checkbox" name="iPadID" value="@(item.IID)" checked/>@(item.iPad.Name)
+                        </label>
+                    }
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">归还时间【必填】：</label>
+                <div class="col-md-7">
+                    <input type="text" name="Time" class="form-control datetimepicker" readonly="readonly" value="@(DateTime.Now.ToString("yyyy-MM-dd"))"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">归还人【必填】：</label>
+                <div class="col-md-7">
+                    <input type="text" name="Restorer" class="form-control" value="@(register.Borrower)" />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-7 col-md-offset-4">
+                    <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i>归还</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+    $(function () {
+        $("input.datetimepicker").datetimepicker({
+            timepicker: false,
+            format: 'Y-m-d'
+        });
+        $("#Restore-form").submit(function () {
+            var messageNode = $("#Message");
+            messageNode.hide();
+            var data = $(this).serialize();
+            $.request("/iPad/Restore", data, function (json) {
+                messageNode.removeClass("alert-danger").removeClass("alert-success");
+                if (json.result == 1) {
+                    messageNode.addClass("alert-success");
+                    messageNode.children("span").html("成功归还");
+                } else {
+                    messageNode.addClass("alert-danger");
+                    messageNode.children("span").html(json.content);
+                }
+                messageNode.show(500);
+                return false;
+            });
+            return false;
+        });
+
+    });
+</script>
+

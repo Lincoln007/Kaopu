@@ -1,12 +1,8 @@
-﻿@*<script src="~/Scripts/jquery-1.9.1.min.js"></script>
-<script src="~/Scripts/bootstrap.min.js"></script>
-<script src="~/Scripts/jquery.datetimepicker.js"></script>
-<script src="~/Scripts/Contract.js"></script>*@
-@{
+﻿@{
     ViewBag.Title = "平板使用登记";
     List<iPad> list = ViewBag.List;
     Layout = null;
-    //Layout = "~/Views/Shared/_Layout.cshtml";
+    iPadRegister register = ViewBag.Register;
 }
 
 <h3 class="text-center">平板使用登记</h3>
@@ -33,25 +29,26 @@
    
     <div class="row">
         <h4 class="text-center">详情</h4>
+        <input type="hidden" name="ID" value="@(register!=null?register.ID.ToString():"")" />
         <input type="hidden" name="Enter" value="@(Identity.Name)" />
-        <input type="hidden" name="Time" value="@(DateTime.Now)" />
+        <input type="hidden" name="Time" value="@(register!=null?register.Time:DateTime.Now)" />
         <div class="col-md-12 col-xs-12">
             <div class="form-group">
-                <label class="control-label col-md-4">项目名称【必填】:</label>
+                <label class="control-label col-md-4">项目名称/地方【必填】:</label>
                 <div class="col-md-7">
-                    <input type="text" name="Name" class="form-control" placeholder="项目名称" />
+                    <input type="text" name="Name" class="form-control" placeholder="项目名称" value="@(register!=null?register.Name:"")" />
                 </div>
             </div>
             <div class="form-group">
                 <label class="control-label col-md-4">用途/说明【必填】：</label>
                 <div class="col-md-7">
-                    <input type="text" name="Mark" class="form-control" placeholder="用途/说明" />
+                    <input type="text" name="Mark" class="form-control" placeholder="用途/说明" value="@(register!=null?register.Mark:"")"/>
                 </div>
             </div>
             <div class="form-group">
                 <label class="control-label col-md-4">领取人【必填】：</label>
                 <div class="col-md-7">
-                    <input type="text" name="Borrower" class="form-control" placeholder="领取人" />
+                    <input type="text" name="Borrower" class="form-control" placeholder="领取人" value="@(register!=null?register.Borrower:"")" />
                 </div>
             </div>
             <div class="form-group">
@@ -63,12 +60,21 @@
                             <input type="checkbox" name="iPads" value="@(ipad.ID)" />@(ipad.Name)
                         </label>
                     }
+                    @if (register != null && register.iPads != null)
+                    {
+                        foreach(var ipad in register.iPads)
+                        {
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="iPads" value="@(ipad.ID)" checked />@(ipad.Name)
+                            </label>
+                        }
+                    }
                 </div>
             </div>
             <div class="form-group">
                 <label class="control-label col-md-4">领取时间【必填】：</label>
                 <div class="col-md-7">
-                    <input type="text" name="BorrowTime" class="form-control datetimepicker" placeholder="领取时间" readonly="readonly" />
+                    <input type="text" name="BorrowTime" class="form-control datetimepicker" placeholder="领取时间" readonly="readonly" value="@(register!=null?register.BorrowTime.ToString("yyyy-MM-dd"):"")" />
                 </div>
             </div>
             <div class="form-group">
@@ -98,11 +104,9 @@
                 if (json.result == 1) {
                     messageNode.addClass("alert-success");
                     messageNode.children("span").html("成功登记");
-                    return false;
                 } else {
                     messageNode.addClass("alert-danger");
                     messageNode.children("span").html(json.content);
-                    return false;
                 }
                 messageNode.show(500);
                 return false;

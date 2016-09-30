@@ -194,17 +194,28 @@ namespace Ztop.Todo.Web.Controllers
             var saveFullFilePath = Core.BillManager.Upload(file);
             var errors = new List<string>();
             var bills = BillClass.Analyze(saveFullFilePath, ref errors);
+            ViewBag.Values = bills.ToJson();
             ViewBag.Bank = new Bank { Year = year, Month = month, Company = company };
             ViewBag.Bills = bills;
             ViewBag.Errors = errors;
             return View();
         }
 
-        [HttpPost]
-        public ActionResult CheckInput(int year,int month,Company company,List<Bill> bills)
-        {
-            return SuccessJsonResult();
-        }
+        //[HttpPost]
+        //public ActionResult CheckInput(int year,int month,Company company,DateTime[] time,double[] pay,double[] income,double[] balance,string[] account,string[] summary,Cost[] cost,Category[] category)
+        //{
+        //    var bank = Core.BillManager.GetBank(year, month, company);
+        //    var bills = Core.BillManager.GetBills(bank.ID, time, income, pay, balance, account, summary, cost, category);
+        //    try
+        //    {
+        //        Core.BillManager.UpDateBills(bills, bank.ID);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return ErrorJsonResult(ex.ToString());
+        //    }
+        //    return SuccessJsonResult(bank);
+        //}
 
         #endregion
     }

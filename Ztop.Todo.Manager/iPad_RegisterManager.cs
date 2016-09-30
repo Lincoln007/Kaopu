@@ -31,7 +31,19 @@ namespace Ztop.Todo.Manager
         {
             using (var db = GetDbContext())
             {
-                return db.iPad_Registers.ToList();
+                var list= db.iPad_Registers.ToList();
+                
+                foreach(var item in list)
+                {
+                    var relations = db.Register_iPads.Where(e => e.RID == item.ID && e.Relation == Relation.Register_iPad).ToList();
+                    foreach(var entry in relations)
+                    {
+                        entry.iPad = db.iPads.Find(entry.IID);
+                    }
+                    item.Register_iPads = relations;
+                    //item.iPads = db.Register_iPads.Where(e => e.RID == item.ID&&e.Relation==Relation.Register_iPad).ToList().Select(e =>db.iPads.Find(e.IID)).ToList();
+                }
+                return list;
             }
         }
 
@@ -43,11 +55,12 @@ namespace Ztop.Todo.Manager
                 var entry= db.iPad_Registers.Find(id);
                 if (entry != null)
                 {
-                    var register_iPads = db.Register_iPads.Where(e => e.RID == entry.ID).ToList();
-                    if (register_iPads.Count > 0)
+                    var register_iPads = db.Register_iPads.Where(e => e.RID == entry.ID&&e.Relation==Relation.Register_iPad).ToList();
+                    foreach(var item in register_iPads)
                     {
-                        entry.iPads = register_iPads.Select(e => db.iPads.Find(e.IID)).Where(e => e != null).ToList();
+                        item.iPad = db.iPads.Find(item.IID);
                     }
+                    entry.Register_iPads = register_iPads;
                   
                 }
                 return entry;

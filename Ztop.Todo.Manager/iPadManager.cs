@@ -56,7 +56,12 @@ namespace Ztop.Todo.Manager
         {
             using (var db = GetDbContext())
             {
-                return db.iPads.OrderByDescending(e => e.Time).ToList();
+                var list = db.iPads.OrderByDescending(e => e.Time).ToList();
+                foreach(var item in list)
+                {
+                    item.Relations = db.Register_iPads.Where(e => e.IID == item.ID).ToList();
+                }
+                return list;
             }
         }
         public iPad Get(int id)

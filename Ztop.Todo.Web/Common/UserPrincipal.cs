@@ -35,6 +35,7 @@ namespace Ztop.Todo.Web.Common
         public bool Finance { get; set; }
         public bool Admin { get; set; }
         public bool Market { get; set; }
+        public bool iPad { get; set; }
         public string sAMAccountName { get; set; }
         public bool IsAuthenticated
         {

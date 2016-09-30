@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Ztop.Todo.Common;
 using Ztop.Todo.Model;
 
 namespace Ztop.Todo.Web.Controllers
@@ -12,9 +13,14 @@ namespace Ztop.Todo.Web.Controllers
         // GET: iPad
         public ActionResult Index()
         {
+            if (!Identity.iPad)
+            {
+                return View("Fate");
+            }
             ViewBag.List = Core.iPadManager.Get();
             ViewBag.Registers = Core.iPad_registerManager.Get();
-            
+            ViewBag.Contracts = Core.iPad_ContractManager.Get();
+            ViewBag.Invoices = Core.iPad_InvoiceManager.Get();
             return View();
         }
 
@@ -41,6 +47,11 @@ namespace Ztop.Todo.Web.Controllers
 
         public ActionResult Delete(int id)
         {
+            var relations = Core.Register_iPadManager.GetByiPadID(id);
+            if (relations.Count > 0)
+            {
+                return ErrorJsonResult("不能删除该平板，该平板已录入使用中");
+            }
             try
             {
                 Core.iPadManager.Delete(id);
@@ -54,13 +65,15 @@ namespace Ztop.Todo.Web.Controllers
 
         public ActionResult CreateInvoice()
         {
-            ViewBag.List = Core.iPadManager.Get().Where(e => !e.IID.HasValue).ToList();
+
+            ViewBag.List = Core.iPadManager.Get().Where(e =>!e.HasInvoice).ToList();
             return View();
         }
         
 
-        public ActionResult CreateContract()
+        public ActionResult CreateContract(int id=0)
         {
+            ViewBag.Contract = Core.iPad_ContractManager.Get(id);
             ViewBag.List = Core.iPadManager.Get().Where(e => e.Statue == iPadStatue.Vacant).ToList();
             return View();
         }
@@ -75,25 +88,137 @@ namespace Ztop.Todo.Web.Controllers
         [HttpPost]
         public ActionResult SaveRegister(iPadRegister register,int[] ipads)
         {
-            if (!Core.iPadManager.CheckUse(ipads))
-            {
-                return ErrorJsonResult("未读取到平板信息或者平板不可借用，请重试");
-            }
             try
             {
                 var rid=Core.iPad_registerManager.Save(register);
+                var list = ipads.Select(e => new Register_iPad { IID = e, RID = rid, Relation = Relation.Register_iPad }).ToList();
+                Core.Register_iPadManager.Add(list, rid, Relation.Register_iPad);
                 if (!Core.iPadManager.Update(ipads, iPadStatue.Borrow))
                 {
                     return ErrorJsonResult("更改平板状态失败，请检查iPad使用状态");
                 }
-                Core.Register_iPadManager.Add(ipads, rid);
-            }catch(Exception ex)
+            }
+            catch(Exception ex)
             {
                 return ErrorJsonResult(ex.ToString());
             }
             return SuccessJsonResult();
         }
 
+        public ActionResult Restore(int rid)
+        {
+            ViewBag.Register = Core.iPad_registerManager.Get(rid);
+            return View();
+        }
 
+        [HttpPost]
+        public ActionResult Restore(int[] iPadID,DateTime Time,string Restorer,int rid)
+        {
+            if (iPadID == null)
+            {
+                return ErrorJsonResult("归还平板失败，未读取到平板信息！");
+            }
+            var relations = iPadID.Select(e => new Register_iPad { RID = rid, IID = e, Revert = iPadRevert.Back, Restorer = Restorer, Time = Time, Relation = Relation.Register_iPad }).ToList();
+
+            Core.Register_iPadManager.Change(relations);
+            Core.iPadManager.Update(iPadID, iPadStatue.Vacant);
+            return SuccessJsonResult();
+        }
+
+        [HttpPost]
+        public ActionResult SaveContract(iPadContract contract,int[] iPadID)
+        {
+            var file = HttpContext.Request.Files[0];
+            var saveFullFilePath = FileManager.Upload(file);
+            contract.File = saveFullFilePath;
+            var id = Core.iPad_ContractManager.Save(contract);
+            if (id > 0)
+            {
+                if (iPadID != null)
+                {
+
+                    var list = iPadID.Select(e => new Register_iPad { RID = id, IID = e, Relation = Relation.Contract_iPad }).ToList();
+                    Core.Register_iPadManager.Add(list, id, Relation.Contract_iPad);
+                    if (!Core.iPadManager.Update(iPadID, iPadStatue.Deliver))
+                    {
+                        throw new ArgumentException("更改平板状态失败，请检查iPad使用状态");
+                    }
+                }
+            }
+            else
+            {
+                throw new ArgumentException("保存合同失败！");
+            }
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult DetailRelation(int rid,Relation relation)
+        {
+            ViewBag.List = Core.Register_iPadManager.Get(rid, relation);
+            ViewBag.Relation = relation;
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult SaveInvoice(iPadInvoice invoice,int[] iPadID)
+        {
+            if (iPadID == null)
+            {
+                throw new ArgumentException("未选择平板");
+            }
+            var file = HttpContext.Request.Files[0];
+            var saveFullFilePath = FileManager.Upload(file);
+            invoice.File = saveFullFilePath;
+
+            var id = Core.iPad_InvoiceManager.Save(invoice);
+            if (id > 0)
+            {
+                var list = iPadID.Select(e => new Register_iPad { IID = e, RID = id, Relation = Relation.Invoice_iPad }).ToList();
+                Core.Register_iPadManager.Add(list, id, Relation.Invoice_iPad);
+            }
+            else
+            {
+                throw new ArgumentException("保存平板发票信息错误！");
+            }
+
+
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult Translate(int rid)
+        {
+            var register = Core.iPad_registerManager.Get(rid);
+            if (register == null||(register.iPads!=null&&register.iPads.Count==0))
+            {
+                throw new ArgumentException("未查询到平板信息");
+            }
+            ViewBag.Register = register;
+            ViewBag.Contracts = Core.iPad_ContractManager.Get();
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Translate(int cid,int[] iPadID,int rid)
+        {
+            if (cid == 0 || iPadID == null)
+            {
+                return ErrorJsonResult("请选择项目或者平板");
+            }
+            var contract = Core.iPad_ContractManager.Get(cid);
+            if (contract == null)
+            {
+                return ErrorJsonResult("项目合同未找到");
+            }
+            var list = iPadID.Select(e => new Register_iPad { RID = rid, IID = e, Relation = Relation.Register_iPad,Time=DateTime.Now,Revert=iPadRevert.Projection }).ToList();
+            Core.Register_iPadManager.Change(list);
+            list = iPadID.Select(e => new Register_iPad { RID = cid, IID = e, Relation = Relation.Contract_iPad }).ToList();
+            Core.Register_iPadManager.Append(list);
+            //Core.Register_iPadManager.Add(list, cid, Relation.Contract_iPad);
+            if (!Core.iPadManager.Update(iPadID, iPadStatue.Deliver))
+            {
+                return ErrorJsonResult("更新平板状态失败");
+            }
+            return SuccessJsonResult();
+        }
     }
 }

@@ -48,5 +48,10 @@ namespace Ztop.Todo.Common
         {
             return Get("/Managers/Markets/Person");
         }
+
+        public static List<string> GetLoowoo()
+        {
+            return Get("/Managers/Loowoo/Person");
+        }
     }
 }

@@ -18,6 +18,7 @@
             <input type="hidden" name="Edit" value="@(edit?"true":"false")" />
             <input type="hidden" name="ID" value="@(ipad!=null?ipad.ID.ToString():"")" />
             <input type="hidden" name="Enter" value="@(Identity.Name)" />
+            <input type="hidden" name="Statue" value="@(ipad!=null?ipad.Statue:iPadStatue.Vacant)" />
             <div class="form-group">
                 <label class="control-label col-md-4">平板名称【必填】：</label>
                 <div class="col-md-7">
@@ -81,7 +82,17 @@
                     }
                 </div>
             </div>
-
+            <div class="form-group">
+                <label class="control-label col-md-4">颜色【必选】:</label>
+                <div class="col-md-7">
+                    @foreach(iPadColor color in Enum.GetValues(typeof(iPadColor)))
+                    {
+                        <label class="radio-inline">
+                            <input type="radio" name="Color" value="@(color)"@(ipad!=null&&ipad.Color==color?"checked=checked":"") />@(color.GetDescription())
+                        </label>
+                    }
+                </div>
+            </div>
             <div class="form-group">
                 <div class="col-md-7 col-md-offset-4">
                     <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i>添加</button>

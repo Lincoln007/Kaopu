@@ -18,6 +18,7 @@ namespace Ztop.Todo.Web
         private static List<string> _finances = ProjectHelper.GetFinances();
         private static List<string> _admins = ProjectHelper.GetAdmins();
         private static List<string> _markets = ProjectHelper.GetMarkerts();
+        private static List<string> _loowoo = ProjectHelper.GetLoowoo();
 
         public static string GenerateToken(this HttpContextBase context, User user)
         {
@@ -71,7 +72,8 @@ namespace Ztop.Todo.Web
                             Project=_projects.Contains(name),
                             Finance=_finances.Contains(name),
                             Admin=_admins.Contains(name),
-                            Market=_markets.Contains(name)
+                            Market=_markets.Contains(name),
+                            iPad=_loowoo.Contains(name)
                         };
                     }
                 }

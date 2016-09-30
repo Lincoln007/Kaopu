@@ -11,6 +11,7 @@
     <form method="get" id="Review-form">
         <input type="hidden" name="Time" value="@(parameter.Time)"/>
         <input type="hidden" name="SheetType" value="@(parameter.SheetType.HasValue?parameter.SheetType.Value.GetDescription():"")" />
+        <input type="hidden" name="Name" value="@(Identity.Name)" />
         <div class="form-group">
             <label class="control-label">系统流水编号：</label>
             <div class="col-md-12">

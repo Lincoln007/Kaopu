@@ -26,11 +26,25 @@ namespace Ztop.Todo.Model
         public string Account { get; set; }
         [Column(TypeName ="int")]
         public InternetWay Way { get; set; }
-        public int? IID { get; set; }
         [Column(TypeName ="int")]
         public iPadStatue Statue { get; set; }
         public string Enter { get; set; }
-
+        [Column(TypeName ="int")]
+        public iPadColor Color { get; set; }
+        [NotMapped]
+        public List<Register_iPad> Relations { get; set; }
+        [NotMapped]
+        public bool HasInvoice
+        {
+            get
+            {
+                if (Relations == null)
+                {
+                    return false;
+                }
+                return Relations.FirstOrDefault(e => e.Relation == Relation.Invoice_iPad) != null;
+            }
+        }
     }
 
 
@@ -65,6 +79,10 @@ namespace Ztop.Todo.Model
     {
         WLAN,
         WLAN_Cellular
+    }
+    public enum iPadColor
+    {
+        银色,金色,深空灰,玫瑰金,亮黑色
     }
 
     public enum iPadStatue

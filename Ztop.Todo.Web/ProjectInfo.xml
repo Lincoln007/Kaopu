@@ -14,11 +14,15 @@
     <Person Name="欧阳安蛟"></Person>
     <Person Name="陈立定"></Person>
     <Person Name="张兴平"></Person>
-    <Person Name="汪建龙"></Person>
   </Admins>
   <Markets>
     <Person Name="孙夏阳"></Person>
     <Person Name="蒋雷"></Person>
     <Person Name="汪建龙"></Person>
   </Markets>
+  <Loowoo>
+    <Person Name="汪建龙"></Person>
+    <Person Name="唐尧"></Person>
+    <Person Name="赵斯思"></Person>
+  </Loowoo>
 </Managers>

@@ -1,0 +1,66 @@
+﻿@{ 
+    List<Register_iPad> list = ViewBag.List;
+    Relation relation = ViewBag.Relation;
+    Layout = null;
+}
+
+<h3 class="text-center"></h3>
+<div class="row">
+    <div class="col-md-10 col-md-offset-1">
+        @if (relation == Relation.Register_iPad)
+        {
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>平板名称</th>
+                        <th>是否归还</th>
+                        <th>归还人</th>
+                        <th>归还时间</th>
+                    </tr>
+                </thead>
+                @foreach (var entry in list)
+                {
+                    if (entry.iPad != null)
+                    {
+                        <tr>
+                            <td>@(entry.iPad.Name)</td>
+                            <td>@(entry.Restorer)</td>
+                            <td>@(entry.Time.HasValue ? entry.Time.Value.ToLongDateString() : "/")</td>
+                        </tr>
+                    }
+
+                }
+            </table>
+        }
+        else
+        {
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>平板名称</th>
+                        <th>平板类型</th>
+                        <th>平板容量</th>
+                        <th>网络连接方式</th>
+                        <th>颜色</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in list)
+                    {
+                        if (item.iPad != null)
+                        {
+                            <tr>
+                                <td>@(item.iPad.Name)</td>
+                                <td>@(item.iPad.Type.GetDescription())</td>
+                                <td>@(item.iPad.Space.GetDescription())</td>
+                                <td>@(item.iPad.Way.GetDescription())</td>
+                            </tr>
+                        }
+
+                    }
+                </tbody>
+            </table>
+        }
+      
+    </div>
+</div>
