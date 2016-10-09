@@ -65,6 +65,22 @@ namespace Ztop.Todo.Manager
             }
         }
 
+        public void Delete(List<Register_iPad> list)
+        {
+            using (var db = GetDbContext())
+            {
+                foreach(var item in list)
+                {
+                    var entry= db.Register_iPads.Where(e => e.RID == item.RID && e.IID == item.IID && e.Relation == item.Relation).FirstOrDefault();
+                    if (entry != null)
+                    {
+                        db.Register_iPads.Remove(entry);
+                        db.SaveChanges();
+                    }
+                }
+            }
+        }
+
         public List<Register_iPad> Get(int rid,Relation relation)
         {
             using (var db = GetDbContext())

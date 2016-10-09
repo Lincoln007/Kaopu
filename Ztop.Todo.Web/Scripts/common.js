@@ -15,9 +15,15 @@
             file.attr("name", fileId);
             inputName = fileId;
         }
+        if (url.indexOf("?") == -1) {
+            url += "?";
+        }
         url += "&inputName=" + inputName;
         var form = file.parents("form");
-        file.unbind("change").bind("change", function () {
+        var formAction = form.attr("action");
+        var formTarget = form.attr("target");
+
+        file.change(function () {
             if (beforeUpload && !beforeUpload()) {
                 reset();
                 return;
@@ -34,7 +40,7 @@
             });
             form.submit();
             iframe.load(function () {
-                var content = $(this).contents().find("body").html();
+                var content = $(this).contents().find("pre").html() || $(this).contents().find("body").html();
                 try {
                     var json = eval("(" + content + ")");
                     callback(json);
@@ -47,11 +53,16 @@
         });
 
         function reset() {
-            file.val("");
             var fileId = file.attr("id");
-            file.replaceWith(file.clone());
+            var newFile = file.clone();
+            newFile.value = "";
+            file.replaceWith(newFile);
             form.removeAttr("target");
             form.removeAttr("enctype");
+            form.attr("action", formAction);
+            if (formTarget) {
+                form.attr("target", formTarget);
+            }
             $("#" + fileId).setUpload(uploadUrl, callback, beforeUpload);
         }
     };

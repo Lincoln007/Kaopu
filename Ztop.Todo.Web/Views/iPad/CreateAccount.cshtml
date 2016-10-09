@@ -1,0 +1,85 @@
+﻿@{ 
+    iPadAccount account = ViewBag.Account;
+    bool edit = ViewBag.Edit;
+    Layout = null;
+}
+
+<h3 class="text-center">录入账号</h3>
+<div class="alert " role="alert" style="display:none" id="Message">
+    <span></span>
+</div>
+<hr />
+<div class="row">
+    <h4 class="text-center">Apple ID  密保问题</h4>
+    <hr />
+    <div class="col-md-6 col-md-offset-3">
+        <p><b>你理想的工作是什么？</b>答案：杭州智拓</p>
+        <p><b>你的第一个上司叫什么？</b>答案：杭州袁洋</p>
+        <p><b>你购买的第一张专辑是什么？</b>答案：没有买过</p>
+    </div>
+</div>
+<hr />
+<form class="form-horizontal" method="post" action="" id="Account-form">
+    <input type="hidden" name="Edit" value="@(edit?"true":"false")" />
+    <input type="hidden" name="Time" value="@(account!=null?account.Time:DateTime.Now)" />
+    <input type="hidden" name="Enter" value="@(account!=null?account.Enter:Identity.Name)" />
+    <div class="row">
+        <div class="col-md-12 col-xs-12">
+            <div class="form-group">
+                <label class="control-label col-md-4">邮箱账号【必填】：</label>
+                <div class="col-md-7">
+                    <input type="text" name="EMail" class="form-control" placeholder="邮箱账号" required value="@(account!=null?account.EMail:"")"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <labela class="control-label col-md-4">邮箱密码【必填】：</labela>
+                <div class="col-md-7">
+                    <input type="text" name="EPassword" class="form-control" placeholder="邮箱密码" required  value="@(account!=null?account.EPassword:"")"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">Apple ID【必填】:</label>
+                <div class="col-md-7">
+                    <input type="text" name="Account" class="form-control" placeholder="Apple ID" required value="@(account!=null?account.Account:"")" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">密码【必填】：</label>
+                <div class="col-md-7">
+                    <input type="text" name="Password" class="form-control" placeholder="密码" required value="@(account!=null?account.Password:"")" />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-4 col-md-7">
+                    <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i>确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+    $(function () {
+        var messageNode = $("#Message");
+        $("#Account-form").submit(function () {
+            messageNode.hide();
+            var data = $(this).serialize();
+            $.request("/iPad/SaveAccount", data, function (json) {
+                messageNode.removeClass("alert-danger").removeClass("alert-success");
+                if (json.result == 1) {
+                    messageNode.addClass("alert-success");
+                    messageNode.children("span").html("成功添加");
+                } else {
+                    messageNode.addClass("alert-danger");
+                    messageNode.children("span").html(json.content);
+                }
+                messageNode.show(500);
+                if (json.result == 1) {
+                    location.href = "/iPad";
+                }
+                return false;
+            });
+            return false;
+        });
+    });
+</script>

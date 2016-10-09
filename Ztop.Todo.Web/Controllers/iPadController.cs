@@ -21,6 +21,7 @@ namespace Ztop.Todo.Web.Controllers
             ViewBag.Registers = Core.iPad_registerManager.Get();
             ViewBag.Contracts = Core.iPad_ContractManager.Get();
             ViewBag.Invoices = Core.iPad_InvoiceManager.Get();
+            ViewBag.Accounts = Core.iPad_AccountManager.Get();
             return View();
         }
 
@@ -28,6 +29,7 @@ namespace Ztop.Todo.Web.Controllers
         {
             ViewBag.Edit = edit;
             ViewBag.iPad = Core.iPadManager.Get(id);
+            ViewBag.Accounts = Core.iPad_AccountManager.Get();
             return View();
         }
 
@@ -88,6 +90,10 @@ namespace Ztop.Todo.Web.Controllers
         [HttpPost]
         public ActionResult SaveRegister(iPadRegister register,int[] ipads)
         {
+            if (ipads == null)
+            {
+                return ErrorJsonResult("当前未选择平板，请选择");
+            }
             try
             {
                 var rid=Core.iPad_registerManager.Save(register);
@@ -102,6 +108,26 @@ namespace Ztop.Todo.Web.Controllers
             {
                 return ErrorJsonResult(ex.ToString());
             }
+            return SuccessJsonResult();
+        }
+
+        public ActionResult DeleteRegister(int id)
+        {
+            var register = Core.iPad_registerManager.Get(id);
+            if (register == null)
+            {
+                return ErrorJsonResult("未找到使用登记");
+            }
+            if (register.Register_iPads != null)
+            {
+                Core.Register_iPadManager.Delete(register.Register_iPads);
+                Core.iPadManager.Update(register.Register_iPads.Select(e => e.IID).ToArray(), iPadStatue.Vacant);
+            }
+            if (!Core.iPad_registerManager.Delete(id))
+            {
+                return ErrorJsonResult("删除失败");
+            }
+
             return SuccessJsonResult();
         }
 
@@ -217,6 +243,42 @@ namespace Ztop.Todo.Web.Controllers
             if (!Core.iPadManager.Update(iPadID, iPadStatue.Deliver))
             {
                 return ErrorJsonResult("更新平板状态失败");
+            }
+            return SuccessJsonResult();
+        }
+
+        [HttpPost]
+        public ActionResult Upload()
+        {
+            if (Request.Files.Count == 0)
+            {
+                throw new ArgumentException("请选择上传文件");
+            }
+            var file = HttpContext.Request.Files[0];
+            var fileName = file.FileName;
+            if (string.IsNullOrEmpty(fileName))
+            {
+                throw new ArgumentException("请选择上传文件");
+            }
+            
+            var saveFilePath = FileManager.Upload2(file);
+            return SuccessJsonResult(new { saveFilePath, fileName });
+        }
+
+        public ActionResult CreateAccount(int id=0)
+        {
+            ViewBag.Account = Core.iPad_AccountManager.Get(id);
+            ViewBag.Edit = id > 0;
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult SaveAccount(DateTime time,string enter,string email,string epassword,string account,string password,bool edit)
+        {
+            var id = Core.iPad_AccountManager.Save(new iPadAccount { Time=time,Enter=enter,EMail=email,EPassword=epassword,Account=account,Password=password}, edit);
+            if (id == 0)
+            {
+                return ErrorJsonResult("保存账号失败");
             }
             return SuccessJsonResult();
         }

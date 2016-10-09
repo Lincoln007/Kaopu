@@ -62,5 +62,6 @@ namespace Ztop.Todo.Manager
         public DbSet<iPadRegister> iPad_Registers { get; set; }
         public DbSet<Register_iPad> Register_iPads { get; set; }
         public DbSet<iPadContract> iPad_Contracts { get; set; }
+        public DbSet<iPadAccount> iPad_Accounts { get; set; }
     }
 }

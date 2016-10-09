@@ -57,9 +57,10 @@ namespace Ztop.Todo.Manager
         public ContractArticleManager ContractArticleManager { get; private set; }
         public BillContractManager BillContractManager { get; private set; }
         public iPadManager iPadManager { get; private set; }
-        public iPad_InvoiceManager iPad_InvoiceManager { get; set; }
-        public iPad_RegisterManager iPad_registerManager { get; set; }
-        public Register_iPadManager Register_iPadManager { get; set; }
-        public iPad_ContractManager iPad_ContractManager { get; set; }
+        public iPad_InvoiceManager iPad_InvoiceManager { get; private set; }
+        public iPad_RegisterManager iPad_registerManager { get; private set; }
+        public Register_iPadManager Register_iPadManager { get; private set; }
+        public iPad_ContractManager iPad_ContractManager { get; private set; }
+        public iPad_AccountManager iPad_AccountManager { get; private set; }
     }
 }

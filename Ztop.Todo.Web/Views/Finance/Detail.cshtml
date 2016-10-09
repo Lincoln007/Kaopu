@@ -81,9 +81,9 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-md-4">对方单位：</label>
+                                <label class="control-label col-md-4">甲方：</label>
                                 <div class="col-md-8">
-                                    <input type="text" name="OtherSideCompany" class="form-control" placeholder="对方单位" required value="@(contract.Company)" />
+                                    <input type="text" name="OtherSideCompany" class="form-control" placeholder="甲方" required value="@(contract.Company)" />
                                 </div>
                             </div>
                             <div class="form-group">
@@ -160,15 +160,15 @@
             </tr>
         
             <tr>
-                <th>对方单位</th>
+                <th>甲方</th>
                 <td>@(contract.Company)</td>
                 <th>合同所属组织</th>
                 <td>@(contract.ZtopCompany.GetDescription())</td>
             </tr>
             <tr>
-                <th>合同起始时间</th>
+                <th>合同流转时间</th>
                 <td>@(contract.StartTime.ToLongDateString())</td>
-                <th>合同结束时间</th>
+                <th>合同取回时间</th>
                 <td>@(contract.EndTime.HasValue ? contract.EndTime.Value.ToShortDateString() : "/")</td>
             </tr>
             <tr>

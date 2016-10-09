@@ -66,5 +66,21 @@ namespace Ztop.Todo.Manager
                 return entry;
             }
         }
+
+        public bool Delete(int id)
+        {
+            if (id == 0) return false;
+            using (var db = GetDbContext())
+            {
+                var entry = db.iPad_Registers.Find(id);
+                if (entry != null)
+                {
+                    db.iPad_Registers.Remove(entry);
+                    db.SaveChanges();
+                }
+            }
+
+            return true;
+        }
     }
 }

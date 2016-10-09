@@ -4,12 +4,13 @@
     Layout = null;
     iPad ipad = ViewBag.iPad;
     bool edit = ViewBag.Edit;
+    List<iPadAccount> Accounts = ViewBag.Accounts;
     // Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h3 class="text-center">录入平板</h3>
 
-<form class="form-horizontal" action="/iPad/Create" method="post" enctype="multipart/form-data" id="iPad-form">
+<form class="form-horizontal" action="/iPad/Create" method="post" id="iPad-form">
     <div class="alert alert-success" role="alert" id="Message" style="display:none">
         <span></span>
     </div>
@@ -22,42 +23,48 @@
             <div class="form-group">
                 <label class="control-label col-md-4">平板名称【必填】：</label>
                 <div class="col-md-7">
-                    <input type="text" name="Name" placeholder="平板名称" class="form-control" value="@(ipad!=null?ipad.Name:"")"/> 
+                    <input type="text" name="Name" placeholder="平板名称" class="form-control" value="@(ipad!=null?ipad.Name:"")" required/> 
                 </div>
             </div>
             <div class="form-group">
                 <label class="control-label col-md-4">平板序列号【必填】：</label>
                 <div class="col-md-7">
-                    <input type="text" name="SerialNumber" placeholder="序列号" class="form-control" value="@(ipad!=null?ipad.SerialNumber:"")" maxlength="12" />
+                    <input type="text" name="SerialNumber" placeholder="序列号" class="form-control" value="@(ipad!=null?ipad.SerialNumber:"")" maxlength="12"  required />
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-md-4">Apple ID【必填】:</label>
+                <label class="control-label col-md-4">Apple ID【必选】:</label>
                 <div class="col-md-7">
-                    <input type="text" name="Account" placeholder="Apple ID" class="form-control" value="@(ipad!=null?ipad.Account:"")" />
+                    <select name="AID" class="form-control">
+                        @foreach(var account in Accounts)
+                        {
+                            <option value="@(account.ID)" @(ipad!=null&&ipad.AID==account.ID?"selected=selected":"")>@(account.Account)</option>
+                        }
+                    </select>
+                    @*<input type="text" name="Account" placeholder="Apple ID" class="form-control" value="@(ipad!=null?ipad.Account:"")"   required/>*@
                 </div>
             </div>
             <div class="form-group">
                 <label class="control-label col-md-4">购买人【必填】：</label>
                 <div class="col-md-7">
-                    <input type="text" name="Buyer" class="form-control" placeholder="购买人"  value="@(ipad!=null?ipad.Buyer:"")"/>
+                    <input type="text" name="Buyer" class="form-control" placeholder="购买人"  value="@(ipad!=null?ipad.Buyer:"")" required/>
                 </div>
             </div>
             <div class="form-group">
                 <label class="control-label col-md-4">购买时间【必填】：</label>
                 <div class="col-md-7">
-                    <input type="text" name="Time" placeholder="购买时间" class="form-control datetimepicker"  readonly="readonly" @(ipad != null?"value="+ipad.Time.ToString():"")/>
+                    <input type="text" name="Time" placeholder="购买时间" class="form-control datetimepicker"  readonly="readonly" @(ipad != null?"value="+ipad.Time.ToString():"") required/>
                 </div>
             </div>
             <div class="form-group">
                 <label class="control-label col-md-4">平板类型【必选】：</label>
                 <div class="col-md-7">
-                    @foreach (iPadType type in Enum.GetValues(typeof(iPadType)))
-                    {
-                        <label class="radio-inline">
-                            <input type="radio" name="Type" value="@(type)"  @(ipad!=null&&ipad.Type==type?"checked=checked":"")/>@(type.GetDescription())
-                        </label>
-                    }
+                    <select name="Type" class="form-control" required>
+                        @foreach(iPadType type in Enum.GetValues(typeof(iPadType)))
+                        {
+                            <option value="@(type)" @(ipad!=null&&ipad.Type==type?"selected=selected":"")>@(type.GetDescription())</option>
+                        }
+                    </select>
                 </div>
             </div>
             <div class="form-group">
@@ -94,24 +101,134 @@
                 </div>
             </div>
             <div class="form-group">
+                <label class="control-label col-md-4">授权码【必填】：</label>
+                <div class="col-md-7">
+                    <input type="text" name="AuthCode" class="form-control" placeholder="授权码" value="@(ipad!=null?ipad.AuthCode:"")" required />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">授权文件：</label>
+                <div class="col-md-7">
+                    <input type="file" name="file" class="form-control" id="file" />
+                </div>
+                <div class="col-md-offset-4 col-md-7" id="File-List">
+
+                </div>
+            </div>
+            <div class="form-group">
                 <div class="col-md-7 col-md-offset-4">
                     <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i>添加</button>
-                    <button type="button" class="btn btn-default" onclick="history.back()"><i class="glyphicon glyphicon-arrow-left"></i>返回</button>
                 </div>
             </div>
         </div>
     </div>
 </form>
 
+<div class="hide">
+    <div id="SelectFile">
+        <div class="input-group" style="margin:2px;">
+            <input type="text" name="AuthFile" class="form-control" readonly="readonly" value="{FileName}" />
+            <input type="hidden" name="AuthPath" value="{FilePath}" />
+            <span class="input-group-btn">
+                <button type="button" class="btn btn-danger btn-remove"><i class="glyphicon glyphicon-remove-circle"></i></button>
+            </span>
+
+        </div>
+    </div>
+
+</div>
+
 <script>
+    var fileHtml = $("#SelectFile").html();
     $(function () {
 
+        $.fn.setUpload = function (uploadUrl, callback, beforeUpload) {
+            var url = uploadUrl;
+            if (typeof (uploadUrl) == "function") {
+                url = uploadUrl();
+            }
+            var file = $(this);
+            var fileId = file.attr("id");
+            if (!fileId) {
+                fileId = Math.random();
+                file.attr("id", "file-" + fileId);
+            }
+            var inputName = file.attr("name");
+            if (!inputName) {
+                file.attr("name", fileId);
+                inputName = fileId;
+            }
+            if (url.indexOf("?") == -1) {
+                url += "?";
+            }
+            url += "&inputName=" + inputName;
+            var form = file.parents("form");
+            var formAction = form.attr("action");
+            var formTarget = form.attr("target");
+
+            file.change(function () {
+                if (beforeUpload && !beforeUpload()) {
+                    reset();
+                    return;
+                }
+                var targetId = "iframe_upload" + Math.random();
+                var iframe = $('<iframe width="0" height="0" frameborder="0" id="' + targetId + '" name="' + targetId + '">');
+                document.body.appendChild(iframe[0]);
+                form.attr({
+                    target: targetId,
+                    action: url,
+                    enctype: "multipart/form-data",
+                    method: "POST"
+
+                });
+                form.submit();
+                iframe.load(function () {
+                    var content = $(this).contents().find("pre").html() || $(this).contents().find("body").html();
+                    try {
+                        var json = eval("(" + content + ")");
+                        callback(json);
+                    } catch (ex) {
+                        alert("上传出错了" + ex.message);
+                    }
+                    reset();
+                    iframe.remove();
+                });
+            });
+
+            function reset() {
+                var fileId = file.attr("id");
+                var newFile = file.clone();
+                newFile.value = "";
+                file.replaceWith(newFile);
+                form.removeAttr("target");
+                form.removeAttr("enctype");
+                form.attr("action", formAction);
+                if (formTarget) {
+                    form.attr("target", formTarget);
+                }
+                $("#" + fileId).setUpload(uploadUrl, callback, beforeUpload);
+            }
+        };
         $("input.datetimepicker").datetimepicker({
             timepicker: false,
             format: 'Y-m-d'
         });
 
+        $("#file").setUpload("/iPad/Upload", function (json) {
+
+            var appendHtml = fileHtml;
+            appendHtml = appendHtml.replace("{FilePath}", json.data.saveFilePath).replace("{FileName}", json.data.fileName);
+            $("#File-List").empty().append(appendHtml);
+
+            $(".input-group-btn>.btn-remove").unbind("click").bind("click", function () {
+                $(this).parent().parent().remove();
+            });
+        });
         $("#iPad-form").submit(function () {
+            var enctype = $(this).attr("enctype");
+            if (enctype == "multipart/form-data") {
+                return;
+            }
             $("#Message").hide();
             var data = $(this).serialize();
             $.request("/iPad/Create", data, function (json) {
@@ -119,12 +236,14 @@
                 if (json.result == 1) {
                     $("#Message").addClass("alert-success");
                     $("#Message>span").html("操作成功");
-                  
                 } else {
                     $("#Message").addClass("alert-danger");
                     $("#Message>span").html(json.content);
                 }
                 $("#Message").show(500);
+                if (json.result == 1) {
+                    location.href = "/iPad/Index";
+                }
                 return false;
             });
             return false;

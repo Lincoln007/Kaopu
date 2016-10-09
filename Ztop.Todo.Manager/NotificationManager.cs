@@ -57,7 +57,7 @@ namespace Ztop.Todo.Manager
                                 var contract = Core.ContractManager.Get(invoice.CID);
                                 var sender = Core.UserManager.GetUser(model.SenderID);
                                 model.Description = string.Format("{0}申请给{1}开具{2}的发票", sender.DisplayName, invoice.OtherSideCompany, invoice.Content);
-                                model.Path = "/Finance/Detail/?id=" + contract.ID;
+                                model.Path = "/Finance/Detail/?id=" + contract.ID + "&&notId=" + model.ID;
                             }
                             break;
                     }
@@ -211,6 +211,23 @@ namespace Ztop.Todo.Manager
         {
             FlagReadBase(infoId, receiverID, InfoType.Verify);
         }
+
+
+        public void FlagRead(int notid)
+        {
+            if (notid == 0) return;
+            using (var db = GetDbContext())
+            {
+                var entry = db.Notifications.Find(notid);
+                if (entry != null)
+                {
+                    entry.HasRead = true;
+                }
+                db.SaveChanges();
+            }
+        }
+
+        
 
 
 

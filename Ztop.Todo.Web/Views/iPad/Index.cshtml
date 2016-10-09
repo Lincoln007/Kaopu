@@ -6,15 +6,17 @@
     List<iPadRegister> Registers = ViewBag.Registers;
     List<iPadContract> Contracts = ViewBag.Contracts;
     List<iPadInvoice> Invoices = ViewBag.Invoices;
+    List<iPadAccount> Accounts = ViewBag.Accounts;
 }
 
 <h3 class="text-center">杭州陆吾科技信息咨询有限公司 平板清单</h3>
 
 <div class="btn-group">
     <a data-toggle="modal" data-target="#Modal" href="/iPad/Create" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i>录入平板</a>
+    <a data-toggle="modal" data-target="#Modal" href="/iPad/CreateRegister" class="btn btn-danger"><i class="glyphicon glyphicon-apple"></i>使用登记</a>
     <a data-toggle="modal" data-target="#Modal" href="/iPad/CreateInvoice" class="btn btn-warning"><i class="glyphicon glyphicon-plus-sign"></i>录入发票</a>
     <a data-toggle="modal" data-target="#Modal" href="/iPad/CreateContract" class="btn btn-success"><i class="glyphicon glyphicon-book"></i>录入合同</a>
-    <a data-toggle="modal" data-target="#Modal" href="/iPad/CreateRegister" class="btn btn-danger"><i class="glyphicon glyphicon-apple"></i>使用登记</a>
+  <a data-toggle="modal" data-target="#Modal" href="/iPad/CreateAccount" class="btn btn-info"><i class="glyphicon glyphicon-flag"></i>创建账号</a>
     <a href="/iPad/Index" class="btn btn-default"><i class="glyphicon glyphicon-refresh"></i>刷新</a>
 </div>
 <div class="alert alert-success" role="alert" id="Index" style="display:none;">
@@ -26,6 +28,7 @@
     <li role="presentation"><a href="#Register" role="tab" data-toggle="tab">使用登记</a></li>
     <li role="presentation"><a href="#Invoice" role="tab" data-toggle="tab">平板发票</a></li>
     <li role="presentation"><a href="#Contract" role="tab" data-toggle="tab">项目合同</a></li>
+    <li role="presentation"><a href="#Account" role="tab" data-toggle="tab">Apple ID</a></li>
 </ul>
 <div class="tab-content">
     <div role="tabpanel" class="tab-pane active" id="iPad">
@@ -54,7 +57,7 @@
                         <td>@(ipad.ID)</td>
                         <td>@(ipad.Name)</td>
                         <td>@(ipad.SerialNumber)</td>
-                        <td>@(ipad.Account)</td>
+                        <td>@(ipad.Account!=null?ipad.Account.Account:"/")</td>
                         <td>@(ipad.Type.GetDescription())</td>
                         <td>@(ipad.Space.GetDescription())</td>
                         <td>@(ipad.Way)</td>
@@ -66,6 +69,10 @@
                         <td>@(ipad.Buyer)</td>
                         <td>@(ipad.Enter)</td>
                         <td>
+                            @if (!string.IsNullOrEmpty(ipad.AuthPath))
+                            {
+                                <a href="/@(ipad.AuthPath)" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-download-alt"></i>下载授权文件</a>
+                            }
                             <a href="/iPad/Create?id=@(ipad.ID)&&edit=true" class="btn btn-primary btn-xs"  data-toggle="modal" data-target="#Modal"><i class="glyphicon glyphicon-edit"></i>编辑</a>
                             <a href="/iPad/Delete?id=@(ipad.ID)" class="btn btn-danger btn-xs btn-delete"><i class="glyphicon glyphicon-remove"></i>删除</a>
                         </td>
@@ -120,6 +127,7 @@
                                 <a  data-toggle="modal" data-target="#Modal" href="/iPad/Restore?rid=@(register.ID)" class="btn btn-success btn-xs"><i class="glyphicon glyphicon-warning-sign"></i>归还</a>
                                 <a  data-toggle="modal" data-target="#Modal" href="/iPad/Translate?rid=@(register.ID)" class="btn btn-warning btn-xs"><i class="glyphicon glyphicon-share-alt"></i>作为项目使用</a>
                             }
+                            <a href="/iPad/DeleteRegister?id=@(register.ID)" class="btn btn-danger btn-xs btn-delete"><i class="glyphicon glyphicon-remove-circle"></i>删除</a>
                         </td>
                     </tr>
                 }
@@ -207,6 +215,32 @@
                         <td>
                             <a href="" class="btn btn-primary btn-xs"  data-toggle="modal" data-target="#Modal" ><i class="glyphicon glyphicon-plus"></i>录入平板</a>
                         </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div role="tabpanel" class="tab-pane" id="Account">
+        <table class="table table-condensed table-striped">
+            <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>Apple ID</th>
+                    <th>密码</th>
+                    <th>E-Mail</th>
+                    <th>邮箱密码</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var account in Accounts)
+                {
+                    <tr>
+                        <td>@(account.ID)</td>
+                        <td>@(account.Account)</td>
+                        <td>@(account.Password)</td>
+                        <td>@(account.EMail)</td>
+                        <td>@(account.EPassword)</td>
                     </tr>
                 }
             </tbody>

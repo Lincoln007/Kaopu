@@ -37,8 +37,17 @@ namespace Ztop.Todo.Model
         /// 用途/说明
         /// </summary>
         public string Mark { get; set; }
+        /// <summary>
+        /// 借用者
+        /// </summary>
         public string Borrower { get; set; }
+        /// <summary>
+        /// 借用时间
+        /// </summary>
         public DateTime BorrowTime { get; set; }
+        /// <summary>
+        /// 信息录入人
+        /// </summary>
         public string Enter { get; set; }
         [NotMapped]
         public bool Revert
@@ -66,6 +75,11 @@ namespace Ztop.Todo.Model
                 return Register_iPads.Select(e => e.iPad).ToList();
             }
         }
+
+        /// <summary>
+        /// 备注
+        /// </summary>
+        public string Remark { get; set; }
 
     }
 }

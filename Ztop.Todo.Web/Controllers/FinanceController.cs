@@ -69,7 +69,7 @@ namespace Ztop.Todo.Web.Controllers
         }
 
 
-        public ActionResult Detail(int id)
+        public ActionResult Detail(int id,int ?notId=null)
         {
             var contract = Core.ContractManager.Get(id);
             if (contract != null)
@@ -82,6 +82,10 @@ namespace Ztop.Todo.Web.Controllers
                     contract.Articles = Core.ArticleManager.GetByIDList(CAList.Select(e=>e.ArticleID).ToList());
                 }
                 contract.BillContracts = Core.BillContractManager.GetByContractID(contract.ID);
+                if (notId.HasValue)
+                {
+                    Core.NotificationManager.FlagRead(notId.Value);
+                }
             }
             ViewBag.Contract = contract;
             return View();
