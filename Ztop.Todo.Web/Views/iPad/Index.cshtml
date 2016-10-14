@@ -93,6 +93,7 @@
                     <th>领取时间</th>
                     <th>领取平板</th>
                     <th>使用状态</th>
+                    <th>备注</th>
                     <th>操作</th>
                 </tr>
             </thead>
@@ -116,9 +117,11 @@
 
                             }
                         </td>
+                       
                         <td>
                             <a data-toggle="modal" data-target="#Modal" href="/iPad/DetailRelation?rid=@(register.ID)&&relation=@(Relation.Register_iPad)" class="btn @(register.Revert?"btn-success":"btn-danger") btn-xs"><i class="glyphicon glyphicon-flash"></i>@(register.Revert?"已归还":"借用中")</a>
                         </td>
+                        <td>@(register.Remark)</td>
                         <td>
                             
                             @if (!register.Revert)
@@ -126,8 +129,9 @@
                                 <a  data-toggle="modal" data-target="#Modal" href="/iPad/CreateRegister?id=@(register.ID)" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i>编辑</a>
                                 <a  data-toggle="modal" data-target="#Modal" href="/iPad/Restore?rid=@(register.ID)" class="btn btn-success btn-xs"><i class="glyphicon glyphicon-warning-sign"></i>归还</a>
                                 <a  data-toggle="modal" data-target="#Modal" href="/iPad/Translate?rid=@(register.ID)" class="btn btn-warning btn-xs"><i class="glyphicon glyphicon-share-alt"></i>作为项目使用</a>
+                                <a href="/iPad/DeleteRegister?id=@(register.ID)" class="btn btn-danger btn-xs btn-delete"><i class="glyphicon glyphicon-remove-circle"></i>删除</a>
                             }
-                            <a href="/iPad/DeleteRegister?id=@(register.ID)" class="btn btn-danger btn-xs btn-delete"><i class="glyphicon glyphicon-remove-circle"></i>删除</a>
+                            
                         </td>
                     </tr>
                 }
@@ -230,6 +234,7 @@
                     <th>密码</th>
                     <th>E-Mail</th>
                     <th>邮箱密码</th>
+                    <th>操作</th>
                 </tr>
             </thead>
             <tbody>
@@ -241,6 +246,9 @@
                         <td>@(account.Password)</td>
                         <td>@(account.EMail)</td>
                         <td>@(account.EPassword)</td>
+                        <td>
+                            <a data-toggle="modal" data-target="#Modal" href="/iPad/CreateAccount?id=@(account.ID)" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i>编辑</a>
+                        </td>
                     </tr>
                 }
             </tbody>

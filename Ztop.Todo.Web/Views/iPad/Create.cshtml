@@ -213,8 +213,11 @@
             timepicker: false,
             format: 'Y-m-d'
         });
+        
 
-        $("#file").setUpload("/iPad/Upload", function (json) {
+  
+
+        $("#file").setUpload("/File/Upload?todofile=@(TodoFile.iPad_Contract)&&addfolder=@(DateTime.Now.ToLongDateString())", function (json) {
 
             var appendHtml = fileHtml;
             appendHtml = appendHtml.replace("{FilePath}", json.data.saveFilePath).replace("{FileName}", json.data.fileName);

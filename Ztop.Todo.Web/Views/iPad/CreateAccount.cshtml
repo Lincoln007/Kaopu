@@ -23,6 +23,7 @@
     <input type="hidden" name="Edit" value="@(edit?"true":"false")" />
     <input type="hidden" name="Time" value="@(account!=null?account.Time:DateTime.Now)" />
     <input type="hidden" name="Enter" value="@(account!=null?account.Enter:Identity.Name)" />
+    <input type="hidden" name="ID" value="@(account!=null?account.ID.ToString():"")" />
     <div class="row">
         <div class="col-md-12 col-xs-12">
             <div class="form-group">

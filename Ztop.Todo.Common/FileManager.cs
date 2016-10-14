@@ -73,6 +73,11 @@ namespace Ztop.Todo.Common
             return UploadBase(file, Path.Combine(_contractFolder,addFolder), Path.Combine(_contractDir,addFolder));
         }
 
+        public static string UploadiPadContract(HttpPostedFileBase file,string addFolder)
+        {
+            return UploadBase(file, Path.Combine(_iPadFolder, addFolder), Path.Combine(_iPadDir, addFolder));
+        }
+
         private static string UploadBase(HttpPostedFileBase file,string folder,string dir)
         {
             if (file.ContentLength == 0) return string.Empty;

@@ -273,10 +273,10 @@ namespace Ztop.Todo.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult SaveAccount(DateTime time,string enter,string email,string epassword,string account,string password,bool edit)
+        public ActionResult SaveAccount(int id,DateTime time,string enter,string email,string epassword,string account,string password,bool edit)
         {
-            var id = Core.iPad_AccountManager.Save(new iPadAccount { Time=time,Enter=enter,EMail=email,EPassword=epassword,Account=account,Password=password}, edit);
-            if (id == 0)
+            var aid = Core.iPad_AccountManager.Save(new iPadAccount { ID=id, Time=time,Enter=enter,EMail=email,EPassword=epassword,Account=account,Password=password}, edit);
+            if (aid == 0)
             {
                 return ErrorJsonResult("保存账号失败");
             }

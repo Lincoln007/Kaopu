@@ -27,7 +27,7 @@
             <div class="form-group">
                 <label class="control-label col-md-4">归还平板【必选】：</label>
                 <div class="col-md-7">
-                    @foreach(var item in register.Register_iPads.Where(e => !e.Revert))
+                    @foreach(var item in register.Register_iPads.Where(e => e.Revert==iPadRevert.Using))
                     {
                         <label class="checkbox-inline">
                             <input type="checkbox" name="iPadID" value="@(item.IID)" checked/>@(item.iPad.Name)
@@ -76,6 +76,9 @@
                     messageNode.children("span").html(json.content);
                 }
                 messageNode.show(500);
+                if (json.result == 1) {
+                    location.href = "/iPad/Index";
+                }
                 return false;
             });
             return false;

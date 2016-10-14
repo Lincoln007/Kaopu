@@ -24,6 +24,10 @@ namespace Ztop.Todo.Web.Controllers
             {
                 throw new ArgumentException("请选择上传文件");
             }
+            if (string.IsNullOrEmpty(addfolder))
+            {
+                addfolder = "";
+            }
             string saveFilePath = string.Empty;
             switch (todofile)
             {
@@ -35,7 +39,11 @@ namespace Ztop.Todo.Web.Controllers
                     saveFilePath = FileManager.UploadContract(file,addfolder);
                     break;
                 case TodoFile.iPad_Contract:
-                    //saveFilePath = FileManager.Upload2(file);
+                    if (ext != ".sn")
+                    {
+                        throw new ArgumentException("请上传SN文件");
+                    }
+                    saveFilePath = FileManager.UploadiPadContract(file, addfolder);
                     break;
             }
 
