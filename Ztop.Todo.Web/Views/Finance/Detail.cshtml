@@ -57,17 +57,19 @@
                             <div class="form-group">
                                 <label class="control-label col-md-4">开票单位：</label>
                                 <div class="col-md-8">
-                                    <select name="ZtopCompany" class="form-control">
-                                        <option value="@(ZtopCompany.Evaluation)">@(ZtopCompany.Evaluation.GetDescription())</option>
+                                    <input type="hidden" name="ZtopCompany" value="@(contract.ZtopCompany)" />
+                                    <input type="text" class="form-control" value="@(contract.ZtopCompany.GetDescription())" readonly />
+                                    @*<select name="ZtopCompany" class="form-control">
+                                        <option value="@(ZtopCompany.Evaluation)" @(contract!=null&&contract.Company==ZtopCompany.Evaluation?"selec")>@(ZtopCompany.Evaluation.GetDescription())</option>
                                         <option value="@(ZtopCompany.Projection)">@(ZtopCompany.Projection.GetDescription())</option>
-                                    </select>
+                                    </select>*@
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="control-label col-md-4">发票金额：</label>
                                 <div class="col-md-8">
                                     <div class="input-group">
-                                        <input type="text" name="Money" placeholder="金额" class="form-control" required />
+                                        <input type="number" name="Money" placeholder="金额" class="form-control" required max="@(contract.Money)" />
                                         <span class="input-group-addon">元</span>
                                     </div>
                                 </div>
@@ -150,13 +152,15 @@
             <tr>
                 <th>合同编号</th>
                 <td>@(contract.Coding)</td>
-                <th>填报人</th>
-                <td>@(contract.Creator)</td>
+                <th>登记编号</th>
+                <td>@(contract.Number)</td>
 
             </tr>
             <tr>
                 <th>合同名称</th>
-                <td colspan="3">@(contract.Name)</td>
+                <td>@(contract.Name)</td>
+                <th>填报人</th>
+                <td>@(contract.Creator)</td>
             </tr>
         
             <tr>
@@ -169,7 +173,10 @@
                 <th>合同流转时间</th>
                 <td>@(contract.StartTime.ToLongDateString())</td>
                 <th>合同取回时间</th>
-                <td>@(contract.EndTime.HasValue ? contract.EndTime.Value.ToShortDateString() : "/")</td>
+                <td>
+                    @(contract.EndTime.HasValue ? contract.EndTime.Value.ToShortDateString() : "/")
+                    <a data-toggle="modal" data-target="#Modal" href="/Finance/UploadPdf?id=@(contract.ID)" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-plus"></i>录入合同扫描件</a>
+                </td>
             </tr>
             <tr>
                 <th>合同金额（元）</th>
@@ -203,6 +210,13 @@
                 <th>相关文件</th>
                 <td colspan="3">
                     <table class="table">
+                        @if (!string.IsNullOrEmpty(contract.FilePath))
+                        {
+                            <tr>
+                                <td class="col-md-8"><a href="/@(contract.FilePath)">@(contract.ContractName)</a></td>
+                                <td>合同文件</td>
+                            </tr>
+                        }
                         @foreach (var file in contract.ContractFiles)
                         {
                             <tr>
@@ -394,6 +408,12 @@
                                             </div>
                                         }
 
+                                    }else if (invoice.State == InvoiceState.Have)
+                                    {
+                                        if (Identity.Finance)
+                                        {
+                                            <a data-toggle="modal" data-target="#Modal" href="/Finance/EditInvoice?id=@(invoice.ID)" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i>编辑</a>
+                                        }
                                     }
                                 </div>
                               
@@ -435,6 +455,7 @@
                             <td>@(invoice.Content)</td>
                             <td>@(invoice.State.GetDescription())</td>
                             <td>
+                                @(invoice.Remark)
                                 @if (invoice.State != InvoiceState.None&&Identity.Finance)
                                 {
                                     <a href="#" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#Change@(invoice.Coding)"><i class="glyphicon glyphicon-edit"></i>修改发票状态</a>
@@ -525,12 +546,33 @@
 </div>
 
 
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true" id="Modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
 
 
 <hr />
 
 <script>
     $(function () {
+        $("#from-invoice input[name='Money']").change(function(){
+            var value=parseFloat($(this).val());
+            if(value!=NaN){
+                var max=parseFloat($(this).attr("max"));
+                if(max!=NaN){
+                    if(value>max){
+                        alert("超出合同金额");
+                        $(this).val(0);
+                    }
+                }
+            }
+            
+        });
+
         $("#from-invoice").submit(function () {
             var data = $(this).serialize();
             $.request("/Finance/SaveInvoice", data, function (json) {
@@ -643,6 +685,10 @@
                 }
             }
             return false;
+        });
+
+        $("#Modal").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
         });
     })
 </script>

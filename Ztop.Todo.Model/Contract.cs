@@ -97,6 +97,31 @@ namespace Ztop.Todo.Model
         public List<Article> Articles { get; set; }
         [NotMapped]
         public List<BillContract> BillContracts { get; set; }
+
+        /// <summary>
+        /// 登记编号
+        /// </summary>
+        public string Number { get; set; }
+        /// <summary>
+        /// 合同路径
+        /// </summary>
+        public string FilePath { get; set; }
+
+        [NotMapped]
+        public string ContractName
+        {
+            get
+            {
+                try
+                {
+                    return System.IO.Path.GetFileNameWithoutExtension(FilePath);
+                }
+                catch
+                {
+                    return null;
+                }
+            }
+        }
     }
 
     public enum ZtopCompany

@@ -156,6 +156,7 @@
     <Compile Include="Controllers\AttachmentController.cs" />
     <Compile Include="Controllers\BankController.cs" />
     <Compile Include="Controllers\CommentController.cs" />
+    <Compile Include="Controllers\FileController.cs" />
     <Compile Include="Controllers\FinanceController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\AuthorityController.cs" />
@@ -319,6 +320,8 @@
     <Content Include="Views\iPad\Fate.cshtml" />
     <Content Include="Views\iPad\Translate.cshtml" />
     <Content Include="Views\iPad\CreateAccount.cshtml" />
+    <Content Include="Views\Finance\UploadPdf.cshtml" />
+    <Content Include="Views\Finance\EditInvoice.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -328,6 +331,7 @@
     <Folder Include="Models\" />
     <Folder Include="Views\Attachment\" />
     <Folder Include="Views\Comment\" />
+    <Folder Include="Views\File\" />
     <Folder Include="Views\Notification\" />
     <Folder Include="Views\Query\" />
   </ItemGroup>

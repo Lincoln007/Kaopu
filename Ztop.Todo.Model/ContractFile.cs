@@ -20,4 +20,12 @@ namespace Ztop.Todo.Model
         /// </summary>
         public bool Remove { get; set; }
     }
+
+
+    public enum TodoFile
+    {
+        Contract,
+        iPad_Contract
+    }
+
 }

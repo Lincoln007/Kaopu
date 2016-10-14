@@ -100,6 +100,23 @@ namespace Ztop.Todo.Manager
                 return db.Contracts.Find(id);
             }
         }
+
+        public bool Retake(int id,string filePath)
+        {
+            if (id == 0) return false;
+            using (var db = GetDbContext())
+            {
+                var entry = db.Contracts.Find(id);
+                if (entry == null)
+                {
+                    return false;
+                }
+                entry.FilePath = filePath;
+                entry.EndTime = DateTime.Now;
+                db.SaveChanges();
+            }
+            return true;
+        }
         public List<Contract> Get()
         {
             using (var db = GetDbContext())

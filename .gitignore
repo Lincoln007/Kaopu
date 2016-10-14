@@ -31,6 +31,8 @@
 /Ztop.Todo.Web/logs
 /Ztop.Todo.Web/BarCodes
 /Ztop.Todo.Web/ContractFiles
+/Ztop.Todo.Web/Contract_files
+/Ztop.Todo.Web/iPad_files
 /Ztop.Todo.ActiveDirectory/bin/Debug
 /Ztop.Todo.ActiveDirectory/obj/Debug
 /Ztop.Todo.ActiveDirectory/bin/Release

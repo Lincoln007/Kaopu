@@ -1,0 +1,61 @@
+﻿@{ 
+    Layout = null;
+    Contract contract = ViewBag.Contract;
+}
+
+<h3 class="text-center">录入合同扫描件</h3>
+
+<div class="alert alert-warning" role="alert">
+    <p>1、本次合同扫描件上传并且录入合同取回时间，请仔细核对上传的合同文件；</p>
+    <p>2、如果之前上传错误合同扫描件，可以再次上传合同扫描件，但是会覆盖之前的文件,请谨慎操作；</p>
+</div>
+<form class="form-horizontal" method="post" action="/Finance/Retake" >
+    <div class="row">
+        <div class="col-md-12">
+            <input type="hidden" name="ID" value="@(contract.ID)" />
+            <div class="form-group">
+                <label class="control-label col-md-4">合同文件：</label>
+                <div class="col-md-7">
+                    <input type="file" name="file" class="form-control"  id="file"/>
+                </div>
+                <div class="col-md-7 col-md-offset-4" id="File-List">
+
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-7 col-md-offset-4">
+                    <button type="submit" class="bg-primary btn"><i class="glyphicon glyphicon-upload"></i>上传</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="hide">
+    <div id="SelectFile">
+        <div class="input-group" style="margin:2px;">
+            <input type="text" name="AuthFile" class="form-control" readonly="readonly" value="{FileName}" />
+            <input type="hidden" name="AuthPath" value="{FilePath}" />
+            <span class="input-group-btn">
+                <button type="button" class="btn btn-danger btn-remove"><i class="glyphicon glyphicon-remove-circle"></i></button>
+            </span>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+    var fileHtml = $("#SelectFile").html();
+    $(function () {
+        $("#file").setUpload("/File/Upload?todofile=@(TodoFile.Contract)&&addfolder=@(contract.Name)", function (json) {
+            var appendHtml = fileHtml;
+            appendHtml = appendHtml.replace("{FilePath}", json.data.saveFilePath).replace("{FileName}", json.data.fileName);
+            $("#File-List").empty().append(appendHtml);
+
+            $(".input-group-btn>.btn-remove").unbind("click").bind("click", function () {
+                $(this).parent().parent().remove();
+            });
+        });
+    })
+</script>

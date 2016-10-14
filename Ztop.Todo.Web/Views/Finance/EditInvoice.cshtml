@@ -1,0 +1,57 @@
+﻿@{ 
+    Layout = null;
+    Invoice invoice = ViewBag.Invoice;
+}
+
+<h3 class="text-center">编辑发票信息</h3>
+<form class="form-horizontal" method="post" action="/Finance/ImproveInvoice" id="form-invoice">
+    <div class="row">
+        <div class="col-md-12">
+            <input type="hidden" name="ID" value="@(invoice.ID)" />
+            <input type="hidden" name="State" value="@(invoice.State)" />
+            <div class="form-group">
+                <label class="control-label col-md-4">发票时间：</label>
+                <div class="col-md-7">
+                    <input type="text" name="FillTime" class="form-control"  value="@(invoice!=null&&invoice.FillTime.HasValue? invoice.FillTime.Value.ToString("yyyy-MM-dd"):"")" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">发票编号：</label>
+                <div class="col-md-7">
+                    <input type="text" class="form-control" name="Number"  value="@(invoice.Number)" required />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">备注:</label>
+                <div class="col-md-7">
+                    <textarea class="form-control" name="Remark" rows="3">@(invoice.Remark)</textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-7 col-md-offset-4">
+                    <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-edit"></i>编辑</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+    $(function () {
+        $("input[name='FillTime']").datetimepicker({
+            timepicker: false,
+            format: 'Y-m-d'
+        });
+
+        $("#form-invoice").submit(function () {
+            var data = $(this).serialize();
+            $.request("/Finance/ImproveInvoice", data, function (json) {
+                alert(json.content);
+                if (json.result == 1) {
+                    location.href="/Finance/Detail?id="+@(invoice.CID);
+                }
+                return false;
+            });
+            return false;
+        });
+    });
+</script>

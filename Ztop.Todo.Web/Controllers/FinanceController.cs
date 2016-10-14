@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using Ztop.Todo.Common;
@@ -44,6 +45,10 @@ namespace Ztop.Todo.Web.Controllers
         [HttpPost]
         public ActionResult SaveContract(Contract contract,int[] articleid,string articlename, int[] leaves)
         {
+            if (string.IsNullOrEmpty(contract.Number)||!Regex.IsMatch(contract.Number, @"^[0-9]{7}$"))
+            {
+                throw new ArgumentException("请核对登记编号，登记编号是7位数字！");
+            }
             if (contract.ID == 0)
             {
                 contract.Leave = contract.Money;
@@ -68,6 +73,23 @@ namespace Ztop.Todo.Web.Controllers
             return RedirectToAction("Detail", new { id = id });
         }
 
+        public ActionResult UploadPdf(int id)
+        {
+            var contract = Core.ContractManager.Get(id);
+            ViewBag.Contract = contract;
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Retake(int id,string authfile,string authpath)
+        {
+            if (!Core.ContractManager.Retake(id, authpath))
+            {
+                throw new ArgumentException("上传合同文件失败！");
+            }
+
+            return RedirectToAction("Detail", new { id });
+        }
 
         public ActionResult Detail(int id,int ?notId=null)
         {
@@ -107,13 +129,31 @@ namespace Ztop.Todo.Web.Controllers
             ViewBag.Contract = Core.ContractManager.Search(new ContractParameter() { Archived = false,Deleted=false });
             return View();
         }
+        
 
         [HttpPost]
         public ActionResult SaveInvoice(Invoice invoice)
         {
+            var contract = Core.ContractManager.Get(invoice.CID);
+            if (contract == null)
+            {
+                return ErrorJsonResult("未找到相关合同信息");
+            }
+            var list = Core.InvoiceManager.GetByCID(contract.ID);
+            var sum = list.Sum(e => e.Money) + invoice.Money;
+            if (sum > contract.Money)
+            {
+                return ErrorJsonResult("发票累计金额超出合同金额");
+            }
             var id = Core.InvoiceManager.Save(invoice);
             Core.NotificationManager.Add(invoice);
             return SuccessJsonResult(invoice);
+        }
+
+        public ActionResult EditInvoice(int id)
+        {
+            ViewBag.Invoice = Core.InvoiceManager.Get(id);
+            return View();
         }
 
 
