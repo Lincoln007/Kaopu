@@ -10,7 +10,6 @@
 </div>
 @if (Request.Browser.IsMobileDevice)
 {
- 
     <table class="table">
         @foreach (var group in groups.OrderByDescending(e => e.Order))
         {
@@ -19,15 +18,17 @@
                 <tr>
                     <th >@(group.Name)</th>
                 </tr>
-                <tr>
-                    <td style="padding:0px;">
-                        @foreach (var user in allUsers.Where(e => e.GroupID == group.ID).OrderByDescending(e => e.Order))
-                        {
-                            <label class="checkbox-inline"><input type="checkbox" name="userIds" value="@(user.ID)" />@(user.DisplayName)</label>
-                        }
-                    </td>
-                </tr>
+
             }
+
+            <tr>
+                <td style="padding:0px;">
+                    @foreach (var user in allUsers.Where(e => e.GroupID == group.ID).OrderByDescending(e => e.Order))
+                    {
+                        <label class="checkbox-inline"><input type="checkbox" name="userIds" value="@(user.ID)" />@(user.DisplayName)</label>
+                    }
+                </td>
+            </tr>
 
         }
     </table>
