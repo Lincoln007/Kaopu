@@ -35,4 +35,17 @@
   <Compose Name="Infrastructure"></Compose>
   <Compose Name="a"></Compose>
   <Compose Name="特殊帐号" ></Compose>
+  <Citys>
+    <City Name="杭州市" Code="330100"></City>
+    <City Name="宁波市" Code="330200"></City>
+    <City Name="温州市" Code="330300"></City>
+    <City Name="嘉兴市" Code="330400"></City>
+    <City Name="湖州市" Code="330500"></City>
+    <City Name="绍兴市" Code="330600"></City>
+    <City Name="金华市" Code="330700"></City>
+    <City Name="衢州市" Code="330800"></City>
+    <City Name="舟山市" Code="330900"></City>
+    <City Name="台州市" Code="331000"></City>
+    <City Name="丽水市" Code="331100"></City>
+  </Citys>
 </Composes>

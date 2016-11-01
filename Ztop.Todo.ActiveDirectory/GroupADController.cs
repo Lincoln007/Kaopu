@@ -159,7 +159,12 @@ namespace Ztop.Todo.ActiveDirectory
             }
             return dict;
         }
-
+        /// <summary>
+        /// 作用：获取域服务器中的城市权限组 并且每个组中列出所有子权限
+        /// 作者：汪建龙
+        /// 编写时间：2016-10-31
+        /// </summary>
+        /// <returns></returns>
         public static Dictionary<string,List<Group>> GetGroupDict()
         {
             var dict = new Dictionary<string, List<Group>>();
@@ -183,6 +188,12 @@ namespace Ztop.Todo.ActiveDirectory
             }
             return dict;
         }
+        /// <summary>
+        /// 作用：获取域服务器中所有的组  类别为Group
+        /// 作者：汪建龙
+        /// 编写时间：2016-10-31
+        /// </summary>
+        /// <returns></returns>
         public static List<string> GetGroupList()
         {
             return GetList("(&(objectCategory=group)(objectClass=group))");
@@ -246,6 +257,18 @@ namespace Ztop.Todo.ActiveDirectory
         {
             var admin = GetDirectoryObject();
             return admin.GetTreeObject();    
+        }
+
+        /// <summary>
+        /// 作用：根据组织单元  获取该组织单元下的组
+        /// 作者：汪建龙
+        /// 编写时间：2016-10-31
+        /// </summary>
+        /// <param name="ou">组织单元名称</param>
+        /// <returns></returns>
+        public static List<string> GetGroupByOrganication(string ou)
+        {
+            return GetList("(&(objectCategory=group)(objectClass=group)(OU=" + ou + "))");
         }
     }
 }

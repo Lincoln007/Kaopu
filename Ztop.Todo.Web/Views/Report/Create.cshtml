@@ -168,10 +168,17 @@
         });
 
         $("#form-Create").submit(function () {
+            $("#form-Create button[type='Submit']").attr("disabled","false");
             var data = $(this).serialize();
             $.request("/Report/Save", data, function (json) {
-                location.href = "/Report/Index";
+                alert(json.content);
+                $("#form-Create button[type='Submit']").removeAttr("disabled");
+                if(json.result==1){
+                    location.href = "/Report/Index";
+                }
+                
             });
+           
             return false;
            
         });  

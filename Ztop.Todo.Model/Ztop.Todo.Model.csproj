@@ -101,6 +101,7 @@
     <Compile Include="DataBook.cs" />
     <Compile Include="Errand.cs" />
     <Compile Include="Evection.cs" />
+    <Compile Include="ADGroup.cs" />
     <Compile Include="Invoice.cs" />
     <Compile Include="InvoiceParameter.cs" />
     <Compile Include="iPad.cs" />
@@ -110,6 +111,7 @@
     <Compile Include="iPadRegister.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="Notification.cs" />
+    <Compile Include="Organication.cs" />
     <Compile Include="PageParameter.cs" />
     <Compile Include="ParameterBase.cs" />
     <Compile Include="PieData.cs" />

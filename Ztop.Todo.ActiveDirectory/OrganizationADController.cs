@@ -27,9 +27,16 @@ namespace Ztop.Todo.ActiveDirectory
             }
             return list;
         }
+        /// <summary>
+        /// 作用：获取域服务器中所有的组织单元
+        /// 作者：汪建龙
+        /// 编写时间：2016-10-31
+        /// </summary>
+        /// <returns></returns>
         public static List<string> GetAllOrganization()
         {
-            return Gain("(&(objectCategory=organizationalUnit))").Select(e => e.Key).ToList();
+            return GetList("(&(objectCategory=organizationalUnit))");
+            //return Gain("(&(objectCategory=organizationalUnit))").Select(e => e.Key).ToList();
         }
     }
 }

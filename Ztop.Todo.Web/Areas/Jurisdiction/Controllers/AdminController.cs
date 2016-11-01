@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using Ztop.Todo.ActiveDirectory;
@@ -84,7 +85,15 @@ namespace Ztop.Todo.Web.Areas.Jurisdiction.Controllers
         {
             Core.AuthorizeManager.Add(Core.AuthorizeManager.Get(HttpContext));
             ViewBag.List = Core.AuthorizeManager.GetList();
-            ViewBag.Groups = ADController.GetGroupDict().Sort().DictToTable();
+            ViewBag.ADGroup = Core.AD_groupManager.Get();
+            //ViewBag.Groups = ADController.GetGroupDict().Sort().DictToTable();
+            return View();
+        }
+
+        public ActionResult EditImpower(int id)
+        {
+            ViewBag.Model = Core.AuthorizeManager.Get(id);
+            ViewBag.ADGroup = Core.AD_groupManager.Get();
             return View();
         }
 
@@ -100,5 +109,74 @@ namespace Ztop.Todo.Web.Areas.Jurisdiction.Controllers
             Core.AuthorizeManager.Edit(Core.AuthorizeManager.Get(HttpContext, ID));
             return Redirect("/Jurisdiction/Admin/Impower");
         }
+
+
+        /// <summary>
+        /// 作用：获取最高级选择菜单
+        /// 作者：汪建龙
+        /// 编写时间：2016-10-31
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult GetBig()
+        {
+            var list = XmlHelper.GetDitrict();
+            return HtmlResult(list, "/Admin/GetFirst?name=");
+        }
+
+        /// <summary>
+        /// 作用：获取一级选择地区菜单
+        /// 作者：汪建龙
+        /// 编写时间：2016-10-31
+        /// </summary>
+        /// <param name="name">上级名称（最高级）</param>
+        /// <returns></returns>
+        public ActionResult GetFirst(string name)
+        {
+            if (!string.IsNullOrEmpty(name))
+            {
+                if(Regex.IsMatch(name, @"^[0-9]{6}[\u4e00-\u9fa5]{0,}$"))
+                {
+                    var key = name.Substring(0, 4);
+                    if (!string.IsNullOrEmpty(key))
+                    {
+                        var children = Core.AD_groupManager.GetOrganication().Where(e => e.Name.StartsWith(key)).Select(e => e.Name).ToList();
+                        return HtmlResult(children,"/Admin/GetSecond?name=");
+                    }
+                  
+                }
+            }
+            return Content("<tr><td>参数错误，请重新加载网页！</td></tr>");
+        }
+        public ActionResult GetSecond(string name)
+        {
+            if (!string.IsNullOrEmpty(name))
+            {
+                var children = Core.AD_groupManager.GetGroupByOrganication(name).Select(e => e.Name).ToList();
+                return HtmlResult(children, "");
+            }
+            return Content("<tr><td>参数错误，请重新加载网页！</td></tr>");
+        }
+        
+        protected ActionResult HtmlResult(List<string> list,string hrefhead)
+        {
+            var values = list.ListToTable();
+            var str = string.Empty;
+            foreach(var item in values)
+            {
+                var st = string.Empty;
+                st += "<tr>";
+                foreach(var it in item)
+                {
+                    if (!string.IsNullOrEmpty(st))
+                    {
+                        st += string.Format("<td><a href='{0}{1}'>{1}</a></td>", hrefhead, it);
+                    }
+                }
+                st += "</tr>";
+                str += st;
+            }
+
+            return Content(str);
+        } 
     }
 }

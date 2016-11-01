@@ -1,0 +1,90 @@
+﻿@using Ztop.Todo.ActiveDirectory
+@{ 
+    Layout = "~/Areas/Jurisdiction/Views/Admin/_Layout.cshtml";
+    Ztop.Todo.Model.Authorize authorize = ViewBag.Model;
+    var big = Ztop.Todo.ActiveDirectory.XmlHelper.GetDitrict();
+    List<Ztop.Todo.Model.ADGroup> list = ViewBag.ADGroup;
+    var organications = list.Where(e => e.Type == Ztop.Todo.Model.ADType.Organication).ToList();
+}
+
+<h3 class="text-center">编辑权限</h3>
+
+<form class="form-horizontal" method="post" action="/Admin/ImpowerEdit">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label class="control-label col-md-2">管理者：</label>
+                <div class="col-md-8">
+                    <input type="text" name="" class="form-control" value="@(authorize.Manager)" disabled />
+                    <input type="hidden" name="ID" value="@(authorize.ID)" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">管理组：</label>
+                <div class="col-md-9">
+                    <div class="col-md-2">
+                        <ul class="nav nav-pills nav-stacked" role="tablist">
+                            @foreach (var item in big)
+                            {
+                                <li role="presentation"><a href="#Edit-@(item)" role="tab" data-toggle="tab">@(item)</a></li>
+                            }
+                        </ul>
+
+                        <hr />
+                        <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i>确定</button>
+                        <hr />
+                    </div>
+                    <div class="col-md-10">
+                        <div class="tab-content">
+                            @foreach (var item in big)
+                            {
+                                var code = item.Length > 4 ? item.Substring(0, 4) : "";
+                                var groups = organications.Where(e => e.Code == code);
+                                <div role="tabpanel" class="tab-pane" id="Edit-@(item)">
+                                    <div class="col-md-2">
+                                        <ul class="nav nav-pills nav-stacked" role="tablist">
+                                            @foreach (var first in groups)
+                                            {
+                                                <li role="presentation"><a href="#edit-first-@(first.Name)" role="tab" data-toggle="tab">@(first.Name)</a></li>
+                                            }
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-10">
+                                        <div class="tab-content">
+                                            @foreach(var first in groups)
+                                            {
+                                                <div role="tabpanel" class="tab-pane" id="edit-first-@(first.Name)">
+                                                    <table class="table">
+                                                        @foreach(var entry in list.Where(e => e.OID == first.ID).ToList().ListToTable())
+                                                        {
+                                                            <tr>
+                                                                @foreach (var second in entry)
+                                                                {
+                                                                    if (second != null)
+                                                                    {
+                                                                        <td>
+                                                                            <label class="checkbox-inline">
+                                                                                <input type="checkbox" value="@(second.Name)" name="GroupName" @(authorize.Groups!=null&&authorize.Groups.FirstOrDefault(e=>e.ID==second.ID)!=null?"checked=checked":"") /><strong>@(second.Name)</strong>
+                                                                            </label>
+                                                                        </td>
+                                                                    }
+                                                                }
+                                                            </tr>
+                                                        }
+                                                    </table>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            }
+                        </div>
+                    </div>
+            
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

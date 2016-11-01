@@ -14,8 +14,17 @@ namespace Ztop.Todo.Model
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
-        public string GroupName { get; set; }
+        public string ParentGroup { get; set; }
+        [NotMapped]
+        public string GroupName {
+            get;
+            set;
+        }
         public string Manager { get; set; }
+        public string GID { get; set; }
+        [NotMapped]
+        public List<ADGroup> Groups { get; set; }
+
     }
 
     public enum AuthFilter

@@ -99,6 +99,18 @@ namespace Ztop.Todo.Web.Controllers
             return HtmlResult(html);
         }
 
+        public ActionResult GetGroup(string boss)
+        {
+            var authorize= Core.AuthorizeManager.Get(boss);
+            if (authorize.Groups != null)
+            {
+                ViewBag.First = authorize.Groups.Where(e=>e.Parent!=null).Select(e => e.Parent).Distinct().ToList();
+            }
+            ViewBag.Authorize = authorize;
+            
+            return View();
+        }
+
         protected ActionResult HtmlResult(List<string> html)
         {
             var values = html.ListToTable();

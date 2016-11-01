@@ -4,6 +4,7 @@
     Layout = "~/Areas/Jurisdiction/Views/Admin/_Layout.cshtml";
     List<Ztop.Todo.Model.Authorize> list = ViewBag.List;
     Dictionary<string, List<Ztop.Todo.ActiveDirectory.Group[]>> Reborn = ViewBag.Groups;
+    List<Ztop.Todo.Model.ADGroup> ADGroup = ViewBag.ADGroup;
     int SerialNumber = 1;
 }
 
@@ -17,7 +18,7 @@
 <div class="tab-content">
     <div class="tab-pane fade active in" id="Create">
         @{
-            Html.RenderPartial("Accredit", Reborn);
+            Html.RenderPartial("Accredit", ADGroup);
         }
     </div>
     <div class="tab-pane fade" id="List">
@@ -34,19 +35,40 @@
                     <td>@(SerialNumber++)</td>
                     <td>@(item.Manager)</td>
                     <td>
-                        @foreach (var entry in item.GroupName.StrToList(','))
+                        @if (item.Groups != null)
                         {
-                            <span class="label label-primary" style="line-height:250%">@(entry)</span>
+                            foreach (var entry in item.Groups)
+                            {
+                                <span class="label label-primary" style="line-height:250%">@(entry.Name)</span>
+                            }
                         }
                     </td>
                     <td>
-                        @{
-                            Html.RenderPartial("Edit", item);
-                        }
+                        <a href="/Jurisdiction/Admin/EditImpower?id=@(item.ID)" class="btn btn-success"><i class="glyphicon glyphicon-edit"></i>编辑权限</a>
                     </td>
                 </tr>
-                            }
+             }
         </table>
     </div>
 </div>
+
+
+
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true" id="Modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+
+
+        $("#Modal").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+    });
+</script>
 

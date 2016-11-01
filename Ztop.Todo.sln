@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ztop.Todo.Web", "Ztop.Todo.Web\Ztop.Todo.Web.csproj", "{90B2931F-B922-4DF8-AC9B-FD44BC22E3C5}"
 EndProject
@@ -29,6 +29,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ztop.Todo.Update", "Ztop.Todo.Update\Ztop.Todo.Update.csproj", "{F381BDC9-A343-496B-989B-30796D9D5211}"
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "ZtopTodoSetup", "ZtopTodoSetup\ZtopTodoSetup.vdproj", "{D05171CB-3875-47B9-B4B3-622C86A9F152}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ztop.Todo.UpdateAD", "Ztop.Todo.UpdateAD\Ztop.Todo.UpdateAD.csproj", "{EF496132-0C31-429E-B742-F163F4D124B2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -78,6 +80,10 @@ Global
 		{F381BDC9-A343-496B-989B-30796D9D5211}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D05171CB-3875-47B9-B4B3-622C86A9F152}.Debug|Any CPU.ActiveCfg = Debug
 		{D05171CB-3875-47B9-B4B3-622C86A9F152}.Release|Any CPU.ActiveCfg = Release
+		{EF496132-0C31-429E-B742-F163F4D124B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF496132-0C31-429E-B742-F163F4D124B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF496132-0C31-429E-B742-F163F4D124B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF496132-0C31-429E-B742-F163F4D124B2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

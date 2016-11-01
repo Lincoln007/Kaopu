@@ -16,7 +16,27 @@ namespace Ztop.Todo.Manager
         {
             using (var db = GetDbContext())
             {
-                return db.Authorizes.Find(id);
+                var entry = db.Authorizes.Find(id);
+                if (entry != null)
+                {
+                    var gid = entry.GID.Split(';');
+                    entry.Groups = new List<ADGroup>();
+                    var a = 0;
+                    foreach(var item in gid)
+                    {
+                        if(int.TryParse(item,out a))
+                        {
+                            var group = db.AD_Groups.Find(a);
+                            if (group != null)
+                            {
+                                entry.Groups.Add(group);
+                            }
+                        }
+               
+                        
+                    }
+                }
+                return entry;
             }
         }
         public Authorize Get(HttpContextBase context,int id=0)
@@ -43,6 +63,17 @@ namespace Ztop.Todo.Manager
             {
                 return;
             }
+            var groups = authorize.GroupName.Split(',');
+            var gid = new List<int>();
+            foreach(var groupname in groups)
+            {
+                var group = Core.AD_groupManager.Get(groupname);
+                if (group != null)
+                {
+                    gid.Add(group.ID);
+                }
+            }
+            authorize.GID = string.Join(";", gid.ToArray());
             using (var db = GetDbContext())
             {
                 var entry = db.Authorizes.Where(e => e.Manager == authorize.Manager).FirstOrDefault();
@@ -56,6 +87,17 @@ namespace Ztop.Todo.Manager
         }
         public void Edit(Authorize authorize)
         {
+            var groups = authorize.GroupName.Split(',');
+            var gid = new List<int>();
+            foreach (var groupname in groups)
+            {
+                var group = Core.AD_groupManager.Get(groupname);
+                if (group != null)
+                {
+                    gid.Add(group.ID);
+                }
+            }
+            authorize.GID = string.Join(";", gid.ToArray());
             using (var db = GetDbContext())
             {
                 var entry = db.Authorizes.Find(authorize.ID);
@@ -70,23 +112,61 @@ namespace Ztop.Todo.Manager
         {
             using (var db = GetDbContext())
             {
-                return db.Authorizes.ToList();
+                var list = db.Authorizes.ToList();
+                foreach(var item in list)
+                {
+                    if (!string.IsNullOrEmpty(item.GID))
+                    {
+                        var gid = item.GID.Split(';');
+                        item.Groups = new List<ADGroup>();
+                        var a = 0;
+                        foreach(var entry in gid)
+                        {
+                            if(int.TryParse(entry,out a))
+                            {
+                                var group = db.AD_Groups.Find(a);
+                                if (group != null)
+                                {
+                                    if (group.OID > 0)
+                                    {
+                                        group.Parent = db.AD_Groups.Find(group.OID);
+                                    }
+                                    item.Groups.Add(group);
+                                }
+                            }
+                        
+                        }
+                    }
+                }
+                return list;
             }
         }
         public List<string> GetList(string Name)
         {
             var authorize = GetList().FirstOrDefault(e => e.Manager == Name);
-            if (authorize == null || string.IsNullOrEmpty(authorize.GroupName))
+            if (authorize == null||authorize.Groups==null)
             {
                 return new List<string>();
             }
-            var array = authorize.GroupName.Split(',');
-            var list = new List<string>();
-            foreach (var item in array)
-            {
-                list.Add(item);
-            }
-            return list.OrderBy(e => e).ToList();
+            return authorize.Groups.Select(e => e.Name).ToList();
+            //var array = authorize.GroupName.Split(',');
+            //var list = new List<string>();
+            //foreach (var item in array)
+            //{
+            //    list.Add(item);
+            //}
+            //return list.OrderBy(e => e).ToList();
+        }
+        /// <summary>
+        /// 作用：通过管理者名称获取授权列表
+        /// 作者：汪建龙
+        /// 编写时间：2016年11月1日17:49:39
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public Authorize Get(string name)
+        {
+            return GetList().FirstOrDefault(e => e.Manager == name);
         }
         public List<string> GetAllManager()
         {

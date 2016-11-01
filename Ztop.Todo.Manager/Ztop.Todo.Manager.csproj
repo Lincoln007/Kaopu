@@ -78,6 +78,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AD_GroupManager.cs" />
     <Compile Include="ArticleManager.cs" />
     <Compile Include="AttachmentManager.cs" />
     <Compile Include="AuthorizeManager.cs" />

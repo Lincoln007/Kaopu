@@ -99,7 +99,8 @@ namespace Ztop.Todo.Web.Controllers
             {
                 if (string.IsNullOrEmpty(evection.Persons))
                 {
-                    throw new ArgumentException("出差报销，出差人员不能为空！");
+                    return ErrorJsonResult("出差报销，出差人员不能为空！");
+                    //throw new ArgumentException("");
                 }
                 //if (string.IsNullOrEmpty(evection.Way))
                 //{
@@ -112,7 +113,8 @@ namespace Ztop.Todo.Web.Controllers
             }
             if (Math.Abs(sheet.Money - sum) > 0.001)
             {
-                throw new ArgumentException("报销金额合计与清单合计不符，请核对金额！");
+                return ErrorJsonResult("报销金额合计与清单合计不符，请核对金额！");
+               // throw new ArgumentException("");
             }
 
             Save(sheet, DirectorVal);
