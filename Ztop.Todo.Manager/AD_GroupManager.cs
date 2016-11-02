@@ -151,7 +151,16 @@ namespace Ztop.Todo.Manager
             }
             return GetByOID(organication.ID);
         }
-
+        /// <summary>
+        /// 作用：获取所有子组
+        /// 作者：汪建龙
+        /// 编写时间：2016年11月2日09:43:25
+        /// </summary>
+        /// <returns></returns>
+        public List<ADGroup> GetAllGroup()
+        {
+            return Get().Where(e => e.Type == ADType.Group).ToList();
+        }
         
     }
 }

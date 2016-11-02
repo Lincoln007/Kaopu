@@ -20,13 +20,21 @@ namespace Ztop.Todo.Web.Controllers
         /// <returns></returns>
         public ActionResult Manager()
         {
-            var groups = ADController.GetGroupList();
+            ViewBag.Organications = Core.AD_groupManager.GetOrganication();
+            var groups = Core.AuthorizeManager.GetList(Identity.Name);
             ViewBag.Wait = Core.DataBookManager.Get(groups, Model.CheckStatus.Wait);
-            if (Identity.GroupType == GroupType.Manager)
+            if (Identity.GroupType == GroupType.Manager||Identity.GroupType==GroupType.Administrator)
             {
                 ViewBag.DGroups = ADController.GetUserDict(groups);
             }
 
+
+            var authorize = Core.AuthorizeManager.Get(Identity.Name);
+            if (authorize.Groups != null)
+            {
+                ViewBag.First = authorize.Groups.Where(e => e.Parent != null).Select(e => e.Parent).Distinct().ToList();
+            }
+            ViewBag.Authorize = authorize;
             return View();
         }
 

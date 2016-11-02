@@ -3,10 +3,14 @@
 @{
     ViewBag.Title = "授权审批";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    List<ADGroup> Orgainications = ViewBag.Organications;
     List<DataBook> List = ViewBag.Wait;
     Dictionary<string, List<AUser>> GDict = ViewBag.DGroups;
-    int Index = 1;
-    int Serial = 1;
+
+    Authorize authorize = ViewBag.Authorize;
+    List<ADGroup> groups = ViewBag.First;
+
+    var BIG = XmlHelper.GetDitrict();
 }
 
 <div style="position:relative;">
@@ -89,48 +93,107 @@
             <hr />
         }
     </div>
-    @if (GDict != null)
+    @if (GDict != null&&groups!=null)
     {
+        var big = groups.GroupBy(e => e.Code).Select(e => e.Key).ToList();
         <div class="tab-pane fade" id="Manager">
             <div class="panel-group" role="tablist" id="accordion" aria-multiselectable="true">
-                @foreach (var key in GDict.Keys)
-                {
-                    Serial = 1;
-                    if (Serial % 2 == 0)
-                    {
-
-                    }
-                    <div class="panel panel-default">
-                        <div class="panel-heading" role="tab" id="@(Index)">
-                            <h4 class="panel-title">
-                                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse@(Index)" aria-expanded="true" aria-controls="#collapse@(Index)">
-                                    @(key)
-                                </a>
-                            </h4>
-                        </div>
-                        <div id="collapse@(Index)" class="panel-collapse collapse " role="tabpanel" aria-labelledby="@(Index)">
-                            <div class="panel-body">
-                                <table class="table table-bordered">
-                                    <tr>
-                                        <th>序号</th>
-                                        <th>姓名</th>
-                                        <th>用户名</th>
-
-                                    </tr>
-                                    @foreach (var item in GDict[key])
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-2">
+                            <ul class="nav nav-pills nav-stacked" role="tablist">
+                                @foreach(var code in big)
+                                {
+                                    var entry = BIG.FirstOrDefault(e => e.StartsWith(code));
+                                    if (entry != null)
                                     {
-                                        <tr>
-                                            <td>@(Serial++)</td>
-                                            <td>@(item.Name)</td>
-                                            <td>@(item.Account)</td>
-                                        </tr>
+                                        <li role="presentation"><a href="#big-@(entry)" role="tab" data-toggle="tab">@(entry)</a></li>
                                     }
-                                </table>
+                                }
+                            </ul>
+                        </div>
+                        <div class="col-md-10">
+                            <div class="tab-content">
+                                @foreach(var code in big)
+                                {
+                                    var entry = BIG.FirstOrDefault(e => e.StartsWith(code));
+                                    if (entry != null)
+                                    {
+                                        var array = groups.Where(e => e.Code == code);
+                                        <div role="tabpanel" class="tab-pane" id="big-@(entry)">
+                                            <div class="col-md-2">
+                                                <ul class="nav nav-pills nav-stacked" role="tablist">
+                                                    @foreach(var first in array)
+                                                    {
+                                                        <li role="presentation"><a href="#second-@(first.Name)" role="tab" data-toggle="tab">@(first.Name)</a></li>
+                                                    }
+                                                </ul>
+                                            </div>
+                                            <div class="col-md-10">
+                                                <div class="tab-content">
+                                                    @foreach(var first in array)
+                                                    {
+                                                        var array2 = authorize.Groups.Where(e => e.OID == first.ID).ToList();
+                                                        <div role="tabpanel" class="tab-pane" id="second-@(first.Name)">
+                                                            <div class="col-md-3">
+                                                                <ul class="nav nav-pills nav-stacked" role="tablist">
+                                                                    @foreach (var item1 in array2)
+                                                                    {
+                                                                        <li role="presentation"><a href="#third-@(item1.Name)" role="tab" data-toggle="tab">@(item1.Name)</a></li>
+                                                                    }
+                                                                </ul>
+                                                            </div>
+                                                           <div class="col-md-9">
+                                                               <div class="tab-content">
+                                                                   @foreach (var item1 in array2)
+                                                                   {
+                                                                       var users=GDict.ContainsKey(item1.Name)?GDict[item1.Name]:null;
+                                                                       <div role="tabpanel" class="tab-pane" id="third-@(item1.Name)">
+                                                                           <table class="table">
+                                                                               <thead>
+                                                                                   <tr>
+                                                                                       <th>用户名</th>
+                                                                                       <th>账号</th>
+                                                                                   </tr>
+                                                                               </thead>
+                                                                               <tbody>
+                                                                                   @if (users == null)
+                                                                                   {
+                                                                                       <tr>
+                                                                                           <td colspan="2">无用户</td>
+                                                                                       </tr>
+                                                                                   }
+                                                                                   else
+                                                                                   {
+                                                                                       foreach(var user in users)
+                                                                                       {
+                                                                                           <tr>
+                                                                                               <td>@(user.Name)</td>
+                                                                                               <td>@(user.Account)</td>
+                                                                                           </tr>
+                                                                                       }
+                                                                                   }
+                                                                               </tbody>
+                                                                           </table>
+
+                                                                       </div>
+                                                                   }
+                                                               </div>
+                                                            
+                                                           </div>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+
                             </div>
                         </div>
                     </div>
-                    Index++;
-                }
+                </div>
+
             </div>
         </div>
     }

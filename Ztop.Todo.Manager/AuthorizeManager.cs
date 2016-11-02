@@ -141,6 +141,13 @@ namespace Ztop.Todo.Manager
                 return list;
             }
         }
+        /// <summary>
+        /// 作用：通过名称 获取该用户管理的权限组
+        /// 作者：汪建龙
+        /// 编写时间：2016年11月2日09:50:36
+        /// </summary>
+        /// <param name="Name"></param>
+        /// <returns></returns>
         public List<string> GetList(string Name)
         {
             var authorize = GetList().FirstOrDefault(e => e.Manager == Name);

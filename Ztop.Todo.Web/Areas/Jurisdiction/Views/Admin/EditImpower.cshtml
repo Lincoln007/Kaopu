@@ -7,6 +7,24 @@
     var organications = list.Where(e => e.Type == Ztop.Todo.Model.ADType.Organication).ToList();
 }
 
+<script>
+    $(function () {
+        $("button[name='ALL']").click(function () {
+            var parent = $(this).attr("parent");
+            if (parent != undefined && parent != NaN) {
+                $("#edit-first-" + parent + " input[name='GroupName']").prop("checked", true);
+            }
+        });
+
+        $("button[name='NOT']").click(function () {
+            var parent = $(this).attr("parent");
+            if (parent != undefined && parent != NaN) {
+                $("#edit-first-" + parent + " input[name='GroupName']").prop("checked", false);
+            }
+        });
+    });
+</script>
+
 <h3 class="text-center">编辑权限</h3>
 
 <form class="form-horizontal" method="post" action="/Admin/ImpowerEdit">
@@ -54,6 +72,10 @@
                                             @foreach(var first in groups)
                                             {
                                                 <div role="tabpanel" class="tab-pane" id="edit-first-@(first.Name)">
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-warning" name="ALL" parent="@(first.Name)">全选</button>
+                                                        <button type="button" class="btn btn-danger" name="NOT" parent="@(first.Name)">全不选</button>
+                                                    </div>
                                                     <table class="table">
                                                         @foreach(var entry in list.Where(e => e.OID == first.ID).ToList().ListToTable())
                                                         {
