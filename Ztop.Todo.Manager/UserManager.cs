@@ -54,6 +54,13 @@ namespace Ztop.Todo.Manager
             return user;
         }
 
+        /// <summary>
+        /// 作用：通过真实名称  中文 查找到用户记录
+        /// 作者：汪建龙
+        /// 编写时间：2016年11月3日10:47:33
+        /// </summary>
+        /// <param name="realname"></param>
+        /// <returns></returns>
         public User UserGet(string realname)
         {
             if (string.IsNullOrEmpty(realname))

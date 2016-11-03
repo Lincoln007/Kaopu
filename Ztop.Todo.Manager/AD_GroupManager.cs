@@ -24,17 +24,24 @@ namespace Ztop.Todo.Manager
         }
 
         /// <summary>
-        /// 作用：通过名称搜索
+        /// 作用：通过名称搜索  可追加类型
         /// 作者：汪建龙
         /// 编写时间：2016年11月1日09:35:54
+        /// 修改：汪建龙
+        /// 修改时间：2016年11月3日14:45:00
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public ADGroup Get(string name)
+        public ADGroup Get(string name,ADType? type=null)
         {
             using (var db = GetDbContext())
             {
-                return db.AD_Groups.FirstOrDefault(e => e.Name.ToUpper() == name.ToUpper());
+                var query = db.AD_Groups.Where(e => e.Name.ToUpper() == name.ToUpper()).AsQueryable();
+                if (type.HasValue)
+                {
+                    query = query.Where(e => e.Type == type.Value);
+                }
+                return query.FirstOrDefault();
             }
         }
 
@@ -161,6 +168,7 @@ namespace Ztop.Todo.Manager
         {
             return Get().Where(e => e.Type == ADType.Group).ToList();
         }
+
         
     }
 }

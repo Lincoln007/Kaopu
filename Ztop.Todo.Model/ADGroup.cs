@@ -40,6 +40,8 @@ namespace Ztop.Todo.Model
     public enum ADType
     {
         Organication,
-        Group
+        Group,
+        Catalog,
+        Other
     }
 }

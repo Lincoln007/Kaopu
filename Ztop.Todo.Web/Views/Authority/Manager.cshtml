@@ -3,15 +3,27 @@
 @{
     ViewBag.Title = "授权审批";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    List<ADGroup> Orgainications = ViewBag.Organications;
+   // List<ADGroup> Orgainications = ViewBag.Organications;
     List<DataBook> List = ViewBag.Wait;
     Dictionary<string, List<AUser>> GDict = ViewBag.DGroups;
 
     Authorize authorize = ViewBag.Authorize;
     List<ADGroup> groups = ViewBag.First;
-
+    
+    var catalogs = groups!=null? groups.Where(e => e.Type == ADType.Catalog).ToList():null;
+    var others =groups!=null? groups.Where(e => e.Type == ADType.Other).ToList():null;
     var BIG = XmlHelper.GetDitrict();
 }
+
+
+<script>
+    $(function () {
+        $("#Wait form").submit(function () {
+            $("#Wait button[type='submit']").attr("disabled", "false");
+
+        });
+    });
+</script>
 
 <div style="position:relative;">
     <ul class="nav nav-tabs">
@@ -54,7 +66,7 @@
                             }
                             var value = (int)status;
                             <label class="radio-inline">
-                                <input type="radio" value="@value" name="status" />@(status.GetDescription())
+                                <input type="radio" value="@value" name="status" @(status==CheckStatus.Agree?"checked=checked":"") />@(status.GetDescription())
                             </label>
                         }
                     </div>
@@ -86,7 +98,7 @@
                 </div>
                 <div class="form-group">
                     <div class="col-lg-6 col-lg-offset-3">
-                        <input type="submit" class="btn btn-primary" value="确定" />
+                        <button type="submit" class="btn btn-primary">确定</button>
                     </div>
                 </div>
             </form>
@@ -110,6 +122,22 @@
                                         <li role="presentation"><a href="#big-@(entry)" role="tab" data-toggle="tab">@(entry)</a></li>
                                     }
                                 }
+                                @if (catalogs != null)
+                                {
+                                    foreach (var item in catalogs)
+                                    {
+                                        <li role="presentation"><a href="#catalog-@(item.Name)" role="tab" data-toggle="tab">@(item.Name)</a></li>
+                                    }
+                                }
+                                @if (others != null)
+                                {
+                                    foreach (var item in others)
+                                    {
+                                        <li role="presentation"><a href="#other-@(item.Name)" role="tab" data-toggle="tab">@(item.Name)</a></li>
+                                    }
+                                }
+                   
+                              
                             </ul>
                         </div>
                         <div class="col-md-10">
@@ -121,7 +149,7 @@
                                     {
                                         var array = groups.Where(e => e.Code == code);
                                         <div role="tabpanel" class="tab-pane" id="big-@(entry)">
-                                            <div class="col-md-2">
+                                            <div class="col-md-3">
                                                 <ul class="nav nav-pills nav-stacked" role="tablist">
                                                     @foreach(var first in array)
                                                     {
@@ -129,7 +157,7 @@
                                                     }
                                                 </ul>
                                             </div>
-                                            <div class="col-md-10">
+                                            <div class="col-md-9">
                                                 <div class="tab-content">
                                                     @foreach(var first in array)
                                                     {
@@ -157,7 +185,7 @@
                                                                                    </tr>
                                                                                </thead>
                                                                                <tbody>
-                                                                                   @if (users == null)
+                                                                                   @if (users == null||users.Count==0)
                                                                                    {
                                                                                        <tr>
                                                                                            <td colspan="2">无用户</td>
@@ -175,11 +203,9 @@
                                                                                    }
                                                                                </tbody>
                                                                            </table>
-
                                                                        </div>
                                                                    }
                                                                </div>
-                                                            
                                                            </div>
                                                         </div>
                                                     }
@@ -189,6 +215,114 @@
                                     }
                                 }
 
+                                @if (catalogs != null)
+                                {
+                                    foreach (var item in catalogs)
+                                    {
+                                        var lists = authorize.Groups.Where(e => e.OID == item.ID).ToList();
+                                        <div class="tab-pane" role="tabpanel" id="catalog-@(item.Name)">
+                                            <div class="col-md-3">
+                                                <ul class="nav nav-pills nav-stacked" role="tablist">
+                                                    @foreach (var first in lists)
+                                                    {
+                                                        <li role="presentation"><a href="#first-@(first.Name)" role="tab" data-toggle="tab">@(first.Name)</a></li>
+                                                    }
+                                                </ul>
+                                            </div>
+                                            <div class="col-md-9">
+                                                <div class="tab-content">
+                                                    @foreach (var first in lists)
+                                                    {
+                                                        var users = GDict.ContainsKey(first.Name) ? GDict[first.Name] : null;
+                                                        <div class="tab-pane" role="tabpanel" id="first-@(first.Name)">
+                                                            <table class="table">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>用户名</th>
+                                                                        <th>账号</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @if (users == null || users.Count == 0)
+                                                                    {
+                                                                        <tr>
+                                                                            <td rowspan="2">无用户</td>
+                                                                        </tr>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        foreach (var user in users)
+                                                                        {
+                                                                            <tr>
+                                                                                <td>@(user.Name)</td>
+                                                                                <td>@(user.Account)</td>
+                                                                            </tr>
+                                                                        }
+                                                                    }
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                           
+                                @if (others != null)
+                                {
+                                    foreach (var item in others)
+                                    {
+                                        var lists = authorize.Groups.Where(e => e.OID == item.ID).ToList();
+                                        <div class="tab-pane" role="tabpanel" id="other-@(item.Name)">
+                                            <div class="col-md-3">
+                                                <ul class="nav nav-pills nav-stacked" role="tablist">
+                                                    @foreach (var first in lists)
+                                                    {
+                                                        <li role="presentation"><a href="#first-@(first.Name)" role="tab" data-toggle="tab">@(first.Name)</a></li>
+                                                    }
+                                                </ul>
+                                            </div>
+                                            <div class="col-md-9">
+                                                <div class="tab-content">
+                                                    @foreach (var first in lists)
+                                                    {
+                                                        var users = GDict.ContainsKey(first.Name) ? GDict[first.Name] : null;
+                                                        <div class="tab-pane" role="tabpanel" id="first-@(first.Name)">
+                                                            <table class="table">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>用户名</th>
+                                                                        <th>账号</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @if (users == null || users.Count == 0)
+                                                                    {
+                                                                        <tr>
+                                                                            <td rowspan="2">无用户</td>
+                                                                        </tr>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        foreach (var user in users)
+                                                                        {
+                                                                            <tr>
+                                                                                <td>@(user.Name)</td>
+                                                                                <td>@(user.Account)</td>
+                                                                            </tr>
+                                                                        }
+                                                                    }
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                              
                             </div>
                         </div>
                     </div>

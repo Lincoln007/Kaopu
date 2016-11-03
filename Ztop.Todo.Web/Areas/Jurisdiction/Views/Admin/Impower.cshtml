@@ -44,7 +44,11 @@
                         }
                     </td>
                     <td>
-                        <a href="/Jurisdiction/Admin/EditImpower?id=@(item.ID)" class="btn btn-success"><i class="glyphicon glyphicon-edit"></i>编辑权限</a>
+                        <div class="btn-group btn-group-sm">
+                            <a href="/Jurisdiction/Admin/EditImpower?id=@(item.ID)" class="btn btn-success"><i class="glyphicon glyphicon-edit"></i>编辑权限</a>
+                            <a href="/Jurisdiction/Admin/DeleteImpower?id=@(item.ID)" class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i>删除</a>
+                        </div>
+                        
                     </td>
                 </tr>
              }

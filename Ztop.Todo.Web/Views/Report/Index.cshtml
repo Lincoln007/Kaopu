@@ -14,7 +14,7 @@
 
 <div class="col-md-12">
     <h3>@(Identity.Name)  您好! &nbsp;&nbsp;</h3>
-    @if (Identity.Name == "蒋雷")
+    @if (Identity.Name == "蒋雷"||Identity.Name=="袁洋"||Identity.Name== "申屠杜平")
     {
        <a href="/Report/DownloadExcel?name=申屠杜平&&order=@(Order.Time)&&content=招待费&&sheetType=日常报销" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-download"></i>下载招待费Excel</a>
        <hr />

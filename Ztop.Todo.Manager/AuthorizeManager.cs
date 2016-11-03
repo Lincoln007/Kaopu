@@ -65,6 +65,11 @@ namespace Ztop.Todo.Manager
             }
             var groups = authorize.GroupName.Split(',');
             var gid = new List<int>();
+            var user = Core.UserManager.UserGet(authorize.Manager);
+            if (user == null)
+            {
+                throw new ArgumentException("未找到相关管理者用户信息，请核对管理者名称!");
+            }
             foreach(var groupname in groups)
             {
                 var group = Core.AD_groupManager.Get(groupname);
@@ -193,6 +198,26 @@ namespace Ztop.Todo.Manager
                 {
                     None.Add(item);
                 }
+            }
+        }
+
+        /// <summary>
+        /// 作用：删除授权管理记录
+        /// 作者：汪建龙
+        /// 编写时间：2016年11月3日11:12:19
+        /// </summary>
+        /// <param name="id"></param>
+        public void Delete(int id)
+        {
+            using (var db = GetDbContext())
+            {
+                var entry = db.Authorizes.Find(id);
+                if (entry == null)
+                {
+                    throw new ArgumentException("未找到相关授权管理记录！");
+                }
+                db.Authorizes.Remove(entry);
+                db.SaveChanges();
             }
         }
     }

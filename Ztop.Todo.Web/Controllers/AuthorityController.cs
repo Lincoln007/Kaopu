@@ -20,7 +20,7 @@ namespace Ztop.Todo.Web.Controllers
         /// <returns></returns>
         public ActionResult Manager()
         {
-            ViewBag.Organications = Core.AD_groupManager.GetOrganication();
+            //ViewBag.Organications = Core.AD_groupManager.GetOrganication();
             var groups = Core.AuthorizeManager.GetList(Identity.Name);
             ViewBag.Wait = Core.DataBookManager.Get(groups, Model.CheckStatus.Wait);
             if (Identity.GroupType == GroupType.Manager||Identity.GroupType==GroupType.Administrator)
@@ -30,7 +30,7 @@ namespace Ztop.Todo.Web.Controllers
 
 
             var authorize = Core.AuthorizeManager.Get(Identity.Name);
-            if (authorize.Groups != null)
+            if (authorize!=null&& authorize.Groups != null)
             {
                 ViewBag.First = authorize.Groups.Where(e => e.Parent != null).Select(e => e.Parent).Distinct().ToList();
             }
@@ -70,7 +70,7 @@ namespace Ztop.Todo.Web.Controllers
             ViewBag.User = new AUser
             {
                 Name = Identity.Name,
-                MGroup = Identity.Name.GetGroupList()
+                MGroup = Identity.sAMAccountName.GetGroupList()
             };
             return View();
         }
@@ -110,7 +110,7 @@ namespace Ztop.Todo.Web.Controllers
         public ActionResult GetGroup(string boss)
         {
             var authorize= Core.AuthorizeManager.Get(boss);
-            if (authorize.Groups != null)
+            if (authorize!=null&&authorize.Groups != null)
             {
                 ViewBag.First = authorize.Groups.Where(e=>e.Parent!=null).Select(e => e.Parent).Distinct().ToList();
             }

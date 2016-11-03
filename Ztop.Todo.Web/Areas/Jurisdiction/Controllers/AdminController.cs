@@ -97,6 +97,12 @@ namespace Ztop.Todo.Web.Areas.Jurisdiction.Controllers
             return View();
         }
 
+        public ActionResult DeleteImpower(int id)
+        {
+            Core.AuthorizeManager.Delete(id);
+            return RedirectToAction("Impower");
+        }
+
         public ActionResult Gain()
         {
             var list = ADController.GetUserList();
