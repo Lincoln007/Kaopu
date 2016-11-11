@@ -17,7 +17,6 @@ namespace Ztop.Todo.Manager
                 return entry != null;
             }
         }
-
         public int Save(Article article)
         {
             if (Exist(article) && article.ID > 0)
@@ -32,7 +31,6 @@ namespace Ztop.Todo.Manager
                 return article.ID;
             }
         }
-
         public int Edit(Article article)
         {
             using (var db = GetDbContext())
@@ -46,8 +44,6 @@ namespace Ztop.Todo.Manager
                 return article.ID;
             }
         }
-
-
         public Article Get(int id)
         {
             using (var db = GetDbContext())
@@ -101,7 +97,6 @@ namespace Ztop.Todo.Manager
             }
             return list;
         }
-
         public bool Deleted(int id)
         {
             using(var db = GetDbContext())

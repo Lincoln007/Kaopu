@@ -36,6 +36,7 @@
                 <label class="control-label col-md-4">Apple ID【必选】:</label>
                 <div class="col-md-7">
                     <select name="AID" class="form-control">
+                        <option value="未绑定">未绑定</option>
                         @foreach(var account in Accounts)
                         {
                             <option value="@(account.ID)" @(ipad!=null&&ipad.AID==account.ID?"selected=selected":"")>@(account.Account)</option>

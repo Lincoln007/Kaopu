@@ -203,7 +203,6 @@ namespace Ztop.Todo.Manager
             }
             return 0;
         }
-
         public string GetGroupName(string userName)
         {
             using (var db = GetDbContext())
