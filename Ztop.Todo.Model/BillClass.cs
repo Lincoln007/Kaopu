@@ -386,7 +386,7 @@ namespace Ztop.Todo.Model
         ///作者：汪建龙
         ///编写时间：2016年11月12日17:25:21
         /// </summary>
-        private static string[] CurrentHead = { "序号", "交易日期", "交易时间", "凭证号", "借方金额", "贷方金额", "余额", "对方账号", "对方户名", "摘要", "备注", "类别" };
+        private static string[] CurrentHead = { "序号", "交易日期", "交易时间", "凭证号", "借方金额", "贷方金额", "余额", "对方账号", "对方户名", "摘要", "备注" };
         /// <summary>
         /// 作用：验证当前行是否为表头  是：true，不是：false
         /// 作者：汪建龙
@@ -496,6 +496,12 @@ namespace Ztop.Todo.Model
             
         }
 
+        private static  bool CheckLogic(BillOne billOne,BillOne pre)
+        {
+
+            return false;
+        }
+
         /// <summary>
         /// 作用：分析Excel文件，获取银行信息
         /// 作者：汪建龙
@@ -521,7 +527,7 @@ namespace Ztop.Todo.Model
             }
             IRow row = null;
             bool start = false;
-            for(var i = 0; i < sheet.LastRowNum; i++)
+            for(var i = 0; i <= sheet.LastRowNum; i++)
             {
                 row = sheet.GetRow(i);
                 if (row == null)

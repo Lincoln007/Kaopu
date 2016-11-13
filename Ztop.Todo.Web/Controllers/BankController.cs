@@ -182,6 +182,15 @@ namespace Ztop.Todo.Web.Controllers
             return Json(bank, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 作用：用户上传银行明细Excel文件，并读取分析Excel文件中的记录
+        /// 作者：汪建龙
+        /// 编写时间：2016年11月13日14:56:083
+        /// </summary>
+        /// <param name="year"></param>
+        /// <param name="month"></param>
+        /// <param name="company"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult Input(int year, int month, Company company)
         {
@@ -194,8 +203,7 @@ namespace Ztop.Todo.Web.Controllers
             var saveFullFilePath = Core.BillManager.Upload(file);
             var errors = new List<string>();
             var bills = BillClass.AnalyzeExcel(saveFullFilePath, ref errors);
-
-            //var bills = BillClass.Analyze(saveFullFilePath, ref errors);
+            Session["Read"] = bills;
             ViewBag.Values = bills.ToJson();
             ViewBag.Bank = new Bank { Year = year, Month = month, Company = company };
             ViewBag.Bills = bills;
@@ -203,21 +211,13 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
 
-        //[HttpPost]
-        //public ActionResult CheckInput(int year,int month,Company company,DateTime[] time,double[] pay,double[] income,double[] balance,string[] account,string[] summary,Cost[] cost,Category[] category)
-        //{
-        //    var bank = Core.BillManager.GetBank(year, month, company);
-        //    var bills = Core.BillManager.GetBills(bank.ID, time, income, pay, balance, account, summary, cost, category);
-        //    try
-        //    {
-        //        Core.BillManager.UpDateBills(bills, bank.ID);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return ErrorJsonResult(ex.ToString());
-        //    }
-        //    return SuccessJsonResult(bank);
-        //}
+        [HttpPost]
+        public ActionResult SaveInput(int year,int month,Company company,bool edit=false)
+        {
+            var bills = Session["Read"];
+            return View();
+
+        }
 
         #endregion
     }

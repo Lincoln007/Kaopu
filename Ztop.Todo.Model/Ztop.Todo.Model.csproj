@@ -81,6 +81,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Article.cs" />
+    <Compile Include="Bill_Head.cs" />
     <Compile Include="ContractArticle.cs" />
     <Compile Include="ArticleParameter.cs" />
     <Compile Include="Attachment.cs" />

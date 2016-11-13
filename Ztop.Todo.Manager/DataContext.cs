@@ -64,5 +64,7 @@ namespace Ztop.Todo.Manager
         public DbSet<iPadContract> iPad_Contracts { get; set; }
         public DbSet<iPadAccount> iPad_Accounts { get; set; }
         public DbSet<ADGroup> AD_Groups { get; set; }
+        public DbSet<BillOne> BillOnes { get; set; }
+        public DbSet<Bill_Head> Bill_Heads { get; set; }
     }
 }

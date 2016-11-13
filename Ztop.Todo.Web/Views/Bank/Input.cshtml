@@ -48,13 +48,16 @@
             @foreach(var item in bills)
             {
                 <tr>
-                    <td>@(item.SerialNumber)</td>
-                    <td><input type="text" name="Time" class="form-control input-sm" value="@(item.Time.ToLongDateString())" readonly="readonly" /></td>
+                    <td><input type="text" name="SerialNumber" class="form-control input-sm" value=" @(item.SerialNumber)" readonly="readonly" /></td>
+                    <td><input type="text" name="Time" class="form-control input-sm" value="@(item.Time.HasValue?item.Time.Value.ToLongDateString():"")" readonly="readonly" /><input type="hidden" name="Date" value="@(item.Date)" /></td>
+                    <td><input type="text" name="Voucher" class="form-control input-sm" value="@(item.Voucher)" readonly="readonly" /></td>
                     <td><input type="text" name="Pay" class="form-control input-sm" value="@(item.Budget==Budget.Expense?item.Money.ToString():"")" readonly="readonly" /></td>
                     <td><input type="text" name="Income" class="form-control  input-sm" value="@(item.Budget==Budget.Income?item.Money.ToString():"")"  readonly="readonly"/></td>
                     <td><input type="text" name="Balance" class="form-control input-sm" value="@(item.Balance)" readonly="readonly" /></td>
+                    <td><input type="text" name="CounterPart" class="form-control input-sm" value="@(item.CounterPart)" readonly="readonly" /></td>
                     <td><input type="text" name="Account" class="form-control input-sm" value="@(item.Account)" readonly="readonly" /></td>
-                    <td><input type="text" name="Summary" class="form-control input-sm" value="@(item.Remark)"  readonly="readonly"/></td>
+                    <td><input type="text" name="Summary" class="form-control input-sm" value="@(item.Summary)"  readonly="readonly"/></td>
+                    <td><input type="text" name="Remark" class="form-control input-sm" value="@(item.Remark)" readonly="readonly" /></td>
                     <td>
                         <input type="hidden" name="Cost" value="@(item.Cost)" />
                        

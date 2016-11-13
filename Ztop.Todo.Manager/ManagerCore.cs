@@ -63,6 +63,7 @@ namespace Ztop.Todo.Manager
         public iPad_ContractManager iPad_ContractManager { get; private set; }
         public iPad_AccountManager iPad_AccountManager { get; private set; }
         public AD_GroupManager AD_groupManager { get; private set; }
+        public Bill_OneManager Bill_OneManager { get; private set; }
 
     }
 }
