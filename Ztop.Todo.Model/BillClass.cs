@@ -380,6 +380,182 @@ namespace Ztop.Todo.Model
             error = "支出、收入与对应的类别不符";
             return null;
         }
+
+        /// <summary>
+        ///作用： 银行对账导入的表头
+        ///作者：汪建龙
+        ///编写时间：2016年11月12日17:25:21
+        /// </summary>
+        private static string[] CurrentHead = { "序号", "交易日期", "交易时间", "凭证号", "借方金额", "贷方金额", "余额", "对方账号", "对方户名", "摘要", "备注", "类别" };
+        /// <summary>
+        /// 作用：验证当前行是否为表头  是：true，不是：false
+        /// 作者：汪建龙
+        /// 编写时间：2016年11月12日17:26:14
+        /// </summary>
+        /// <param name="row"></param>
+        /// <returns></returns>
+        private static bool CheckHead(IRow row)
+        {
+            if (row == null)
+            {
+                return false;
+            }
+            ICell cell = null;
+            for(var i = 0; i < CurrentHead.Length; i++)
+            {
+                cell = row.GetCell(i);
+                if (cell == null)
+                {
+                    return false;
+                }
+                var str = cell.ToString();
+                if (str.ToUpper() != CurrentHead[i].ToUpper())
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        /// <summary>
+        /// 作用：将20161101这样的时间字符串转换成DateTime类型
+        /// 作者：汪建龙
+        /// 编写时间：2016年11月12日20:04:56
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
+        private static DateTime? GetDateTime(string date)
+        {
+            if (string.IsNullOrEmpty(date) || date.Length != 8)
+            {
+                return null;
+            }
+            var year = date.Substring(0, 4);
+            var month = date.Substring(4, 2);
+            var data = date.Substring(6);
+            DateTime time;
+            if(DateTime.TryParse(string.Format("{0}-{1}-{2}", year, month, data), out time))
+            {
+                return time;
+            }
+            return null;
+        }
+        /// <summary>
+        /// 作用：分析获得BillOne对象实例
+        /// 作者：汪建龙
+        /// 编写时间：2016年11月12日17:30:26
+        /// </summary>
+        /// <param name="row"></param>
+        /// <returns></returns>
+        private static BillOne Analyze(IRow row)
+        {
+            if (row == null)
+            {
+                return null;
+            }
+            var array = new string[CurrentHead.Length];
+            for(var i = 0; i < CurrentHead.Length; i++)
+            {
+                var cell = row.GetCell(i);
+                if (cell == null)
+                {
+                    continue;
+                }
+                array[i] = cell.ToString();
+            }
+
+            var a = 0;
+            var b = .0;
+            var entry = new BillOne {
+                SerialNumber = int.TryParse(array[0], out a) ? a : 0,
+                Date = array[1],
+                Time = GetDateTime(array[1]),
+                Voucher = array[3],
+                Balance = double.TryParse(array[6], out b) ? b : .0,
+                CounterPart=array[7],
+                Account=array[8],
+                Summary=array[9],
+                Remark=array[10]
+            };
+      
+            if (string.IsNullOrEmpty(array[4]))
+            {
+                if (!string.IsNullOrEmpty(array[5]))
+                {
+                    entry.Budget = Budget.Income;
+                    entry.Money = double.TryParse(array[5], out b) ? b : .0;
+                }
+            }
+            else
+            {
+                entry.Budget = Budget.Expense;
+                entry.Money = double.TryParse(array[4], out b) ? b : .0;
+            }
+
+            return entry;
+
+            
+        }
+
+        /// <summary>
+        /// 作用：分析Excel文件，获取银行信息
+        /// 作者：汪建龙
+        /// 编写时间：2016年11月12日20:57:36
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="errors"></param>
+        /// <returns></returns>
+        public static List<BillOne> AnalyzeExcel(string filePath,ref List<string> errors)
+        {
+            var list = new List<BillOne>();
+            var workbook = filePath.OpenExcel();
+            if (workbook == null)
+            {
+                errors.Add(string.Format("打开Excel失败"));
+                return null;
+            }
+            var sheet = workbook.GetSheetAt(0);
+            if (sheet == null)
+            {
+                errors.Add("未获取Sheet信息");
+                return null;
+            }
+            IRow row = null;
+            bool start = false;
+            for(var i = 0; i < sheet.LastRowNum; i++)
+            {
+                row = sheet.GetRow(i);
+                if (row == null)
+                {
+                    errors.Add(string.Format("无法读取第{0}行的数据", i + 1));
+                    continue;
+                }
+                if (!start)
+                {
+                    var isHead = CheckHead(row);
+                    start = isHead;
+                    if (isHead)
+                    {
+                        continue;
+                    }
+                }
+
+                if (start)
+                {
+                    var entry = Analyze(row);
+                    if (entry != null)
+                    {
+                        list.Add(entry);
+                    }
+                    else
+                    {
+                        errors.Add(string.Format("Excel第{0}行：未分析到数据", i + 1));
+                    }
+                }
+            }
+            return list;
+
+        }
+
         public static List<Bill> Analyze(string filePath,ref List<string> errors)
         {
             var list = new List<Bill>();

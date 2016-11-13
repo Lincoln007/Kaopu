@@ -3,7 +3,8 @@
     ViewBag.Title = "分析结果";
     Bank bank = ViewBag.Bank;
     List<string> errors = ViewBag.Errors;
-    List<Bill> bills = ViewBag.Bills;
+    List<BillOne> bills = ViewBag.Bills;
+    // List<Bill> bills = ViewBag.Bills;
     Layout = "~/Views/Shared/_Layout.cshtml";
     int serialNumber = 1;
 }
@@ -31,11 +32,14 @@
             <tr>
                 <th>序号</th>
                 <th>交易日期</th>
+                <th>凭证号</th>
                 <th>支出[元]</th>
                 <th>收入[元]</th>
                 <th>账户余额[元]</th>
+                <th>对方账号</th>
                 <th>对方单位</th>
                 <th>摘要</th>
+                <th>备注</th>
                 <th>类别</th>
                 <td></td>
             </tr>
@@ -44,7 +48,7 @@
             @foreach(var item in bills)
             {
                 <tr>
-                    <td>@(serialNumber++)</td>
+                    <td>@(item.SerialNumber)</td>
                     <td><input type="text" name="Time" class="form-control input-sm" value="@(item.Time.ToLongDateString())" readonly="readonly" /></td>
                     <td><input type="text" name="Pay" class="form-control input-sm" value="@(item.Budget==Budget.Expense?item.Money.ToString():"")" readonly="readonly" /></td>
                     <td><input type="text" name="Income" class="form-control  input-sm" value="@(item.Budget==Budget.Income?item.Money.ToString():"")"  readonly="readonly"/></td>

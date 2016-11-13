@@ -193,7 +193,9 @@ namespace Ztop.Todo.Web.Controllers
 
             var saveFullFilePath = Core.BillManager.Upload(file);
             var errors = new List<string>();
-            var bills = BillClass.Analyze(saveFullFilePath, ref errors);
+            var bills = BillClass.AnalyzeExcel(saveFullFilePath, ref errors);
+
+            //var bills = BillClass.Analyze(saveFullFilePath, ref errors);
             ViewBag.Values = bills.ToJson();
             ViewBag.Bank = new Bank { Year = year, Month = month, Company = company };
             ViewBag.Bills = bills;
