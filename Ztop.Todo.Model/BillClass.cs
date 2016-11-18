@@ -496,9 +496,32 @@ namespace Ztop.Todo.Model
             
         }
 
-        private static  bool CheckLogic(BillOne billOne,BillOne pre)
+        /// <summary>
+        /// 作用：比较两个对账记录逻辑
+        /// 作者：汪建龙
+        /// 编写时间：2016年11月16日15:40:58
+        /// </summary>
+        /// <param name="billOne"></param>
+        /// <param name="pre"></param>
+        /// <returns></returns>
+        public static bool CheckLogic(BillOne billOne,BillOne pre)
         {
+            if (billOne == null || pre == null)
+            {
+                return false;
+            }
 
+            if (billOne.SerialNumber == (pre.SerialNumber+1))//验证序号前后是否递增
+            {
+                //验证账户余额 前后收支一致
+                if (billOne.Budget == Budget.Income && Math.Abs(pre.Balance + billOne.Money - billOne.Balance) < 0.01)//当收入时，上一笔余额+当前金额=当前余额
+                {
+                    return true;
+                }else if (billOne.Budget == Budget.Expense && Math.Abs(pre.Balance - billOne.Money - billOne.Balance) < 0.01)//当支出时，上一笔余额-当前金额=当前余额
+                {
+                    return true;
+                }
+            }
             return false;
         }
 

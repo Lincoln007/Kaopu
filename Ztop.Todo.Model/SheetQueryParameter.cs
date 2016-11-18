@@ -97,7 +97,11 @@ namespace Ztop.Todo.Model
         [Description("时间排序")]
         Time,
         [Description("金额排序")]
-        Money
+        Money,
+        [Description("流水编号排序")]
+        PrintNumber,
+        [Description("单据编号排序")]
+        CheckNumber
     }
 
 

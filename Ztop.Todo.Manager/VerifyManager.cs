@@ -160,13 +160,20 @@ namespace Ztop.Todo.Manager
                     }
                 }
             }
-            if (parameter.Order == Order.Time)
+            switch (parameter.Order)
             {
-                query = query.OrderByDescending(e => e.Time);
-            }
-            else
-            {
-                query = query.OrderByDescending(e => e.Money);
+                case Order.Time:
+                    query = query.OrderByDescending(e => e.Time);
+                    break;
+                case Order.Money:
+                    query = query.OrderByDescending(e => e.Money);
+                    break;
+                case Order.PrintNumber:
+                    query = query.OrderByDescending(e => e.PrintNumber);
+                    break;
+                case Order.CheckNumber:
+                    query = query.OrderByDescending(e => e.CheckNumber);
+                    break;
             }
             query = query.SetPage(parameter.Page);
             return query.ToList();

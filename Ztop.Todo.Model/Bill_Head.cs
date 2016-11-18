@@ -27,6 +27,8 @@ namespace Ztop.Todo.Model
         /// </summary>
         [Column(TypeName ="int")]
         public Company Company { get; set; }
+        [NotMapped]
+        public List<BillOne> Ones { get; set; }
     }
 
     /// <summary>
@@ -88,7 +90,7 @@ namespace Ztop.Todo.Model
         /// 类别
         /// </summary>
         [Column(TypeName = "int")]
-        public Cost Cost { get; set; }
+        public Cost? Cost { get; set; }
         /// <summary>
         /// 二级类别  收入的时候 为null
         /// </summary>

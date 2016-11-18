@@ -214,9 +214,51 @@ namespace Ztop.Todo.Web.Controllers
         [HttpPost]
         public ActionResult SaveInput(int year,int month,Company company,bool edit=false)
         {
-            var bills = Session["Read"];
-            return View();
+            var bills = Session["Read"] as List<BillOne>;
+            if (bills == null || bills.Count == 0)
+            {
+                return ErrorJsonResult("未读取银行对账信息！");
+            }
+            var head = Core.Bill_OneManager.GetBillHead(year, month, company);
+            var hid = head != null ? head.ID : Core.Bill_OneManager.Add(new Bill_Head { Year = year, Month = month, Company = company });
 
+            var errors = Core.Bill_OneManager.Input(hid, bills);
+            if (errors.Count > 0)
+            {
+                return ErrorJsonResult(string.Join("-", errors));
+            }
+            return SuccessJsonResult(hid);
+
+        }
+
+
+        public ActionResult DetailBill(int id)
+        {
+            var bill_heads = Core.Bill_OneManager.GetHead(id);
+            ViewBag.Heads = bill_heads;
+            return View();
+        }
+
+        public ActionResult Classify(int id)
+        {
+            var billone = Core.Bill_OneManager.GetBillOne(id);
+            ViewBag.BillOne = billone;
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Classify(int id,Cost cost,Category? category)
+        {
+            if (cost != Cost.RealPay)
+            {
+                category = null;
+            }
+            var entry = Core.Bill_OneManager.Classify(id, cost, category);
+            if (entry == null)
+            {
+                return ErrorJsonResult("归类失败");
+            }
+            return SuccessJsonResult(entry.HID);
         }
 
         #endregion

@@ -44,7 +44,7 @@ namespace Ztop.Todo.Model
                         return string.Format("{0}{1}{2}", CheckTime.Value.Year, CheckTime.Value.Month.ToString("00"), CheckExt.Value.ToString("0000"));
                     }
                 }
-                return "/";
+                return "未生成单据编号";
             }
         }
 

@@ -4,7 +4,6 @@
     Bank bank = ViewBag.Bank;
     List<string> errors = ViewBag.Errors;
     List<BillOne> bills = ViewBag.Bills;
-    // List<Bill> bills = ViewBag.Bills;
     Layout = "~/Views/Shared/_Layout.cshtml";
     int serialNumber = 1;
 }
@@ -40,8 +39,6 @@
                 <th>对方单位</th>
                 <th>摘要</th>
                 <th>备注</th>
-                <th>类别</th>
-                <td></td>
             </tr>
         </thead>
         <tbody>
@@ -58,32 +55,7 @@
                     <td><input type="text" name="Account" class="form-control input-sm" value="@(item.Account)" readonly="readonly" /></td>
                     <td><input type="text" name="Summary" class="form-control input-sm" value="@(item.Summary)"  readonly="readonly"/></td>
                     <td><input type="text" name="Remark" class="form-control input-sm" value="@(item.Remark)" readonly="readonly" /></td>
-                    <td>
-                        <input type="hidden" name="Cost" value="@(item.Cost)" />
-                       
-                        <div class="row">
-                            <div class="col-md-6 col-xs-6 col-sm-6">
-                                <select name="Cost" class="form-control input-sm" disabled>
-                                    @foreach (Cost cost in Enum.GetValues(typeof(Cost)))
-                                    {
-                                        <option value="@(cost)" @(item.Cost == cost ? "selected=selected" : "")>@(cost.GetDescription())</option>
-                                    }
-                                </select>
-                            </div>
-                            <div class="col-md-6 col-xs-6 col-sm-6">
-                                @if (item.Category.HasValue)
-                                {
-                                    <input type="hidden" name="Category" value="@(item.Category.Value)" />
-                                    <select name="Category" class="form-control input-sm " disabled>
-                                        @foreach (Category category in Enum.GetValues(typeof(Category)))
-                                        {
-                                            <option value="@(category)" @(item.Category == category ? "selected=selected" : "")>@(category.GetDescription())</option>
-                                        }
-                                    </select>
-                                }
-                            </div>
-                        </div>
-                    </td>
+
                 </tr>
             }
         </tbody>
@@ -103,9 +75,9 @@
             if (confirm("当前分析存在错误，您确定要导入系统吗？"))
             {
                 var data = $(this).serialize();
-                $.request("/Bank/Save", data, function (json) {
+                $.request("/Bank/SaveInput", data, function (json) {
                     if (json.result == 1) {
-                        location.href = "/Bank/Detail?id=" + json.data.ID;
+                        location.href = "/Bank/DetailBill?id=" + json.data;
                     } else {
                         alert("导入失败" + json.content);
                         return false;
@@ -120,6 +92,22 @@
                 }
             </text>
 
+            }
+            else
+            {
+                <text>
+            var data = $(this).serialize();
+            $.request("/Bank/SaveInput", data, function (json) {
+                if (json.result == 1) {
+                    location.href = "/Bank/DetailBill?id=" + json.data;
+                } else {
+                    alert("导入失败" + json.content);
+                    return false;
+                }
+                return false;
+            });
+            return false;
+            </text>
             }
         });
     });

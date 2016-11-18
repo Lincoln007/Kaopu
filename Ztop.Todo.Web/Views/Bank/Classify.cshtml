@@ -1,0 +1,113 @@
+﻿@{ 
+    Layout = null;
+    BillOne one = ViewBag.BillOne;
+}
+
+<h3 class="text-center">账目归类</h3>
+<hr />
+
+<div class="alert" role="alert" id="Message">
+    <span></span>
+</div>
+
+<div class="alert alert-success" role="alert">
+    <span>1、账目支出时，类别分为：过账、借款、保证金支出、实际支出和备用金；</span>
+    <hr />
+    <span>2、在账目支出时选择实际支出，需选择二级类，二级类：日常办公、固定资产、耗材、交通费、维修维护、邮电费、印刷装订、招待费、福利费、评审费、招投标费、财务费和其他</span>
+    <hr />
+    <span>3、账目收入时，类别分为：实际收入、还款和保证金退款；</span>
+</div>
+<form class="form-horizontal" method="post" action="" id="Classify">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label class="control-label col-md-3">收支：</label>
+                <div class="col-md-8">
+                    <input type="hidden" name="ID" value="@(one.ID)" />
+                    <input type="text" name="" class="form-control" value="@(one.Budget.GetDescription())" readonly="readonly" />
+                </div>
+            </div>
+
+            @if (one.Budget == Budget.Income)
+            {
+                <div class="form-group">
+                    <label class="control-label col-md-3">类别：</label>
+                    <div class="col-md-8">
+                        <select name="Cost" class="form-control">
+                            @foreach (Cost cost in Enum.GetValues(typeof(Cost)))
+                            {
+                                if (((int)cost) < 3)
+                                {
+                                    <option value="@(cost)">@(cost.GetDescription())</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+               
+            }
+            else
+            {
+                <div class="form-group">
+                    <label class="control-label col-md-3">一级类别：</label>
+                    <div class="col-md-8">
+                        <select name="Cost" class="form-control">
+                            @foreach (Cost cost in Enum.GetValues(typeof(Cost)))
+                            {
+                                if (((int)cost) >= 3)
+                                {
+                                    <option value="@(cost)">@(cost.GetDescription())</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group" id="Second" style="display:none;">
+                    <label class="control-label col-md-3">二级类别：</label>
+                    <div class="col-md-8">
+                        <select name="Category" class="form-control">
+                            @foreach (Category category in Enum.GetValues(typeof(Category)))
+                            {
+                                <option value="@(category)">@(category.GetDescription())</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            }
+
+            <div class="form-group">
+                <div class="col-md-8 col-md-offset-3">
+                    <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i>归类</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script >
+    $(function () {
+        $("select[name='Cost']").change(function () {
+            var val = $(this).val();
+            if (val == "RealPay") {
+                $("#Second").show(500);
+            } else {
+                $("#Second").hide(500);
+            }
+        });
+
+        $("#Classify").submit(function () {
+            var data = $(this).serialize();
+            $.request("/Bank/Classify", data, function (json) {
+                if (json.result == 1) {
+                    location.href = "/Bank/DetailBill?id=" + json.content;
+                    }else{
+                    alert(json.content);
+                }
+
+                return false;
+            });
+            return false;
+        });
+    });
+</script>
+
