@@ -82,6 +82,7 @@
     <Compile Include="ArticleManager.cs" />
     <Compile Include="AttachmentManager.cs" />
     <Compile Include="AuthorizeManager.cs" />
+    <Compile Include="Authorize_FastManager.cs" />
     <Compile Include="BankManager.cs" />
     <Compile Include="BillAccountManager.cs" />
     <Compile Include="BillContractManager.cs" />
