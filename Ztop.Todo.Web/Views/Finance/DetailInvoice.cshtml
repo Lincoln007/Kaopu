@@ -54,71 +54,81 @@
     </div>
     <div class="tab-pane fade" role="tabpanel" id="Contract">
         <table class="table table-bordered table-striped">
-            <tbody>
-                <tr>
-                    <th>合同编号</th>
-                    <td>@(invoice.Contract.Coding)</td>
-                    <th>填报人</th>
-                    <td>@(invoice.Contract.Creator)</td>
-                   
-                </tr>
-                <tr>
-                    <th>合同名称</th>
-                    <td colspan="3"><a href="/Finance/Detail?id=@(invoice.Contract.ID)">@(invoice.Contract.Name)</a></td>
-                </tr>
-                <tr>
-                    <th>对方单位</th>
-                    <td>@(invoice.Contract.Company)</td>
-                    <th>合同所属组织</th>
-                    <td>@(invoice.Contract.ZtopCompany.GetDescription())</td>
-                </tr>
-                <tr>
-                    <th>合同起始时间</th>
-                    <td>@(invoice.Contract.StartTime.ToLongDateString())</td>
-                    <th>合同结束时间</th>
-                    <td>@(invoice.Contract.EndTime.HasValue?invoice.Contract.EndTime.Value.ToLongDateString():"/")</td>
-                </tr>
-                <tr>
-                    <th>合同金额（元）</th>
-                    <td>@(invoice.Contract.Money)</td>
-                    <th>履约保证金（元）</th>
-                    <td>@(invoice.Contract.PerformanceBond)</td>
-                </tr>
-                <tr>
-                    <th>发票开具情况</th>
-                    <td><span class="label label-@(invoice.Contract.Status==ContractState.None?"default":invoice.Contract.Status==ContractState.ALL?"success":"info")">@(invoice.Contract.Status.GetDescription())</span></td>
-                    <th>到账情况</th>
-                    <td>
-                        <span class="label label-@(invoice.Contract.Recevied==Recevied.None?"default":invoice.Contract.Recevied==Recevied.Part?"info":"success")">@(invoice.Contract.Recevied.GetDescription())</span>
-                    </td>
-                </tr>
-                <tr>
-                    <th>付款方式</th>
-                    @if (!string.IsNullOrEmpty(invoice.Contract.PayWay))
-                    {
-                        <td colspan="3">
-                            @foreach(var item in invoice.Contract.PayWay.Replace("\r\n", ";").Split(';'))
-                            {
-                                <span>@(item)</span><br />
-                            }
+            @if (invoice.Contract != null)
+            {
+                <tbody>
+                    <tr>
+                        <th>合同编号</th>
+                        <td>@(invoice.Contract.Coding)</td>
+                        <th>填报人</th>
+                        <td>@(invoice.Contract.Creator)</td>
+
+                    </tr>
+                    <tr>
+                        <th>合同名称</th>
+                        <td colspan="3"><a href="/Finance/Detail?id=@(invoice.Contract.ID)">@(invoice.Contract.Name)</a></td>
+                    </tr>
+                    <tr>
+                        <th>对方单位</th>
+                        <td>@(invoice.Contract.Company)</td>
+                        <th>合同所属组织</th>
+                        <td>@(invoice.Contract.ZtopCompany.GetDescription())</td>
+                    </tr>
+                    <tr>
+                        <th>合同起始时间</th>
+                        <td>@(invoice.Contract.StartTime.ToLongDateString())</td>
+                        <th>合同结束时间</th>
+                        <td>@(invoice.Contract.EndTime.HasValue ? invoice.Contract.EndTime.Value.ToLongDateString() : "/")</td>
+                    </tr>
+                    <tr>
+                        <th>合同金额（元）</th>
+                        <td>@(invoice.Contract.Money)</td>
+                        <th>履约保证金（元）</th>
+                        <td>@(invoice.Contract.PerformanceBond)</td>
+                    </tr>
+                    <tr>
+                        <th>发票开具情况</th>
+                        <td><span class="label label-@(invoice.Contract.Status==ContractState.None?"default":invoice.Contract.Status==ContractState.ALL?"success":"info")">@(invoice.Contract.Status.GetDescription())</span></td>
+                        <th>到账情况</th>
+                        <td>
+                            <span class="label label-@(invoice.Contract.Recevied==Recevied.None?"default":invoice.Contract.Recevied==Recevied.Part?"info":"success")">@(invoice.Contract.Recevied.GetDescription())</span>
                         </td>
-                    }
-                </tr>
+                    </tr>
+                    <tr>
+                        <th>付款方式</th>
+                        @if (!string.IsNullOrEmpty(invoice.Contract.PayWay))
+                        {
+                            <td colspan="3">
+                                @foreach (var item in invoice.Contract.PayWay.Replace("\r\n", ";").Split(';'))
+                                {
+                                    <span>@(item)</span><br />
+                                }
+                            </td>
+                        }
+                    </tr>
+                    <tr>
+                        <th>相关文件</th>
+                        <td colspan="3">
+                            <table class="table">
+                                @foreach (var file in invoice.Contract.ContractFiles)
+                                {
+                                    <tr>
+                                        <td class="col-md-6"><a href="/@(file.SavePath)">@(file.FileName)</a></td>
+                                        <td>@(file.FileSize / 1024) kb</td>
+                                    </tr>
+                                }
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            }
+            else
+            {
                 <tr>
-                    <th>相关文件</th>
-                    <td colspan="3">
-                        <table class="table">
-                            @foreach(var file in invoice.Contract.ContractFiles)
-                            {
-                                <tr>
-                                    <td class="col-md-6"><a href="/@(file.SavePath)">@(file.FileName)</a></td>
-                                    <td>@(file.FileSize/1024) kb</td>
-                                </tr>
-                            }
-                        </table>
-                    </td>
+                    <td>当前发票未关联合同</td>
                 </tr>
-            </tbody>
+            }
+
         </table>
     </div>
 </div>

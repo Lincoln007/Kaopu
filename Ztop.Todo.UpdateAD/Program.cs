@@ -18,6 +18,7 @@ namespace Ztop.Todo.UpdateAD
         private static List<ADGroup> _parents { get; set; }
         static void Main(string[] args)
         {
+            Console.WriteLine(DateTime.Now.ToString());
             try
             {
                 _manager = new AD_GroupManager();
@@ -28,6 +29,7 @@ namespace Ztop.Todo.UpdateAD
                 Console.WriteLine(ex);
                 Console.ReadLine();
             }
+            Console.WriteLine(DateTime.Now.ToString());
 
            
         }

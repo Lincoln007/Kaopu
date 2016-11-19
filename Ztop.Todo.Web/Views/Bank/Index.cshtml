@@ -2,10 +2,12 @@
 @{
     ViewBag.Title = "对账系统";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    List<Bank> evaluations = ViewBag.Evaluations;
-    List<Bank> projections = ViewBag.Projections;
+    List<Bill_Head> evaluations = ViewBag.Evaluations;
+    List<Bill_Head> projections = ViewBag.Projections;
+    //List<Bank> evaluations = ViewBag.Evaluations;
+    //List<Bank> projections = ViewBag.Projections;
     List<Sheet> sheets = ViewBag.Sheets;
-    List<string> Districts = ViewBag.Districts;
+    //List<string> Districts = ViewBag.Districts;
 }
 
 <div class="col-md-12">
@@ -60,14 +62,14 @@
                         </td>
                     </tr>
                 }
-              
-                @foreach (var bank in evaluations)
+
+                @foreach (var head in evaluations)
                 {
                     <tr>
-                        <td><a href="/Bank/Detail?id=@(bank.ID)">@(bank.Year)年@(bank.Month)月</a></td>
+                        <td><a href="/Bank/DetailBill?id=@(head.ID)">@(head.Head)</a></td>
                     </tr>
-
                 }
+
             </table>
         </div>
     </div>
@@ -90,14 +92,12 @@
                         </td>
                     </tr>
                 }
-               
-                @foreach (var bank in projections)
-                {
-                    <tr>
-                        <td><a href="/Bank/Detail?id=@(bank.ID)">@(bank.Year)年@(bank.Month)月</a></td>
-                    </tr>
-
-                }
+               @foreach(var head in projections)
+               {
+                   <tr>
+                       <td><a href="/Bank/DetailBill?id=@(head.ID)">@(head.Head)</a></td>
+                   </tr>
+               }
             </table>
         </div>
     </div>
@@ -117,7 +117,7 @@
                     var year = int.Parse(query[0]);
                     var month = int.Parse(query[1]);
                     <tr>
-                        <td><a href="/Report/Collect/?year=@(year)&&month=@(month)">@(item)</a> </td>
+                        <td><a href="/Bank/CollectSheet?year=@(year)&&month=@(month)">@(item)</a> </td>
                     </tr>
                 }
             </table>
@@ -133,7 +133,7 @@
         </div>
         <div class="panel panel-body">
             <table class="table table-striped">
-                @foreach (var item in Districts)
+                @*@foreach (var item in Districts)
                 {
                     var query = item.Replace("年", ",").Replace("月", "").Split(',');
                     var year = int.Parse(query[0]);
@@ -142,7 +142,7 @@
                         <td><a href="/Bank/Collect?year=@(year)&&month=@(month)">@(item)</a></td>
                     </tr>
 
-                }
+                }*@
             </table>
         </div>
     </div>

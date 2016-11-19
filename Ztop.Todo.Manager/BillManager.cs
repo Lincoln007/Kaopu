@@ -164,13 +164,6 @@ namespace Ztop.Todo.Manager
                 db.SaveChanges();
             }
         }
-        public List<Bank> GetBanks(Company company)
-        {
-            using (var db = GetDbContext())
-            {
-                return db.Banks.Where(e => e.Company == company).ToList();
-            }
-        }
 
         public List<string> GetYearMonth()
         {

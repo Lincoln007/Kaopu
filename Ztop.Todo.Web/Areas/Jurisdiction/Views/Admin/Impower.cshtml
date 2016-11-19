@@ -2,10 +2,10 @@
 @{
     ViewBag.Title = "管理";
     Layout = "~/Areas/Jurisdiction/Views/Admin/_Layout.cshtml";
-    List<Ztop.Todo.Model.Authorize> list = ViewBag.List;
+   // List<Ztop.Todo.Model.Authorize> list = ViewBag.List;
     Dictionary<string, List<Ztop.Todo.ActiveDirectory.Group[]>> Reborn = ViewBag.Groups;
     List<Ztop.Todo.Model.ADGroup> ADGroup = ViewBag.ADGroup;
-    int SerialNumber = 1;
+    //int SerialNumber = 1;
 }
 
 <div style="position:relative;">
@@ -22,7 +22,11 @@
         }
     </div>
     <div class="tab-pane fade" id="List">
-        <table class="table table-bordered">
+        @{ 
+            Html.RenderAction("GetAuthorizes");
+        }
+
+        @*<table class="table table-bordered">
             <tr>
                 <th>序号</th>
                 <th style="width:100px;">管理者</th>
@@ -52,7 +56,7 @@
                     </td>
                 </tr>
              }
-        </table>
+        </table>*@
     </div>
 </div>
 

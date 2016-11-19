@@ -1,0 +1,58 @@
+﻿@{ 
+    Layout = null;
+    Invoice invoice = ViewBag.Invoice;
+}
+
+<h3 class="text-center">输入开具发票信息</h3>
+<form class="form-horizontal" action="/Finance/ImproveInvoice" method="post" name="Plus">
+    <div class="modal-body">
+        <input type="hidden" name="ID" value="@(invoice.ID)" />
+        <input type="hidden" name="State" value="@(InvoiceState.Have)" />
+        <div class="form-group">
+            <label class="control-label col-md-3">发票时间：</label>
+            <div class="col-md-8">
+                <input type="text" class="form-control" name="FillTime" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">发票编号：</label>
+            <div class="col-md-8">
+                <input type="text" class="form-control" name="Number" required />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3 col-xs-3 col-sm-3">备注：</label>
+            <div class="col-md-8 col-xs-8 col-sm-8">
+                <textarea class="form-control" name="Remark" rows="3"></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div class="form-group">
+            <div class="col-md-8 col-md-offset-3">
+                <button type="button" class="btn btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove"></i> 取消</button>
+                <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i> 补充</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+
+    $("input[name='FillTime']").datetimepicker({
+        timepicker: false,
+        format: 'Y-m-d'
+    });
+
+    $("[name='Plus']").submit(function () {
+        var data = $(this).serialize();
+        $.request("/Finance/ImproveInvoice", data, function (json) {
+            alert(json.content);
+            if (json.result == 1) {
+                location.href = "/Finance/InvoiceDetail?id=" +@(invoice.ID); 
+            }
+            return false;
+        });
+        return false;
+    });
+</script>

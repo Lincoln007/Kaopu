@@ -1,0 +1,26 @@
+﻿
+@{
+    ViewBag.Title = "报销情况";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<Sheet> sheets = ViewBag.Sheets;
+}
+
+<script src="~/Scripts/2/Chart.js"></script>
+
+<div class="row">
+    <div class="col-md-12">
+        <h2 class="text-center">@string.Format("杭州智拓{0}年{1}月报销统计图表",Request.QueryString["year"],Request.QueryString["month"])</h2>
+        <div class="row">
+            @{ Html.RenderAction("CollectCategory", new { Sheets = sheets });}
+        </div>
+        <hr />
+        <div class="row">
+            @{ Html.RenderAction("CollectUser", new { Sheets = sheets });}
+        </div>
+    </div>
+ 
+</div>
+
+
+
+

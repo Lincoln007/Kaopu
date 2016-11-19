@@ -5,7 +5,6 @@
     List<Sheet> sheets = ViewBag.Sheets;
     List<Sheet> Dailys = sheets.Where(e => e.Type == SheetType.Daily).ToList();//日常报销
     List<Sheet> Errands = sheets.Where(e => e.Type == SheetType.Errand).ToList();//差旅报销
-    //Dailys.Select(e=>e.Substances).Join()
     var str = Request.Path;
 }
 
@@ -75,17 +74,17 @@
             @foreach(var item in Dailys)
             {
                 <tr>
-                    <td>@(item.SerialNumber.Coding)</td>
+                    <td></td>
                     <td>@(item.Name)</td>
                     <td>@(item.Money)</td>
                     <td>@(item.CheckTime.HasValue?item.CheckTime.Value.ToString("yyyy-MM-dd"):"")</td>
                     <td>@(item.Type.GetDescription())</td>
                     <td>
 
-                        <a class="btn btn-default btn-xs" role="button" data-toggle="collapse" href="#collapseExample@(item.SerialNumber.Coding)" aria-expanded="false" aria-controls="collapseExample">
+                        <a class="btn btn-default btn-xs" role="button" data-toggle="collapse" href="#collapseExample@()" aria-expanded="false" aria-controls="collapseExample">
                             详情
                         </a>
-                        <div class="collapse" id="collapseExample@(item.SerialNumber.Coding)">
+                        <div class="collapse" id="collapseExample@()">
                             <table class="table table-bordered">
                                 @foreach (var entry in item.Substances)
                                 {
@@ -103,7 +102,7 @@
             @foreach(var item in Errands)
             {
                 <tr>
-                    <td>@(item.SerialNumber.Coding)</td>
+                    <td>@()</td>
                     <td>@(item.Name)</td>
                     <td>@(item.Money)</td>
                     <td>@(item.CheckTime.HasValue?item.CheckTime.Value.ToString("yyyy-MM-dd"):"")</td>

@@ -19,6 +19,13 @@ namespace Ztop.Todo.Manager
 
         public DbSet<UserGroup> UserGroups { get; set; }
 
+     
+
+        public DbSet<Notification> Notifications { get; set; }
+
+        public DbSet<Attachment> Attachments { get; set; }
+        #region 任务系统
+
         public DbSet<Model.Task> Tasks { get; set; }
 
         public DbSet<UserTask> UserTasks { get; set; }
@@ -32,21 +39,71 @@ namespace Ztop.Todo.Manager
         /// </summary>
         public DbSet<Comment> Comments { get; set; }
 
-        public DbSet<Notification> Notifications { get; set; }
+        #endregion
 
-        public DbSet<Attachment> Attachments { get; set; }
+        #region  权限系统
 
         public DbSet<Authorize> Authorizes { get; set; }
-        public DbSet<DataBook> DataBooks { get; set; }
-        public DbSet<Message> Messages { get; set; }
-        public DbSet<SerialNumber> SerialNumbers { get; set; }
+
+        public DbSet<Authorize_Fast> Authorize_Fasts { get; set; }
+
+        public DbSet<ADGroup> AD_Groups { get; set; }
+
+        #endregion
+
+        #region 报销系统
+
         public DbSet<Sheet> Sheets { get; set; }
+
         public DbSet<Substancs> Substances { get; set; }
+
         public DbSet<Verify> Verifys { get; set; }
+
         public DbSet<Record> Records { get; set; }
+
         public DbSet<Evection> Evections { get; set; }
+
         public DbSet<Errand> Errands { get; set; }
+
         public DbSet<Traffic> Traffics { get; set; }
+
+        #endregion
+
+        #region 项目管理系统
+
+        public DbSet<ContractArticle> ContractArticles { get; set; }
+        #endregion
+
+        #region 平板管理系统
+
+        public DbSet<iPad> iPads { get; set; }
+
+        public DbSet<iPadInvoice> iPad_Invoices { get; set; }
+
+        public DbSet<iPadRegister> iPad_Registers { get; set; }
+
+        public DbSet<Register_iPad> Register_iPads { get; set; }
+
+        public DbSet<iPadContract> iPad_Contracts { get; set; }
+
+        public DbSet<iPadAccount> iPad_Accounts { get; set; }
+
+        #endregion
+
+        #region  银行对账系统
+        public DbSet<BillOne> BillOnes { get; set; }
+
+        public DbSet<Bill_Head> Bill_Heads { get; set; }
+
+        #endregion
+     
+
+        public DbSet<DataBook> DataBooks { get; set; }
+
+        public DbSet<Message> Messages { get; set; }
+
+        public DbSet<SerialNumber> SerialNumbers { get; set; }
+     
         public DbSet<Bank> Banks { get; set; }
         public DbSet<Bill> Bills { get; set; }
         public DbSet<Contract> Contracts { get; set; }
@@ -56,15 +113,10 @@ namespace Ztop.Todo.Manager
         public DbSet<BillAccount> BillAccounts { get; set; }
         public DbSet<BillContract> BillContracts { get; set; }
         public DbSet<Article> Articles { get; set; }
-        public DbSet<ContractArticle> ContractArticles { get; set; }
-        public DbSet<iPad> iPads { get; set; }
-        public DbSet<iPadInvoice> iPad_Invoices { get; set; }
-        public DbSet<iPadRegister> iPad_Registers { get; set; }
-        public DbSet<Register_iPad> Register_iPads { get; set; }
-        public DbSet<iPadContract> iPad_Contracts { get; set; }
-        public DbSet<iPadAccount> iPad_Accounts { get; set; }
-        public DbSet<ADGroup> AD_Groups { get; set; }
-        public DbSet<BillOne> BillOnes { get; set; }
-        public DbSet<Bill_Head> Bill_Heads { get; set; }
+     
+       
+      
+      
+     
     }
 }

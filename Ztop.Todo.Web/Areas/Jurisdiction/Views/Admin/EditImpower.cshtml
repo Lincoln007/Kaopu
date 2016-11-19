@@ -24,12 +24,16 @@
                 $("#" + parent + " input[name='GroupName']").prop("checked", false);
             }
         });
+
+        $("#form-Edit").submit(function () {
+            $("#form-Edit button[type='submit']").attr("disabled", "false");
+        });
     });
 </script>
 
 <h3 class="text-center">编辑权限</h3>
 
-<form class="form-horizontal" method="post" action="/Admin/ImpowerEdit">
+<form class="form-horizontal" method="post" action="/Admin/ImpowerEdit" id="form-Edit">
     <div class="row">
         <div class="col-md-12">
             <div class="form-group">

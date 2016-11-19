@@ -37,12 +37,15 @@
                 });
             }
         });
+        $("form").submit(function () {
+            $("form button[type='submit']").attr("disabled", "false");
+        });
     })
 </script>
 
 
 
-<form class="form-horizontal" method="post" action="">
+<form class="form-horizontal" method="post" action="" >
     <div class="row">
         <div class="col-md-12">
             <div class="form-group">

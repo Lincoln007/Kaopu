@@ -6,11 +6,44 @@
     List<Invoice> invoices = ViewBag.Invoices;
     List<Article> Articles = ViewBag.Articles;
     List<Bill> Bills = ViewBag.Bills;
+    List<Invoice> None = ViewBag.None;
 }
 
 
 
 <h2 class="text-center">杭州智拓项目合同清单列表</h2>
+@if (None != null)
+{
+    <div class="row">
+        <div class="col-md-6 col-xs-6 col-sm-6"style="padding:5px;">
+            <div class="panel panel-danger">
+                <div class="panel panel-heading">
+                    <h3 class="panel-title text-center">待开发票列表</h3>
+                </div>
+                <div class="panel panel-body">
+                    <a href="/Finance/InvoiceSearch?Status=未开票" style="float:right;"><i class="glyphicon glyphicon-info-sign"></i>更多</a>
+                    <table class="table table-bordered">
+                        <tr>
+                            <th>申请时间</th>
+                            <th>申请人</th>
+                            <th>发票金额【元】</th>
+                            <th>对方单位</th>
+                        </tr>
+                        @foreach(var item in None)
+                        {
+                            <tr>
+                                <td><a href="/Finance/InvoiceDetail?id=@(item.ID)">@(item.Time.ToLongDateString())</a></td>
+                                <td>@(item.Applicant)</td>
+                                <td>@(item.Money)</td>
+                                <td>@(item.OtherSideCompany)</td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 <div class="row">
     <div class="col-md-6  col-xs-6 col-sm-6" style="padding:5px;">
         <div class="panel panel-yellow">

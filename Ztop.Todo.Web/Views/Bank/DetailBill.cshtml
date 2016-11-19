@@ -60,10 +60,12 @@
                             {
                                 <label class="label label-danger">@(item.Cost.Value.GetDescription())</label>
                             }
+
+                            <a data-toggle="modal" data-target="#Modal" href="/Bank/Classify?id=@(item.ID)" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i>修改类型</a>
                         }
                         else
                         {
-                            <a data-toggle="modal" data-target="#Modal" href="/Bank/Classify?id=@(item.ID)" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-tags"></i>归类</a>
+                            <a data-toggle="modal" data-target="#Modal" href="/Bank/Classify?id=@(item.ID)" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-tags"></i>归类</a>
                         }
                     </td>
                 </tr>

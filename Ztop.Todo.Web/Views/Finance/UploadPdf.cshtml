@@ -9,17 +9,15 @@
     <p>1、本次合同扫描件上传并且录入合同取回时间，请仔细核对上传的合同文件；</p>
     <p>2、如果之前上传错误合同扫描件，可以再次上传合同扫描件，但是会覆盖之前的文件,请谨慎操作；</p>
 </div>
-<form class="form-horizontal" method="post" action="/Finance/Retake" >
+<form class="form-horizontal" method="post" action="/Finance/Retake" enctype="multipart/form-data" >
     <div class="row">
         <div class="col-md-12">
             <input type="hidden" name="ID" value="@(contract.ID)" />
+            <input type="hidden" name="AddFolder" value="@(contract.Name)" />
             <div class="form-group">
                 <label class="control-label col-md-4">合同文件：</label>
                 <div class="col-md-7">
-                    <input type="file" name="file" class="form-control"  id="file"/>
-                </div>
-                <div class="col-md-7 col-md-offset-4" id="File-List">
-
+                    <input type="file" name="file" class="form-control" />
                 </div>
             </div>
             <div class="form-group">
@@ -45,7 +43,7 @@
 
 </div>
 
-<script>
+@*<script>
     var fileHtml = $("#SelectFile").html();
     $(function () {
         $("#file").setUpload("/File/Upload?todofile=@(TodoFile.Contract)&&addfolder=@(contract.Name)", function (json) {
@@ -58,4 +56,4 @@
             });
         });
     })
-</script>
+</script>*@

@@ -26,6 +26,21 @@ namespace Ztop.Todo.Model
         public List<ADGroup> Groups { get; set; }
 
     }
+    [Table("authorize_fasts")]
+    public class Authorize_Fast
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int ID { get; set; }
+        /// <summary>
+        /// AD_Group组ID
+        /// </summary>
+        public int GID { get; set; }
+        /// <summary>
+        /// 用户ID
+        /// </summary>
+        public int UID { get; set; }
+    }
 
     public enum AuthFilter
     {

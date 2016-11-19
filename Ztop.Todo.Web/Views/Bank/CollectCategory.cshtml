@@ -1,0 +1,43 @@
+﻿@{ 
+    Layout = null;
+    Dictionary<string, double> dict = ViewBag.Dict;
+}
+
+<div class="col-md-6">
+    <h3 class="text-center">各项报销统计表</h3>
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>报销类型</th>
+                <th>类别</th>
+                <th>金额【元】</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th rowspan="14">日常报销</th>
+            </tr>
+            @foreach(var entry in dict)
+            {
+                if (entry.Key == "出差报销")
+                {
+                    <tr>
+                        <td colspan="2">@(entry.Key)</td>
+                        <td>@(entry.Value)</td>
+                    </tr>
+                }
+                else
+                {
+                    <tr>
+                        <td>@(entry.Key)</td>
+                        <td>@(entry.Value)</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<div class="col-md-6">
+    <h3 class="text-center">各项报销统计图</h3>
+
+</div>

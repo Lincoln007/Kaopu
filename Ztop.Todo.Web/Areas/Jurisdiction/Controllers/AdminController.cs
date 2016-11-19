@@ -84,9 +84,18 @@ namespace Ztop.Todo.Web.Areas.Jurisdiction.Controllers
         public ActionResult Impower()
         {
             Core.AuthorizeManager.Add(Core.AuthorizeManager.Get(HttpContext));
-            ViewBag.List = Core.AuthorizeManager.GetList();
+           // ViewBag.List = Core.AuthorizeManager.GetList();
             ViewBag.ADGroup = Core.AD_groupManager.Get();
             //ViewBag.Groups = ADController.GetGroupDict().Sort().DictToTable();
+            return View();
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult GetAuthorizes()
+        {
+            ViewBag.List = Core.AuthorizeManager.GetList();
             return View();
         }
 

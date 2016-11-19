@@ -12,12 +12,21 @@ namespace Ztop.Todo.Web.Controllers
 {
     public class BankController : ControllerBase
     {
+        /// <summary>
+        /// 作用：查看银行对账清单列表以及报销统计情况
+        /// 作者：汪建龙
+        /// 编写时间：2016年11月19日10:35:42
+        /// </summary>
+        /// <returns></returns>
         // GET: Bank
         public ActionResult Index()
         {
-            ViewBag.Evaluations = Core.BillManager.GetBanks(Company.Evaluation);
-            ViewBag.Projections = Core.BillManager.GetBanks(Company.Projection);
-            ViewBag.Districts = Core.BillManager.GetYearMonth();
+            var heads = Core.Bill_OneManager.GetAllHeads();
+            ViewBag.Evaluations = heads.Where(e => e.Company == Company.Evaluation).ToList();
+            ViewBag.Projections = heads.Where(e => e.Company == Company.Projection).ToList();
+            //ViewBag.Evaluations = Core.BillManager.GetBanks(Company.Evaluation);
+            //ViewBag.Projections = Core.BillManager.GetBanks(Company.Projection);
+           // ViewBag.Districts = Core.BillManager.GetYearMonth();
             ViewBag.Sheets = Core.SheetManager.Collect();
             return View();
         }
@@ -210,7 +219,16 @@ namespace Ztop.Todo.Web.Controllers
             ViewBag.Errors = errors;
             return View();
         }
-
+        /// <summary>
+        /// 作用：用户在上传Excel文件之后，对读取到的账单进行保存到数据库中
+        /// 作者：汪建龙
+        /// 编写时间：2016年11月19日10:28:07 
+        /// </summary>
+        /// <param name="year"></param>
+        /// <param name="month"></param>
+        /// <param name="company"></param>
+        /// <param name="edit"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult SaveInput(int year,int month,Company company,bool edit=false)
         {
@@ -230,22 +248,41 @@ namespace Ztop.Todo.Web.Controllers
             return SuccessJsonResult(hid);
 
         }
-
-
+        /// <summary>
+        /// 作用：查看某年某月的银行对账单
+        /// 作者：汪建龙
+        /// 编写时间：2016年11月19日10:28:43
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult DetailBill(int id)
         {
             var bill_heads = Core.Bill_OneManager.GetHead(id);
             ViewBag.Heads = bill_heads;
             return View();
         }
-
+        /// <summary>
+        /// 作用：对某一笔账单进行归类
+        /// 作者：汪建龙
+        /// 编写时间：2016年11月19日10:29:14
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult Classify(int id)
         {
             var billone = Core.Bill_OneManager.GetBillOne(id);
             ViewBag.BillOne = billone;
             return View();
         }
-
+        /// <summary>
+        /// 作用：在对账单归类之后，进行POST保存
+        /// 作者：汪建龙
+        /// 编写时间：2016年11月19日10:29:46 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="cost"></param>
+        /// <param name="category"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult Classify(int id,Cost cost,Category? category)
         {
@@ -261,6 +298,78 @@ namespace Ztop.Todo.Web.Controllers
             return SuccessJsonResult(entry.HID);
         }
 
+        /// <summary>
+        /// 作用：查看某年某月的报销情况
+        /// 作者：汪建龙
+        /// 编写时间：2016年11月19日10:30:53
+        /// </summary>
+        /// <param name="year"></param>
+        /// <param name="month"></param>
+        /// <returns></returns>
+        public ActionResult CollectSheet(int year,int month)
+        {
+            var sheets = Core.SheetManager.GetSheets(year, month);
+            ViewBag.Sheets = sheets;
+            return View();
+        }
+
+        /// <summary>
+        /// 作用：统计各个类别报销情况
+        /// 作者：汪建龙
+        /// 编写时间：2016年11月19日11:23:27
+        /// </summary>
+        /// <param name="sheets"></param>
+        /// <returns></returns>
+        public ActionResult CollectCategory(List<Sheet> sheets)
+        {
+            var dailys = sheets.Where(e => e.Type == SheetType.Daily).ToList();
+            //ViewBag.Dailys = dailys;
+            var substances = new List<Substancs>();
+            foreach (var item in dailys)
+            {
+                substances.AddRange(item.Substances);
+            }
+            //ViewBag.Substances = substances;
+            var dict = new Dictionary<string, double>();
+            foreach(Category category in Enum.GetValues(typeof(Category)))
+            {
+                var sum = substances.Where(e => e.Category == category).Sum(e => e.Price);
+                var key = category.GetDescription();
+                if (!dict.ContainsKey(key))
+                {
+                    dict.Add(key, sum);
+                }
+            }
+            var errands= sheets.Where(e => e.Type == SheetType.Errand).ToList();
+            dict.Add("出差报销", errands.Sum(e => e.Money));
+            ViewBag.Dict = dict;
+            //ViewBag.Errands = errands;
+            return View();
+        }
+        /// <summary>
+        /// 作用：统计用户的报销金额
+        /// 作者：汪建龙
+        /// 编写时间：2016年11月19日11:37:24
+        /// </summary>
+        /// <param name="sheets"></param>
+        /// <returns></returns>
+        public ActionResult CollectUser(List<Sheet> sheets)
+        {
+            var dict = sheets.GroupBy(e => e.Name).ToDictionary(e => e.Key, e => e.Sum(k => k.Money)).OrderByDescending(e=>e.Value).ToDictionary(e=>e.Key,e=>e.Value);
+            ViewBag.Dict = dict;
+            return View();
+        }
+
+        /// <summary>
+        /// 作用：
+        /// </summary>
+        /// <param name="Dict"></param>
+        /// <returns></returns>
+        public ActionResult CollectChart(Dictionary<object,object> Dict)
+        {
+            ViewBag.Dict = Dict;
+            return View();
+        }
         #endregion
     }
 }

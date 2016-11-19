@@ -161,5 +161,19 @@ namespace Ztop.Todo.Manager
 
             return null;
         }
+
+        /// <summary>
+        /// 作用：获取所有账单头
+        /// 作者：汪建龙
+        /// 编写时间：2016年11月18日17:31:57
+        /// </summary>
+        /// <returns></returns>
+        public List<Bill_Head> GetAllHeads()
+        {
+            using (var db = GetDbContext())
+            {
+                return db.Bill_Heads.ToList().OrderByDescending(e=>e.Head).ToList();
+            }
+        }
     }
 }

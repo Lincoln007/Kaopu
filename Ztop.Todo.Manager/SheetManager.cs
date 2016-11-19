@@ -295,7 +295,12 @@ namespace Ztop.Todo.Manager
                 return db.Sheets.Where(e => e.CheckTime.HasValue).Where(e => e.CheckTime.Value.Year == year && e.CheckTime.Value.Month == month).ToList();
             }
         }
-
+        /// <summary>
+        /// 作用：获取已经完成报销以及通过财务审核的报销单列表
+        /// 作者：汪建龙
+        /// 备注时间：2016年11月19日10:07:40
+        /// </summary>
+        /// <returns></returns>
         public List<Sheet> Collect()
         {
             using (var db = GetDbContext())
@@ -303,6 +308,7 @@ namespace Ztop.Todo.Manager
                 return db.Sheets.Where(e => e.Status == Status.Examined || e.Status == Status.Filing).Where(e => e.CheckTime.HasValue).ToList();
             }
         }
+
         public List<Sheet> GetSheets(SheetQueryParameter parameter)
         {
             var list = GetSheets();

@@ -1,0 +1,38 @@
+﻿@{ 
+    Layout = null;
+    List<Ztop.Todo.Model.Authorize> list = ViewBag.List;
+    int SerialNumber = 1;
+}
+
+<table class="table table-bordered">
+    <tr>
+        <th>序号</th>
+        <th style="width:100px;">管理者</th>
+        <th>管理组名</th>
+        <th>备注</th>
+    </tr>
+    @foreach (var item in list)
+            {
+        <tr>
+            <td>@(SerialNumber++)</td>
+            <td>@(item.Manager)</td>
+            <td>
+                @if (item.Groups != null)
+                {
+                    foreach (var entry in item.Groups)
+                    {
+                        <span class="label label-primary" style="line-height:250%">@(entry.Name)</span>
+                    }
+                }
+            </td>
+            <td>
+                <div class="btn-group btn-group-sm">
+                    <a href="/Jurisdiction/Admin/EditImpower?id=@(item.ID)" class="btn btn-success"><i class="glyphicon glyphicon-edit"></i>编辑权限</a>
+                    <a href="/Jurisdiction/Admin/DeleteImpower?id=@(item.ID)" class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i>删除</a>
+                </div>
+
+            </td>
+        </tr>
+    }
+</table>
+

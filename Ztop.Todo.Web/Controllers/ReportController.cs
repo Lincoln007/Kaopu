@@ -454,6 +454,14 @@ namespace Ztop.Todo.Web.Controllers
             return Json(List,JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 作用：查看某年某月的报销情况
+        /// 作者：汪建龙
+        /// 备注时间：2016年11月19日10:09:40
+        /// </summary>
+        /// <param name="year"></param>
+        /// <param name="month"></param>
+        /// <returns></returns>
         public ActionResult Collect(int year,int month)
         {
             ViewBag.Sheets = Core.SheetManager.GetSheets(year, month);

@@ -144,7 +144,7 @@
         @foreach(var invoice in results)
         {
             <tr>
-                <td>@(invoice.Time.ToLongDateString())</td>
+                <td><a href="/Finance/InvoiceDetail?id=@(invoice.ID)">@(invoice.Time.ToLongDateString())</a> </td>
                 <td>@(invoice.Applicant)</td>
                 <td>@(invoice.GroupName)</td>
                 <td>@(invoice.ZtopCompany.GetDescription())</td>

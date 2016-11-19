@@ -43,10 +43,7 @@ namespace Ztop.Todo.Manager
         public NotificationManager NotificationManager { get; private set; }
 
         public QueryManager QueryManager { get; private set; }
-        public SerialNumberManager SerialNumberManager { get; private set; }
-        public SheetManager SheetManager { get; private set; }
-        public SubstancsManager SubstanceManager { get; private set; }
-        public VerifyManager VerifyManager { get; private set; }
+       
         public BillManager BillManager { get; private set; }
         public ContractManager ContractManager { get; private set; }
         public InvoiceManager InvoiceManager { get; private set; }
@@ -56,14 +53,55 @@ namespace Ztop.Todo.Manager
         public ArticleManager ArticleManager { get; private set; }
         public ContractArticleManager ContractArticleManager { get; private set; }
         public BillContractManager BillContractManager { get; private set; }
-        public iPadManager iPadManager { get; private set; }
-        public iPad_InvoiceManager iPad_InvoiceManager { get; private set; }
-        public iPad_RegisterManager iPad_registerManager { get; private set; }
-        public Register_iPadManager Register_iPadManager { get; private set; }
-        public iPad_ContractManager iPad_ContractManager { get; private set; }
-        public iPad_AccountManager iPad_AccountManager { get; private set; }
+      
+
+
+
+        #region  权限管理系统
+
         public AD_GroupManager AD_groupManager { get; private set; }
+
+        public Authorize_FastManager Authorize_FastManager { get; private set; }
+        #endregion
+
+        #region  银行对账系统
+
         public Bill_OneManager Bill_OneManager { get; private set; }
 
+        #endregion
+
+        #region 平板管理系统
+
+        public iPadManager iPadManager { get; private set; }
+
+        public iPad_InvoiceManager iPad_InvoiceManager { get; private set; }
+
+        public iPad_RegisterManager iPad_registerManager { get; private set; }
+
+        public Register_iPadManager Register_iPadManager { get; private set; }
+
+        public iPad_ContractManager iPad_ContractManager { get; private set; }
+
+        public iPad_AccountManager iPad_AccountManager { get; private set; }
+
+        #endregion
+
+        #region 任务系统
+
+
+
+        #endregion
+
+        #region  报销系统
+
+        public SerialNumberManager SerialNumberManager { get; private set; }
+
+        public SheetManager SheetManager { get; private set; }
+
+        public SubstancsManager SubstanceManager { get; private set; }
+
+        public VerifyManager VerifyManager { get; private set; }
+
+        #endregion
     }
 }

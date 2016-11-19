@@ -1,0 +1,182 @@
+﻿
+@{
+    ViewBag.Title = "发票申请信息查看";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    Invoice invoice = ViewBag.Invoice;
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="col-md-10 col-md-offset-1">
+            <h3 class="text-center">发票申请信息</h3>
+            <hr />
+            @if (Identity.Finance)
+            {
+                if (invoice.State == InvoiceState.None)
+                {
+                    <a data-toggle="modal" data-target="#Modal" href="/Finance/SuppleMentary?id=@(invoice.ID)" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i>补充发票信息</a>
+                }
+                else
+                {
+                    <a data-toggle="modal" data-target="#Modal" href="/Finance/EditInvoice?id=@(invoice.ID)" class="btn btn-primary"><i class="glyphicon glyphicon-edit"></i>编辑</a>
+                    <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#Change@(invoice.Coding)"><i class="glyphicon glyphicon-edit"></i>修改发票状态</a>
+                    <div class="modal fade" id="Change@(invoice.Coding)" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title">编辑发票信息</h4>
+                                </div>
+                                <form class="form-horizontal" action="/Finance/Change" method="post" name="Change">
+                                    <div class="modal-body">
+                                        <input type="hidden" name="ID" value="@(invoice.ID)" />
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3">发票状态：</label>
+                                            <div class="col-md-8">
+                                                @foreach (InvoiceState state in Enum.GetValues(typeof(InvoiceState)))
+                                                {
+                                                    if (state == InvoiceState.None)
+                                                    {
+                                                        continue;
+                                                    }
+                                                    <label class="radio-inline">
+                                                        <input type="radio" name="State" value="@(state)" @(invoice.State == state ? "checked=checked" : "") />@(state.GetDescription())
+                                                    </label>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <div class="form-group">
+                                            <div class="col-md-8 col-md-offset-3">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove"></i> 取消</button>
+                                                <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i> 补充</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            <button type="button" class="btn btn-default" onclick="history.back();"><i class="glyphicon glyphicon-arrow-left"></i>返回</button>
+            <hr />
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <td colspan="4" class="text-center">基本信息</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>开票编号</th>
+                        <td>@(invoice.Coding)</td>
+                        <th>开票时间</th>
+                        <td>@(invoice.Time.ToLongDateString())</td>
+                    </tr>
+                    <tr>
+                        <th>开票申请人</th>
+                        <td>@(invoice.Applicant)</td>
+                        <th>开票单位</th>
+                        <td>@(invoice.ZtopCompany.GetDescription())</td>
+                    </tr>
+                    <tr>
+                        <th>对方单位</th>
+                        <td>@(invoice.OtherSideCompany)</td>
+                        <th>发票金额【元】</th>
+                        <td>@(invoice.Money)</td>
+                    </tr>
+                    <tr>
+                        <th>发票内容</th>
+                        <td colspan="3">@(invoice.Content)</td>
+                    </tr>
+                    <tr>
+                        <th>发票开出时间</th>
+                        <td>@(invoice.FillTime.HasValue?invoice.FillTime.Value.ToLongDateString():"未开票")</td>
+                        <th>发票编号</th>
+                        <td>@(invoice.Number)</td>
+                    </tr>
+                    <tr>
+                        <th>发票状态</th>
+                        <td>
+                            @switch (invoice.State)
+                            {
+                                case InvoiceState.None:
+                                    <label class="label label-default">@(invoice.State.GetDescription())</label>
+                                    break;
+                                case InvoiceState.Have:
+                                    <label class="label label-success">@(invoice.State.GetDescription())</label>
+                                    break;
+                                case InvoiceState.Back:
+                                    <label class="label label-warning">@(invoice.State.GetDescription())</label>
+                                    break;
+                                case InvoiceState.Red:
+                                    <label class="label label-danger">@(invoice.State.GetDescription())</label>
+                                    break;
+                            }
+                        </td>
+                        <th>备注</th>
+                        <td>@(invoice.Remark)</td>
+                    </tr>
+                </tbody>
+                <thead>
+                    <tr>
+                        <td colspan="4" class="text-center">合同信息</td>
+                    </tr>
+                </thead>
+                @if (invoice.Contract != null)
+                {
+                    <tbody>
+                        <tr>
+                            <th>合同名称</th>
+                            <td colspan="3"><a href="/Finance/Detail?id=@(invoice.Contract.ID)">@(invoice.Contract.Name)</a> </td>
+                        </tr>
+                        <tr>
+                            <th>合同流水号</th>
+                            <td>@(invoice.Contract.Coding)</td>
+                            <th>对方单位</th>
+                            <td>@(invoice.Contract.Company)</td>
+                        </tr>
+                        <tr>
+                            <th>创建人员</th>
+                            <td>@(invoice.Contract.Creator)</td>
+                            <th>履约保证金</th>
+                            <td>@(invoice.Contract.PerformanceBond)</td>
+                        </tr>
+                        <tr>
+                            <th>合同流转时间</th>
+                            <td>@(invoice.Contract.StartTime.ToLongDateString())</td>
+                            <th>合同取回时间</th>
+                            <td>@(invoice.Contract.EndTime.HasValue ? invoice.Contract.EndTime.Value.ToLongDateString() : "/")</td>
+                        </tr>
+                    </tbody>
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4"><label class="label label-danger">当前发票未关联合同</label></td>
+                    </tr>
+                }
+
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true" id="Modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $("#Modal").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+    });
+</script>
+

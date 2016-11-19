@@ -108,6 +108,7 @@ namespace Ztop.Todo.Manager
                 var entry = db.Authorizes.Find(authorize.ID);
                 if (entry != null)
                 {
+                    
                     db.Entry(entry).CurrentValues.SetValues(authorize);
                     db.SaveChanges();
                 }

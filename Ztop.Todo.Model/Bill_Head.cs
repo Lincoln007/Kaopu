@@ -29,6 +29,14 @@ namespace Ztop.Todo.Model
         public Company Company { get; set; }
         [NotMapped]
         public List<BillOne> Ones { get; set; }
+        [NotMapped]
+        public string Head
+        {
+            get
+            {
+                return string.Format("{0}年{1}月", Year, Month);
+            }
+        }
     }
 
     /// <summary>

@@ -1,0 +1,84 @@
+﻿@{ 
+    Layout = null;
+    Dictionary<string, double> dict = ViewBag.Dict;
+    var userLabels = dict.Select(e => e.Key).ToArray();
+    var money = dict.Select(e => e.Value).ToArray();
+}
+
+<div class="col-md-4">
+    <h3 class="text-center">用户报销金额统计表</h3>
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>用户名</th>
+                <th>合计金额【元】</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var entry in dict)
+            {
+                <tr>
+                    <td>@(entry.Key)</td>
+                    <td>@(entry.Value)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div class="col-md-8">
+    <h3 class="text-center">用户报销金额统计图</h3>
+    <div class="col-md-12">
+        <canvas id="Chart-User"></canvas>
+    </div>
+</div>
+
+<script >
+    //Chart.defaults.global.legend.position = 'bottom';
+    var colors = ["#FF6384", "#4BC0C0", "#FFCE56", "#E7E9ED", "#36A2EB", "#F38630", "#E0E4CC", "#69D2E7", "#F7464A", "#E2EAE9", "#D4CCC5", "#949FB1", "#4D5360"];
+
+    function getChartColors(len) {
+        if (len >= colors.length) {
+            return colors;
+        }
+        return colors.slice(0, len);
+    }
+
+    function getChartColor(i) {
+        if (i >= colors.length) {
+            return colors[i % colors.length];
+        }
+        return colors[i];
+    }
+
+    function getChartColors2(len){
+        if(len>=colors.length){
+            var newColor=new Array();
+            for(var i=0;i<len;i++){
+                newColor[i]=getChartColor(i);
+            }
+            return newColor;
+        }
+        return colors;
+    }
+</script>
+
+
+<script>
+    $(function () {
+        var labels=@Html.Raw(userLabels.ToJson()) ||[];
+        var values=@Html.Raw(money.ToJson())||[];
+        var ctx = document.getElementById("Chart-User");
+       
+        var myChart = new Chart(ctx,{
+            type:'pie',
+            data:{
+                labels:labels,
+                datasets:[{
+                    data:values,
+                    backgroundColor:getChartColors2(values.length)
+                }]
+            }
+        });
+           
+    });
+</script>

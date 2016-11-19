@@ -49,11 +49,11 @@ namespace Ztop.Todo.Model
         [Column(TypeName ="int")]
         public ZtopCompany ZtopCompany { get; set; }
         /// <summary>
-        /// 合同起始时间
+        /// 合同起始时间->合同流转时间
         /// </summary>
         public DateTime StartTime { get; set; }
         /// <summary>
-        /// 合同结束时间
+        /// 合同结束时间->合同取回时间
         /// </summary>
         public DateTime? EndTime { get; set; }
         /// <summary>

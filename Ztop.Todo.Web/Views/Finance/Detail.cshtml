@@ -13,7 +13,7 @@
         if (!contract.Archived)
         {
             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#Apply"><i class="glyphicon glyphicon-pencil"></i> 申请开具发票</button>
-            if (Identity.Market || Identity.Project)
+            if (Identity.Market || Identity.Project||Identity.Admin)
             {
                 <a href="/Finance/CreateContract?id=@(contract.ID)" class="btn btn-info"> <i class="glyphicon glyphicon-edit"></i>编辑合同</a>
                 <button type="button" class="btn btn-danger" tabindex="@(contract.ID)"><i class="glyphicon glyphicon-remove"></i>删除合同</button>
@@ -362,50 +362,6 @@
                                         }
                                         if (Identity.Finance)
                                         {
-                                            <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#Add@(invoice.ID)"><i class="glyphicon glyphicon-plus"></i>补充发票信息</button>
-                                            <div class="modal fade" tabindex="-1" role="dialog" id="Add@(invoice.ID)" aria-labelledby="myModalLabel">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                            <h4 class="modal-title">输入开具发票信息</h4>
-                                                        </div>
-                                                        <form class="form-horizontal" action="/Finance/ImproveInvoice" method="post" name="Plus">
-                                                            <div class="modal-body">
-                                                                <input type="hidden" name="ID" value="@(invoice.ID)" />
-                                                                <input type="hidden" name="State" value="@(InvoiceState.Have)" />
-                                                                <div class="form-group">
-                                                                    <label class="control-label col-md-3">发票时间：</label>
-                                                                    <div class="col-md-8">
-                                                                        <input type="text" class="form-control" name="FillTime" />
-                                                                    </div>
-                                                                </div>
-                                                                <div class="form-group">
-                                                                    <label class="control-label col-md-3">发票编号：</label>
-                                                                    <div class="col-md-8">
-                                                                        <input type="text" class="form-control" name="Number" required />
-                                                                    </div>
-                                                                </div>
-                                                                <div class="form-group">
-                                                                    <label class="control-label col-md-3 col-xs-3 col-sm-3">备注：</label>
-                                                                    <div class="col-md-8 col-xs-8 col-sm-8">
-                                                                        <textarea class="form-control" name="Remark" rows="3"></textarea>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <div class="form-group">
-                                                                    <div class="col-md-8 col-md-offset-3">
-                                                                        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove"></i> 取消</button>
-                                                                        <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i> 补充</button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </form>
-
-                                                    </div>
-                                                </div>
-                                            </div>
                                         }
 
                                     }else if (invoice.State == InvoiceState.Have)
@@ -574,9 +530,11 @@
         });
 
         $("#from-invoice").submit(function () {
+            $("#from-invoice button[type='submit']").attr("disabled","false");
             var data = $(this).serialize();
             $.request("/Finance/SaveInvoice", data, function (json) {
                 alert(json.content);
+                $("#from-invoice button[type='submit']").removeAttr("disabled");
                 if (json.result == 1) {
                     location.href = "/Finance/Detail?id=" + json.data.CID;
                 }

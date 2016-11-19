@@ -218,9 +218,11 @@
     <Content Include="Excels\Bank.xls" />
     <Content Include="Excels\Report.xls" />
     <Content Include="Areas\Jurisdiction\Views\Admin\EditImpower.cshtml" />
+    <Content Include="Areas\Jurisdiction\Views\Admin\GetAuthorizes.cshtml" />
     <None Include="Properties\PublishProfiles\TODO.pubxml" />
     <None Include="Scripts\jquery-1.9.1.intellisense.js" />
     <Content Include="ProjectInfo.xml" />
+    <Content Include="Scripts\2\Chart.js" />
     <Content Include="Scripts\BarBase.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -326,6 +328,11 @@
     <Content Include="Views\Authority\GetGroup.cshtml" />
     <Content Include="Views\Bank\DetailBill.cshtml" />
     <Content Include="Views\Bank\Classify.cshtml" />
+    <Content Include="Views\Bank\CollectSheet.cshtml" />
+    <Content Include="Views\Bank\CollectCategory.cshtml" />
+    <Content Include="Views\Bank\CollectUser.cshtml" />
+    <Content Include="Views\Finance\InvoiceDetail.cshtml" />
+    <Content Include="Views\Finance\SuppleMentary.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

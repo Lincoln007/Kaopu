@@ -17,8 +17,12 @@ namespace Ztop.Todo.Web.Controllers
         {
             ViewBag.List = Core.ContractManager.Search(new ContractParameter() { Deleted = false, UserName = Identity.Project ? Identity.Name : null });
             ViewBag.Bills = Core.BillManager.Search(new BillParamter() { Page = new PageParameter(1, 20) });
-            ViewBag.Invoices = Core.InvoiceManager.Search(new InvoiceParameter() { Status = InvoiceState.Have, Instance = false });
+            ViewBag.Invoices = Core.InvoiceManager.Search(new InvoiceParameter() { Status = InvoiceState.Have, Instance = false,Page=new PageParameter(1,20) });
             ViewBag.Articles = Core.ArticleManager.Search(new ArticleParameter() { Deleted=false, Page = new PageParameter(1, 20) });
+            if (Identity.Finance)
+            {
+                ViewBag.None = Core.InvoiceManager.Search(new InvoiceParameter() { Status = InvoiceState.None, Instance = false,Page=new PageParameter(1,20) });
+            }
             return View();
         }
 
@@ -45,7 +49,7 @@ namespace Ztop.Todo.Web.Controllers
         [HttpPost]
         public ActionResult SaveContract(Contract contract,int[] articleid,string articlename, int[] leaves)
         {
-            if (string.IsNullOrEmpty(contract.Number)||!Regex.IsMatch(contract.Number, @"^[0-9]{7}$"))
+            if (!string.IsNullOrEmpty(contract.Number)&&!Regex.IsMatch(contract.Number, @"^[0-9]{7}$"))
             {
                 throw new ArgumentException("请核对登记编号，登记编号是7位数字！");
             }
@@ -73,6 +77,13 @@ namespace Ztop.Todo.Web.Controllers
             return RedirectToAction("Detail", new { id = id });
         }
 
+        /// <summary>
+        /// 作用：录入合同扫描件
+        /// 作者：汪建龙
+        /// 编写时间：2016年11月19日16:19:49
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult UploadPdf(int id)
         {
             var contract = Core.ContractManager.Get(id);
@@ -80,15 +91,66 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
 
+        /// <summary>
+        /// 作用：用户上传合同扫描件之后POST
+        /// 作者：汪建龙
+        /// 编写时间：2016年11月19日16:38:34
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="addfolder"></param>
+        /// <returns></returns>
         [HttpPost]
-        public ActionResult Retake(int id,string authfile,string authpath)
+        public ActionResult Retake(int id,string addfolder)
         {
-            if (!Core.ContractManager.Retake(id, authpath))
+            if (Request.Files.Count == 0)
+            {
+                throw new ArgumentException("请选择上传文件");
+            }
+            var file = HttpContext.Request.Files[0];
+            var fileName = file.FileName;
+            if (string.IsNullOrEmpty(fileName))
+            {
+                throw new ArgumentException("请选择上传文件");
+            }
+            var ext = System.IO.Path.GetExtension(fileName);
+            var saveFilePath = string.Empty;
+            if (ext != ".pdf")
+            {
+                throw new ArgumentException("请上传pdf文件");
+            }
+            saveFilePath = FileManager.UploadContract(file, addfolder);
+            if (!Core.ContractManager.Retake(id, saveFilePath))
             {
                 throw new ArgumentException("上传合同文件失败！");
             }
 
             return RedirectToAction("Detail", new { id });
+        }
+
+        /// <summary>
+        /// 作用：查看发票申请开具信息界面
+        /// 作者：汪建龙
+        /// 编写时间：2016年11月19日16:43:50
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult InvoiceDetail(int id)
+        {
+            var invoice = Core.InvoiceManager.GetFullStance(id);
+            ViewBag.Invoice = invoice;
+            return View();
+        }
+
+        /// <summary>
+        /// 作用：俞海峰 开具发票之后，将发票信息录入界面
+        /// 作者：汪建龙
+        /// 编写时间：2016年11月19日17:41:01
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult SuppleMentary(int id)
+        {
+            ViewBag.Invoice = Core.InvoiceManager.Get(id);
+            return View();
         }
 
         public ActionResult Detail(int id,int ?notId=null)
@@ -130,21 +192,27 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
         
-
+        /// <summary>
+        /// 作用：用户申请开票 POST之后，保存
+        /// 作者：汪建龙
+        /// 编写时间：2016年11月19日18:06:10
+        /// </summary>
+        /// <param name="invoice"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult SaveInvoice(Invoice invoice)
         {
             var contract = Core.ContractManager.Get(invoice.CID);
-            if (contract == null)
+            if (contract != null)//如果发票有关联合同，则需要验证合同金额和发票总额
             {
-                return ErrorJsonResult("未找到相关合同信息");
+                var list = Core.InvoiceManager.GetByCID(contract.ID);
+                var sum = list.Sum(e => e.Money) + invoice.Money;
+                if (sum > contract.Money)
+                {
+                    return ErrorJsonResult("发票累计金额超出合同金额");
+                }
             }
-            var list = Core.InvoiceManager.GetByCID(contract.ID);
-            var sum = list.Sum(e => e.Money) + invoice.Money;
-            if (sum > contract.Money)
-            {
-                return ErrorJsonResult("发票累计金额超出合同金额");
-            }
+           
             var id = Core.InvoiceManager.Save(invoice);
             Core.NotificationManager.Add(invoice);
             return SuccessJsonResult(invoice);
