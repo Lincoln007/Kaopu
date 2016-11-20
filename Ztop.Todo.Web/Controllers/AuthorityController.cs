@@ -107,8 +107,22 @@ namespace Ztop.Todo.Web.Controllers
             return HtmlResult(html);
         }
 
+        /// <summary>
+        /// 作用：通过真实名字  获取该用户管理的权限组界面
+        /// 作者：汪建龙
+        /// 编写时间：2016年11月20日13:51:03
+        /// </summary>
+        /// <param name="boss">管理者全名，如：袁洋</param>
+        /// <returns></returns>
         public ActionResult GetGroup(string boss)
         {
+            var fasts = Core.AuthorizeManager.GetFGUV(boss);
+            if (fasts != null)
+            {
+                /*
+                 * 2016-11-20 未完待续
+                */
+            }
             var authorize= Core.AuthorizeManager.Get(boss);
             if (authorize!=null&&authorize.Groups != null)
             {

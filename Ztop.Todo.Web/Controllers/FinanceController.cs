@@ -138,6 +138,14 @@ namespace Ztop.Todo.Web.Controllers
         {
             var invoice = Core.InvoiceManager.GetFullStance(id);
             ViewBag.Invoice = invoice;
+            /*
+             * 如果是财务查看发票信息，如俞海峰查看
+             * 将对当前发票申请提示进行已读操作
+             */
+            if (Identity.Finance)
+            {
+                Core.NotificationManager.FlagInvoiceRead(id);
+            }
             return View();
         }
 

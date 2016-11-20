@@ -38,7 +38,13 @@ namespace Ztop.Todo.Manager
             }
             return Cache.HGet<User>(_userCacheKey, id.ToString());
         }
-
+        /// <summary>
+        /// 作用：通过登录名获取用户信息
+        /// 作者：汪建龙
+        /// 编写时间：2016年11月20日13:30:48
+        /// </summary>
+        /// <param name="username">登录名  如wjl,ty</param>
+        /// <returns></returns>
         public User GetUser(string username)
         {
             if (string.IsNullOrEmpty(username))
@@ -59,7 +65,7 @@ namespace Ztop.Todo.Manager
         /// 作者：汪建龙
         /// 编写时间：2016年11月3日10:47:33
         /// </summary>
-        /// <param name="realname"></param>
+        /// <param name="realname">真实名称，如：汪建龙</param>
         /// <returns></returns>
         public User UserGet(string realname)
         {
@@ -178,7 +184,7 @@ namespace Ztop.Todo.Manager
             }
             else
             {
-                if (user.Managers.Count != 0)
+                if (user.Managers!=null&& user.Managers.Count != 0)
                 {
                     user.Type = GroupType.Manager;
                 }

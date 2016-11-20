@@ -1,6 +1,7 @@
 ﻿@{ 
     Layout = null;
-    List<Ztop.Todo.Model.Authorize> list = ViewBag.List;
+    Dictionary<string, List<string>> dict = ViewBag.Dict;
+   // List<Ztop.Todo.Model.Authorize> list = ViewBag.List;
     int SerialNumber = 1;
 }
 
@@ -11,7 +12,29 @@
         <th>管理组名</th>
         <th>备注</th>
     </tr>
-    @foreach (var item in list)
+    @foreach(var entry in dict)
+    {
+        <tr>
+            <td>@(SerialNumber++)</td>
+            <td>@(entry.Key)</td>
+            <td>
+                @if (entry.Value != null)
+                {
+                    foreach (var item in entry.Value)
+                    {
+                        <span class="label label-primary" style="line-height:250%">@(item)</span>
+                    }
+                }
+            </td>
+            <td>
+                <div class="btn-group btn-group-sm">
+                    <a href="/Jurisdiction/Admin/EditImpower?name=@(entry.Key)" class="btn btn-success"><i class="glyphicon glyphicon-edit"></i>编辑权限</a>
+                    <a href="/Jurisdiction/Admin/DeleteImpower?name=@(entry.Key)" class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i>删除</a>
+                </div>
+            </td>
+        </tr>
+    }
+    @*@foreach (var item in list)
             {
         <tr>
             <td>@(SerialNumber++)</td>
@@ -33,6 +56,6 @@
 
             </td>
         </tr>
-    }
+    }*@
 </table>
 

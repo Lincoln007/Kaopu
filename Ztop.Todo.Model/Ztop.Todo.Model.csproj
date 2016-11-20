@@ -103,6 +103,7 @@
     <Compile Include="Errand.cs" />
     <Compile Include="Evection.cs" />
     <Compile Include="ADGroup.cs" />
+    <Compile Include="FastADGroupView.cs" />
     <Compile Include="Invoice.cs" />
     <Compile Include="InvoiceParameter.cs" />
     <Compile Include="iPad.cs" />

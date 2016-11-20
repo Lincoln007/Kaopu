@@ -57,7 +57,8 @@ namespace Ztop.Todo.Manager
                                 var contract = Core.ContractManager.Get(invoice.CID);
                                 var sender = Core.UserManager.GetUser(model.SenderID);
                                 model.Description = string.Format("{0}申请给{1}开具{2}的发票", sender.DisplayName, invoice.OtherSideCompany, invoice.Content);
-                                model.Path = "/Finance/Detail/?id=" + contract.ID + "&&notId=" + model.ID;
+                                model.Path = "/Finance/InvoiceDetail?id=" + invoice.ID;
+                                // model.Path = "/Finance/Detail/?id=" + contract.ID + "&&notId=" + model.ID;
                             }
                             break;
                     }
@@ -206,10 +207,29 @@ namespace Ztop.Todo.Manager
         {
             FlagReadBase(infoId, receiverID, InfoType.Sheet);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="infoId"></param>
+        /// <param name="receiverID"></param>
         public void FlagVerifyRead(int infoId,int receiverID)
         {
             FlagReadBase(infoId, receiverID, InfoType.Verify);
+        }
+
+        /// <summary>
+        /// 作用：将某一张发票信息的提示 设置为已读
+        /// 作者：汪建龙
+        /// 编写时间：2016年11月20日14:07:56
+        /// </summary>
+        /// <param name="infoId">发票ID</param>
+        public void FlagInvoiceRead(int infoId)
+        {
+            var receiver = Core.UserManager.UserGet(System.Configuration.ConfigurationManager.AppSettings["FINANCE"]);
+            if (receiver != null)
+            {
+                FlagReadBase(infoId, receiver.ID, InfoType.Invoice);
+            }
         }
 
 

@@ -49,6 +49,10 @@ namespace Ztop.Todo.Manager
 
         public DbSet<ADGroup> AD_Groups { get; set; }
 
+        public DbSet<FastGroupUserView> FastGroupUserViews { get; set; }
+
+      //  public DbSet<FastADGroupView> FastADGroupViews { get; set; }
+
         #endregion
 
         #region 报销系统

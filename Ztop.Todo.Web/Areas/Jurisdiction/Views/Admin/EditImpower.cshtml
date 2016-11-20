@@ -1,7 +1,10 @@
 ﻿@using Ztop.Todo.ActiveDirectory
 @{ 
     Layout = "~/Areas/Jurisdiction/Views/Admin/_Layout.cshtml";
-    Ztop.Todo.Model.Authorize authorize = ViewBag.Model;
+    // Ztop.Todo.Model.Authorize authorize = ViewBag.Model;
+
+    List<string> MGroups = ViewBag.MGroups;
+
     var big = Ztop.Todo.ActiveDirectory.XmlHelper.GetDitrict();
     List<Ztop.Todo.Model.ADGroup> list = ViewBag.ADGroup;
     var organications = list.Where(e => e.Type == Ztop.Todo.Model.ADType.Organication).ToList();
@@ -39,8 +42,8 @@
             <div class="form-group">
                 <label class="control-label col-md-1">管理者：</label>
                 <div class="col-md-11">
-                    <input type="text" name="" class="form-control" value="@(authorize.Manager)" disabled />
-                    <input type="hidden" name="ID" value="@(authorize.ID)" />
+                    <input type="text" name="" class="form-control" value="@(ViewBag.Name)" disabled />
+                    <input type="hidden" name="ID" value="@(ViewBag.UID)" />
                 </div>
             </div>
             <div class="form-group">
@@ -102,7 +105,7 @@
                                                                     {
                                                                         <td>
                                                                             <label class="checkbox-inline">
-                                                                                <input type="checkbox" value="@(second.Name)" name="GroupName" @(authorize.Groups!=null&&authorize.Groups.FirstOrDefault(e=>e.ID==second.ID)!=null?"checked=checked":"") /><strong>@(second.Name)</strong>
+                                                                                <input type="checkbox" value="@(second.Name)" name="GroupName" @(MGroups!=null&&MGroups.Contains(second.Name)?"checked=checked":"") /><strong>@(second.Name)</strong>
                                                                             </label>
                                                                         </td>
                                                                     }
@@ -137,7 +140,7 @@
                                                     {
                                                         <td>
                                                             <label class="checkbox-inline">
-                                                                <input type="checkbox" name="GroupName" value="@(entry.Name)"  @(authorize.Groups!=null&&authorize.Groups.FirstOrDefault(e=>e.ID==entry.ID)!=null?"checked=checked":"") /><strong>@(entry.Name)</strong>
+                                                                <input type="checkbox" name="GroupName" value="@(entry.Name)"  @(MGroups!=null&&MGroups.Contains(entry.Name)?"checked=checked":"") /><strong>@(entry.Name)</strong>
                                                             </label>
                                                         </td>
                                                     }
@@ -166,7 +169,7 @@
                                                     {
                                                         <td>
                                                             <label class="checkbox-inline">
-                                                                <input type="checkbox" name="GroupName" value="@(entry.Name)" @(authorize.Groups!=null&&authorize.Groups.FirstOrDefault(e=>e.ID==entry.ID)!=null?"checked=checked":"")  /><strong>@(entry.Name)</strong>
+                                                                <input type="checkbox" name="GroupName" value="@(entry.Name)" @(MGroups!=null&&MGroups.Contains(entry.Name)?"checked=checked":"")  /><strong>@(entry.Name)</strong>
                                                             </label>
                                                         </td>
                                                     }

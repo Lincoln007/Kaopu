@@ -81,34 +81,50 @@ namespace Ztop.Todo.Web.Areas.Jurisdiction.Controllers
             var treeObject = ADController.GetTreeObject();
             return Json(treeObject, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// 作用：权限系统管理界面
+        /// 作者：汪建龙
+        /// 编写时间：2016年11月20日12:10:43
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Impower()
         {
             Core.AuthorizeManager.Add(Core.AuthorizeManager.Get(HttpContext));
-           // ViewBag.List = Core.AuthorizeManager.GetList();
             ViewBag.ADGroup = Core.AD_groupManager.Get();
-            //ViewBag.Groups = ADController.GetGroupDict().Sort().DictToTable();
             return View();
         }
         /// <summary>
-        /// 
+        /// 作用：查看授权管理用户列表
+        /// 作者：汪建龙
+        /// 编写时间：2016年11月20日12:10:10
         /// </summary>
         /// <returns></returns>
         public ActionResult GetAuthorizes()
         {
-            ViewBag.List = Core.AuthorizeManager.GetList();
+            ViewBag.Dict = Core.AuthorizeManager.GetAuthorizeFasts();
             return View();
         }
-
-        public ActionResult EditImpower(int id)
+        /// <summary>
+        /// 作用：编辑权限管理列表
+        /// 作者：汪建龙
+        /// 编写时间：2016年11月20日10:46:45
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult EditImpower(string name)
         {
-            ViewBag.Model = Core.AuthorizeManager.Get(id);
+            var FGUV = Core.AuthorizeManager.GetFGUV(name);
+            var groups = FGUV.Select(e=>e.Name).ToList();
+            ViewBag.MGroups = groups;
+            ViewBag.Name = name;
+            ViewBag.UID = FGUV.FirstOrDefault().UID;
             ViewBag.ADGroup = Core.AD_groupManager.Get();
             return View();
         }
 
-        public ActionResult DeleteImpower(int id)
+        public ActionResult DeleteImpower(string name)
         {
-            Core.AuthorizeManager.Delete(id);
+            Core.AuthorizeManager.Delete(name);
             return RedirectToAction("Impower");
         }
 
@@ -118,10 +134,19 @@ namespace Ztop.Todo.Web.Areas.Jurisdiction.Controllers
             return Json(list, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 作用：权限管理编辑
+        /// 作者：汪建龙
+        /// 编写时间：2016年11月20日10:45:44
+        /// </summary>
+        /// <param name="ID">管理者ID</param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult ImpowerEdit(int ID)
         {
-            Core.AuthorizeManager.Edit(Core.AuthorizeManager.Get(HttpContext, ID));
+            var groups = HttpContext.Request.Form["GroupName"].ToString();
+            Core.AuthorizeManager.Edit(groups, ID);
+           // Core.AuthorizeManager.Edit(Core.AuthorizeManager.Get(HttpContext, ID),ID);
             return Redirect("/Jurisdiction/Admin/Impower");
         }
 
