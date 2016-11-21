@@ -310,6 +310,9 @@ namespace Ztop.Todo.Web.Controllers
         {
             var sheets = Core.SheetManager.GetSheets(year, month);
             ViewBag.Sheets = sheets;
+            Session["Sheets"] = sheets;
+            var users = Core.UserManager.GetAllUsers();
+            ViewBag.Users = users.Select(e => e.RealName).ToList();
             return View();
         }
 
@@ -323,13 +326,15 @@ namespace Ztop.Todo.Web.Controllers
         public ActionResult CollectCategory(List<Sheet> sheets)
         {
             var dailys = sheets.Where(e => e.Type == SheetType.Daily).ToList();
-            //ViewBag.Dailys = dailys;
             var substances = new List<Substancs>();
             foreach (var item in dailys)
             {
-                substances.AddRange(item.Substances);
+                if (item.Substances != null)
+                {
+                    substances.AddRange(item.Substances);
+                }
+               
             }
-            //ViewBag.Substances = substances;
             var dict = new Dictionary<string, double>();
             foreach(Category category in Enum.GetValues(typeof(Category)))
             {
@@ -343,7 +348,43 @@ namespace Ztop.Todo.Web.Controllers
             var errands= sheets.Where(e => e.Type == SheetType.Errand).ToList();
             dict.Add("出差报销", errands.Sum(e => e.Money));
             ViewBag.Dict = dict;
-            //ViewBag.Errands = errands;
+            ViewBag.Sheets = sheets;
+           
+            return View();
+        }
+
+        /// <summary>
+        /// 作用：
+        /// 作者：汪建龙
+        /// 编写时间
+        /// </summary>
+        /// <param name="sheets"></param>
+        /// <param name="category"></param>
+        /// <returns></returns>
+        public ActionResult CategoryCollect(string category)
+        {
+            var sheets = Session["Sheets"] as List<Sheet>;
+            ViewBag.Category = category;
+            if (category == "出差报销")
+            {
+                sheets = sheets.Where(e => e.Type == SheetType.Errand).ToList();
+            }
+            else
+            {
+                try
+                {
+                    Category cate = EnumHelper.GetEnum<Category>(category);
+                    sheets = sheets.Where(e => e.Type == SheetType.Daily&&e.Substances.Select(k=>k.Category).Contains(cate)).ToList();
+                    ViewBag.Cate = cate;
+                }
+                catch(Exception ex)
+                {
+                    throw new ArgumentException(ex.ToString());
+                }
+             
+            }
+            sheets = sheets.OrderBy(e => e.Name).ThenByDescending(e => e.Money).ToList();
+            ViewBag.Sheets = sheets;
             return View();
         }
         /// <summary>
@@ -357,6 +398,23 @@ namespace Ztop.Todo.Web.Controllers
         {
             var dict = sheets.GroupBy(e => e.Name).ToDictionary(e => e.Key, e => e.Sum(k => k.Money)).OrderByDescending(e=>e.Value).ToDictionary(e=>e.Key,e=>e.Value);
             ViewBag.Dict = dict;
+            return View();
+        }
+
+        public ActionResult AdvanceCollect(DateTime ?startTime,DateTime? endTime,string cate,string name)
+        {
+            var parameter = new SheetQueryParameter2
+            {
+                StartTime = startTime,
+                EndTime = endTime,
+                Category = cate,
+                Name = name
+            };
+            var sheets = Core.SheetManager.GetSheets(parameter);
+            ViewBag.Sheets = sheets;
+            ViewBag.Parameter = parameter;
+            var users = Core.UserManager.GetAllUsers();
+            ViewBag.Users = users.Select(e => e.RealName).ToList();
             return View();
         }
 

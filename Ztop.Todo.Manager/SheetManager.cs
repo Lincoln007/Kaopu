@@ -260,15 +260,79 @@ namespace Ztop.Todo.Manager
             }
         }
 
-        public List<Sheet> GetSheets(int year,int month)
+        /// <summary>
+        /// 作用：通过ID组 获取所有关联的Sheets报销单列表
+        /// 作者：汪建龙
+        /// 编写时间：2016年11月21日20:20:31
+        /// 
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        public List<Sheet> GetSheets(List<int> ids)
         {
             var list = new List<Sheet>();
-            var query = Collect(year, month).Select(e=>e.ID).ToList();
-            foreach(var id in query)
+            foreach(var id in ids)
             {
                 list.Add(GetAllModel(id));
             }
             return list;
+        }
+
+        /// <summary>
+        /// 作用：单独获取某年某月的报销单
+        /// 作者：汪建龙
+        /// 备注时间：2016年11月21日20:03:42
+        /// </summary>
+        /// <param name="year"></param>
+        /// <param name="month"></param>
+        /// <returns></returns>
+        public List<Sheet> GetSheets(int year,int month)
+        {
+            var query = Collect(year, month).Select(e=>e.ID).ToList();
+            return GetSheets(query);
+        }
+        public List<Sheet> GetSheets(SheetQueryParameter2 parameter)
+        {
+            using (var db = GetDbContext())
+            {
+                var query = db.Sheets.Where(e => e.Deleted == false).AsQueryable();
+                if (!string.IsNullOrEmpty(parameter.Name))
+                {
+                    query = query.Where(e => e.Name.ToUpper() == parameter.Name.ToUpper());
+                }
+                if (parameter.StartTime.HasValue)
+                {
+                    query = query.Where(e => e.CheckTime >= parameter.StartTime.Value);
+                }
+                if (parameter.EndTime.HasValue)
+                {
+                    query = query.Where(e => e.CheckTime <= parameter.EndTime.Value);
+                }
+                var flag = false;
+                if (!string.IsNullOrEmpty(parameter.Category))
+                {
+                    if (parameter.Category == "出差报销")
+                    {
+                        query = query.Where(e => e.Type == SheetType.Errand);
+                    }
+                    else
+                    {
+                        query = query.Where(e => e.Type == SheetType.Daily);
+                        flag = true;
+                    }
+                }
+                var result = query.ToList().Select(e => e.ID).ToList();
+                var list = GetSheets(result);
+                if (flag)
+                {
+                    Category category;
+                    if(Enum.TryParse(parameter.Category,out category))
+                    {
+                        list = list.Where(e => e.Substances.Select(k => k.Category).Contains(category)).ToList();
+                    }
+                }
+                return list;
+            }
         }
 
         /// <summary>

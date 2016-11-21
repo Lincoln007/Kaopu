@@ -1,7 +1,11 @@
 ﻿@{ 
     Layout = null;
     Dictionary<string, double> dict = ViewBag.Dict;
+    var labels = dict.Select(e => e.Key).ToArray();
+    var values = dict.Select(e => Math.Round(e.Value,2)).ToArray();
+
 }
+
 
 <div class="col-md-6">
     <h3 class="text-center">各项报销统计表</h3>
@@ -22,14 +26,20 @@
                 if (entry.Key == "出差报销")
                 {
                     <tr>
-                        <td colspan="2">@(entry.Key)</td>
+                        <td colspan="2">
+                            @(entry.Key)
+                            @*<a data-toggle="modal" data-target="#Modal" href="/Bank/CategoryCollect?category=@(entry.Key)">@(entry.Key)</a>*@ 
+                        </td>
                         <td>@(entry.Value)</td>
                     </tr>
                 }
                 else
                 {
                     <tr>
-                        <td>@(entry.Key)</td>
+                        <td>
+                            @(entry.Key)
+                            @*<a data-toggle="modal" data-target="#Modal" href="/Bank/CategoryCollect?category=@(entry.Key)">@(entry.Key)</a>*@
+                        </td>
                         <td>@(entry.Value)</td>
                     </tr>
                 }
@@ -39,5 +49,30 @@
 </div>
 <div class="col-md-6">
     <h3 class="text-center">各项报销统计图</h3>
-
+    <div class="col-md-12">
+        <canvas id="Chart-Category"></canvas>
+    </div>
 </div>
+<script src="~/Scripts/2/TodoChart.js"></script>
+
+<script >
+    $(function () {
+        var labels=@Html.Raw(labels.ToJson())||[];
+        var values=@Html.Raw(values.ToJson())||[];
+        var ctx=document.getElementById("Chart-Category");
+
+        var myChart=new Chart(ctx,{
+            type:'bar',
+            data:{
+                labels:labels,
+                datasets:[{
+                    label:"各类报销",
+                    data:values,
+                    backgroundColor:getChartColors2(values.length)
+                }
+                ]
+            }
+        });
+    });
+</script>
+

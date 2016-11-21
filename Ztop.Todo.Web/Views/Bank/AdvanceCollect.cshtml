@@ -1,0 +1,101 @@
+﻿
+@{
+    ViewBag.Title = "高级统计";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<string> users = ViewBag.Users;
+    List<Sheet> sheets = ViewBag.Sheets;
+    SheetQueryParameter2 parameter = ViewBag.Parameter;
+}
+
+<script src="~/Scripts/2/Chart.js"></script>
+<script>
+    $(function () {
+        $("a[name='Time']").click(function () {
+            var currentStr = "@(DateTime.Now.ToString("yyyy-MM-dd"))";
+            var days = parseInt($(this).attr("data"));
+            var val = "";
+            switch (days) {
+                case 7:
+                    val = "@(DateTime.Now.AddDays(-6).ToString("yyyy-MM-dd"))";
+                    break;
+                case 30:
+                    val = "@(DateTime.Now.AddMonths(-1).ToString("yyyy-MM-dd"))";
+                    break;
+                case 90:
+                    val = "@(DateTime.Now.AddMonths(-6).ToString("yyyy-MM-dd"))";
+                    break;
+                case 365:
+                    val = "@(DateTime.Now.AddYears(-1).ToString("yyyy-MM-dd"))";
+                    break;
+            }
+            $("input[name='StartTime']").val(val);
+            $("input[name='EndTime']").val(currentStr);
+        });
+
+        $("#form-Advance").submit(function () {
+            $("#form-Advance button[type='submit']").attr("disable", "false");
+            $("#Message").show(500);
+        });
+    });
+</script>
+
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="text-center">高级统计</h3>
+        <hr />
+        <form class="form-inline" role="form" method="get" action="" id="form-Advance">
+            <div class="form-group">
+                <label class="control-label" for="">时间范围：</label>
+                <div class="input-group">
+                    <input type="text" name="StartTime" placeholder="起始时间" class="form-control datetimepicker" value="@(parameter.StartTime.HasValue?parameter.StartTime.Value.ToString("yyyy-MM-dd"):DateTime.Now.ToString("yyyy-MM-dd"))" />
+                    <span class="input-group-addon">至</span>
+                    <input type="text" name="EndTime" placeholder="截至时间" class="form-control datetimepicker" value="@(parameter.EndTime.HasValue?parameter.EndTime.Value.ToString("yyyy-MM-dd"):DateTime.Now.ToString("yyyy-MM-dd"))"/>
+                    <span class="input-group-btn">
+                        <a href="javascript:void()" class="btn btn-primary" name="Time" data="7">本周</a>
+                        <a href="javascript:void()" class="btn btn-success" name="Time" data="30">本月</a>
+                        <a href="javascript:void()" class="btn btn-warning" name="Time" data="90">半年</a>
+                        <a href="javascript:void()" class="btn btn-danger" name="Time" data="365">一年</a>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="">类别：</label>
+                <select name="Cate" class="form-control">
+                    <option value="" @(string.IsNullOrEmpty(parameter.Category)?"selected=selected":"")>所有类别</option>
+                    <option value="出差报销" @(parameter.Category=="出差报销"?"selected=selected":"")>出差报销</option>
+                    @foreach(Category category in Enum.GetValues(typeof(Category)))
+                    {
+                        <option value="@(category)" @(parameter.Category==category.ToString()?"selected=selected":"")>@(category.GetDescription())</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="">用户：</label>
+                <select name="Name" class="form-control">
+                    <option value="" @(string.IsNullOrEmpty(parameter.Name)?"selected=selected":"")>所有用户</option>
+                    @foreach(var item in users)
+                    {
+                        <option value="@(item)" @(parameter.Name==item?"selected=selected":"")>@(item)</option>
+                    }
+                </select>
+            </div>
+         
+            <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-refresh"></i>统计分析</button>
+            <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-download-alt"></i>下载Excel清单</button>
+        </form>
+        <hr />
+        <div class="row">
+            <div class="alert alert-warning" role="alert" style="display:none" id="Message">
+                <span>正在统计分析..............................................</span>
+            </div>
+        </div>
+        <div class="row">
+            @{ Html.RenderAction("CollectCategory", new { Sheets = sheets });}
+        </div>
+        <div class="row">
+            @{ Html.RenderAction("CollectUser", new { Sheets = sheets });}
+        </div>
+    </div>
+</div>
+
+

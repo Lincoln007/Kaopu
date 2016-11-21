@@ -70,6 +70,18 @@ namespace Ztop.Todo.Model
         public PageParameter Page { get; set; }
     }
 
+    public class SheetQueryParameter2
+    {
+        public string Name { get; set; }
+
+        public DateTime? StartTime { get; set; }
+
+        public DateTime? EndTime { get; set; }
+
+        public string Category { get; set; }
+
+    }
+
     public enum Operator
     {
         我,
