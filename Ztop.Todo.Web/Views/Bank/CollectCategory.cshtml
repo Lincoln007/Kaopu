@@ -3,7 +3,8 @@
     Dictionary<string, double> dict = ViewBag.Dict;
     var labels = dict.Select(e => e.Key).ToArray();
     var values = dict.Select(e => Math.Round(e.Value,2)).ToArray();
-
+    double sum = .0;
+    const string errand = "出差报销";
 }
 
 
@@ -19,31 +20,36 @@
         </thead>
         <tbody>
             <tr>
-                <th rowspan="14">日常报销</th>
+                <th rowspan="15">日常报销</th>
             </tr>
-            @foreach(var entry in dict)
+            @foreach (var entry in dict)
             {
-                if (entry.Key == "出差报销")
+                if (entry.Key != errand)
                 {
-                    <tr>
-                        <td colspan="2">
-                            @(entry.Key)
-                            @*<a data-toggle="modal" data-target="#Modal" href="/Bank/CategoryCollect?category=@(entry.Key)">@(entry.Key)</a>*@ 
-                        </td>
-                        <td>@(entry.Value)</td>
-                    </tr>
-                }
-                else
-                {
+                    sum += entry.Value;
                     <tr>
                         <td>
                             @(entry.Key)
-                            @*<a data-toggle="modal" data-target="#Modal" href="/Bank/CategoryCollect?category=@(entry.Key)">@(entry.Key)</a>*@
                         </td>
                         <td>@(entry.Value)</td>
                     </tr>
                 }
             }
+            <tr>
+                <td>日常报销合计</td>
+                <td>@(sum)</td>
+            </tr>
+            @{ 
+                var item = dict[errand];
+                <tr>
+                    <td colspan="2">@(errand)</td>
+                    <td>@(item)</td>
+                </tr>
+            }
+            <tr>
+                <td colspan="2">总计</td>
+                <td>@(values.Sum())</td>
+            </tr>
         </tbody>
     </table>
 </div>

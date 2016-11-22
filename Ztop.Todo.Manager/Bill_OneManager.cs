@@ -63,7 +63,17 @@ namespace Ztop.Todo.Manager
         {
             using (var db = GetDbContext())
             {
-                db.BillOnes.Add(billOne);
+                var entry = db.BillOnes.FirstOrDefault(e => e.SerialNumber == billOne.SerialNumber && e.HID == billOne.HID);
+                if (entry != null)
+                {
+                    billOne.ID = entry.ID;
+                    db.Entry(entry).CurrentValues.SetValues(billOne);
+                }
+                else
+                {
+                    db.BillOnes.Add(billOne);
+                }
+               
                 db.SaveChanges();
                 return billOne.ID;
             }
@@ -74,22 +84,32 @@ namespace Ztop.Todo.Manager
         /// 作者：汪建龙
         /// 编写时间：2016年11月16日15:46:10
         /// </summary>
-        /// <param name="hid"></param>
-        /// <param name="list"></param>
+        /// <param name="hid">账单头文件ID</param>
+        /// <param name="list">追加的列表</param>
         /// <returns></returns>
-        public List<string> Input(int hid,List<BillOne> list)
+        public List<string> Input(int hid,List<BillOne> list,int year,int month)
         {
             var errors = new List<string>();
             var preSerialNumber = 1;
             BillOne preEntry = null;
             foreach(var item in list)
             {
+                var error = string.Empty;
                 if (preEntry != null)
                 {
                     if (!BillClass.CheckLogic(item, preEntry))
                     {
-                        errors.Add(string.Format("第{0}个数据：序号前后不一致，应递增，账户余额收支前后不一致；", preSerialNumber));
+                        error = "序号前后不一致，应递增，账户余额收支前后不一致；";
                     }
+                    if (!BillClass.CheckTime(item, year, month))
+                    {
+                        error += string.Format("交易日期不在{0}年{1}月,请核对!", year, month);
+                    }
+                }
+                if (!string.IsNullOrEmpty(error))
+                {
+                    errors.Add(string.Format("第{0}个数据存在如下错误：{1}", preSerialNumber, error));
+                    continue;
                 }
                 item.HID = hid;
                 if (Add(item)==0)

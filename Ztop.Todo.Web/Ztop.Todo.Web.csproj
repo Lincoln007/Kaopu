@@ -336,6 +336,7 @@
     <Content Include="Views\Finance\SuppleMentary.cshtml" />
     <Content Include="Views\Bank\CategoryCollect.cshtml" />
     <Content Include="Views\Bank\AdvanceCollect.cshtml" />
+    <Content Include="Views\Bank\UserCollect.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

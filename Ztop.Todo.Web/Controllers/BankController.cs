@@ -230,7 +230,7 @@ namespace Ztop.Todo.Web.Controllers
         /// <param name="edit"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult SaveInput(int year,int month,Company company,bool edit=false)
+        public ActionResult SaveInput(int year,int month,Company company,int[] serialNumber, DateTime[] Time,string[] voucher, double[] Income, double[] Pay, double[] Balance,string[] counterPart, string[] Account, string[] Summary,,string[] remark,bool edit=false)
         {
             var bills = Session["Read"] as List<BillOne>;
             if (bills == null || bills.Count == 0)
@@ -238,9 +238,10 @@ namespace Ztop.Todo.Web.Controllers
                 return ErrorJsonResult("未读取银行对账信息！");
             }
             var head = Core.Bill_OneManager.GetBillHead(year, month, company);
+            
             var hid = head != null ? head.ID : Core.Bill_OneManager.Add(new Bill_Head { Year = year, Month = month, Company = company });
 
-            var errors = Core.Bill_OneManager.Input(hid, bills);
+            var errors = Core.Bill_OneManager.Input(hid, bills,year,month);
             if (errors.Count > 0)
             {
                 return ErrorJsonResult(string.Join("-", errors));
@@ -398,6 +399,24 @@ namespace Ztop.Todo.Web.Controllers
         {
             var dict = sheets.GroupBy(e => e.Name).ToDictionary(e => e.Key, e => e.Sum(k => k.Money)).OrderByDescending(e=>e.Value).ToDictionary(e=>e.Key,e=>e.Value);
             ViewBag.Dict = dict;
+            return View();
+        }
+        /// <summary>
+        /// 作用：查看某一个人的报销单
+        /// 作者：汪建龙
+        /// 编写时间：2016年11月22日09:21:33
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public ActionResult UserCollect(string name)
+        {
+            List<Sheet> sheets = Session["Sheets"] as List<Sheet>;
+            if (sheets != null)
+            {
+                sheets = sheets.Where(e => e.Name.ToUpper() == name.ToUpper()).ToList();
+            }
+            ViewBag.Name = name;
+            ViewBag.Sheets = sheets;
             return View();
         }
 

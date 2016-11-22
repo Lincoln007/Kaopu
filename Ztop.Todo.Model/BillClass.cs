@@ -524,6 +524,32 @@ namespace Ztop.Todo.Model
             }
             return false;
         }
+        /// <summary>
+        /// 作用：验证该笔账单是否是时间范围内
+        /// 作者：汪建龙
+        /// 编写时间：2016年11月22日10:03:06
+        /// </summary>
+        /// <param name="billone"></param>
+        /// <param name="year"></param>
+        /// <param name="month"></param>
+        /// <returns></returns>
+        public static bool CheckTime(BillOne billone,int year,int month)
+        {
+            if (billone == null || year == 0 || month == 0)
+            {
+                return false;
+            }
+            if (billone.Time.HasValue)
+            {
+                if (billone.Time.Value.Year == year && billone.Time.Value.Month == month)
+                {
+                    return true;
+                }
+
+            }
+            return false;
+
+        }
 
         /// <summary>
         /// 作用：分析Excel文件，获取银行信息

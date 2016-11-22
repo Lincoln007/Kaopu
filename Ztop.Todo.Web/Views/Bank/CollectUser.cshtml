@@ -18,7 +18,9 @@
             @foreach(var entry in dict)
             {
                 <tr>
-                    <td>@(entry.Key)</td>
+                    <td>
+                        <a data-toggle="modal" data-target="#Modal" href="/Bank/UserCollect?name=@(entry.Key)" >@(entry.Key)</a>
+                    </td>
                     <td>@(entry.Value)</td>
                 </tr>
             }

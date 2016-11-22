@@ -154,12 +154,15 @@ namespace Ztop.Todo.Manager
         {
             using (var db = GetDbContext())
             {
+
                 var older = db.Bills.Where(e => e.BID == bid).ToList();
                 if (older != null)
                 {
                     db.Bills.RemoveRange(older);
                     db.SaveChanges();
                 }
+
+
                 db.Bills.AddRange(list);
                 db.SaveChanges();
             }
