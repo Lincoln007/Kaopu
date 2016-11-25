@@ -9,10 +9,16 @@
 <script src='http://10.22.102.3:8001/CLodopfuncs.js'></script>
 <script src="~/Scripts/CLodopfuncs.js?priority=1"></script>
 
+
+
 @if (sheet != null)
 {
     <div class="col-md-12 noprint">
         <h3>报销单详情</h3>
+        <div class="alert alert-warning" role="alert" name="Message" style="display:none;">
+            <i class="icon-spinner icon-spin icon-large"></i>
+            <span></span>
+        </div>
         @if (!sheet.Deleted)
         {
             if (sheet.Controler == Identity.Name)
@@ -196,7 +202,7 @@
                  <h3>审核进度</h3>
                  <div class="progress">
                      @if (sheet.Status == Status.OutLine)
-                {
+                     {
                          <div class="progress-bar progress-bar-success progress-bar-striped active" style="width:17%;min-width:2em;">
                              @(sheet.Status.GetDescription())
                          </div>
@@ -284,6 +290,14 @@
                      }
 
                  </div>
+                 @if (sheet.Status != Status.OutLine && sheet.Status != Status.RollBack && sheet.Status != Status.Examined)
+                 {
+                    <div class="alert alert-warning" role="alert">
+                        <i class="icon-spinner icon-spin icon-large"></i>
+                        <span>等待@(sheet.Controler)审核</span>
+                    </div>
+                 }
+             
 
                  <div class="panel panel-default">
                      <div class="panel-heading">
@@ -439,17 +453,32 @@
         //LODOP.PRINT_DESIGN();
     }
 
+
     $(function () {
+       
+
+
         $("#form-Check").submit(function () {
+            $("#form-Check button[type='submit']").attr("disabled", "false");
+            ShowMessage("正在处理，请稍等......");
+   
             var data = $(this).serialize();
             $.request("/Report/PostSheet", data, function (json) {
+                $("#form-Check button[type='submit']").removeAttr("disabled");
+                if (json.result == 1) {
+                    ShowMessage("成功处理，正在跳转，请稍等......");
+                }
                 location.href = "/Report/Detail?id=@(sheet.ID)";
             });
             return false;
         });
         $(".btn-delete").click(function () {
             if (confirm("您确定要删除报销单吗？")) {
-                $.request("/Report/Delete?id=@(sheet.ID)", null, function () {
+                ShowMessage("正在处理删除操作，请稍等......");
+                $.request("/Report/Delete?id=@(sheet.ID)", null, function (json) {
+                    if (json.result == 1) {
+                        ShowMessage("成功删除，正在跳转，请稍等.....");
+                    }
                     window.location.href = "/Report";
                 });
             }
@@ -457,7 +486,9 @@
         });
         $(".btn-checked").click(function () {
             if (confirm("您确定要通过当前报销单吗?")) {
+                ShowMessage("审核通过处理中，请稍等.....");
                 $.request("/Report/Check?id=@(sheet.ID)", null, function () {
+                    ShowMessage("审核通过处理完成，正在跳转，请稍等......");
                     window.location.href = "/Report";
                 })
             }
@@ -472,7 +503,9 @@
 
         $("#Revoke").click(function () {
             if (confirm("您确定撤回当前报销单？")) {
+                ShowMessage("正在撤回报销单，请稍等......");
                 $.request("/Report/Revoke?id=@(sheet.ID)", null, function () {
+                    ShowMessage("完成撤回，正在跳转，请稍等......");
                     location.href = "/Report/Detail?id=@(sheet.ID)";
                 })
             }

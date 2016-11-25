@@ -47,7 +47,7 @@
             <div class="form-group">
                 <label class="control-label" for="">时间范围：</label>
                 <div class="input-group">
-                    <input type="text" name="StartTime" placeholder="起始时间" class="form-control datetimepicker" value="@(parameter.StartTime.HasValue?parameter.StartTime.Value.ToString("yyyy-MM-dd"):DateTime.Now.ToString("yyyy-MM-dd"))" />
+                    <input type="text" name="StartTime" placeholder="起始时间" class="form-control datetimepicker" value="@(parameter.StartTime.HasValue?parameter.StartTime.Value.ToString("yyyy-MM-dd"):"")" />
                     <span class="input-group-addon">至</span>
                     <input type="text" name="EndTime" placeholder="截至时间" class="form-control datetimepicker" value="@(parameter.EndTime.HasValue?parameter.EndTime.Value.ToString("yyyy-MM-dd"):DateTime.Now.ToString("yyyy-MM-dd"))"/>
                     <span class="input-group-btn">
@@ -81,12 +81,14 @@
             </div>
          
             <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-refresh"></i>统计分析</button>
-            <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-download-alt"></i>下载Excel清单</button>
+            <a href="/Bank/Index" class="btn btn-success"><i class="glyphicon glyphicon-home"></i>银行对账主页</a>
+            @*<button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-download-alt"></i>下载Excel清单</button>*@
         </form>
         <hr />
         <div class="row">
             <div class="alert alert-warning" role="alert" style="display:none" id="Message">
-                <span>正在统计分析..............................................</span>
+                <i class="icon-spinner icon-spin icon-large"></i>
+                <span>正在统计分析......</span>
             </div>
         </div>
         <div class="row">

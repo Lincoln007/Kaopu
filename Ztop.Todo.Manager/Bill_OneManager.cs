@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Ztop.Todo.Common;
 using Ztop.Todo.Model;
 
 namespace Ztop.Todo.Manager
@@ -194,6 +195,85 @@ namespace Ztop.Todo.Manager
             {
                 return db.Bill_Heads.ToList().OrderByDescending(e=>e.Head).ToList();
             }
+        }
+        /// <summary>
+        /// 作用：统计银行对账指定收支情况
+        ///
+        /// 作者：汪建龙
+        /// 编写时间：2016年11月23日11:09:59
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="budget"></param>
+        /// <returns></returns>
+        public Dictionary<string,double> Collect(List<BillOne> list,Budget budget)
+        {
+            list = list.Where(e => e.Budget.Value == budget).ToList();
+            var dict = new Dictionary<string, double>();
+            var none = list.Where(e => e.Cost == null).ToList();
+            if (none.Count > 0)
+            {
+                dict.Add("无类别", none.Sum(e => e.Money));
+            }
+            list = list.Where(e => e.Cost.HasValue).ToList();
+            
+            if (budget == Budget.Expense)
+            {
+               foreach(Cost cost in Enum.GetValues(typeof(Cost)))
+                {
+                    if (((int)cost >= 3))
+                    {
+                        if (cost == Cost.RealPay)
+                        {
+                            foreach (Category category in Enum.GetValues(typeof(Category)))
+                            {
+                                dict.Add(string.Format("{0}-{1}", cost.GetDescription(), category.GetDescription()), list.Where(e =>e.Category.HasValue&& e.Cost.Value == cost && e.Category.Value == category).Sum(e => e.Money));
+                            }
+                        }
+                        else
+                        {
+                            dict.Add(cost.GetDescription(), list.Where(e => e.Cost.Value == cost).Sum(e => e.Money));
+                        }
+                       
+                    }
+                }
+            }
+            else
+            {
+                foreach (Cost cost in Enum.GetValues(typeof(Cost)))
+                {
+                    if (((int)cost) < 3)
+                    {
+                        dict.Add(cost.GetDescription(), list.Where(e => e.Cost.Value == cost).Sum(e => e.Money));
+                    }
+                  
+                }
+            }
+            return dict;
+        }
+        /// <summary>
+        /// 作用：统计银行对账收支情况
+        /// 作者：汪建龙
+        /// 编写时间：2016年11月23日11:11:05
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public Dictionary<string,Dictionary<string,double>> Collect(List<BillOne> list)
+        {
+            var result = new Dictionary<string, Dictionary<string, double>>();
+            if (list != null)
+            {
+                var none = list.Where(e => e.Budget == null).ToList();
+                if (none.Count > 0)
+                {
+                    
+                }
+                list = list.Where(e => e.Budget.HasValue).ToList();
+                foreach(Budget budget in Enum.GetValues(typeof(Budget)))
+                {
+                    result.Add(budget.GetDescription(), Collect(list, budget));
+                }
+            }
+            return result;
         }
     }
 }

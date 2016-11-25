@@ -12,13 +12,23 @@
 
 @if (list != null && list.Count > 0)
 {
-    <strong>公司名称：@string.Format("杭州智拓{0}有限公司",head.Company.GetDescription())</strong> <hr />
-    <strong>交易笔数：@(list.Count)</strong><hr />
-    <strong>月初余额【元】：@(start!=null?(start.Budget==Budget.Income?(start.Balance-start.Money).ToString():(start.Balance+start.Money).ToString()):"未读取到月初余额信息")</strong><hr />
-    <strong>月末余额【元】：@(end!=null?end.Balance.ToString():"未读取到月末余额信息")</strong><hr />
-    <div class="input-group-btn">
-        <a href="/Bank/Index" class="btn btn-default"><i class="glyphicon glyphicon-home"></i>银行对账主页</a>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="col-md-3">
+                <strong>公司名称：@string.Format("杭州智拓{0}有限公司", head.Company.GetDescription())</strong> <hr />
+                <strong>交易笔数：@(list.Count)</strong><hr />
+                <strong>月初余额【元】：@(start != null ? (start.Budget == Budget.Income ? (start.Balance - start.Money).ToString() : (start.Balance + start.Money).ToString()) : "未读取到月初余额信息")</strong><hr />
+                <strong>月末余额【元】：@(end != null ? end.Balance.ToString() : "未读取到月末余额信息")</strong><hr />
+                <div class="input-group-btn">
+                    <a href="/Bank/Index" class="btn btn-default"><i class="glyphicon glyphicon-home"></i>银行对账主页</a>
+                </div>
+            </div>
+            <div class="col-md-9">
+                @{ Html.RenderAction("CollectBills", new { list = list });}
+            </div>
+        </div>
     </div>
+ 
     <hr />
     <table class="table table-bordered table-condensed table-striped">
         <thead>

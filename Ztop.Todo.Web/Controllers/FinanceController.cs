@@ -19,7 +19,7 @@ namespace Ztop.Todo.Web.Controllers
             ViewBag.Bills = Core.BillManager.Search(new BillParamter() { Page = new PageParameter(1, 20) });
             ViewBag.Invoices = Core.InvoiceManager.Search(new InvoiceParameter() { Status = InvoiceState.Have, Instance = false,Page=new PageParameter(1,20) });
             ViewBag.Articles = Core.ArticleManager.Search(new ArticleParameter() { Deleted=false, Page = new PageParameter(1, 20) });
-            if (Identity.Finance)
+            if (Identity.Name=="俞海峰")
             {
                 ViewBag.None = Core.InvoiceManager.Search(new InvoiceParameter() { Status = InvoiceState.None, Instance = false,Page=new PageParameter(1,20) });
             }
@@ -502,6 +502,7 @@ namespace Ztop.Todo.Web.Controllers
                 MinMoney=minmoney,
                 MaxMoney=maxmoney,
                 Department=department,
+                Deleted=false,
                 Page = new PageParameter(page, 20)
             };
             if (!string.IsNullOrEmpty(archived))

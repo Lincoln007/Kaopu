@@ -158,6 +158,7 @@ namespace Ztop.Todo.Manager
         /// 作用：通过用户名获取管理权限组列表
         /// 作者：汪建龙
         /// 编写时间：2016年11月20日12:19:14
+        /// 修改时间：2016年11月24日09:38:35
         /// </summary>
         /// <param name="realname"></param>
         /// <returns></returns>
@@ -165,7 +166,14 @@ namespace Ztop.Todo.Manager
         {
             using (var db = GetDbContext())
             {
-                return db.FastGroupUserViews.Where(e => e.RealName.ToUpper() == realname.ToUpper()).ToList();
+                var result= db.FastGroupUserViews.Where(e => e.RealName.ToUpper() == realname.ToUpper()).ToList();
+                foreach(var item in result)
+                {
+                    item.ADGroup = db.AD_Groups.FirstOrDefault(e => e.ID == item.GID);
+                    item.Parent = db.AD_Groups.FirstOrDefault(e => e.ID == item.OID);
+                    item.User = db.Users.FirstOrDefault(e => e.ID == item.UID);
+                }
+                return result;
             }
         }
         /// <summary>

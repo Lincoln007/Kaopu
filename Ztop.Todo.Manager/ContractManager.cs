@@ -71,6 +71,16 @@ namespace Ztop.Todo.Manager
                 }
                 entry.Deleted = true;
                 db.SaveChanges();
+                /*
+                 * 将合同设置为删除的时候，同时也要设置发票为删除状态
+                 * 
+                 */
+                var invoices = db.Invoices.Where(e => e.CID == entry.ID).ToList();
+                foreach(var item in invoices)
+                {
+                    item.Deleted = true;
+                }
+                db.SaveChanges();
                 return true;
             }
         }

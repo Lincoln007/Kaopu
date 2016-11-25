@@ -6,6 +6,14 @@
     List<string> Departments = ViewBag.Department;
     ContractParameter parameter = ViewBag.Parameter;
 }
+<script>
+    $(function () {
+        $("form").submit(function () {
+            ShowMessage("正在查询，请稍等......");
+        });
+
+    });
+</script>
 
 <div class="col-md-12 col-xs-12 well" style="padding:0px;">
     <fieldset><legend>查询设置</legend></fieldset>
@@ -16,6 +24,12 @@
         <input type="hidden" name="Recevied" value="@(parameter.Recevied.HasValue?parameter.Recevied.Value.GetDescription():"")" />
         <input type="hidden" name="Department" value="@(parameter.Department)"/>
         <div class="row">
+            <div class="col-md-12 col-xs-12 col-sm-12">
+                <div class="alert alert-warning" role="alert" name="Message" style="display:none;">
+                    <i class="icon-spinner icon-spin"></i>
+                    <span></span>
+                </div>
+            </div>
             <div class="col-md-6 col-xs-6 col-sm-6">
                 <div class="form-group">
                     <label class="control-label">合同名称：</label>
@@ -165,10 +179,5 @@
     </table>
 </div>
 
-<script>
-    $(function () {
 
-
-    });
-</script>
 

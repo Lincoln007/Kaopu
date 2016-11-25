@@ -69,6 +69,10 @@
       <Project>{1c595662-fe88-4117-afb3-5ffdb3c5a178}</Project>
       <Name>Ztop.Todo.ActiveDirectory</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Ztop.Todo.Common\Ztop.Todo.Common.csproj">
+      <Project>{81bb1b7c-c8b3-4c00-bdf4-d35a7055ef3c}</Project>
+      <Name>Ztop.Todo.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Ztop.Todo.Manager\Ztop.Todo.Manager.csproj">
       <Project>{9cd9c6bb-3d53-4c9b-a99d-b0ed7fd9fd06}</Project>
       <Name>Ztop.Todo.Manager</Name>

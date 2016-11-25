@@ -9,10 +9,54 @@
 <div style="position:relative">
     <ul class="nav nav-tabs">
         <li class="active"><a href="#Apply" data-toggle="tab"><i class="glyphicon glyphicon-glass"></i>&nbsp;申请中心</a></li>
-        @*<li class=""><a href="#AGroup" data-toggle="tab"><i class="glyphicon glyphicon-lock"></i>&nbsp;组申请</a></li>*@
         <li class=""><a href="#Message" data-toggle="tab"><i class="glyphicon glyphicon-user"></i>&nbsp;基础信息</a></li>
     </ul>
 </div>
+<script>
+    function LoadGroup() {
+        var val = $("select[name='Boss']").val();
+        if (val != "" && val != undefined) {
+            ShowMessage("正在加载组，请稍等......");
+            $("#Group").empty().load("/Authority/GetFastGroup?boss=" + val, function () {
+                HideMessage();
+            });
+        }
+    }
+
+    $(function () {
+        LoadGroup();
+        $("select[name='Boss']").change(function () {
+            LoadGroup();
+            return false;
+        });
+
+        $("form").submit(function () {
+            $("form button[name='submit']").attr("disabled", "false");
+            ShowMessage("正在申请，请稍等......");
+        });
+
+
+
+        //$("[name=Boss]").click(function () {
+        //    var value = $(this).val();
+        //    var xmlhttp;
+        //    if (window.XMLHttpRequest) {
+        //        xmlhttp = new XMLHttpRequest();
+        //    } else {
+        //        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        //    }
+        //    xmlhttp.onreadystatechange = function () {
+        //        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+        //            $("#Group").empty().append(xmlhttp.responseText);
+        //        }
+        //    }
+        //    xmlhttp.open("GET", "/Authority/GetGroup?boss=" + value, true);
+        //    xmlhttp.send();
+        //});
+
+
+    })
+</script>
 
 <div class="tab-content">
     <div class="tab-pane fade active in" id="Apply">
@@ -20,6 +64,14 @@
             <div class="form-group">
                 <div class="col-md-11 col-md-offset-1">
                     <input type="submit" class="btn btn-primary" value="申请" />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-11 col-md-offset-1">
+                    <div class="alert alert-warning" role="alert" name="Message" style="display:none;">
+                        <i class="icon-spin icon-spinner icon-large"></i>
+                        <span></span>
+                    </div>
                 </div>
             </div>
             <div class="form-group">
@@ -36,6 +88,7 @@
             <div class="form-group">
                 <label for="" class="control-label col-md-1">申请组：</label>
                 <div class="col-md-11">
+                   
                     <table class="table" id="Group"></table>
                 </div>
             </div>
@@ -103,28 +156,5 @@
 
 </div>
 
-<script>
-    $(function () {
 
-        $("[name=Boss]").click(function () {
-            var value = $(this).val();
-            var xmlhttp;
-            if (window.XMLHttpRequest) {
-                xmlhttp = new XMLHttpRequest();
-            } else {
-                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-            }
-            xmlhttp.onreadystatechange = function () {
-                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                    $("#Group").empty().append(xmlhttp.responseText);
-                }
-            }
-            //xmlhttp.open("GET", "/Authority/GetGroupList?Boss=" + value, true);
-            xmlhttp.open("GET", "/Authority/GetGroup?boss=" + value, true);
-            xmlhttp.send();
-        });
-
-
-    })
-</script>
 

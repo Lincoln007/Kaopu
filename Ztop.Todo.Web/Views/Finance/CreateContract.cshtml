@@ -9,6 +9,13 @@
 
 <form class="form-horizontal" id="Contract" action="/Finance/SaveContract" method="post" enctype="multipart/form-data">
     <div class="row">
+        <div class="col-md-12 col-xs-12">
+            <div class="alert alert-warning" role="alert" name="Message" style="display:none;">
+                <i class="icon-spinner icon-spin icon-large"></i>
+                <span>正在录入合同，请稍等......</span>
+            </div>
+        </div>
+     
         <div class="col-md-6 col-xs-6">
             <input type="hidden" name="ID" value="@(contract==null?"":contract.ID.ToString())" />
             <input type="hidden" name="Coding" value="@(contract==null?DateTime.Now.Ticks.ToString():contract.Coding)" />
@@ -76,6 +83,7 @@
                 <label class="control-label col-md-4">合同所属组织：</label>
                 <div class="col-md-8">
                     <select name="ZtopCompany" class="form-control">
+                        <option value="">请选择</option>
                         @foreach(ZtopCompany company in Enum.GetValues(typeof(ZtopCompany)))
                         {
                             <option value="@(company)" @(contract!=null&&contract.ZtopCompany==company?"selected=selected":"")>@(company.GetDescription())</option>
@@ -280,6 +288,11 @@
         });
 
         $("#Article-Search").submit(function () {
+            var ztopcompany = $("select[name='ZtopCompany']").val();
+            if (ztopcompany == "" || ztopcompany == undefined) {
+                alert("请选择合同所属组织");
+                return false;
+            }
             $("#Article-Error").hide();
             var values = $(this).serialize();
             $.getJSON("/Finance/GetJsonArticle", values, function (data) {

@@ -28,11 +28,11 @@
             <div class="col-md-2">
                 <div class="btn-group" role="group">
                     <a href="/Bank/AdvanceCollect" class="btn btn-primary" name="Advance"><i class="glyphicon glyphicon-cog"></i>高级统计</a>
-                    <a href="javascript:history.back()" class="btn btn-default"><i class="glyphicon glyphicon-arrow-left"></i>返回</a>
+                    <a href="/Bank/Index" class="btn btn-default"><i class="glyphicon glyphicon-home"></i>银行对账首页</a>
                 </div>
             </div>
             <div class="col-md-10" style="float:right;">
-                <form class="form-inline" role="form">
+                @*<form class="form-inline" role="form">
                     <div class="form-group">
                         <label class="control-label" for="">类别：</label>
                         <select name="" class="form-control">
@@ -53,14 +53,15 @@
                             }
                         </select>
                     </div>
-                </form>
+                </form>*@
             </div>
         </div>
         <hr />
         <div class="row">
             <div class="col-md-12">
                 <div class="alert alert-warning" role="alert" id="Message" style="display:none;">
-                    <span>正在进入高级统计界面.................................</span>
+                    <i class="icon-spinner icon-spin icon-large"></i>
+                    <span>正在进入高级统计界面,请稍等......</span>
                 </div>
             </div>
         </div>

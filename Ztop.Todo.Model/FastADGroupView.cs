@@ -30,8 +30,20 @@ namespace Ztop.Todo.Model
         public int ID { get; set; }
         public string Name { get; set; }
         public int OID { get; set; }
+        /// <summary>
+        /// 上级组
+        /// </summary>
+        [NotMapped]
+        public ADGroup Parent { get; set; }
+
         public int GID { get; set; }
+        [NotMapped]
+        public ADGroup ADGroup { get; set; }
+
         public int UID { get; set; }
+        [NotMapped]
+        public User User { get; set; }
+
         public string Username { get; set; }
         public string RealName { get; set; }
     }

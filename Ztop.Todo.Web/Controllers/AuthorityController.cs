@@ -20,21 +20,34 @@ namespace Ztop.Todo.Web.Controllers
         /// <returns></returns>
         public ActionResult Manager()
         {
-            //ViewBag.Organications = Core.AD_groupManager.GetOrganication();
-            var groups = Core.AuthorizeManager.GetList(Identity.Name);
-            ViewBag.Wait = Core.DataBookManager.Get(groups, Model.CheckStatus.Wait);
-            if (Identity.GroupType == GroupType.Manager||Identity.GroupType==GroupType.Administrator)
+            var fasts = Core.AuthorizeManager.GetFGUV(Identity.Name);
+            if (fasts != null)
             {
-                ViewBag.DGroups = ADController.GetUserDict(groups);
+               // ViewBag.First = fasts.Where(e => e.Parent != null).Select(e => e.Parent).Distinct().ToList();
+
+                var groups = fasts.Select(e => e.Name).ToList();
+                ViewBag.Wait = Core.DataBookManager.Get(groups, Model.CheckStatus.Wait);
+                //Session["Groups"] = groups;
             }
+            ViewBag.Fasts = fasts;
+            Session["Fasts"] = fasts;
+            return View();
+        }
 
-
-            var authorize = Core.AuthorizeManager.Get(Identity.Name);
-            if (authorize!=null&& authorize.Groups != null)
+        public ActionResult MyManager()
+        {
+            List<FastGroupUserView> fasts = Session["Fasts"] as List<FastGroupUserView>;
+            Session["Fasts"] = null;
+            Session.Remove("Fasts");
+            ViewBag.Fasts = fasts;
+            var groups = fasts.Select(e => e.Name).ToList();
+            if (groups != null)
             {
-                ViewBag.First = authorize.Groups.Where(e => e.Parent != null).Select(e => e.Parent).Distinct().ToList();
+                if (Identity.GroupType == GroupType.Manager || Identity.GroupType == GroupType.Administrator)
+                {
+                    ViewBag.DGroups = ADController.GetUserDict(groups);
+                }
             }
-            ViewBag.Authorize = authorize;
             return View();
         }
 
@@ -122,14 +135,30 @@ namespace Ztop.Todo.Web.Controllers
                 /*
                  * 2016-11-20 未完待续
                 */
+                ViewBag.First = fasts.Where(e => e.Parent != null).Select(e => e.Parent).Distinct().ToList();
+
             }
-            var authorize= Core.AuthorizeManager.Get(boss);
-            if (authorize!=null&&authorize.Groups != null)
-            {
-                ViewBag.First = authorize.Groups.Where(e=>e.Parent!=null).Select(e => e.Parent).Distinct().ToList();
-            }
-            ViewBag.Authorize = authorize;
+            ViewBag.Fasts = fasts;
+
+
+            //var authorize= Core.AuthorizeManager.Get(boss);
+            //if (authorize!=null&&authorize.Groups != null)
+            //{
+            //    ViewBag.First = authorize.Groups.Where(e=>e.Parent!=null).Select(e => e.Parent).Distinct().ToList();
+            //}
+            //ViewBag.Authorize = authorize;
             
+            return View();
+        }
+
+        public ActionResult GetFastGroup(string boss)
+        {
+            var fasts = Core.AuthorizeManager.GetFGUV(boss);
+            if (fasts != null)
+            {
+                ViewBag.First = fasts.Where(e => e.Parent != null).Select(e => e.Parent).Distinct().ToList();
+            }
+            ViewBag.Fasts = fasts;
             return View();
         }
 

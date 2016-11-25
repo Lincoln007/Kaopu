@@ -230,9 +230,10 @@ namespace Ztop.Todo.Web.Controllers
         /// <param name="edit"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult SaveInput(int year,int month,Company company,int[] serialNumber, DateTime[] Time,string[] voucher, double[] Income, double[] Pay, double[] Balance,string[] counterPart, string[] Account, string[] Summary,,string[] remark,bool edit=false)
+        public ActionResult SaveInput(int year,int month,Company company,bool edit=false)
         {
             var bills = Session["Read"] as List<BillOne>;
+
             if (bills == null || bills.Count == 0)
             {
                 return ErrorJsonResult("未读取银行对账信息！");
@@ -262,6 +263,13 @@ namespace Ztop.Todo.Web.Controllers
             ViewBag.Heads = bill_heads;
             return View();
         }
+        public ActionResult CollectBills(List<BillOne> list)
+        {
+            var dict = Core.Bill_OneManager.Collect(list);
+            ViewBag.Dict = dict;
+            return View();
+        }
+
         /// <summary>
         /// 作用：对某一笔账单进行归类
         /// 作者：汪建龙

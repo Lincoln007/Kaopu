@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Ztop.Todo.ActiveDirectory;
+using Ztop.Todo.Common;
 using Ztop.Todo.Manager;
 using Ztop.Todo.Model;
 
@@ -24,14 +25,15 @@ namespace Ztop.Todo.UpdateAD
                 _manager = new AD_GroupManager();
                 _parents = _manager.Get().Where(e => e.Type != ADType.Group).ToList();
                 Work();
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine(ex);
                 Console.ReadLine();
             }
             Console.WriteLine(DateTime.Now.ToString());
 
-           
+
         }
 
         private static void CheckRecord(string name,ADType type,List<ActiveDirectory.Group> values)

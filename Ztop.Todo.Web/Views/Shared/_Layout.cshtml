@@ -12,6 +12,7 @@
     <link href="~/Content/font-awesome.min.css" type="text/css" rel="stylesheet" />
     <link href="~/Content/Site.css" type="text/css" rel="stylesheet" />
     <link href="~/Content/sb-admin-2.css" type="text/css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/Content/css/font-awesome.min.css" />
 
     <script src="~/Scripts/jquery-1.9.1.min.js"></script>
     <script src="~/Scripts/sb-admin-2.js"></script>
@@ -23,7 +24,7 @@
     <script src="~/Scripts/metisMenu.min.js"></script>
     @*<script src="~/Scripts/Chart.js"></script>*@
     <script src="~/Scripts/Contract.js"></script>
-
+    <script src="~/Scripts/TodoMessage.js"></script>
    
     <style type="text/css">
         body{
@@ -120,7 +121,6 @@
                                             <li><a href="/Finance/OnAccount"><i class="glyphicon glyphicon-flag"></i>合同挂账</a></li>
                                             <li><a href="/Finance/BillSearch"><i class="glyphicon glyphicon-search"></i>到账查询</a></li>
                                             <li><a href="/Finance/InvoiceSearch"><i class="glyphicon glyphicon-search"></i>发票查询</a></li>
-
                                         </ul>
                                     </li>
                                 }
@@ -156,15 +156,13 @@
                                 {
                                     <li><a href="/Bank/Index"><i class="glyphicon glyphicon-calendar"></i>银行对账</a></li>
                                 }
-                                @if(Identity.Name== "靳小阳"|| Identity.Name == "汪建龙")
+                                @if(Identity.Name== "靳小阳"|| Identity.Name == "汪建龙"||Identity.Finance)
                                 {
                                     <li>
                                         <a href="#"><i class="glyphicon glyphicon-calendar"></i>银行对账<span class="fa arrow"></span></a>
                                         <ul class="nav nav-second-level">
                                             <li><a href="/Bank/Index"><i class="fa fa-desktop"></i>账单</a></li>
-                                            <li><a href="/Bank/Create?company=@(Company.Evaluation)"><i class="fa fa-balance-scale"></i>房地产评估</a></li>
-                                            <li><a href="/Bank/Create?company=@(Company.Projection)"><i class="fa fa-mortar-board"></i>土地规划设计</a></li>
-                                            <li><a href="/Bank/SetBalance"><i class="glyphicon glyphicon-warning-sign"></i>设置初始余额</a></li>
+                                          
                                         </ul>
                                     </li>
                                 }

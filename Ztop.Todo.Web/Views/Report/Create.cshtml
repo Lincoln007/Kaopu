@@ -12,6 +12,12 @@
         <input type="hidden" name="Type" value="@(sheet.Type)" />
         <input type="hidden" name="Number" value="@(sheet.Number)" />
         <input type="hidden" name="NumberExt" value="@(sheet.NumberExt)" />
+        <div class="col-md-6 col-xs-6 col-sm-6">
+            <div class="alert alert-warning" name="Message" role="alert" style="display:none;">
+                <i class="icon-spinner icon-spin icon-large"></i>
+                <span>正在保存，请稍等......</span>
+            </div>
+        </div>
         <div class="col-md-12 col-xs-12 col-sm-12">
             @{
                 Html.RenderPartial("SubmitButton");
@@ -29,6 +35,7 @@
             }
 
         </div>
+       
         <div class="col-md-12 col-xs-12 col-sm-12">
             <h3>基本信息</h3>
             <table class="table table-bordered" style="margin:0px;">
@@ -168,12 +175,14 @@
         });
 
         $("#form-Create").submit(function () {
+            $("div.alert.alert-warning[name='Message']").show(500);
             $("#form-Create button[type='Submit']").attr("disabled","false");
             var data = $(this).serialize();
             $.request("/Report/Save", data, function (json) {
                 alert(json.content);
                 $("#form-Create button[type='Submit']").removeAttr("disabled");
                 if(json.result==1){
+                    $("div.alert.alert-warning[name='Message']>span").html("成功提交，正在跳转,请稍等......");
                     location.href = "/Report/Index";
                 }
                 

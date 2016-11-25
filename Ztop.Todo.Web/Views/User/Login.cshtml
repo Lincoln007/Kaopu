@@ -4,6 +4,17 @@
 <h3 class="page-header">用户登录</h3>
 <form id="form-login" method="post" class="form-horizontal" action="">
     <div class="form-group">
+        <div class="col-md-3 col-md-offset-1">
+            <div class="alert alert-warning" role="alert" id="Message" style="display:none;">
+                <i class="icon-spinner icon-spin icon-large"></i>
+                <span>
+                    正在登录系统，请稍等.....
+                </span>
+            </div>
+        </div>
+       
+    </div>
+    <div class="form-group">
         <label class="control-label col-lg-1">用户名</label>
         <div class="col-lg-3">
             <input type="text" id="txt-username" name="Username" class="form-control" />
@@ -30,8 +41,15 @@
 <script>
     $(function () {
         $("#form-login").submit(function () {
+            $("#Message").show(500);
             var data = $(this).serialize();
             $.request("/user/LoginResult", data, function (json) {
+                if (json.result == 1) {
+                    $("#Message>span").html("成功登录，正在跳转首页.....");
+                } else {
+                    $("#Message").hide();
+                }
+              
                 location.href = "/";
             });
             return false;

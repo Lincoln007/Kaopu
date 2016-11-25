@@ -2,7 +2,7 @@
     Layout = null;
     Dictionary<string, double> dict = ViewBag.Dict;
     var userLabels = dict.Select(e => e.Key).ToArray();
-    var money = dict.Select(e => e.Value).ToArray();
+    var money = dict.Select(e => Math.Round(e.Value,2)).ToArray();
 }
 
 <div class="col-md-4">
@@ -19,7 +19,8 @@
             {
                 <tr>
                     <td>
-                        <a data-toggle="modal" data-target="#Modal" href="/Bank/UserCollect?name=@(entry.Key)" >@(entry.Key)</a>
+                        @(entry.Key)
+                        @*<a data-toggle="modal" data-target="#Modal" href="/Bank/UserCollect?name=@(entry.Key)" >@(entry.Key)</a>*@
                     </td>
                     <td>@(entry.Value)</td>
                 </tr>

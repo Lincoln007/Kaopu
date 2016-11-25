@@ -14,10 +14,14 @@
     <h2>@(Identity.Name)  您好! &nbsp;&nbsp;</h2>
 </div>
 
-<div class="btn-group">
-    <a data-toggle="modal" data-target="#Modal" href="/Bank/InputFile" class="btn btn-primary btn-sm" ><i class="glyphicon glyphicon-plus-sign"></i>录入月末账单Excel</a>
-    <a data-toggle="modal" data-target="#Modal" href="/Bank/SetBalance" class="btn btn-warning btn-sm"><i class="glyphicon glyphicon-warning-sign"></i>设置初始余额</a>
-</div>
+@if (Identity.Finance||Identity.Name== "靳小阳")
+{
+    <div class="btn-group">
+        <a data-toggle="modal" data-target="#Modal" href="/Bank/InputFile" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-plus-sign"></i>录入月末账单Excel</a>
+        <a data-toggle="modal" data-target="#Modal" href="/Bank/SetBalance" class="btn btn-warning btn-sm"><i class="glyphicon glyphicon-warning-sign"></i>设置初始余额</a>
+    </div>
+}
+
 
 <hr />
 
@@ -56,11 +60,11 @@
             <table class="table table-striped">
                 @if (Identity.Name == "靳小阳")
                 {
-                    <tr>
+                    @*<tr>
                         <td>
                             <a href="/Bank/Create?Company=@(Company.Evaluation)" class="btn btn-sm"><i class="glyphicon glyphicon-plus"></i>添加</a>
                         </td>
-                    </tr>
+                    </tr>*@
                 }
 
                 @foreach (var head in evaluations)
@@ -86,11 +90,11 @@
             <table class="table table-striped">
                 @if (Identity.Name == "靳小阳")
                 {
-                    <tr>
+                    @*<tr>
                         <td>
                             <a href="/Bank/Create?Company=@(Company.Projection)" class="btn btn-sm"><i class="glyphicon glyphicon-plus"></i>添加</a>
                         </td>
-                    </tr>
+                    </tr>*@
                 }
                @foreach(var head in projections)
                {

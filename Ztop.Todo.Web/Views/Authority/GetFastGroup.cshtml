@@ -1,167 +1,20 @@
 ﻿@using Ztop.Todo.Model;
 @using Ztop.Todo.ActiveDirectory;
-
-@{ 
+@{
     Layout = null;
-   // Authorize authorize = ViewBag.Authorize;
     List<ADGroup> groups = ViewBag.First;
     var catalogs = groups != null ? groups.Where(e => e.Type == ADType.Catalog).ToList() : null;
     var others = groups != null ? groups.Where(e => e.Type == ADType.Other).ToList() : null;
-
-
     List<string> BIG = XmlHelper.GetDitrict();
 
     List<FastGroupUserView> Fasts = ViewBag.Fasts;
 }
 
+<script src="~/Scripts/bootstrap.js"></script>
+
+
 <br />
-@if (Fasts != null)
-{
-    if (Request.Browser.IsMobileDevice)
-    {
-
-    }
-    else
-    {
-        <div class="row">
-            <div class="col-md-12">
-                @if (groups != null)
-                {
-                    var big = groups.GroupBy(e => e.Code).Select(e => e.Key).ToList();//
-                    <div class="col-md-2">
-                        <ul class="nav nav-pills nav-stacked" role="tablist">
-                            @foreach (var code in big)
-                            {
-                                var entry = BIG.FirstOrDefault(e => e.StartsWith(code));
-                                if (entry != null)
-                                {
-                                    <li role="presentation"><a href="#big-@(entry)" role="tab" data-toggle="tab">@(entry)</a></li>
-                                }
-                            }
-                            @foreach (var item in catalogs)
-                            {
-                                <li role="presentation"><a href="#catalog-@(item.Name)" role="tab" data-toggle="tab">@(item.Name)</a></li>
-                            }
-                            @foreach (var item in others)
-                            {
-                                <li role="presentation"><a href="#other-@(item.Name)" role="tab" data-toggle="tab">@(item.Name)</a></li>
-                            }
-
-                        </ul>
-                    </div>
-                    <div class="col-md-10">
-                        <div class="tab-content">
-                            @foreach (var code in big)
-                        {
-                            var entry = BIG.FirstOrDefault(e => e.StartsWith(code));
-                            if (entry != null)
-                            {
-                                var array = groups.Where(e => e.Code == code);
-                                    <div role="tabpanel" class="tab-pane" id="big-@(entry)">
-                                        <div class="col-md-3">
-                                            <ul class="nav nav-pills nav-stacked" role="tablist">
-                                                @foreach (var first in array)
-                                                {
-                                                    <li role="presentation"><a href="#second-@(first.Name)" role="tab" data-toggle="tab">@(first.Name)</a></li>
-                                                }
-                                            </ul>
-                                        </div>
-                                        <div class="col-md-9">
-                                            <div class="tab-content">
-                                                @foreach (var first in array)
-                                                {
-                                                    var array2 = Fasts.Where(e => e.OID == first.ID).ToList().ListToTable();
-                                                    //var array2 = authorize.Groups.Where(e => e.OID == first.ID).ToList().ListToTable();
-                                                    <div role="tabpanel" class="tab-pane" id="second-@(first.Name)">
-                                                        <table class="table">
-                                                            @foreach (var entrys in array2)
-                                                            {
-                                                                <tr>
-                                                                    @foreach (var item in entrys)
-                                                                    {
-                                                                        if (item != null)
-                                                                        {
-                                                                            <td>
-                                                                                <label class="checkbox-inline">
-                                                                                    <input type="checkbox" name="Group" value="@(item.Name)" /><strong>@(item.Name)</strong>
-                                                                                </label>
-                                                                            </td>
-                                                                        }
-
-                                                                    }
-                                                                </tr>
-                                                            }
-                                                        </table>
-                                                    </div>
-                                                }
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
-
-                            }
-
-                            @foreach (var item in catalogs)
-                        {
-                            var dicts = authorize.Groups.Where(e => e.OID == item.ID).ToList().ListToTable();
-                                <div class="tab-pane" role="tabpanel" id="catalog-@(item.Name)">
-                                    <table class="table">
-                                        @foreach (var array in dicts)
-                                        {
-                                            <tr>
-                                                @foreach (var entry in array)
-                                                {
-                                                    if (entry != null)
-                                                    {
-                                                        <td>
-                                                            <label class="checkbox-inline">
-                                                                <input type="checkbox" name="GroupName" value="@(entry.Name)" /><strong>@(entry.Name)</strong>
-                                                            </label>
-                                                        </td>
-                                                    }
-
-                                                }
-                                            </tr>
-                                        }
-                                    </table>
-                                </div>
-                            }
-
-                            @foreach (var item in others)
-                        {
-                            var dicts = authorize.Groups.Where(e => e.OID == item.ID).ToList().ListToTable();
-                                <div class="tab-pane" role="tabpanel" id="other-@(item.Name)">
-                                    <table class="table">
-                                        @foreach (var array in dicts)
-                                        {
-                                            <tr>
-                                                @foreach (var entry in array)
-                                                {
-                                                    if (entry != null)
-                                                    {
-                                                        <td>
-                                                            <label class="checkbox-inline">
-                                                                <input type="checkbox" name="GroupName" value="@(entry.Name)" /><strong>@(entry.Name)</strong>
-                                                            </label>
-                                                        </td>
-                                                    }
-                                                }
-                                            </tr>
-                                        }
-                                    </table>
-                                </div>
-                            }
-                        </div>
-                    </div>
-                }
-            </div>
-        </div>
-    }
-}
-
-
-
-@*@if (authorize != null)
+@if (Fasts != null && Fasts.Count > 0)
 {
     if (Request.Browser.IsMobileDevice)
     {
@@ -226,7 +79,8 @@
                                                     <div class="tab-content">
                                                         @foreach (var first in array)
                                                         {
-                                                            var array2 = authorize.Groups.Where(e => e.OID == first.ID).ToList().ListToTable();
+                                                            var array2 = Fasts.Where(e => e.OID == first.ID).ToList().ListToTable();
+                                                            //var array2 = authorize.Groups.Where(e => e.OID == first.ID).ToList().ListToTable();
                                                             <div role="tabpanel" class="tab-pane" id="second-@(first.Name)">
                                                                 <table class="table">
                                                                     @foreach (var entrys in array2)
@@ -261,7 +115,8 @@
                                 {
                                     foreach (var item in catalogs)
                                     {
-                                        var dicts = authorize.Groups.Where(e => e.OID == item.ID).ToList().ListToTable();
+                                        var dicts = Fasts.Where(e => e.OID == item.ID).ToList().ListToTable();
+                                        //var dicts = authorize.Groups.Where(e => e.OID == item.ID).ToList().ListToTable();
                                         <div class="tab-pane" role="tabpanel" id="catalog-@(item.Name)">
                                             <table class="table">
                                                 @foreach (var array in dicts)
@@ -289,7 +144,8 @@
 
                                 @foreach (var item in others)
                                 {
-                                    var dicts = authorize.Groups.Where(e => e.OID == item.ID).ToList().ListToTable();
+                                    var dicts = Fasts.Where(e => e.OID == item.ID).ToList().ListToTable();
+                                    //var dicts = authorize.Groups.Where(e => e.OID == item.ID).ToList().ListToTable();
                                     <div class="tab-pane" role="tabpanel" id="other-@(item.Name)">
                                         <table class="table">
                                             @foreach (var array in dicts)
@@ -352,7 +208,7 @@
                     <div class="col-md-10">
                         <div class="tab-content">
                             @foreach (var code in big)
-                        {
+                            {
                             var entry = BIG.FirstOrDefault(e => e.StartsWith(code));
                             if (entry != null)
                             {
@@ -366,11 +222,11 @@
                                                 }
                                             </ul>
                                         </div>
-                                        <div class="col-md-9">
+                                        <div class="col-md-8">
                                             <div class="tab-content">
                                                 @foreach (var first in array)
                                                 {
-                                                    var array2 = authorize.Groups.Where(e => e.OID == first.ID).ToList().ListToTable();
+                                                    var array2 = Fasts.Where(e => e.OID == first.ID).ToList().ListToTable();
                                                     <div role="tabpanel" class="tab-pane" id="second-@(first.Name)">
                                                         <table class="table">
                                                             @foreach (var entrys in array2)
@@ -401,8 +257,8 @@
                             }
 
                             @foreach (var item in catalogs)
-                        {
-                            var dicts = authorize.Groups.Where(e => e.OID == item.ID).ToList().ListToTable();
+                            {
+                                var dicts = Fasts.Where(e => e.OID == item.ID).ToList().ListToTable();
                                 <div class="tab-pane" role="tabpanel" id="catalog-@(item.Name)">
                                     <table class="table">
                                         @foreach (var array in dicts)
@@ -427,8 +283,8 @@
                             }
 
                             @foreach (var item in others)
-                        {
-                            var dicts = authorize.Groups.Where(e => e.OID == item.ID).ToList().ListToTable();
+                            {
+                                var dicts = Fasts.Where(e => e.OID == item.ID).ToList().ListToTable();
                                 <div class="tab-pane" role="tabpanel" id="other-@(item.Name)">
                                     <table class="table">
                                         @foreach (var array in dicts)
@@ -456,9 +312,8 @@
             </div>
         </div>
     }
-}*@
+}
+else
+{
 
-
-
-
-
+}

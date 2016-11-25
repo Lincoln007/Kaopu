@@ -177,8 +177,13 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.custom.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\css\font-awesome-ie7.css" />
+    <Content Include="Content\css\font-awesome-ie7.min.css" />
+    <Content Include="Content\css\font-awesome.css" />
+    <Content Include="Content\css\font-awesome.min.css" />
     <Content Include="Content\font-awesome.css" />
     <Content Include="Content\font-awesome.min.css" />
+    <Content Include="Content\font\fontawesome-webfont.svg" />
     <Content Include="Content\jqtree.css" />
     <Content Include="Content\jquery.autocomplete.css" />
     <Content Include="Content\logo.png" />
@@ -219,6 +224,10 @@
     <Content Include="Excels\Report.xls" />
     <Content Include="Areas\Jurisdiction\Views\Admin\EditImpower.cshtml" />
     <Content Include="Areas\Jurisdiction\Views\Admin\GetAuthorizes.cshtml" />
+    <Content Include="Content\font\fontawesome-webfont.eot" />
+    <Content Include="Content\font\fontawesome-webfont.ttf" />
+    <Content Include="Content\font\fontawesome-webfont.woff" />
+    <Content Include="Content\font\FontAwesome.otf" />
     <None Include="Properties\PublishProfiles\TODO.pubxml" />
     <None Include="Scripts\jquery-1.9.1.intellisense.js" />
     <Content Include="ProjectInfo.xml" />
@@ -240,6 +249,7 @@
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\sb-admin-2.js" />
+    <Content Include="Scripts\TodoMessage.js" />
     <Content Include="Scripts\tree.jquery.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="SystemInfo.xml">
@@ -337,6 +347,9 @@
     <Content Include="Views\Bank\CategoryCollect.cshtml" />
     <Content Include="Views\Bank\AdvanceCollect.cshtml" />
     <Content Include="Views\Bank\UserCollect.cshtml" />
+    <Content Include="Views\Bank\CollectBills.cshtml" />
+    <Content Include="Views\Authority\GetFastGroup.cshtml" />
+    <Content Include="Views\Authority\MyManager.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

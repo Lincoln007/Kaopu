@@ -22,6 +22,25 @@ namespace Ztop.Todo.Manager
                 return db.AD_Groups.ToList();
             }
         }
+        /// <summary>
+        /// 作用：通过ID获取Ad_group对象
+        /// 作者：汪建龙
+        /// 编写时间：2016年11月24日09:21:31
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ADGroup Get(int id)
+        {
+            using (var db = GetDbContext())
+            {
+                var entry= db.AD_Groups.Find(id);
+                if (entry != null)
+                {
+                    entry.Parent = db.AD_Groups.FirstOrDefault(e => e.OID == entry.OID);
+                }
+                return entry;
+            }
+        }
 
         /// <summary>
         /// 作用：通过名称搜索  可追加类型
@@ -89,7 +108,7 @@ namespace Ztop.Todo.Manager
         }
 
         /// <summary>
-        /// 作用：通过OID获取列表
+        /// 作用：通过OID(上级组ID)获取列表
         /// 作者：汪建龙
         /// 编写时间：2016年10月31日16:23:59
         /// </summary>
@@ -167,6 +186,23 @@ namespace Ztop.Todo.Manager
         public List<ADGroup> GetAllGroup()
         {
             return Get().Where(e => e.Type == ADType.Group).ToList();
+        }
+
+        /// <summary>
+        /// 作用：通过ID列表，获取AD_group列表
+        /// 作者：汪建龙
+        /// 编写时间：2016年11月24日09:22:39
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        public List<ADGroup> Get(List<int> ids)
+        {
+            var list = new List<ADGroup>();
+            foreach(var item in ids)
+            {
+                list.Add(Get(item));
+            }
+            return list;
         }
 
         

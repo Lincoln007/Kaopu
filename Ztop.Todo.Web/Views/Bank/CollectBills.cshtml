@@ -1,0 +1,50 @@
+﻿@{ 
+    Layout = null;
+    Dictionary<string, Dictionary<string, double>> dict = ViewBag.Dict;
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="text-center">收支统计表</h3>
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>收支</th>
+                    @foreach (var entry in dict)
+                    {
+                        <th colspan="@(entry.Value.Count)" class="text-center">@(entry.Key)</th>
+                    }
+                </tr>
+                <tr>
+                    <th>类别</th>
+                    @foreach (var entry in dict)
+                    {
+                        foreach (var item in entry.Value)
+                        {
+                            <th>@(item.Key)</th>
+                        }
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>金额【元】</td>
+                    @foreach(var entry in dict)
+                    {
+                        foreach(var item in entry.Value)
+                        {
+                            <td>@(item.Value)</td>
+                        }
+                    }
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="col-md-6">
+            
+        </div>
+        <div class="col-md-6">
+
+        </div>
+    </div>
+</div>

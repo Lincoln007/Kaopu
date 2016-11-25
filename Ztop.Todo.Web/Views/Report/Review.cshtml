@@ -5,6 +5,13 @@
     List<Sheet> sheets = ViewBag.List;
     SheetVerifyParameter parameter = ViewBag.Parameter;
 }
+<script >
+    $(function () {
+        $("#Review-form").submit(function () {
+            $("div.alert.alert-warning[name='Message']").show(500);
+        });
+    });
+</script>
 
 <div class="col-md-4 well" style="padding:0px;">
     <fieldset><legend>查询设置</legend></fieldset>
@@ -12,6 +19,12 @@
         <input type="hidden" name="Time" value="@(parameter.Time)"/>
         <input type="hidden" name="SheetType" value="@(parameter.SheetType.HasValue?parameter.SheetType.Value.GetDescription():"")" />
         <input type="hidden" name="Name" value="@(Identity.Name)" />
+        <div class="form-group">
+            <div class="alert alert-warning" role="alert" name="Message" style="display:none;">
+                <i class="icon-spinner icon-spin icon-large"></i>
+                <span>正在查询，请稍等.....</span>
+            </div>
+        </div>
         <div class="form-group">
             <label class="control-label">系统流水编号：</label>
             <div class="col-md-12">
@@ -118,6 +131,8 @@
                 </select>
             </div>
         </div>
+
+        
        
         <hr />
         <div class="form-group">

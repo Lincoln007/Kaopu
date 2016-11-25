@@ -38,6 +38,7 @@
             }
         });
         $("form").submit(function () {
+            ShowMessage("正在授权，您选择的授权组较多，请稍等......");
             $("form button[type='submit']").attr("disabled", "false");
         });
     })
@@ -48,6 +49,12 @@
 <form class="form-horizontal" method="post" action="" >
     <div class="row">
         <div class="col-md-12">
+            <div class="form-group">
+                <div class="alert alert-warning" role="alert" name="Message" style="display:none;">
+                    <i class="icon-spin icon-spinner icon-large"></i>
+                    <span></span>
+                </div>
+            </div>
             <div class="form-group">
                 <label for="" class="control-label col-md-1">管理者：</label>
                 <div class="col-md-11">
