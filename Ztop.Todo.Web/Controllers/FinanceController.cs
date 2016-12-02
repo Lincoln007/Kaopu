@@ -476,6 +476,7 @@ namespace Ztop.Todo.Web.Controllers
             ViewBag.Results = Core.InvoiceManager.Search(parameter);
             ViewBag.Department = Core.UserManager.GetUserGroups().Select(e => e.Name).ToList();
             ViewBag.Parameter = parameter;
+            ViewBag.Page = parameter.Page;
             return View();
         }
 
@@ -531,6 +532,7 @@ namespace Ztop.Todo.Web.Controllers
             ViewBag.Results = Core.ContractManager.Search(parameter);
             ViewBag.Department = Core.UserManager.GetUserGroups().Select(e => e.Name).ToList();
             ViewBag.Parameter = parameter;
+            ViewBag.Page = parameter.Page;
             return View(); 
         }
 

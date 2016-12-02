@@ -61,7 +61,7 @@
                         <span class="icon-bar"></span>
                     </button>
                     <a href="/" class="navbar-brand logo">智拓TODO</a>
-                    <a href="/"class="navbar-brand">报销系统</a>
+                    <a href="/"class="navbar-brand">任务系统</a>
                 </div>
                 <ul class="navbar-right nav navbar-nav">
                     @if (!string.IsNullOrEmpty(Identity.Name))
@@ -89,7 +89,7 @@
                     <div class="navbar-default sidebar" role="navigation">
                         <div class="sidebar-nav navbar-collapse">
                             <ul class="nav" id="side-menu">
-                                @*<li>
+                                <li>
                                     <a href="#"><i class="glyphicon glyphicon-leaf"></i> 任务系统<span class="fa arrow"></span></a>
                                     <ul class="nav nav-second-level">
                                         <li><a href="/Home/Index"><i class="fa fa-desktop"></i> 欢迎页</a></li>
@@ -128,12 +128,12 @@
                                 @if (!Identity.Admin)
                                 {
                                     <li><a href="/iPad/Index"><i class="fa fa-apple"></i>平板管理系统</a></li>
-                                }*@
+                                }
 
 
 
 
-                                <li><a href="/Report/Index"><i class="fa fa-desktop"></i>欢迎页</a></li>
+                                @*<li><a href="/Report/Index"><i class="fa fa-desktop"></i>欢迎页</a></li>
                                 <li><a href="/Report/Create?type=@(SheetType.Daily)"><i class="fa fa-map-o"></i>日常报销填写</a></li>
                                 <li><a href="/Report/Create?type=@(SheetType.Errand)"><i class="fa fa-plane"></i>出差报销填写</a></li>
                                 @if (Identity.Director||Identity.Name== "靳小阳"||Identity.Name=="汪建龙")
@@ -165,7 +165,7 @@
                                           
                                         </ul>
                                     </li>
-                                }
+                                }*@
                              
                             </ul>
                         </div>

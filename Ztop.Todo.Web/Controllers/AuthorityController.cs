@@ -20,7 +20,7 @@ namespace Ztop.Todo.Web.Controllers
         /// <returns></returns>
         public ActionResult Manager()
         {
-            var fasts = Core.AuthorizeManager.GetFGUV(Identity.Name);
+            var fasts = Core.AuthorizeManager.GetFGUV2(Identity.Name);
             if (fasts != null)
             {
                // ViewBag.First = fasts.Where(e => e.Parent != null).Select(e => e.Parent).Distinct().ToList();
@@ -39,6 +39,8 @@ namespace Ztop.Todo.Web.Controllers
             List<FastGroupUserView> fasts = Session["Fasts"] as List<FastGroupUserView>;
             Session["Fasts"] = null;
             Session.Remove("Fasts");
+
+            fasts = Core.AuthorizeManager.RichFGUV(fasts);
             ViewBag.Fasts = fasts;
             var groups = fasts.Select(e => e.Name).ToList();
             if (groups != null)

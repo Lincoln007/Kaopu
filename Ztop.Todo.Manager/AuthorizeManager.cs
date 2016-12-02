@@ -176,6 +176,33 @@ namespace Ztop.Todo.Manager
                 return result;
             }
         }
+
+        public List<FastGroupUserView> RichFGUV(List<FastGroupUserView> list)
+        {
+            if (list == null || list.Count == 0)
+            {
+                return list;
+            }
+            using (var db = GetDbContext())
+            {
+                foreach(var item in list)
+                {
+                    item.ADGroup = db.AD_Groups.FirstOrDefault(e => e.ID == item.GID);
+                    item.Parent = db.AD_Groups.FirstOrDefault(e => e.ID == item.OID);
+                    item.User = db.Users.FirstOrDefault(e => e.ID == item.UID);
+                }
+                return list;
+            }
+        }
+
+        public List<FastGroupUserView> GetFGUV2(string realName)
+        {
+            using (var db = GetDbContext())
+            {
+                var result = db.FastGroupUserViews.Where(e => e.RealName.ToUpper() == realName.ToUpper()).ToList();
+                return result;
+            }
+        }
         /// <summary>
         /// 作用：通过用户ID获取列表
         /// 作者：汪建龙

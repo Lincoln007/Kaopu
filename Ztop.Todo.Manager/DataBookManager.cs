@@ -137,18 +137,22 @@ namespace Ztop.Todo.Manager
         public List<DataBook> Get(List<string> GroupNames, CheckStatus status)
         {
             var list = new List<DataBook>();
-            foreach (var item in GroupNames)
+            using(var db = GetDbContext())
             {
-                var glist = GetListByGroupName(item).Where(e => e.Status == status).ToList();
-                if (glist != null)
+                var result = db.DataBooks.Where(e => e.Status == status).ToList();
+                if (result == null || result.Count == 0)
                 {
-                    foreach (var entry in glist)
+                    return list;
+                }
+                foreach(var item in result)
+                {
+                    if (GroupNames.Contains(item.GroupName))
                     {
-                        list.Add(entry);
+                        list.Add(item);
                     }
                 }
+                return list;
             }
-            return list;
         }
 
         public DataBook Check(int ID, string Reason, string Checker, int? Day, bool? Check, CheckStatus status)
