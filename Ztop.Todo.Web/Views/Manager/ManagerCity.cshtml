@@ -1,0 +1,132 @@
+﻿@{
+    Layout = null;
+    List<City> Provinces = ViewBag.Provinces;
+    List<City> Citys = ViewBag.Citys;
+    List<City> Districts = ViewBag.Districts;
+    List<City> Towns = ViewBag.Towns;
+}
+
+<script>
+    $(function () {
+        $("#City a.btn.btn-danger").click(function () {
+            HideMessage();
+            if (confirm("您确定要删除吗？")) {
+                ShowMessage("正在删除，请稍等......");
+                var href = $(this).attr("href");
+                $.request(href, null, function (json) {
+                    if (json.result == 0) {
+                        ShowMessage(json.content);
+                    } else {
+                        ShowMessage("成功删除，正在更新城市表，请稍等......");
+                        location.href = "/Manager/Index";
+                    }
+                });
+            }
+            return false;
+        });
+
+        $("#City a[name='Node']").click(function () {
+            var childNode = $(this).children("i");
+            var targetName = $(this).attr("data-target");
+            if (childNode.hasClass("glyphicon-minus-sign")) {
+                childNode.removeClass("glyphicon-minus-sign").addClass("glyphicon-plus-sign");
+              
+                HideNode(targetName);
+            } else {
+                childNode.removeClass("glyphicon-plus-sign").addClass("glyphicon-minus-sign");
+                ShowNode(targetName);
+            }
+        });
+    });
+</script>
+<h3 class="text-center">城市管理</h3>
+<a href="/Manager/CreateProvince" data-toggle="modal" data-target="#Modal" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-plus"></i>添加省份</a>
+<div class="alert alert-warning" role="alert" name="Message" style="display:none">
+    <i class="icon-spin icon-spinner"></i>
+    <span></span>
+</div>
+<hr />
+
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>城市名</th>
+            <th>代码</th>
+            <th>类别</th>
+            <th>备注</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var province in Provinces)
+        {
+            <tr>
+                <td>
+                    <a name="Node" data-target="City-@(province.Name)"><i class="glyphicon glyphicon-plus-sign"></i></a>
+                    @(province.Name)
+                </td>
+                <td>@(province.Code)</td>
+                <td>@(province.Rank.GetDescription())</td>
+                <td>@(province.Remark)</td>
+                <td>
+                    <a href="/Manager/CreateCity?name=@(province.Name)" data-toggle="modal" data-target="#Modal" class="btn btn-warning btn-xs"><i class="glyphicon glyphicon-plus"></i>添加市级</a>
+                    <a href="/Manager/EditCity?id=@(province.ID)" data-toggle="modal" data-target="#Modal" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i>编辑</a>
+                    <a href="/Manager/DeleteCity?id=@(province.ID)"  class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-remove"></i>删除</a>
+                 </td>
+            </tr>
+            var CS = Citys.Where(e => e.PCID == province.ID).OrderBy(e=>e.Code).ToList();
+            foreach(var city in CS)
+            {
+                <tr name="City-@(province.Name)" style="display:none">
+                    <td>
+                        --
+                        <a name="Node" data-target="City-@(province.Name)-@(city.Name)"><i class="glyphicon glyphicon-plus-sign"></i></a>
+                        @(city.Name)
+                    </td>
+                    <td>@(city.Code)</td>
+                    <td>@(city.Rank.GetDescription())</td>
+                    <td>@(city.Remark)</td>
+                    <td>
+                        <a href="/Manager/CreateCity?name=@(city.Name)"  data-toggle="modal" data-target="#Modal" class="btn btn-info btn-xs"><i class="glyphicon glyphicon-plus"></i>添加区县</a>
+                        <a href="/Manager/EditCity?id=@(city.ID)" data-toggle="modal" data-target="#Modal" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i>编辑</a>
+                        <a href="/Manager/DeleteCity?id=@(city.ID)"  class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-remove"></i>删除</a>
+                    </td>
+                </tr>
+
+                var DL = Districts.Where(e => e.PCID == city.ID).OrderBy(e=>e.Code).ToList();
+                foreach(var district in DL)
+                {
+                    <tr name="City-@(province.Name)-@(city.Name)" style="display:none;">
+                        <td>
+                            ----
+                            <a name="Node" data-target="City-@(province.Name)-@(city.Name)-@(district.Name)"><i class="glyphicon glyphicon-plus-sign"></i></a>
+                            @(district.Name)
+                        </td>
+                        <td>@(district.Code)</td>
+                        <td>@(district.Rank.GetDescription())</td>
+                        <td>@(district.Remark)</td>
+                        <td>
+                            <a href="/Manager/CreateCity?name=@(district.Name)" data-toggle="modal" data-target="#Modal" class="btn btn-success btn-xs"><i class="glyphicon glyphicon-plus"></i>添加乡镇</a>
+                            <a href="/Manager/EditCity?id=@(district.ID)" data-toggle="modal" data-target="#Modal" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i>编辑</a>
+                            <a href="/Manager/DeleteCity?id=@(district.ID)" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-remove"></i>删除</a>
+                        </td>
+                    </tr>
+                    var TL = Towns.Where(e => e.PCID == district.ID).OrderBy(e=>e.Code).ToList();
+                    foreach(var town in TL)
+                    {
+                        <tr name="City-@(province.Name)-@(city.Name)-@(district.Name)" style="display:none;">
+                            <td>@(string.Format("------{0}",town.Name))</td>
+                            <td>@(town.Code)</td>
+                            <td>@(town.Rank.GetDescription())</td>
+                            <td>@(town.Remark)</td>
+                            <td>
+                                <a href="/Manager/EditCity?id=@(town.ID)" data-toggle="modal" data-target="#Modal" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i>编辑</a>
+                                <a href="/Manager/DeleteCity?id=@(town.ID)"  class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-remove"></i>删除</a>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+        }
+    </tbody>
+</table>

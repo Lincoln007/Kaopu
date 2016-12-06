@@ -88,6 +88,7 @@
     <Compile Include="BillContractManager.cs" />
     <Compile Include="BillManager.cs" />
     <Compile Include="Bill_OneManager.cs" />
+    <Compile Include="CityManager.cs" />
     <Compile Include="CommentManager.cs" />
     <Compile Include="ContractArticleManager.cs" />
     <Compile Include="ContractFileManager.cs" />
@@ -104,6 +105,7 @@
     <Compile Include="ManagerCore.cs" />
     <Compile Include="MessageManager.cs" />
     <Compile Include="NotificationManager.cs" />
+    <Compile Include="Project_TypeManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueryableExtensions.cs" />
     <Compile Include="QueryManager.cs" />

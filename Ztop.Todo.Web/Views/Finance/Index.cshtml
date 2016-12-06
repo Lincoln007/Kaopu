@@ -58,7 +58,7 @@
                         <th>合同名称</th>
                         <th>对方单位</th>
                     </tr>
-                    @foreach (var contract in list.Where(e => e.ZtopCompany == ZtopCompany.Evaluation))
+                    @foreach (var contract in list.Where(e => e.ZtopCompany == ZtopCompany.Evaluation).OrderByDescending(e=>e.CreateTime).Take(15))
                     {
                         <tr>
                             <td><a href="/Finance/Detail?id=@(contract.ID)">@(contract.Coding)</a> </td>
@@ -83,7 +83,7 @@
                         <th>合同名称</th>
                         <th>对方单位</th>
                     </tr>
-                    @foreach (var contract in list.Where(e => e.ZtopCompany == ZtopCompany.Projection))
+                    @foreach (var contract in list.Where(e => e.ZtopCompany == ZtopCompany.Projection).OrderByDescending(e=>e.CreateTime).Take(15))
                     {
                         <tr>
                             <td><a href="/Finance/Detail?id=@(contract.ID)">@(contract.Coding)</a> </td>
@@ -110,7 +110,7 @@
                         <th>合同名称</th>
                         <th>对方单位</th>
                     </tr>
-                    @foreach (var contract in list.Where(e => e.ZtopCompany == ZtopCompany.ZhejiangUniversity))
+                    @foreach (var contract in list.Where(e => e.ZtopCompany == ZtopCompany.ZhejiangUniversity).OrderByDescending(e=>e.CreateTime).Take(15))
                     {
                         <tr>
                             <td><a href="/Finance/Detail?id=@(contract.ID)">@(contract.Coding)</a> </td>
@@ -135,7 +135,7 @@
                         <th>合同名称</th>
                         <th>对方单位</th>
                     </tr>
-                    @foreach (var contract in list.Where(e => e.ZtopCompany == ZtopCompany.Other))
+                    @foreach (var contract in list.Where(e => e.ZtopCompany == ZtopCompany.Other).OrderByDescending(e=>e.CreateTime).Take(15))
                     {
                         <tr>
                             <td><a href="/Finance/Detail?id=@(contract.ID)">@(contract.Coding)</a> </td>

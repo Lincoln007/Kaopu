@@ -3,6 +3,7 @@
     ViewBag.Title = "查看项目合同";
     Layout = "~/Views/Shared/_Layout.cshtml";
     Contract contract = ViewBag.Contract;
+    
 }
 
 <hr />
@@ -59,19 +60,19 @@
                                 <div class="col-md-8">
                                     <input type="hidden" name="ZtopCompany" value="@(contract.ZtopCompany)" />
                                     <input type="text" class="form-control" value="@(contract.ZtopCompany.GetDescription())" readonly />
-                                    @*<select name="ZtopCompany" class="form-control">
-                                        <option value="@(ZtopCompany.Evaluation)" @(contract!=null&&contract.Company==ZtopCompany.Evaluation?"selec")>@(ZtopCompany.Evaluation.GetDescription())</option>
-                                        <option value="@(ZtopCompany.Projection)">@(ZtopCompany.Projection.GetDescription())</option>
-                                    </select>*@
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="control-label col-md-4">发票金额：</label>
                                 <div class="col-md-8">
                                     <div class="input-group">
-                                        <input type="number" name="Money" placeholder="金额" class="form-control" required max="@(contract.Money)" />
+                                        <input type="number" name="Money" placeholder="金额" class="form-control" required max="@(contract.Money)" data-toggle="tooltip" data-placement="bottom" title="最大金额：0元"    />
                                         <span class="input-group-addon">元</span>
                                     </div>
+                                    <div style="margin-top:5px;">
+                                        <span class="label label-warning">@string.Format("目前可开金额：{0}元整",contract.Remain)</span>
+                                    </div>
+                                   
                                 </div>
                             </div>
                         </div>

@@ -1,0 +1,65 @@
+﻿@{ 
+    Layout = null;
+    City city = ViewBag.PreCity;
+    }
+
+<script>
+    $(function () {
+        $("#Add-City").submit(function () {
+            $("#Add-City button[type='submit']").button("正在添加......");
+            ShowMessage("正在添加城市，请稍等......");
+            var data = $(this).serialize();
+            $.request("/Manager/SaveCity", data, function (json) {
+                if (json.result == 0) {
+                    ShowMessage(json.content);
+                } else {
+                    ShowMessage("成功保存城市，正在跳转，请稍等......");
+                    location.href = "/Manager/Index";
+                }
+            });
+            return false;
+        });
+    });
+</script>
+<h3 class="text-center">添加城市</h3>
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-warning" role="alert" name="Message" style="display:none">
+            <i class="icon-spin icon-spinner icon-large"></i>
+            <span></span>
+        </div>
+        <form class="form-horizontal" method="post" id="Add-City">
+            <div class="form-group">
+                <label class="control-label col-md-3">城市名称：</label>
+                <div class="col-md-8">
+                    <input type="text" name="Name" class="form-control" placeholder="城市名称"  required/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">城市代码：</label>
+                <div class="col-md-8">
+                    <input type="text" name="Code" class="form-control" placeholder="城市代码" required />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">所属城市：</label>
+                <div class="col-md-8">
+                    <input type="text" class="form-control" value="@(city!=null?city.Name:"")" readonly />
+                    <input type="hidden" name="Rank" value="@(city!=null?city.Rank+1:Rank.Province)" />
+                    <input type="hidden" name="PCID" value="@(city!=null?city.ID:0)" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">备注：</label>
+                <div class="col-md-8">
+                    <textarea name="Remark" class="form-control" rows="3"></textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-8 col-md-offset-3">
+                    <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i>确定</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

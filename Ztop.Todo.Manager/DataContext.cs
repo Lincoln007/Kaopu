@@ -75,7 +75,13 @@ namespace Ztop.Todo.Manager
 
         #region 项目管理系统
 
+        public DbSet<Article> Articles { get; set; }
+
         public DbSet<ContractArticle> ContractArticles { get; set; }
+        
+        public DbSet<City> Citys { get; set; }
+
+        public DbSet<ProjectType> Project_Types { get; set; }
         #endregion
 
         #region 平板管理系统
@@ -116,7 +122,7 @@ namespace Ztop.Todo.Manager
         public DbSet<ContractFile> ContractFiles { get; set; }
         public DbSet<BillAccount> BillAccounts { get; set; }
         public DbSet<BillContract> BillContracts { get; set; }
-        public DbSet<Article> Articles { get; set; }
+     
      
        
       

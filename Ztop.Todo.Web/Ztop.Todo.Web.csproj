@@ -161,6 +161,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\AuthorityController.cs" />
     <Compile Include="Controllers\iPadController.cs" />
+    <Compile Include="Controllers\ManagerController.cs" />
     <Compile Include="Controllers\NotificationController.cs" />
     <Compile Include="Controllers\QueryController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
@@ -350,6 +351,18 @@
     <Content Include="Views\Bank\CollectBills.cshtml" />
     <Content Include="Views\Authority\GetFastGroup.cshtml" />
     <Content Include="Views\Authority\MyManager.cshtml" />
+    <Content Include="Views\Manager\Index.cshtml" />
+    <Content Include="Views\Manager\ManagerCity.cshtml" />
+    <Content Include="Views\Manager\CreateProvince.cshtml" />
+    <Content Include="Views\Manager\CreateCity.cshtml" />
+    <Content Include="Views\Manager\EditCity.cshtml" />
+    <Content Include="Views\Manager\ChooseCity.cshtml" />
+    <Content Include="Views\Manager\ManagerProjectType.cshtml" />
+    <Content Include="Views\Manager\CreateProjectType.cshtml" />
+    <Content Include="Views\Bank\InputProjection.cshtml" />
+    <Content Include="Views\Bank\InputEvaluation.cshtml" />
+    <Content Include="Views\Manager\EditProjectType.cshtml" />
+    <Content Include="Views\Manager\ChooseProjectType.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

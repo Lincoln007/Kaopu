@@ -1,0 +1,62 @@
+﻿@{ 
+    Layout = null;
+    ProjectType ProjectType = ViewBag.ProjectType;
+}
+<script >
+    $(function () {
+        $("#Project-Edit").submit(function () {
+            ShowWarningMessage("正在编辑，请稍等......");
+            var data = $(this).serialize();
+            $.request("/Manager/EditProjectTyope", data, function (json) {
+                if (json.result == 0) {
+                    ShowErrorMessage(json.content);
+                } else {
+                    ShowSuccessMessage("成功编辑，正在刷新，请稍等......");
+                    location.href = "/Manager/Index?category=@(SystemCategory.ProjectType)";
+                }
+            });
+            return false;
+        });
+    });
+</script>
+
+
+<h3 class="text-center">编辑项目类型</h3>
+<div class="alert alert-warning" role="alert" name="Message" style="display:none">
+    <i class="icon-spin icon-spinner icon-large"></i>
+    <span></span>
+</div>
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <form class="form-horizontal" method="post" action="" id="Project-Edit">
+            <div class="form-group">
+                <label class="control-label col-md-3">代码：</label>
+                <div class="col-md-8">
+                    <input type="text" name="Chars" class="form-control" placeholder="代码" required value="@(ProjectType.Chars)" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">项目类型名称：</label>
+                <div class="col-md-8">
+                    <input type="text" name="Name" class="form-control" placeholder="项目类型名称" value="@(ProjectType.Name)" required />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">级别：</label>
+                <div class="col-md-8">
+                    <input type="hidden" name="ID" value="@(ProjectType.ID)" />
+                    <input type="hidden" name="PPIC" value="@(ProjectType.PPID)" />
+                    <input type="hidden" name="Degree" value="@(ProjectType.Degree)" />
+                    <input type="text"  class="form-control"  value="@(ProjectType.Degree.GetDescription())" readonly />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-8 col-md-offset-3">
+                    <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i>确定</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+

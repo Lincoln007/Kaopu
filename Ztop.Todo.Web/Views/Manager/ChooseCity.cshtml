@@ -1,0 +1,100 @@
+﻿@{ 
+    Layout = null;
+    List<City> Provinces = ViewBag.Provinces;
+    List<City> Citys = ViewBag.Citys;
+    List<City> Districts = ViewBag.Districts;
+    List<City> Towns = ViewBag.Towns;
+}
+
+
+<script >
+    $(function () {
+        $("#City button[name='OK']").click(function () {
+            var val = $("input[name='CityName']:checked").val();
+            $("input[name='City']").val(val);
+        });
+
+        $("#City a[name='Node']").click(function () {
+            var childNode = $(this).children("i");
+            var targetName = $(this).attr("data-target");
+            if (childNode.hasClass("glyphicon-minus-sign")) {
+                childNode.removeClass("glyphicon-minus-sign").addClass("glyphicon-plus-sign");
+                HideNode(targetName);
+            } else {
+                childNode.removeClass("glyphicon-plus-sign").addClass("glyphicon-minus-sign");
+                ShowNode(targetName);
+            }
+        });
+    });
+</script>
+
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th style="width:10px;"></th>
+            <th>城市名称</th>
+            <th>城市代码</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var province in Provinces)
+        {
+            <tr name="Provice">
+                <td>
+                    <a name="Node" data-target="City-@(province.Name)"><i class="glyphicon glyphicon-plus-sign"></i></a>
+                </td>
+                <td>
+                    <label class="radio-inline">
+                        <input type="radio" name="CityName" value="@(province.Name)" /> @(province.Name)
+                    </label>
+                 
+                </td>
+                <td>@(province.Code)</td>
+            </tr>
+            var CL = Citys.Where(e => e.PCID == province.ID).OrderBy(e=>e.Code).ToList();
+            foreach(var city in CL)
+            {
+                <tr name="City-@(province.Name)" style="display:none;">
+                    <td>
+                        <a name="Node" data-target="City-@(province.Name)-@(city.Name)"><i class="glyphicon glyphicon-plus-sign"></i></a>
+                    </td>
+                    <td>
+                      
+                        <label class="radio-inline">
+                            <input type="radio" name="CityName" value="@string.Format("{0}--{1}",province.Name,city.Name)" />@string.Format("--{0}", city.Name)
+                        </label>
+                    </td>
+                    <td>@(city.Code)</td>
+                </tr>
+                var DL = Districts.Where(e => e.PCID == city.ID).OrderBy(e => e.Code).ToList();
+                foreach(var district in DL)
+                {
+                    <tr name="City-@(province.Name)-@(city.Name)" style="display:none">
+                        <td>
+                            <a name="Node" data-target="City-@(province.Name)-@(city.Name)-@(district.Name)"><i class="glyphicon glyphicon-plus-sign"></i></a>
+                        </td>
+                        <td>
+                            <label class="radio-inline">
+                                <input type="radio" name="CityName" value="@string.Format("{0}--{1}--{2}",province.Name,city.Name,district.Name)" />@string.Format("----{0}", district.Name)
+                            </label>
+                        </td>
+                        <td>@(district.Code)</td>
+                    </tr>
+                    var TL = Towns.Where(e => e.PCID == district.ID).OrderBy(e => e.Code).ToList();
+                    foreach(var town in TL)
+                    {
+                        <tr name="City-@(province.Name)-@(city.Name)-@(district.Name)" style="display:none;">
+                            <td></td>
+                            <td>
+                                <label class="radio-inline">
+                                    <input type="radio" name="CityName" value="@string.Format("{0}--{1}--{2}--{3}",province.Name,city.Name,district.Name,town.Name)" />@string.Format("------{0}", town.Name)
+                                </label>
+                            </td>
+                            <td>@(town.Code)</td>
+                        </tr>
+                    }
+                }
+            }
+        }
+    </tbody>
+</table>

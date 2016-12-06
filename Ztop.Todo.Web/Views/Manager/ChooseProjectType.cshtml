@@ -1,0 +1,67 @@
+﻿@{ 
+    Layout = null;
+    List<ProjectType> Firsts = ViewBag.First;
+    List<ProjectType> Seconds = ViewBag.Second;
+}
+
+<script >
+    $(function () {
+        $("#Project button[name='OK']").click(function () {
+            var val = $("input[name='ProjectTypeName']:checked").val();
+            $("input[name='ProjectType']").val(val);
+        });
+
+
+        $("#Project a[name='Node']").click(function () {
+            var childNode = $(this).children("i");
+            var targetName = $(this).attr("data-target");
+            if (childNode.hasClass("glyphicon-minus-sign")) {
+                childNode.removeClass("glyphicon-minus-sign").addClass("glyphicon-plus-sign");
+                HideNode(targetName);
+            } else {
+                childNode.removeClass("glyphicon-plus-sign").addClass("glyphicon-minus-sign");
+                ShowNode(targetName);
+            }
+
+        });
+    });
+</script>
+
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th style="width:10px;">选择</th>
+            <th>项目类型</th>
+            <th>备注</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var first in Firsts)
+        {
+            <tr>
+                <td>
+                    <a name="Node" data-target="First-@(first.Name)"><i class="glyphicon glyphicon-plus-sign"></i></a>
+                </td>
+                <td>
+                    <label class="radio-inline">
+                        <input type="radio" name="ProjectTypeName" value="@(first.FullName)" />@(first.FullName)
+                    </label>
+                </td>
+                <td>@(first.Remark)</td>
+            </tr>
+            var SL = Seconds.Where(e => e.PPID == first.ID).OrderBy(e => e.Chars).ToList();
+            foreach(var second in SL)
+            {
+                <tr name="First-@(first.Name)" style="display:none">
+                    <td></td>
+                    <td>
+                        <label class="radio-inline">
+                            <input type="radio" name="ProjectTypeName" value="@string.Format("{0}--{1}",first.FullName,second.FullName)" />@string.Format("--{0}",second.FullName)
+                        </label>
+                    </td>
+                    <td>@(second.Remark)</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

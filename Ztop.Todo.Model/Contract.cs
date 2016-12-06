@@ -122,6 +122,35 @@ namespace Ztop.Todo.Model
                 }
             }
         }
+        /// <summary>
+        /// 当前合同可开发票金额
+        /// </summary>
+        [NotMapped]
+        public double Remain
+        {
+            get
+            {
+                try
+                {
+                    if (Invoices != null)
+                    {
+                        var a= Money - Invoices.Where(e => e.State == InvoiceState.Have || e.State == InvoiceState.None).Sum(e => e.Money);
+                        return a > 0 ? a : .0;
+                    }
+                }
+                catch
+                {
+
+                }
+
+                return .0;
+       
+            }
+        }
+        /// <summary>
+        /// 录入时间
+        /// </summary>
+        public DateTime CreateTime { get; set; }
     }
 
     public enum ZtopCompany

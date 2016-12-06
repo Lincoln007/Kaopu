@@ -214,7 +214,14 @@ namespace Ztop.Todo.Web.Controllers
             if (contract != null)//如果发票有关联合同，则需要验证合同金额和发票总额
             {
                 var list = Core.InvoiceManager.GetByCID(contract.ID);
-                var sum = list.Sum(e => e.Money) + invoice.Money;
+                var sum = .0;
+                if (list != null)
+                {
+                    //合计当前可开发票金额等于已开发票金额和已申请未开票金额
+                    list = list.Where(e => e.State == InvoiceState.Have || e.State == InvoiceState.None).ToList();
+
+                    sum = list.Sum(e => e.Money) + invoice.Money;
+                }
                 if (sum > contract.Money)
                 {
                     return ErrorJsonResult("发票累计金额超出合同金额");
@@ -551,6 +558,10 @@ namespace Ztop.Todo.Web.Controllers
                     }
                 }
                 ViewBag.Article = article;
+            }
+            else
+            {
+                ViewBag.Article = null;
             }
             return View();
         }

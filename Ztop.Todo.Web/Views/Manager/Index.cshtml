@@ -1,0 +1,55 @@
+﻿
+@{
+    ViewBag.Title = "系统配置";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    SystemCategory category = ViewBag.Category;
+}
+<script>
+    $(function () {
+        $("#Modal").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+    });
+</script>
+
+
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true" id="Modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <h2 class="text-center">系统配置</h2>
+        <hr />
+        <div class="col-md-3">
+            <ul class="nav nav-pills nav-stacked" role="tablist">
+                <li role="presentation" class="@(category.ToString()=="City"?"active":"")"><a href="#City" role="tab" data-toggle="tab">城市管理</a></li>
+                <li role="presentation" class="@(category.ToString()=="ProjectType"?"active":"")"><a href="#Project" role="tab" data-toggle="tab">项目类型管理</a></li>
+                <li role="presentation"><a href="#Authority" role="tab" data-toggle="tab">权限管理</a></li>
+            </ul>
+        </div>
+        <div class="col-md-9">
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane @(category.ToString()=="City"?"active":"")" id="City">
+                    @{ Html.RenderAction("ManagerCity");}
+                </div>
+                <div role="tabpanel" class="tab-pane @(category.ToString()=="ProjectType"?"active":"")" id="Project">
+                    @{ Html.RenderAction("ManagerProjectType");}
+                </div>
+                <div role="tabpanel" class="tab-pane" id="Authority">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+

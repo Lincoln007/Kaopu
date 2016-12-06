@@ -26,6 +26,13 @@ namespace Ztop.Todo.Manager
                 return invoice.ID;
             }
         }
+        /// <summary>
+        /// 作用：通过合同ID找到所有关联发票信息 cid为0  返回null;
+        /// 作者：汪建龙
+        /// 编写时间：2016年12月6日09:26:48
+        /// </summary>
+        /// <param name="cid"></param>
+        /// <returns></returns>
         public List<Invoice> GetByCID(int cid)
         {
             if (cid == 0)

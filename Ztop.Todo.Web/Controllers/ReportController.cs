@@ -349,7 +349,7 @@ namespace Ztop.Todo.Web.Controllers
             }
             
         }
-        public ActionResult List(string Creater="我", string Custom = null, string Position="不限", string Checker = "我", string Checker2 = null, string CurrentTime="不限",Order order=Order.Time,int page=1,int rows=10,double? minMoney=null,double? maxMoney=null)
+        public ActionResult List(string Creater="我", string Custom = null, string Position="不限", string Checker = "我", string Checker2 = null, string CurrentTime="不限",Order order=Order.Time,int page=1,int rows=20,double? minMoney=null,double? maxMoney=null)
         {
             var queryParameter = new QueryParameter
             {

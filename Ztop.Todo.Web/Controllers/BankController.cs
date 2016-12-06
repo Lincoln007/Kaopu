@@ -184,6 +184,30 @@ namespace Ztop.Todo.Web.Controllers
         {
             return View();
         }
+        /// <summary>
+        /// 作用：导入规划银行对账单
+        /// 作者：汪建龙
+        /// 编写时间：2016年12月6日10:39:31
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult InputProjection()
+        {
+            return View();
+        }
+
+        /// <summary>
+        /// 作用：导入评估银行对账单
+        /// 作者：汪建龙
+        /// 编写时间：2016年12月6日10:39:54
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult InputEvaluation()
+        {
+            return View();
+        }
+
+
+
 
         public ActionResult Check(int year,int month,Company company)
         {

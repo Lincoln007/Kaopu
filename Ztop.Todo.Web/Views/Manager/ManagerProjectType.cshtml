@@ -1,0 +1,88 @@
+﻿@{ 
+    Layout = null;
+    List<ProjectType> Firsts = ViewBag.First;
+    List<ProjectType> Seconds = ViewBag.Second;
+
+}
+
+<script >
+    $(function () {
+        $("#Project a.btn.btn-danger").click(function () {
+            HideMessage();
+            if (confirm("您确定要删除吗？")) {
+                ShowWarningMessage("正在删除，请稍等......");
+                var href = $(this).attr("href");
+                $.request(href, null, function (json) {
+                    if (json.result == 0) {
+                        ShowErrorMessage(json.content);
+                    } else {
+                        ShowSuccessMessage("成功删除，正在刷新，请稍等......");
+                        location.href = "/Manager/Index?category=@(SystemCategory.ProjectType)";
+                    }
+                });
+
+            }
+            return false;
+        });
+
+        $("#Project a[name='Node']").click(function () {
+            var childNode = $(this).children("i");
+            var targetName = $(this).attr("data-target");
+            if (childNode.hasClass("glyphicon-minus-sign")) {
+                childNode.removeClass("glyphicon-minus-sign").addClass("glyphicon-plus-sign");
+                HideNode(targetName);
+            } else {
+                childNode.removeClass("glyphicon-plus-sign").addClass("glyphicon-minus-sign");
+                ShowNode(targetName);
+            }
+
+        });
+    });
+</script>
+
+<h3 class="text-center">项目类型管理</h3>
+<a href="/Manager/CreateProjectType?Degree=@(Degree.First)"  data-toggle="modal" data-target="#Modal"  class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-plus"></i>添加一级项目类型</a>
+<div class="alert alert-warning" role="alert" name="Message" style="display:none">
+    <span></span>
+</div>
+<hr />
+
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>项目类型名称</th>
+            <th>备注</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var first in Firsts)
+        {
+            <tr>
+                <td>
+                    <a name="Node" data-target="First-@(first.FullName)"><i class="glyphicon glyphicon-plus-sign"></i></a>
+                    @(first.FullName)
+                </td>
+                <td>@(first.Remark)</td>
+                <td>
+                    <a href="/Manager/CreateProjectType?degree=@(Degree.Second)&&pchars=@(first.Chars)&&pname=@(first.Name)" data-toggle="modal" data-target="#Modal" class="btn btn-warning btn-xs"><i class="glyphicon glyphicon-plus"></i>添加二级类</a>
+                    <a href="/Manager/EditProjectType?id=@(first.ID)" data-toggle="modal" data-target="#Modal" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i>编辑</a>
+                    <a href="/Manager/DeleteProjectType?id=@(first.ID)" data-toggle="modal" data-target="#Modal" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-remove"></i>删除</a>
+                </td>
+            </tr>
+            var SL = Seconds.Where(e => e.PPID == first.ID).OrderBy(e => e.Chars).ToList();
+            foreach(var second in SL)
+            {
+                <tr name="First-@(first.FullName)" style="display:none;">
+                    <td>@string.Format("--{0}",second.FullName)</td>
+                    <td>@(second.Remark)</td>
+                    <td>
+                        <a href="/Manager/EditProjectType?id=@(second.ID)" data-toggle="modal" data-target="#Modal" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i>编辑</a>
+                        <a href="/Manager/DeleteProjectType?id=@(second.ID)" data-toggle="modal" data-target="#Modal" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-remove"></i>删除</a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+

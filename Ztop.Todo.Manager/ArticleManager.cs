@@ -17,6 +17,13 @@ namespace Ztop.Todo.Manager
                 return entry != null;
             }
         }
+        /// <summary>
+        /// 作用：添加或更新 项目洽谈
+        /// 作者：汪建龙
+        /// 编写时间：2016年12月6日20:35:31
+        /// </summary>
+        /// <param name="article"></param>
+        /// <returns></returns>
         public int Save(Article article)
         {
             if (Exist(article) && article.ID > 0)

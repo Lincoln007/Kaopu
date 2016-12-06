@@ -53,8 +53,13 @@ namespace Ztop.Todo.Manager
         public ArticleManager ArticleManager { get; private set; }
         public ContractArticleManager ContractArticleManager { get; private set; }
         public BillContractManager BillContractManager { get; private set; }
-      
 
+        #region  项目管理系统
+        
+        public CityManager CityManager { get; private set; }
+        public Project_TypeManager Project_TypeManager { get; private set; }
+
+        #endregion
 
 
         #region  权限管理系统

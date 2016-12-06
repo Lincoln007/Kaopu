@@ -2,11 +2,13 @@
 @{
     ViewBag.Title = "录入项目";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
     Article article = ViewBag.Article;
+
 }
 
 <form class="form-horizontal" action="/Finance/SaveArticle" method="post" id="Article-form">
-    <h3 class="text-center">录入项目</h3>
+    <h3 class="text-center">录入项目洽谈</h3>
     <div class="row">
         <div class="col-md-12">
             <div class="alert alert-danger" role="alert" id="Article-Error">
@@ -23,6 +25,12 @@
                 <label class="control-label col-md-4">项目名称：</label>
                 <div class="col-md-8">
                     <input type="text" name="Name" class="form-control" placeholder="项目名称" required  value="@(article!=null?article.Name:"")" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">登记编号：</label>
+                <div class="col-md-8">
+                    <input type="text" name="Number" class="form-control" placeholder="登记编号" value="@(article!=null?article.Number:"")" required />
                 </div>
             </div>
             <div class="form-group">
@@ -61,6 +69,28 @@
                 <label class="control-label col-md-4">对方单位：</label>
                 <div class="col-md-8">
                     <input type="text" name="OtherSide" class="form-control" placeholder="对方单位" required value="@(article!=null?article.OtherSide:"")" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">所属城市：</label>
+                <div class="col-md-8">
+                    <div class="input-group" role="group">
+                        <input type="text" name="City" class="form-control"  placeholder="所属城市" value="@(article!=null?article.City:"")" readonly/>
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#City"><i class="glyphicon glyphicon-flag"></i></button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">项目类型：</label>
+                <div class="col-md-8">
+                    <div class="input-group" role="group">
+                        <input type="text" name="ProjectType" class="form-control" value="@(article!=null?article.ProjectType:"")" placeholder="项目类型" readonly />
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#Project"><i class="glyphicon glyphicon-send"></i></button>
+                        </span>
+                    </div>
                 </div>
             </div>
             <div class="form-group">
@@ -207,6 +237,45 @@
                 <div class="col-md-12">
                     <button type="button" class="btn btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove-sign"></i>取消</button>
                     <button type="button" class="btn btn-primary" data-dismiss="modal" name="CPlus"><i class="glyphicon glyphicon-ok-sign"></i>确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="fade modal" id="City" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">选择城市</h4>
+            </div>
+            <div class="modal-body">
+             @{ Html.RenderAction("ChooseCity", "Manager");}
+            </div>
+            <div class="modal-footer">
+                <div class="col-md-12">
+                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove-sign"></i>取消</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" name="OK"><i class="glyphicon glyphicon-ok-sign"></i>确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="fade modal" id="Project" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">选择项目类型</h4>
+            </div>
+            <div class="modal-body">
+                @{ Html.RenderAction("ChooseProjectType", "Manager");}
+            </div>
+            <div class="modal-footer">
+                <div class="col-md-12">
+                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove-sign"></i>取消</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" name="OK"><i class="glyphicon glyphicon-ok-sign"></i>确定</button>
                 </div>
             </div>
         </div>

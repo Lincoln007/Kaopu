@@ -1,0 +1,38 @@
+﻿@{ 
+    Layout = null;
+}
+
+<h3 class="text-center">导入规划公司银行对账单</h3>
+<div class="alert alert-warning" role="alert" name="Message" style="display:none;">
+    <i class="icon-spin icon-spinner icon-large"></i>
+    <span></span>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <form class="form-horizontal" method="post" action="" enctype="multipart/form-data">
+            <div class="form-group">
+                <label class="control-label col-md-3">年份【必选】：</label>
+                <div class="col-md-8">
+                    <select name="Year" class="form-control">
+                        @for(var i = DateTime.Now.Year; i> 2010; i--)
+                        {
+                            <option value="@(i)">@(i)</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">月份【必选】：</label>
+                <div class="col-md-8">
+                    <select name="Month" class="form-control">
+                        @for(var i = 1; i <= 12; i++)
+                        {
+                            <option value="@(i)" @(i==(DateTime.Now.Month-1)?"selected=selected":"")>@(i)</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
