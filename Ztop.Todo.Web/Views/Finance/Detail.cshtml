@@ -141,7 +141,7 @@
 
 <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active"><a href="#contract" aria-controls="contract" role="tab" data-toggle="tab">合同信息</a></li>
-    <li role="presentation"><a href="#Article" aria-controls="Article" role="tab" data-toggle="tab">项目信息</a></li>
+    <li role="presentation"><a href="#Article" aria-controls="Article" role="tab" data-toggle="tab">项目洽谈信息</a></li>
     <li role="presentation"><a href="#applyinvoice" aria-controls="applyinvoice" role="tab" data-toggle="tab">发票申请记录</a></li>
     <li role="presentation"><a href="#invoice" aria-controls="invoice" role="tab" data-toggle="tab">发票开出记录</a></li>
     <li role="presentation"><a href="#BillContract" aria-controls="BillContract" role="tab" data-toggle="tab">到账情况</a></li>
@@ -233,7 +233,18 @@
         </table>
     </div>
     <div class="tab-pane fade" id="Article" role="tabpanel">
-        @if (contract.Articles != null)
+        @if (contract.Article != null)
+        {
+            Html.RenderPartial("ShowArticle", contract.Article);
+        }
+        else
+        {
+            <div class="alert alert-warning" role="alert">
+                <span>@string.Format("当前系统中未找到登记编号为{0}的项目洽谈",contract.Number)</span>
+            </div>
+        }
+
+        @*@if (contract.Articles != null)
         {
             <table class="table table-bordered table-striped table-condensed">
                 <thead>
@@ -262,7 +273,7 @@
             <div class="alert alert-warning" role="alert">
                 <span>当前合同未关联项目，请检查！</span>
             </div>
-        }
+        }*@
     </div>
     <div class="tab-pane fade" id="applyinvoice" role="tabpanel">
         @if (contract.Invoices != null&&contract.Invoices.Count!=0)

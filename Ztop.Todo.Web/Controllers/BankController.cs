@@ -24,9 +24,6 @@ namespace Ztop.Todo.Web.Controllers
             var heads = Core.Bill_OneManager.GetAllHeads();
             ViewBag.Evaluations = heads.Where(e => e.Company == Company.Evaluation).ToList();
             ViewBag.Projections = heads.Where(e => e.Company == Company.Projection).ToList();
-            //ViewBag.Evaluations = Core.BillManager.GetBanks(Company.Evaluation);
-            //ViewBag.Projections = Core.BillManager.GetBanks(Company.Projection);
-           // ViewBag.Districts = Core.BillManager.GetYearMonth();
             ViewBag.Sheets = Core.SheetManager.Collect();
             return View();
         }
@@ -216,7 +213,7 @@ namespace Ztop.Todo.Web.Controllers
         }
 
         /// <summary>
-        /// 作用：用户上传银行明细Excel文件，并读取分析Excel文件中的记录
+        /// 作用：用户上传评估银行明细Excel文件，并读取分析Excel文件中的记录
         /// 作者：汪建龙
         /// 编写时间：2016年11月13日14:56:083
         /// </summary>

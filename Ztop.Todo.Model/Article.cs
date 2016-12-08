@@ -21,7 +21,7 @@ namespace Ztop.Todo.Model
         /// </summary>
         public string Name { get; set; }
         /// <summary>
-        /// 登记编号
+        /// 登记编号  需要验证唯一性
         /// </summary>
         public string Number { get; set; }
         /// <summary>

@@ -31,11 +31,35 @@ namespace Ztop.Todo.Manager
                 Edit(article);
                 return article.ID;
             }
+            if (!CheckNumber(article.Number))
+            {
+                throw new ArgumentException("登记编号不唯一");
+            }
             using (var db = GetDbContext())
             {
                 db.Articles.Add(article);
                 db.SaveChanges();
                 return article.ID;
+            }
+        }
+
+        /// <summary>
+        /// 作用：验证登记编号 唯一性  唯一为true 不唯一：false
+        /// 作者：汪建龙
+        /// 编写时间：2016年12月7日09:17:47
+        /// </summary>
+        /// <param name="number"></param>
+        /// <returns></returns>
+        public bool CheckNumber(string number)
+        {
+            if (string.IsNullOrEmpty(number))
+            {
+                return false;
+            }
+            using (var db = GetDbContext())
+            {
+                var entry = db.Articles.FirstOrDefault(e => e.Number == number);
+                return entry == null;
             }
         }
         public int Edit(Article article)
@@ -117,6 +141,24 @@ namespace Ztop.Todo.Manager
                 db.SaveChanges();
             }
             return true;
+        }
+        /// <summary>
+        /// 作用：通过登记编号获得项目洽谈
+        /// 作者：汪建龙
+        /// 编写时间：2016年12月7日09:28:19
+        /// </summary>
+        /// <param name="number"></param>
+        /// <returns></returns>
+        public Article Get(string number)
+        {
+            if (string.IsNullOrEmpty(number))
+            {
+                return null;
+            }
+            using (var db = GetDbContext())
+            {
+                return db.Articles.FirstOrDefault(e => e.Number == number);
+            }
         }
     }
 }

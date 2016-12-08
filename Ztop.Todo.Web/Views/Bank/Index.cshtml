@@ -4,10 +4,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     List<Bill_Head> evaluations = ViewBag.Evaluations;
     List<Bill_Head> projections = ViewBag.Projections;
-    //List<Bank> evaluations = ViewBag.Evaluations;
-    //List<Bank> projections = ViewBag.Projections;
     List<Sheet> sheets = ViewBag.Sheets;
-    //List<string> Districts = ViewBag.Districts;
 }
 
 <div class="col-md-12">
@@ -22,8 +19,8 @@
     </div>
 
     <div class="btn-group" role="group">
-        <a data-toggle="modal" data-target="#Modal" href="/Bank/" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-plus"></i>录入评估银行账单</a>
-        <a data-toggle="modal" data-target="#Modal" href="/Bank/" class="btn btn-success btn-sm"><i class="glyphicon glyphicon-plus"></i>录入规划银行账单</a>
+        <a data-toggle="modal" data-target="#Modal" href="/Bank/InputEvaluation" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-plus"></i>录入评估银行账单</a>
+        <a data-toggle="modal" data-target="#Modal" href="/Bank/InputProjection" class="btn btn-success btn-sm"><i class="glyphicon glyphicon-plus"></i>录入规划银行账单</a>
     </div>
 }
 

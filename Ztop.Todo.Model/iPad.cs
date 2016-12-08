@@ -144,4 +144,25 @@ namespace Ztop.Todo.Model
         [Description("项目使用")]
         Deliver
     }
+
+    /// <summary>
+    /// 平板管理系统种类
+    /// 作者：汪建龙
+    /// 编写时间：2016年12月8日10:51:31
+    /// </summary>
+    public enum iPadCategory
+    {
+        [Description("平板")]
+        iPad,
+        [Description("")]
+        Register,
+        [Description("合同")]
+        Contract,
+        [Description("发票")]
+        Invoice,
+        [Description("账号")]
+        Account,
+        [Description("联系人")]
+        Contact,
+    }
 }

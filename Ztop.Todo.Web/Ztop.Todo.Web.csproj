@@ -363,6 +363,10 @@
     <Content Include="Views\Bank\InputEvaluation.cshtml" />
     <Content Include="Views\Manager\EditProjectType.cshtml" />
     <Content Include="Views\Manager\ChooseProjectType.cshtml" />
+    <Content Include="Views\Finance\ShowArticle.cshtml" />
+    <Content Include="Views\iPad\ManagerContact.cshtml" />
+    <Content Include="Views\iPad\CreateContact.cshtml" />
+    <Content Include="Views\iPad\EditContact.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

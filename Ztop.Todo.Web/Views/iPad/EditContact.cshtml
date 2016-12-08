@@ -1,0 +1,94 @@
+﻿@{ 
+    Layout = null;
+    iPadContact contact=ViewBag.Contact;
+}
+
+<script>
+    $(function () {
+        $("#Edit-Contact").submit(function () {
+            $("#Edit-Contact button[type='submit']").text("正在编辑......").attr("disabled", "disabled");
+            ShowMessage("正在编辑，请稍等......");
+            var data = $(this).serialize();
+            $.request("/iPad/EditContact", data, function (json) {
+                if (json.result == 0) {
+                    ShowErrorMessage(json.content);
+                } else {
+                    ShowSuccessMessage("成功编辑......");
+                    location.href = "/iPad/Index?category=@(iPadCategory.Contact)";
+                }
+            });
+
+            return false;
+        });
+    });
+</script>
+
+<h3 class="text-center">编辑联系人</h3>
+<div class="alert alert-warning" role="alert" name="Message" style="display:none;">
+    <i class="icon-spin icon-spinner icon-large"></i>
+    <span></span>
+</div>
+<hr />
+
+<div class="row">
+    <div class="col-md-12">
+        <form class="form-horizontal" method="post" action="" id="Edit-Contact">
+            <div class="form-group">
+                <label class="control-label col-md-3">姓名：</label>
+                <div class="col-md-8">
+                    <input type="text" name="Name" class="form-control" placeholder="姓名" value="@(contact!=null?contact.Name:"")" required />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">单位：</label>
+                <div class="col-md-8">
+                    <input type="text" name="Department" class="form-control" placeholder="单位" value="@(contact!=null?contact.Department:"")" required />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">所属城市:</label>
+                <div class="col-md-8">
+                    <input type="text" name="City" class="form-control" placeholder="所属城市" value="@(contact!=null?contact.City:"")" required />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">地址：</label>
+                <div class="col-md-8">
+                    <input type="text" name="Address" class="form-control" placeholder="地址" value="@(contact!=null?contact.Address:"")"  required/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">联系电话：</label>
+                <div class="col-md-8">
+                    <input type="text" name="Phone" class="form-control" placeholder="联系电话" value="@(contact!=null?contact.Phone:"")" required />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">QQ：</label>
+                <div class="col-md-8">
+                    <input type="text" name="QQ" class="form-control" placeholder="QQ" value="@(contact!=null?contact.QQ:"")"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">职位：</label>
+                <div class="col-md-8">
+                    <input type="text" name="Position" class="form-control" placeholder="职位" value="@(contact!=null?contact.Position:"")" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">科室：</label>
+                <div class="col-md-8">
+                    <input type="hidden" name="ID" value="@(contact.ID)" />
+                    <input type="hidden" name="CreateTime" value="@(contact.CreateTime)" />
+                    <input type="hidden" name="Creator" value="@(contact.Creator)" />
+                    <input type="text" name="Section_Office" class="form-control" placeholder="科室" value="@(contact!=null?contact.Section_Office:"")" />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-8 col-md-offset-3">
+                    <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-edit"></i>编辑</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

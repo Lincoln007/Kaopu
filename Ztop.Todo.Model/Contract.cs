@@ -95,6 +95,11 @@ namespace Ztop.Todo.Model
         /// </summary>
         [NotMapped]
         public List<Article> Articles { get; set; }
+        /// <summary>
+        /// 项目洽谈  （通过登记编号与项目洽谈登记编号关联）
+        /// </summary>
+        [NotMapped]
+        public Article Article { get; set; }
         [NotMapped]
         public List<BillContract> BillContracts { get; set; }
 

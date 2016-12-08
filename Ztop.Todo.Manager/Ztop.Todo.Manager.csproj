@@ -98,6 +98,7 @@
     <Compile Include="InvoiceManager.cs" />
     <Compile Include="iPadManager.cs" />
     <Compile Include="iPad_AccountManager.cs" />
+    <Compile Include="iPad_ContactManager.cs" />
     <Compile Include="iPad_ContractManager.cs" />
     <Compile Include="iPad_InvoiceManager.cs" />
     <Compile Include="iPad_RegisterManager.cs" />

@@ -168,6 +168,9 @@ namespace Ztop.Todo.Web.Controllers
             {
                 contract.Invoices = Core.InvoiceManager.GetByCID(contract.ID);
                 contract.ContractFiles = Core.ContractFileManager.GetContractFiles(contract.ID);
+                contract.Article = Core.ArticleManager.Get(contract.Number);
+
+
                 var CAList = Core.ContractArticleManager.GetByContractID(contract.ID);
                 if (CAList != null && CAList.Count > 0)
                 {

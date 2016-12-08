@@ -102,6 +102,10 @@
                                     @Html.Partial("_Authority")
                                 </li>
                                 <li><a href="/Home/Resources"><i class="fa fa-cloud-download"></i>资源下载</a></li>
+                                @if (Identity.Admin)
+                                {
+                                    <li><a href="/Manager/Index"><i class="glyphicon glyphicon-cog"></i>系统配置</a></li>
+                                }
                                 @if (Identity.Name == "汪建龙")
                                 {
                                     <li><a href="/Home/Daily"><i class="glyphicon glyphicon-eye-open"></i>更新日志</a></li>

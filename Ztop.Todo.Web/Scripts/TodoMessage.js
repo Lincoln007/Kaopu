@@ -1,9 +1,9 @@
 ﻿//作用：纯显示信息  对颜色无改变
 //作者：汪建龙
 //编写时间：2016年12月6日14:53:08
-function ShowMessage(message) {
-    $("div.alert.alert-warning[name='Message']>span").html(message);
-    $("div.alert.alert-warning[name='Message']").show(500);
+function ShowMessage(message,node) {
+    $(node+" div.alert.alert-warning[name='Message']>span").html(message);
+    $(node+ " div.alert.alert-warning[name='Message']").show(500);
 }
 //作用：隐藏提示框
 //作者：汪建龙
@@ -22,16 +22,17 @@ function ShowWarningMessage(message) {
 //作用：显示成功信息
 //作者：汪建龙
 //编写时间：2016年12月6日14:53:48
-function ShowSuccessMessage(message) {
-    $("div.alert[name='Message']>span").html(message);
-    $("div.alert[name='Message']").removeClass("alert-warning").removeClass("alert-danger").addClass("alert-success").remove("i").show(500);
+function ShowSuccessMessage(message,node) {
+    $(node+" div.alert[name='Message']>span").html(message);
+    $(node+" div.alert[name='Message']>i").remove();
+    $(node+" div.alert[name='Message']").removeClass("alert-warning").removeClass("alert-danger").addClass("alert-success").show(500);
 }
 //作用：显示错误信息
 //作者：汪建龙
 //编写时间：2016年12月6日14:54:10
-function ShowErrorMessage(message) {
-    $("div.alert[name='Message']>span").html(message);
-    $("div.alert[name='Message']").removeClass("alert-warning").removeClass("alert-success").addClass("alert-danger").remove("i").show(500);
+function ShowErrorMessage(message,node) {
+    $(node+ " div.alert[name='Message']>span").html(message);
+    $(node+ " div.alert[name='Message']").removeClass("alert-warning").removeClass("alert-success").addClass("alert-danger").remove("i").show(500);
 }
 
 //作用：显示节点

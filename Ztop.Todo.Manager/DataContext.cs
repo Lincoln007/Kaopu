@@ -98,6 +98,8 @@ namespace Ztop.Todo.Manager
 
         public DbSet<iPadAccount> iPad_Accounts { get; set; }
 
+        public DbSet<iPadContact> iPad_Contacts { get; set; }
+
         #endregion
 
         #region  银行对账系统

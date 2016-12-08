@@ -11,17 +11,19 @@ namespace Ztop.Todo.Web.Controllers
     public class iPadController : ControllerBase
     {
         // GET: iPad
-        public ActionResult Index()
+        public ActionResult Index(iPadCategory category=iPadCategory.iPad)
         {
             if (!Identity.iPad)
             {
                 return View("Fate");
             }
+            ViewBag.Category = category;
             ViewBag.List = Core.iPadManager.Get();
             ViewBag.Registers = Core.iPad_registerManager.Get();
             ViewBag.Contracts = Core.iPad_ContractManager.Get();
             ViewBag.Invoices = Core.iPad_InvoiceManager.Get();
             ViewBag.Accounts = Core.iPad_AccountManager.Get();
+
             return View();
         }
 
@@ -282,5 +284,113 @@ namespace Ztop.Todo.Web.Controllers
             }
             return SuccessJsonResult();
         }
+
+        /// <summary>
+        /// 作用：查看所有联系人列表
+        /// 作者：汪建龙
+        /// 编写时间：2016年12月8日10:36:04
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult ManagerContact()
+        {
+            var list = Core.iPad_ContactManager.Get();
+            ViewBag.List = list;
+            return View();
+        }
+
+        /// <summary>
+        /// 作用：添加联系人
+        /// 作者：汪建龙
+        /// 编写时间：2016年12月8日10:36:26
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult CreateContact()
+        {
+            return View();
+        }
+
+        /// <summary>
+        /// 作用：保存联系人
+        /// 作者：汪建龙
+        /// 编写时间：2016年12月8日10:36:49
+        /// </summary>
+        /// <param name="contact"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult SaveContact(iPadContact contact)
+        {
+            if (contact == null)
+            {
+                return ErrorJsonResult("服务器参数错误！");
+            }
+            if (string.IsNullOrEmpty(contact.Name) || string.IsNullOrEmpty(contact.City) || string.IsNullOrEmpty(contact.Address))
+            {
+                return ErrorJsonResult("联系人名字以及所属城市和地址不能为空!");
+            }
+            if (Core.iPad_ContactManager.Exist(contact.Name, contact.Address, contact.City))
+            {
+                return ErrorJsonResult(string.Format("系统中已存在{0}-{1}-{2}", contact.Name, contact.Address, contact.City));
+            }
+            var id = Core.iPad_ContactManager.Add(contact);
+            if (id > 0)
+            {
+                return SuccessJsonResult();
+            }
+            return ErrorJsonResult("保存失败！");
+        }
+
+        /// <summary>
+        /// 作用：编辑联系人
+        /// 作者：汪建龙
+        /// 编写时间：2016年12月8日10:37:09
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult EditContact(int id)
+        {
+            var contact = Core.iPad_ContactManager.Get(id);
+            ViewBag.Contact = contact;
+            return View();
+        }
+
+        /// <summary>
+        /// 作用：编辑
+        /// 作者：汪建龙
+        /// 编写时间：2016年12月8日10:37:26
+        /// </summary>
+        /// <param name="contact"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult EditContact(iPadContact contact)
+        {
+            if (contact == null)
+            {
+                return ErrorJsonResult("服务器参数错误，无法编辑");
+            }
+            if (!Core.iPad_ContactManager.Edit(contact))
+            {
+                return ErrorJsonResult("编辑失败！原因：系统中未找到相关记录");
+            }
+
+            return SuccessJsonResult();
+        }
+        /// <summary>
+        /// 作用:删除联系人
+        /// 作者：汪建龙
+        /// 编写时间：2016年12月8日10:45:16
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult DeleteContact(int id)
+        {
+            if (!Core.iPad_ContactManager.Delete(id))
+            {
+                return ErrorJsonResult("删除失败，请核对联系人是否已删除！");
+            }
+            return SuccessJsonResult();
+        }
+
+
+
     }
 }

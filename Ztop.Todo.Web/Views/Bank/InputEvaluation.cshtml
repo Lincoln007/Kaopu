@@ -1,3 +1,58 @@
 ﻿@{ 
     Layout = null;
 }
+<script >
+    $(function () {
+        $("#Evaluation-form").submit(function () {
+            $("#Evaluation-form button[type='submit']").text("正在分析......").attr("disabled", "disabled");
+            ShowMessage("正在上传分析，请稍等......");
+        });
+    });
+</script>
+
+
+<h3 class="text-center">导入评估公司银行对账单</h3>
+<div class="alert alert-warning" role="alert" name="Message" style="display:none;">
+    <i class="icon-spin icon-spinner icon-large"></i>
+    <span></span>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <form class="form-horizontal" method="post" action="/Bank/Input" enctype="multipart/form-data" id="Evaluation-form">
+            <div class="form-group">
+                <label class="control-label col-md-3">年份【必选】：</label>
+                <div class="col-md-8">
+                    <select name="Year" class="form-control">
+                        @for (var i = DateTime.Now.Year; i > 2010; i--)
+                        {
+                            <option value="@(i)">@(i)</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">月份【必选】：</label>
+                <div class="col-md-8">
+                    <select name="Month" class="form-control">
+                        @for (var i = 1; i <= 12; i++)
+                        {
+                            <option value="@(i)" @(i == (DateTime.Now.Month - 1) ? "selected=selected" : "")>@(i)</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">账单文件：</label>
+                <div class="col-md-8">
+                    <input type="hidden" name="Company" value="@(Company.Evaluation)" />
+                    <input type="file" name="File" class="form-control" />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-8 col-md-offset-3">
+                    <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i>确定</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

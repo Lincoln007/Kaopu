@@ -1,0 +1,69 @@
+﻿@{ 
+    Layout = null;
+    List<iPadContact> list = ViewBag.List;
+}
+
+<script>
+    $(function () {
+        $("#Contact a.btn.btn-danger").click(function () {
+            if (confirm("您确定要删除吗？")) {
+                ShowMessage("正在删除，请稍等......");
+                $(this).text("正在删除......").attr("disabled", "disabled");
+                var href = $(this).attr("href");
+                $.request(href, null, function (json) {
+                    if (json.result == 0) {
+                        ShowErrorMessage("删除失败" + json.content);
+                    } else {
+                        ShowSuccessMessage("成功删除......");
+                        location.href = "/iPad/Index?category=@(iPadCategory.Contact)";
+                    }
+                });
+
+            }
+            return false;
+        });
+    });
+</script>
+
+
+
+<table class="table table-striped table-condensed">
+    <thead>
+        <tr>
+            <th>序号</th>
+            <th>姓名</th>
+            <th>单位</th>
+            <th>所属城市</th>
+            <th>地址</th>
+            <th>联系电话</th>
+            <th>QQ</th>
+            <th>职位</th>
+            <th>科室</th>
+            <th>录入时间</th>
+            <th>录入人</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in list)
+        {
+            <tr>
+                <td>@(item.ID)</td>
+                <td>@(item.Name)</td>
+                <td>@(item.Department)</td>
+                <td>@(item.City)</td>
+                <td>@(item.Address)</td>
+                <td>@(item.Phone)</td>
+                <td>@(item.QQ)</td>
+                <td>@(item.Position)</td>
+                <td>@(item.Section_Office)</td>
+                <td>@(item.CreateTime.ToLongDateString())</td>
+                <td>@(item.Creator)</td>
+                <td>
+                    <a href="/iPad/EditContact?id=@(item.ID)" data-target="#Modal" data-toggle="modal" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i>编辑</a>
+                    <a href="/iPad/DeleteContact?id=@(item.ID)" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-remove"></i>删除</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
