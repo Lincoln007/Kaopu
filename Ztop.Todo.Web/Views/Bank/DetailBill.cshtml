@@ -2,109 +2,31 @@
 @{
     ViewBag.Title = "银行";
     Bill_Head head = ViewBag.Heads;
-    List<BillOne> list = head.Ones;
-    var start = list.OrderBy(e => e.SerialNumber).FirstOrDefault();
-    var end = list.OrderByDescending(e => e.SerialNumber).FirstOrDefault();
+
+    Company company = ViewBag.Company;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h3 class="text-center">@string.Format("杭州智拓{0}有限公司{1}年{2}月银行明细",head.Company.GetDescription(),head.Year,head.Month)</h3>
+<h2 class="text-center">@string.Format("杭州智拓有限公司{0}年{1}月银行明细", head.Year, head.Month)</h2>
 
-@if (list != null && list.Count > 0)
-{
-    <div class="row">
-        <div class="col-md-12">
-            <div class="col-md-3">
-                <strong>公司名称：@string.Format("杭州智拓{0}有限公司", head.Company.GetDescription())</strong> <hr />
-                <strong>交易笔数：@(list.Count)</strong><hr />
-                <strong>月初余额【元】：@(start != null ? (start.Budget == Budget.Income ? (start.Balance - start.Money).ToString() : (start.Balance + start.Money).ToString()) : "未读取到月初余额信息")</strong><hr />
-                <strong>月末余额【元】：@(end != null ? end.Balance.ToString() : "未读取到月末余额信息")</strong><hr />
-                <div class="input-group-btn">
-                    <a href="/Bank/Index" class="btn btn-default"><i class="glyphicon glyphicon-home"></i>银行对账主页</a>
-                </div>
-            </div>
-            <div class="col-md-9">
-                @{ Html.RenderAction("CollectBills", new { list = list });}
-            </div>
-        </div>
+<ul class="nav nav-pills" role="tablist">
+    <li role="presentation"class="@(company==Company.Evaluation?"active":"")"><a href="#Evaluation" role="tab" data-toggle="tab">评估公司</a></li>
+    <li role="presentation" class="@(company==Company.Projection?"active":"")"><a href="#Projection" role="tab" data-toggle="tab">规划公司</a></li>
+</ul>
+
+
+<div class="tab-content">
+    <div role="tabpanel" class="tab-pane @(company==Company.Evaluation?"active":"")" id="Evaluation">
     </div>
- 
-    <hr />
-    <table class="table table-bordered table-condensed table-striped">
-        <thead>
-            <tr>
-                <th>序号</th>
-                <th>交易日期</th>
-                <th>交易时间</th>
-                <th>凭证号</th>
-                <th>借方金额【元】（支出）</th>
-                <th>贷方金额【元】（收入）</th>
-                <th>余额【元】</th>
-                <th>对方账号</th>
-                <th>对方户名</th>
-                <th>摘要</th>
-                <th>备注</th>
-                <th>归类</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in list)
-                {
-                <tr>
-                    <td>@(item.SerialNumber)</td>
-                    <td>@(item.Date)</td>
-                    <td>@(item.Time.HasValue ? item.Time.Value.ToLongDateString() : "")</td>
-                    <td>@(item.Voucher)</td>
-                    <td>@(item.Budget == Budget.Expense ? item.Money.ToString() : "")</td>
-                    <td>@(item.Budget == Budget.Income ? item.Money.ToString() : "")</td>
-                    <td>@(item.Balance)</td>
-                    <td>@(item.CounterPart)</td>
-                    <td>@(item.Account)</td>
-                    <td>@(item.Summary)</td>
-                    <td>@(item.Remark)</td>
-                    <td>
-                        @if (item.Cost.HasValue)
-                        {
-                            if (item.Category.HasValue)
-                            {
-                                <label class="label label-danger">@string.Format("{0}-{1}",item.Cost.Value.GetDescription(),item.Category.Value.GetDescription())</label>
-                            }
-                            else
-                            {
-                                <label class="label label-danger">@(item.Cost.Value.GetDescription())</label>
-                            }
-
-                            <a data-toggle="modal" data-target="#Modal" href="/Bank/Classify?id=@(item.ID)" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i>修改类型</a>
-                        }
-                        else
-                        {
-                            <a data-toggle="modal" data-target="#Modal" href="/Bank/Classify?id=@(item.ID)" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-tags"></i>归类</a>
-                        }
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-else
-{
-    <span>当前系统未导入相关数据</span>
-}
-
-<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true" id="Modal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-
-        </div>
+    <div role="tabpanel" class="tab-pane @(company==Company.Projection?"active":"")" id="Projection">
     </div>
 </div>
 
-<script>
-    $(function () {
-        $("#Modal").on("hidden.bs.modal", function () {
-            $(this).removeData("bs.modal");
-        })
-    });
-</script>
+
+
+
+
+
+
 
 
