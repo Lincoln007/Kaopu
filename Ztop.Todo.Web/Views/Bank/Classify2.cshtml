@@ -1,6 +1,6 @@
-﻿@{ 
+﻿@{
     Layout = null;
-    BillOne one = ViewBag.BillOne;
+    BillTwo one = ViewBag.Two;
 }
 
 <h3 class="text-center">账目归类</h3>
@@ -34,13 +34,13 @@
                             {
                                 if (((int)cost) < 3)
                                 {
-                                    <option value="@(cost)" @(one.Cost.HasValue&&one.Cost.Value==cost?"selected=selected":"")>@(cost.GetDescription())</option>
+                                    <option value="@(cost)" @(one.Cost.HasValue && one.Cost.Value == cost ? "selected=selected" : "")>@(cost.GetDescription())</option>
                                 }
                             }
                         </select>
                     </div>
                 </div>
-               
+
             }
             else
             {
@@ -52,7 +52,7 @@
                             {
                                 if (((int)cost) >= 3)
                                 {
-                                    <option value="@(cost)" @(one.Cost.HasValue&&one.Cost.Value==cost?"selected=selected":"")>@(cost.GetDescription())</option>
+                                    <option value="@(cost)" @(one.Cost.HasValue && one.Cost.Value == cost ? "selected=selected" : "")>@(cost.GetDescription())</option>
                                 }
                             }
                         </select>
@@ -64,7 +64,7 @@
                         <select name="Category" class="form-control">
                             @foreach (Category category in Enum.GetValues(typeof(Category)))
                             {
-                                <option value="@(category)" @(one.Category.HasValue&&one.Category.Value==category?"selected=selected":"")>@(category.GetDescription())</option>
+                                <option value="@(category)" @(one.Category.HasValue && one.Category.Value == category ? "selected=selected" : "")>@(category.GetDescription())</option>
                             }
                         </select>
                     </div>
@@ -80,7 +80,7 @@
     </div>
 </form>
 
-<script >
+<script>
     $(function () {
         $("select[name='Cost']").change(function () {
             var val = $(this).val();
@@ -93,9 +93,9 @@
 
         $("#Classify").submit(function () {
             var data = $(this).serialize();
-            $.request("/Bank/Classify", data, function (json) {
+            $.request("/Bank/Classify2", data, function (json) {
                 if (json.result == 1) {
-                    location.href = "/Bank/ViewEvaluation?id=" + json.data;
+                    location.href = "/Bank/ViewProjection?id=" + json.data;
                     }else{
                     alert(json.content);
                 }
@@ -106,4 +106,5 @@
         });
     });
 </script>
+
 

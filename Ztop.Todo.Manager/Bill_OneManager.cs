@@ -54,7 +54,33 @@ namespace Ztop.Todo.Manager
         }
 
         /// <summary>
-        /// 作用：添加BillOne
+        /// 作用：添加BillTwo  存在则替换  不存在追加
+        /// 作者：汪建龙
+        /// 编写时间：2016年12月11日14:34:54
+        /// </summary>
+        /// <param name="billTwo"></param>
+        /// <returns></returns>
+        public int Add(BillTwo billTwo)
+        {
+            using (var db = GetDbContext())
+            {
+                var entry = db.BillTwos.FirstOrDefault(e => e.SerialNumber == billTwo.SerialNumber && e.HID == billTwo.HID);
+                if (entry != null)
+                {
+                    billTwo.ID = entry.ID;
+                    db.Entry(entry).CurrentValues.SetValues(billTwo);
+                }
+                else
+                {
+                    db.BillTwos.Add(billTwo);
+                }
+                db.SaveChanges();
+                return billTwo.ID;
+            }
+        }
+
+        /// <summary>
+        /// 作用：添加BillOne  存在则替换  不存在追加
         /// 作者：汪建龙
         /// 编写时间：2016年11月16日16:11:02
         /// </summary>
@@ -79,7 +105,50 @@ namespace Ztop.Todo.Manager
                 return billOne.ID;
             }
         }
-
+        /// <summary>
+        /// 作用：将规划公司银行对账单导入
+        /// 作者：汪建龙
+        /// 编写时间：2016年12月11日14:36:41
+        /// </summary>
+        /// <param name="hid"></param>
+        /// <param name="list"></param>
+        /// <param name="year"></param>
+        /// <param name="month"></param>
+        /// <returns></returns>
+        public List<string> Input2(int hid,List<BillTwo> list,int year,int month)
+        {
+            var errors = new List<string>();
+            var preSerialNumber = 1;
+            BillTwo preEntry = null;
+            foreach(var item in list)
+            {
+                var error = string.Empty;
+                if (preEntry != null)
+                {
+                    if (!BillClass.CheckLogic(item, preEntry))
+                    {
+                        error = "序号前后不一致，应递增或者账户月收支前后不一致;";
+                    }
+                    if (!BillClass.CheckTime(item, year, month))
+                    {
+                        error += string.Format("交易日期不在{0}年{1}月,请核对！", year, month);
+                    }
+                }
+                if (!string.IsNullOrEmpty(error))
+                {
+                    errors.Add(string.Format("第{0}个数据存在如下错误：{1}", preSerialNumber, error));
+                    continue;
+                }
+                item.HID = hid;
+                if (Add(item) == 0)
+                {
+                    errors.Add(string.Format("第{0}个数据：保存到数据库失败；", preSerialNumber));
+                }
+                preEntry = item;
+                preSerialNumber++;
+            }
+            return errors;
+        }
         /// <summary>
         /// 作用：
         /// 作者：汪建龙
@@ -127,6 +196,8 @@ namespace Ztop.Todo.Manager
         /// 作用：获取Bill_Head 
         /// 作者：汪建龙
         /// 编写时间：2016年11月16日16:16:09
+        /// 修改：追加规划公司银行对账
+        /// 修改时间：2016年12月11日14:41:40
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -135,14 +206,57 @@ namespace Ztop.Todo.Manager
             using (var db = GetDbContext())
             {
                 var entry = db.Bill_Heads.Find(id);
-                if (entry != null)
-                {
-                    entry.Ones = db.BillOnes.Where(e => e.HID == entry.ID).ToList();
-                }
+                //if (entry != null)
+                //{
+                //    entry.Ones = db.BillOnes.Where(e => e.HID == entry.ID).OrderBy(e=>e.SerialNumber).ToList();
+                //    entry.Twos = db.BillTwos.Where(e => e.HID == entry.ID).OrderBy(e => e.SerialNumber).ToList();
+                //}
                 return entry;
             }
         }
+        /// <summary>
+        /// 作用：通过HID获取评估公司银行对账单
+        /// 作者：汪建龙
+        /// 编写时间：2016年12月11日16:11:09
+        /// </summary>
+        /// <param name="hid"></param>
+        /// <returns></returns>
+        public List<BillOne> GetBillOneList(int hid)
+        {
+            using (var db = GetDbContext())
+            {
+                return db.BillOnes.Where(e => e.HID == hid).OrderBy(e => e.SerialNumber).ToList();
+            }
+        }
 
+        /// <summary>
+        /// 作用：通过HID获取规划公司银行对账单
+        /// 作者：汪建龙
+        /// 编写时间：2016年12月11日16:13:14
+        /// </summary>
+        /// <param name="hid"></param>
+        /// <returns></returns>
+        public List<BillTwo> GetBillTwoList(int hid)
+        {
+            using (var db = GetDbContext())
+            {
+                return db.BillTwos.Where(e => e.HID == hid).OrderBy(e => e.SerialNumber).ToList();
+            }
+        }
+        /// <summary>
+        /// 作用:获得规划公司账单单条信息
+        /// 作者：汪建龙
+        /// 编写时间：2016年12月11日20:41:21
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public BillTwo GetBillTwo(int id)
+        {
+            using (var db = GetDbContext())
+            {
+                return db.BillTwos.Find(id);
+            }
+        }
         /// <summary>
         /// 作用：获取BillOne
         /// 作者：汪建龙
@@ -158,7 +272,7 @@ namespace Ztop.Todo.Manager
             }
         }
         /// <summary>
-        /// 作用：归类银行账目
+        /// 作用：归类银行账目----------评估
         /// 作者：汪建龙
         /// 编写时间：2016年11月17日10:24:40
         /// </summary>
@@ -180,6 +294,30 @@ namespace Ztop.Todo.Manager
                 }
             }
 
+            return null;
+        }
+        /// <summary>
+        /// 作用：归类--------------规划
+        /// 作者：汪建龙
+        /// 编写时间：2016年12月11日20:46:50
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="cost"></param>
+        /// <param name="category"></param>
+        /// <returns></returns>
+        public BillTwo Classify2(int id,Cost cost,Category? category)
+        {
+            using (var db = GetDbContext())
+            {
+                var entry = db.BillTwos.Find(id);
+                if (entry != null)
+                {
+                    entry.Cost = cost;
+                    entry.Category = category;
+                    db.SaveChanges();
+                    return entry;
+                }
+            }
             return null;
         }
 

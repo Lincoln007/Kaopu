@@ -11,19 +11,62 @@ namespace Ztop.Todo.Web.Controllers
     public class iPadController : ControllerBase
     {
         // GET: iPad
-        public ActionResult Index(iPadCategory category=iPadCategory.iPad)
+        public ActionResult Index(iPadCategory category=iPadCategory.iPad,iPadType type=iPadType.Mini2)
         {
             if (!Identity.iPad)
             {
                 return View("Fate");
             }
             ViewBag.Category = category;
-            ViewBag.List = Core.iPadManager.Get();
-            ViewBag.Registers = Core.iPad_registerManager.Get();
+            ViewBag.Type = type;
             ViewBag.Contracts = Core.iPad_ContractManager.Get();
             ViewBag.Invoices = Core.iPad_InvoiceManager.Get();
             ViewBag.Accounts = Core.iPad_AccountManager.Get();
 
+            return View();
+        }
+        /// <summary>
+        /// 作用：返回借用记录界面
+        /// 作者：汪建龙
+        /// 编写时间：2016年12月11日10:52:33
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult ManagerRegisters()
+        {
+            return View();
+        }
+
+        public ActionResult RegisterList(bool revert)
+        {
+            var list = Core.iPad_registerManager.Get();
+            list = list.Where(e => e.Revert == revert).OrderByDescending(e=>e.Number).ToList();
+            ViewBag.List = list;
+            return View();
+        }
+
+        /// <summary>
+        /// 作用：返回平板列表界面
+        /// 作者：汪建龙
+        /// 编写时间：2016年12月9日11:10:22
+        /// </summary>
+        /// <param name="iPadTye"></param>
+        /// <returns></returns>
+        public ActionResult ManageriPad(iPadType type=iPadType.Mini2)
+        {
+            ViewBag.Type = type;
+            return View();
+        }
+        /// <summary>
+        /// 作用：返回某一类型的平板列表界面
+        /// 作者：汪建龙
+        /// 编写时间：2016年12月9日11:10:48
+        /// </summary>
+        /// <param name="iPadType"></param>
+        /// <returns></returns>
+        public ActionResult iPadList(iPadType iPadType)
+        {
+            var list = Core.iPadManager.Get(iPadType);
+            ViewBag.List = list;
             return View();
         }
 
@@ -390,7 +433,28 @@ namespace Ztop.Todo.Web.Controllers
             return SuccessJsonResult();
         }
 
+        public ActionResult ManagerDatum()
+        {
+            var list = Core.iPad_DatumManager.Get();
+            ViewBag.List = list;
+            return View();
+        }
 
+        public ActionResult CreateDatum()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult SaveDatum(iPadDatum datum)
+        {
+            var id = Core.iPad_DatumManager.Add(datum);
+            if (id == 0)
+            {
+                return ErrorJsonResult("添加失败！");
+            }
+            return SuccessJsonResult();
+        }
 
     }
 }

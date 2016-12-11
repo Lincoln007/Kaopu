@@ -27,8 +27,16 @@ namespace Ztop.Todo.Model
         /// </summary>
         [Column(TypeName ="int")]
         public Company Company { get; set; }
+        /// <summary>
+        /// 评估公司
+        /// </summary>
         [NotMapped]
         public List<BillOne> Ones { get; set; }
+        /// <summary>
+        /// 规划公司
+        /// </summary>
+        [NotMapped]
+        public List<BillTwo> Twos { get; set; }
         [NotMapped]
         public string Head
         {
@@ -39,16 +47,8 @@ namespace Ztop.Todo.Model
         }
     }
 
-    /// <summary>
-    /// 2016-11-12  重新设计银行对账Model
-    /// 
-    /// </summary>
-    [Table("bill_ones")]
-    public class BillOne
+    public class BillBase
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int ID { get; set; }
         /// <summary>
         /// 序号
         /// </summary>
@@ -61,10 +61,6 @@ namespace Ztop.Todo.Model
         /// 交易时间
         /// </summary>
         public DateTime? Time { get; set; }
-        /// <summary>
-        /// 凭证号
-        /// </summary>
-        public string Voucher { get; set; }
         /// <summary>
         /// 收入 还是支出
         /// </summary>
@@ -79,10 +75,6 @@ namespace Ztop.Todo.Model
         /// </summary>
         public double Balance { get; set; }
         /// <summary>
-        /// 对方账号
-        /// </summary>
-        public string CounterPart { get; set; }
-        /// <summary>
         /// 对方户名
         /// </summary>
         public string Account { get; set; }
@@ -95,6 +87,10 @@ namespace Ztop.Todo.Model
         /// </summary>
         public string Remark { get; set; }
         /// <summary>
+        /// 年月ID
+        /// </summary>
+        public int HID { get; set; }
+        /// <summary>
         /// 类别
         /// </summary>
         [Column(TypeName = "int")]
@@ -104,7 +100,68 @@ namespace Ztop.Todo.Model
         /// </summary>
         [Column(TypeName = "int")]
         public Category? Category { get; set; }
-        public int HID { get; set; }
+    }
+    /// <summary>
+    /// 2016-11-12  重新设计银行对账Model----评估公司  
+    /// 
+    /// </summary>
+    [Table("bill_ones")]
+    public class BillOne:BillBase
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int ID { get; set; }  
+        /// <summary>
+        /// 凭证号
+        /// </summary>
+        public string Voucher { get; set; } 
+        /// <summary>
+        /// 对方账号
+        /// </summary>
+        public string CounterPart { get; set; } 
+    }
+    /// <summary>
+    /// 
+    /// </summary>
+    [Table("bill_twos")]
+    public class BillTwo:BillBase
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int ID { get; set; }
+
+        /// <summary>
+        /// 时间戳
+        /// </summary>
+        public string TimeStamp { get; set; }
+        /// <summary>
+        /// 手续费总额
+        /// </summary>
+        public double CommissionCharge { get; set; }
+        /// <summary>
+        /// 交易方式
+        /// </summary>
+        public string Way { get; set; }
+        /// <summary>
+        /// 交易行名
+        /// </summary>
+        public string Bank { get; set; }
+        /// <summary>
+        /// 交易类别
+        /// </summary>
+        public string Type { get; set; }
+        /// <summary>
+        /// 对方省市
+        /// </summary>
+        public string Address { get; set; }
+        /// <summary>
+        /// 对方户名
+        /// </summary>
+        public string Name { get; set; }
+        /// <summary>
+        /// 交易附言
+        /// </summary>
+        public string PostScript { get; set; }
 
     }
 }

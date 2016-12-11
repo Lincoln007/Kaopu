@@ -202,10 +202,6 @@ namespace Ztop.Todo.Web.Controllers
         {
             return View();
         }
-
-
-
-
         public ActionResult Check(int year,int month,Company company)
         {
             var bank = Core.BillManager.Get(year, month, company)??new Bank();
@@ -241,6 +237,53 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
         /// <summary>
+        /// 作用：用户规划公司银行对账Excel文件，并读取分析Excel文件中的数据  返回读取的数据界面
+        /// 作者：汪建龙
+        /// 编写时间：2016年12月11日13:17:51
+        /// </summary>
+        /// <param name="year"></param>
+        /// <param name="month"></param>
+        /// <param name="company"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult Input2(int year,int month,Company company)
+        {
+            var file = HttpContext.Request.Files[0];
+            if (file == null)
+            {
+                throw new ArgumentException("请上传Excel文件！");
+            }
+            var saveFullFilePath = Core.BillManager.Upload(file);
+            var errors = new List<string>();
+            var bills = BillClass.AnalyzeExcel2(saveFullFilePath, ref errors);
+            Session["Read"] = bills;
+            //ViewBag.Values = bills.ToJson();
+            ViewBag.Bank = new Bank { Year = year, Month = month, Company = company };
+            ViewBag.Bills = bills;
+            ViewBag.Errors = errors;
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult SaveInput2(int year,int month,Company company)
+        {
+            var bills = Session["Read"] as List<BillTwo>;
+            if (bills == null || bills.Count == 0)
+            {
+                return ErrorJsonResult("未获取银行对账信息！原因：读取的银行对账信息失效，请重新上传文件！");
+            }
+            var head = Core.Bill_OneManager.GetBillHead(year, month, company);
+
+            var hid = head != null ? head.ID : Core.Bill_OneManager.Add(new Bill_Head { Year = year, Month = month, Company = company });
+            var errors = Core.Bill_OneManager.Input2(hid, bills, year, month);
+            if (errors.Count > 0)
+            {
+                return ErrorJsonResult(string.Join("<br />", errors));
+            }
+            return SuccessJsonResult(hid);
+        }
+
+        /// <summary>
         /// 作用：用户在上传Excel文件之后，对读取到的账单进行保存到数据库中
         /// 作者：汪建龙
         /// 编写时间：2016年11月19日10:28:07 
@@ -257,7 +300,7 @@ namespace Ztop.Todo.Web.Controllers
 
             if (bills == null || bills.Count == 0)
             {
-                return ErrorJsonResult("未读取银行对账信息！");
+                return ErrorJsonResult("未读取银行对账信息！原因：读取的银行对账信息失效，请重新上传文件！");
             }
             var head = Core.Bill_OneManager.GetBillHead(year, month, company);
             
@@ -272,18 +315,54 @@ namespace Ztop.Todo.Web.Controllers
 
         }
         /// <summary>
-        /// 作用：查看某年某月的银行对账单
+        /// 作用：查看某年某月的银行对账单 -------------- 作废
         /// 作者：汪建龙
         /// 编写时间：2016年11月19日10:28:43
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public ActionResult DetailBill(int id)
+        public ActionResult DetailBill(int id,Company company=Company.Evaluation)
         {
             var bill_heads = Core.Bill_OneManager.GetHead(id);
             ViewBag.Heads = bill_heads;
+            ViewBag.Company = company;
             return View();
         }
+        /// <summary>
+        /// 作用：查看评估银行对账情况
+        /// 作者：汪建龙
+        /// 编写时间：2016年12月11日16:50:36
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult ViewEvaluation(int id,bool depend=true)
+        {
+            var head = Core.Bill_OneManager.GetHead(id);
+            ViewBag.Head = head;
+            var list = Core.Bill_OneManager.GetBillOneList(id);
+            ViewBag.List = list;
+            ViewBag.Depend = depend;
+            return View();
+        }
+
+        /// <summary>
+        /// 作用：查看规划银行对账情况
+        /// 作者：汪建龙
+        /// 编写时间：2016年12月11日16:50:25
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="depend">是否独立页面</param>
+        /// <returns></returns>
+        public ActionResult ViewProjection(int id,bool depend = true)
+        {
+            var head = Core.Bill_OneManager.GetHead(id);
+            ViewBag.Head = head;
+            var list = Core.Bill_OneManager.GetBillTwoList(id);
+            ViewBag.List = list;
+            ViewBag.Depend = depend;
+            return View();
+        }
+
         public ActionResult CollectBills(List<BillOne> list)
         {
             var dict = Core.Bill_OneManager.Collect(list);
@@ -303,6 +382,28 @@ namespace Ztop.Todo.Web.Controllers
             var billone = Core.Bill_OneManager.GetBillOne(id);
             ViewBag.BillOne = billone;
             return View();
+        }
+
+        public ActionResult Classify2(int id)
+        {
+            var billtwo = Core.Bill_OneManager.GetBillTwo(id);
+            ViewBag.Two = billtwo;
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Classify2(int id,Cost cost, Category? category)
+        {
+            if (cost != Cost.RealPay)
+            {
+                category = null;
+            }
+            var entry = Core.Bill_OneManager.Classify2(id, cost, category);
+            if (entry == null)
+            {
+                return ErrorJsonResult("归类失败！");
+            }
+            return SuccessJsonResult(entry.HID);
         }
         /// <summary>
         /// 作用：在对账单归类之后，进行POST保存

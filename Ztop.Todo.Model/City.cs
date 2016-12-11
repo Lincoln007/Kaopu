@@ -60,7 +60,8 @@ namespace Ztop.Todo.Model
     public enum SystemCategory
     {
         City,
-        ProjectType
+        ProjectType,
+        ProjectSystem
     }
 
 }

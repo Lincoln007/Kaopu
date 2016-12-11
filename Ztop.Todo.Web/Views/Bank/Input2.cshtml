@@ -1,0 +1,130 @@
+﻿@{ 
+    ViewBag.Title = "分析结果";
+    Bank bank = ViewBag.Bank;
+    List<string> errors = ViewBag.Errors;
+    List<BillTwo> bills = ViewBag.Bills;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<script >
+    $(function () {
+
+        function Input() {
+            var subbuttom = $("#Project-form").children("button[type='submit']");
+            subbuttom.text("正在导入......").attr("disabled", "disabled");
+            ShowMessage("正在导入系统,请稍等.......");
+            var data = $("#Project-form").serialize();
+            $.request("/Bank/SaveInput2", data, function (json) {
+                if (json.result == 0) {
+                    ShowErrorMessage(json.content);
+                } else {
+                    ShowSuccessMessage("成功导入系统,正在跳转......");
+                    location.href = "/Bank/ViewProjection?id=" + json.data;
+                }
+            });
+        }
+
+
+        $("#Project-form").submit(function () {
+            @if (errors.Count > 0)
+            {
+                <text>
+            if (confirm("当前分析存在错误，您确定要导入系统吗？"))
+            {
+                Input();
+                return false;
+
+            } else {
+                return false;
+            }
+            </text>
+            }
+            else
+            {
+                <text>
+
+            Input();
+            
+            </text>
+            }
+
+          
+
+            return false;
+        })
+    });
+</script>
+
+<h3 class="text-center">规划公司银行对账分析结果</h3>
+@if (errors.Count > 0)
+{
+    <div class="alert alert-danger" role="alert">
+        @for(var i = 0; i < errors.Count; i++)
+        {
+            <p>@(i+1)、@(errors[i])</p>
+        }
+    </div>
+}
+
+
+<div class="alert alert-warning" role="alert" name="Message" style="display:none">
+    <i class="icon-spin icon-spinner icon-large"></i>
+    <span></span>
+</div>
+
+<form class="form-horizontal" method="post" action="/Bank/SaveInput2" id="Project-form">
+    <input type="hidden" name="Year" value="@(bank.Year)" />
+    <input type="hidden" name="Month" value="@(bank.Month)" />
+    <input type="hidden" name="Company" value="@(bank.Company)" />
+    <table class="table table-striped table-condensed">
+        <thead>
+            <tr>
+                <th>序号</th>
+                <th>交易日期</th>
+                <th>交易时间戳</th>
+                <th>收入金额【元】</th>
+                <th>支出金额【元】</th>
+                <th>本次余额【元】</th>
+                <th>手续费总额【元】</th>
+                <th>交易方式</th>
+                <th>交易行名</th>
+                <th>交易类别</th>
+                <th>对方省市</th>
+                <th>对方账号</th>
+                <th>对方户名</th>
+                <th>交易说明</th>
+                <th>交易摘要</th>
+                <th>交易附言</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var item in bills)
+            {
+                <tr>
+                    <td><input type="text" name="SerialNumber" class="form-control input-sm" value="@(item.SerialNumber)" readonly /></td>
+                    <td><input type="text" name="Time" class="form-control input-sm" value="@(item.Time.HasValue?item.Time.Value.ToLongDateString():"")" readonly /></td>
+                    <td><input type="text" name="TimeStamp" class="form-control input-sm" value="@(item.TimeStamp)" readonly /></td>
+                    <td><input type="text" name="InCome" class="form-control input-sm" value="@(item.Budget==Budget.Income?item.Money:.0)" readonly /></td>
+                    <td><input type="text" name="Pay" class="form-control input-sm" value="@(item.Budget==Budget.Income?.0:item.Money)" readonly /></td>
+                    <td><input type="text" name="Balance" class="form-control input-sm" value="@(item.Balance)" readonly /></td>
+                    <td><input type="text" value="@(item.CommissionCharge)" name="CommissonCharge" class="form-control input-sm" readonly /></td>
+                    <td><input type="text" value="@(item.Way)" name="Way" class="form-control input-sm" readonly /></td>
+                    <td><input type="text" value="@(item.Name)" name="Name" class="form-control input-sm" readonly /></td>
+                    <td><input type="text" value="@(item.Type)" name="Type" class="form-control input-sm" readonly /></td>
+                    <td><input type="text" value="@(item.Address)" name="Address" class="form-control input-sm" readonly /></td>
+                    <td><input type="text" value="@(item.Account)" name="Account" class="form-control input-sm" readonly /></td>
+                    <td><input type="text" value="@(item.Name)" name="Name" class="form-control input-sm" readonly /></td>
+                    <td><input type="text" value="@(item.Remark)" name="Remark" class="form-control input-sm" readonly /></td>
+                    <td><input type="text" value="@(item.Summary)" name="Summary" class="form-control input-sm" readonly /></td>
+                    <td><input type="text" value="@(item.PostScript)" name="PostScript" class="form-control input-sm" readonly /></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="btn-group">
+        <button type="submit" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-ok"></i>确认无误并导入</button>
+        <button type="button" class="btn btn-default btn-sm" onclick="history.back()"><i class="glyphicon glyphicon-arrow-left"></i>返回</button>
+    </div>
+</form>

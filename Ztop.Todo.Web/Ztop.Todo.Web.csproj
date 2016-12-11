@@ -367,6 +367,17 @@
     <Content Include="Views\iPad\ManagerContact.cshtml" />
     <Content Include="Views\iPad\CreateContact.cshtml" />
     <Content Include="Views\iPad\EditContact.cshtml" />
+    <Content Include="Views\Manager\ManagereProjectSystem.cshtml" />
+    <Content Include="Views\iPad\iPadList.cshtml" />
+    <Content Include="Views\iPad\ManageriPad.cshtml" />
+    <Content Include="Views\iPad\ManagerRegisters.cshtml" />
+    <Content Include="Views\iPad\RegisterList.cshtml" />
+    <Content Include="Views\Bank\Input2.cshtml" />
+    <Content Include="Views\Bank\ViewEvaluation.cshtml" />
+    <Content Include="Views\Bank\ViewProjection.cshtml" />
+    <Content Include="Views\Bank\Classify2.cshtml" />
+    <Content Include="Views\iPad\CreateDatum.cshtml" />
+    <Content Include="Views\iPad\ManagerDatum.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

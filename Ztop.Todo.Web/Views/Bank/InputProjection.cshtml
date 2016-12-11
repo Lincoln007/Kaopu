@@ -5,7 +5,7 @@
 <script >
     $(function () {
         $("#Projection-form").submit(function () {
-
+            $("#Projection-form button[type='submit']").text("正在分析......").attr("disabled", "disabled");
             ShowMessage("正在上传分析，")
         });
     });
@@ -18,7 +18,7 @@
 </div>
 <div class="row">
     <div class="col-md-12">
-        <form class="form-horizontal" method="post" action="" enctype="multipart/form-data" id="Projection-form">
+        <form class="form-horizontal" method="post" action="/Bank/Input2" enctype="multipart/form-data" id="Projection-form">
             <div class="form-group">
                 <label class="control-label col-md-3">年份【必选】：</label>
                 <div class="col-md-8">
@@ -44,6 +44,7 @@
             <div class="form-group">
                 <label class="control-label col-md-3">账单文件：</label>
                 <div class="col-md-8">
+                    <input type="hidden" name="Company" value="@(Company.Projection)" />
                     <input type="file" name="File" class="form-control" />
                 </div>
             </div>

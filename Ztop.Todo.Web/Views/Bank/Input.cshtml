@@ -78,7 +78,7 @@
                 var data = $(this).serialize();
                 $.request("/Bank/SaveInput", data, function (json) {
                     if (json.result == 1) {
-                        location.href = "/Bank/DetailBill?id=" + json.data;
+                        location.href = "/Bank/ViewEvaluation?id=" + json.data;
                     } else {
                         alert("导入失败" + json.content);
                         return false;
@@ -100,7 +100,7 @@
             var data = $(this).serialize();
             $.request("/Bank/SaveInput", data, function (json) {
                 if (json.result == 1) {
-                    location.href = "/Bank/DetailBill?id=" + json.data;
+                    location.href = "/Bank/ViewEvaluation?id=" + json.data;
                 } else {
                     alert("导入失败" + json.content);
                     return false;

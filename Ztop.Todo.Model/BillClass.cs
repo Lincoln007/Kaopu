@@ -382,11 +382,17 @@ namespace Ztop.Todo.Model
         }
 
         /// <summary>
-        ///作用： 银行对账导入的表头
+        ///作用： 银行对账导入的表头 评估公司
         ///作者：汪建龙
         ///编写时间：2016年11月12日17:25:21
         /// </summary>
         private static string[] CurrentHead = { "序号", "交易日期", "交易时间", "凭证号", "借方金额", "贷方金额", "余额", "对方账号", "对方户名", "摘要", "备注" };
+        /// <summary>
+        /// 作用：规划公司银行对账导入的表头
+        /// 作者：汪建龙
+        /// 编写时间：2016年12月11日11:43:19
+        /// </summary>
+        private static string[] CurrentHead2 = { "序号", "交易日期", "交易时间戳", "收入金额", "支出金额", "本次余额", "手续费总额", "交易方式", "交易行名", "交易类别", "对方省市", "对方账号", "对方户名", "交易说明", "交易摘要", "交易附言" };
         /// <summary>
         /// 作用：验证当前行是否为表头  是：true，不是：false
         /// 作者：汪建龙
@@ -417,6 +423,35 @@ namespace Ztop.Todo.Model
             return true;
         }
         /// <summary>
+        /// 作用：验证当前行是否为表头，是：true,不是：false
+        /// 作者：汪建龙
+        /// 编写时间：2016年12月11日11:49:19
+        /// </summary>
+        /// <param name="row"></param>
+        /// <returns></returns>
+        private static bool CheckProjectHead(IRow row)
+        {
+            if (row == null)
+            {
+                return false;
+            }
+            ICell cell = null;
+            for(var i = 0; i < CurrentHead2.Length; i++)
+            {
+                cell = row.GetCell(i);
+                if (cell == null)
+                {
+                    return false;
+                }
+                var str = cell.ToString();
+                if (str.ToUpper() != CurrentHead2[i].ToUpper())
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        /// <summary>
         /// 作用：将20161101这样的时间字符串转换成DateTime类型
         /// 作者：汪建龙
         /// 编写时间：2016年11月12日20:04:56
@@ -440,6 +475,75 @@ namespace Ztop.Todo.Model
             return null;
         }
         /// <summary>
+        /// 作用：获取Row行的字符串数据
+        /// 作者：汪建龙
+        /// 编写时间：2016年12月11日11:55:14
+        /// </summary>
+        /// <param name="row">行</param>
+        /// <param name="count">获取前count列</param>
+        /// <returns></returns>
+        private static string[] GetCellValue(IRow row, int count)
+        {
+            var array = new string[count];
+            for (var i = 0; i < count; i++)
+            {
+                var cell = row.GetCell(i);
+                if (cell == null)
+                {
+                    continue;
+                }
+                array[i] = cell.ToString();
+            }
+            return array;
+        }
+        /// <summary>
+        /// 作用：分析获得billTwo对象实例
+        /// 作者：汪建龙
+        /// 编写时间：2016年12月11日13:14:33
+        /// </summary>
+        /// <param name="row"></param>
+        /// <returns></returns>
+        private static BillTwo AnalyzeProject(IRow row)
+        {
+            if (row == null)
+            {
+                return null;
+            }
+            var array = GetCellValue(row, CurrentHead2.Length);
+            var a = 0;
+            var b = .0;
+            var entry = new BillTwo
+            {
+                SerialNumber = int.TryParse(array[0], out a) ? a : 0,
+                Date = array[1],
+                TimeStamp = array[2],
+                Time = GetDateTime(array[1]),
+                Balance = double.TryParse(array[5], out b) ? b : .0,
+                CommissionCharge = double.TryParse(array[6], out b) ? b : .0,
+                Way = array[7],
+                Bank=array[8],
+                Type = array[9],
+                Address = array[10],
+                Account = array[11],
+                Name=array[12],
+                Remark = array[13],
+                Summary = array[14],
+                PostScript = array[15]
+            };
+            if (!string.IsNullOrEmpty(array[3])&& double.TryParse(array[3], out b) && b > 0.01)
+            {
+                entry.Budget = Budget.Income;
+                entry.Money = b;
+            }
+            else if(!string.IsNullOrEmpty(array[4])&& double.TryParse(array[4], out b) && b > 0.01)
+            {
+                entry.Budget = Budget.Expense;
+                entry.Money = b;
+            }
+            return entry;
+        }
+
+        /// <summary>
         /// 作用：分析获得BillOne对象实例
         /// 作者：汪建龙
         /// 编写时间：2016年11月12日17:30:26
@@ -452,16 +556,7 @@ namespace Ztop.Todo.Model
             {
                 return null;
             }
-            var array = new string[CurrentHead.Length];
-            for(var i = 0; i < CurrentHead.Length; i++)
-            {
-                var cell = row.GetCell(i);
-                if (cell == null)
-                {
-                    continue;
-                }
-                array[i] = cell.ToString();
-            }
+            var array = GetCellValue(row, CurrentHead.Length);
 
             var a = 0;
             var b = .0;
@@ -495,9 +590,36 @@ namespace Ztop.Todo.Model
 
             
         }
+        /// <summary>
+        /// 作用：验证规划公司银行对账逻辑   规划公司
+        /// 作者：汪建龙
+        /// 编写时间：2016年12月11日14:22:02
+        /// </summary>
+        /// <param name="billTwo"></param>
+        /// <param name="pre"></param>
+        /// <returns></returns>
+        public static bool CheckLogic(BillTwo billTwo,BillTwo pre)
+        {
+            if (billTwo == null || pre == null)
+            {
+                return false;
+            }
+            if (billTwo.SerialNumber == (pre.SerialNumber + 1))
+            {
+                if (billTwo.Budget == Budget.Income && Math.Abs(pre.Balance + billTwo.Money - billTwo.Balance) < 0.01)
+                {
+                    return true;
+                }else if (billTwo.Budget == Budget.Expense && Math.Abs(pre.Balance - billTwo.Money - billTwo.Balance) < 0.01)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
 
         /// <summary>
-        /// 作用：比较两个对账记录逻辑
+        /// 作用：比较两个对账记录逻辑-评估公司银行
         /// 作者：汪建龙
         /// 编写时间：2016年11月16日15:40:58
         /// </summary>
@@ -518,6 +640,30 @@ namespace Ztop.Todo.Model
                 {
                     return true;
                 }else if (billOne.Budget == Budget.Expense && Math.Abs(pre.Balance - billOne.Money - billOne.Balance) < 0.01)//当支出时，上一笔余额-当前金额=当前余额
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        /// <summary>
+        /// 作用：验证时间逻辑
+        /// 作者：汪建龙
+        /// 编写时间：2016年12月11日14:25:21
+        /// </summary>
+        /// <param name="billTwo"></param>
+        /// <param name="year"></param>
+        /// <param name="month"></param>
+        /// <returns></returns>
+        public static bool CheckTime(BillTwo billTwo,int year,int month)
+        {
+            if (billTwo == null || year == 0 || month == 0)
+            {
+                return false;
+            }
+            if (billTwo.Time.HasValue)
+            {
+                if (billTwo.Time.Value.Year == year && billTwo.Time.Value.Month == month)
                 {
                     return true;
                 }
@@ -550,9 +696,62 @@ namespace Ztop.Todo.Model
             return false;
 
         }
+        /// <summary>
+        /// 作用：分析规划公司银行对账单
+        /// 作者：汪建龙
+        /// 编写时间：2016年12月11日13:15:54
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="errors"></param>
+        /// <returns></returns>
+        public static List<BillTwo> AnalyzeExcel2(string filePath,ref List<string> errors)
+        {
+            var list = new List<BillTwo>();
+            var workbook = filePath.OpenExcel();
+            if (workbook == null)
+            {
+                errors.Add("打开Excel文件失败！");
+                return null;
+            }
+            var sheet = workbook.GetSheetAt(0);
+            if (sheet == null)
+            {
+                errors.Add("未获取Sheet信息");
+                return null;
+            }
+            IRow row = null;
+            bool start = false;
+            for(var i = 0; i <= sheet.LastRowNum; i++)
+            {
+                row = sheet.GetRow(i);
+                if (row == null)
+                {
+                    errors.Add(string.Format("无法读取第{0}行的数据", i + 1));
+                    continue;
+                }
+                if (!start)
+                {
+                    start = CheckProjectHead(row);
+                }
+                else
+                {
+                    var entry = AnalyzeProject(row);
+                    if (entry != null)
+                    {
+                        list.Add(entry);
+                    }
+                    else
+                    {
+                        errors.Add(string.Format("Excel第{0}行：未分析到数据", i + 1));
+                    }
+                }
+
+            }
+            return list;
+        }
 
         /// <summary>
-        /// 作用：分析Excel文件，获取银行信息
+        /// 作用：分析Excel文件，获取银行信息------评估公司银行对账单
         /// 作者：汪建龙
         /// 编写时间：2016年11月12日20:57:36
         /// </summary>

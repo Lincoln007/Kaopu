@@ -288,7 +288,10 @@ namespace Ztop.Todo.Web.Controllers
             return SuccessJsonResult();
         }
 
-
+        public ActionResult ManagereProjectSystem()
+        {
+            return View();
+        }
         
 
 

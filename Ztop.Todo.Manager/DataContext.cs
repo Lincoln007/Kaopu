@@ -99,11 +99,13 @@ namespace Ztop.Todo.Manager
         public DbSet<iPadAccount> iPad_Accounts { get; set; }
 
         public DbSet<iPadContact> iPad_Contacts { get; set; }
+        public DbSet<iPadDatum> iPad_Datums { get; set; }
 
         #endregion
 
         #region  银行对账系统
         public DbSet<BillOne> BillOnes { get; set; }
+        public DbSet<BillTwo> BillTwos { get; set; }
 
         public DbSet<Bill_Head> Bill_Heads { get; set; }
 

@@ -1,0 +1,22 @@
+﻿@{ 
+    Layout = null;
+}
+
+<ul class="nav nav-pills" role="tablist">
+    <li role="presentation" class="active"><a href="#FALSE" role="tab" data-toggle="tab">借用中</a></li>
+    <li role="presentation" ><a href="#TRUE" role="tab" data-toggle="tab">已归还</a></li>
+</ul>
+
+
+<div class="tab-content">
+    <div class="tab-pane active" id="FALSE" role="tabpanel">
+        @{ 
+            Html.RenderAction("RegisterList", new { revert = false });
+        }
+    </div>
+    <div class="tab-pane" id="TRUE" role="tabpanel">
+        @{ 
+            Html.RenderAction("RegisterList", new { revert = true });
+        }
+    </div>
+</div>

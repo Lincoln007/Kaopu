@@ -3,8 +3,6 @@
     ViewBag.Title = "平板列表";
     Layout = "~/Views/Shared/_Layout.cshtml";
     iPadCategory category = ViewBag.Category;
-    List<iPad> list = ViewBag.List;
-    List<iPadRegister> Registers = ViewBag.Registers;
     List<iPadContract> Contracts = ViewBag.Contracts;
     List<iPadInvoice> Invoices = ViewBag.Invoices;
     List<iPadAccount> Accounts = ViewBag.Accounts;
@@ -19,7 +17,8 @@
     <a data-toggle="modal" data-target="#Modal" href="/iPad/CreateContract" class="btn btn-success"><i class="glyphicon glyphicon-book"></i>录入合同</a>
     <a data-toggle="modal" data-target="#Modal" href="/iPad/CreateAccount" class="btn btn-info"><i class="glyphicon glyphicon-flag"></i>创建账号</a>
     <a data-toggle="modal" data-target="#Modal" href="/Ipad/CreateContact" class="btn btn-primary"><i class="glyphicon glyphicon-user"></i>录入联系人</a>
-     <a href="/iPad/Index" class="btn btn-default"><i class="glyphicon glyphicon-refresh"></i>刷新</a>
+    <a  data-toggle="modal" data-target="#Modal" href="/Ipad/CreateDatum" class="btn btn-danger"><i class="glyphicon glyphicon-cloud"></i>录入平板数据</a>
+    <a href="/iPad/Index" class="btn btn-default"><i class="glyphicon glyphicon-refresh"></i>刷新</a>
 </div>
 <div class="alert alert-warning" role="alert" name="Message" style="display:none">
     <i class="icon-spin icon-spinner icon-large"></i>
@@ -40,120 +39,14 @@
 </ul>
 <div class="tab-content">
     <div role="tabpanel" class="tab-pane @(category.ToString()=="iPad"?"active":"")" id="iPad">
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>序号</th>
-                    <th>平板名称</th>
-                    <th>平板序列号</th>
-                    <th>Apple ID</th>
-                    <th>平板类型</th>
-                    <th>平板容量</th>
-                    <th>网络连接方式</th>
-                    <th>颜色</th>
-                    <th>使用状态</th>
-                    <th>购买时间</th>
-                    <th>购买人</th>
-                    <th>信息录入人</th>
-                    <th>操作</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var ipad in list)
-                {
-                    <tr>
-                        <td>@(ipad.ID)</td>
-                        <td>@(ipad.Name)</td>
-                        <td>@(ipad.SerialNumber)</td>
-                        <td>@(ipad.Account!=null?ipad.Account.Account:"/")</td>
-                        <td>@(ipad.Type.GetDescription())</td>
-                        <td>@(ipad.Space.GetDescription())</td>
-                        <td>@(ipad.Way)</td>
-                        <td>@(ipad.Color)</td>
-                        <td>
-                            <a  href="#" class="btn @(ipad.Statue==iPadStatue.Vacant?"btn-default":(ipad.Statue==iPadStatue.Borrow?"btn-warning":"btn-success")) btn-xs"  data-toggle="modal" data-target="#Modal">@(ipad.Statue.GetDescription())</a>
-                        </td>
-                        <td>@(ipad.Time.ToLongDateString())</td>
-                        <td>@(ipad.Buyer)</td>
-                        <td>@(ipad.Enter)</td>
-                        <td>
-                            @if (!string.IsNullOrEmpty(ipad.AuthPath))
-                            {
-                                <a href="/@(ipad.AuthPath)" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-download-alt"></i>下载授权文件</a>
-                            }
-                            <a href="/iPad/Create?id=@(ipad.ID)&&edit=true" class="btn btn-primary btn-xs"  data-toggle="modal" data-target="#Modal"><i class="glyphicon glyphicon-edit"></i>编辑</a>
-                            <a href="/iPad/Delete?id=@(ipad.ID)" class="btn btn-danger btn-xs btn-delete"><i class="glyphicon glyphicon-remove"></i>删除</a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+        @{ 
+            Html.RenderAction("ManageriPad",new { type=ViewBag.Type});
+        }
     </div>
     <div role="tabpanel" class="tab-pane @(category.ToString()=="Register"?"active":"")" id="Register">
-        <table class="table table-condensed table-striped">
-            <thead>
-                <tr>
-                    <th>序号</th>
-                    <th>领取编号</th>
-                    <th>项目名称/地方</th>
-                    <th>用途/说明</th>
-                    <th>领取人</th>
-                    <th>领取时间</th>
-                    <th>领取平板</th>
-                    <th>使用状态</th>
-                    <th>备注</th>
-                    <th>操作</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach(var register in Registers)
-                {
-                    <tr>
-                        <td>@(register.ID)</td>
-                        <td>@(register.Number)</td>
-                        <td>@(register.Name)</td>
-                        <td>@(register.Mark)</td>
-                        <td>@(register.Borrower)</td>
-                        <td>@(register.BorrowTime.ToLongDateString())</td>
-                        <td>
-                            <table class="table">
-                                @foreach(var array in register.iPads.ListToTable(2))
-                                {
-                                    <tr style="">
-                                        @foreach(var ipad in array)
-                                        {
-                                            if (ipad != null)
-                                            {
-                                                <td>
-                                                    <label class="label label-default">@(ipad.Name)</label>
-                                                </td>
-                                            }
-                                        }
-                                    </tr>
-                                }
-                            </table>
-                  
-                        </td>
-                       
-                        <td>
-                            <a data-toggle="modal" data-target="#Modal" href="/iPad/DetailRelation?rid=@(register.ID)&&relation=@(Relation.Register_iPad)" class="btn @(register.Revert?"btn-success":"btn-danger") btn-xs"><i class="glyphicon glyphicon-flash"></i>@(register.Revert?"已归还":"借用中")</a>
-                        </td>
-                        <td>@(register.Remark)</td>
-                        <td>
-                            
-                            @if (!register.Revert)
-                            {
-                                <a  data-toggle="modal" data-target="#Modal" href="/iPad/CreateRegister?id=@(register.ID)" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i>编辑</a>
-                                <a  data-toggle="modal" data-target="#Modal" href="/iPad/Restore?rid=@(register.ID)" class="btn btn-success btn-xs"><i class="glyphicon glyphicon-warning-sign"></i>归还</a>
-                                <a  data-toggle="modal" data-target="#Modal" href="/iPad/Translate?rid=@(register.ID)" class="btn btn-warning btn-xs"><i class="glyphicon glyphicon-share-alt"></i>作为项目使用</a>
-                                <a href="/iPad/DeleteRegister?id=@(register.ID)" class="btn btn-danger btn-xs btn-delete"><i class="glyphicon glyphicon-remove-circle"></i>删除</a>
-                            }
-                            
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+        @{ 
+            Html.RenderAction("ManagerRegisters");
+        }
     </div>
 
     <div role="tabpanel" class="tab-pane @(category.ToString()=="Invoice"?"active":"")" id="Invoice">

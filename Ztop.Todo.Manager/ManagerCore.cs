@@ -89,6 +89,7 @@ namespace Ztop.Todo.Manager
 
         public iPad_AccountManager iPad_AccountManager { get; private set; }
         public iPad_ContactManager iPad_ContactManager { get; private set; }
+        public iPad_DatumManager iPad_DatumManager { get; private set; }
 
         #endregion
 

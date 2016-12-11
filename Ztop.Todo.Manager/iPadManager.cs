@@ -65,6 +65,26 @@ namespace Ztop.Todo.Manager
                 return list;
             }
         }
+        /// <summary>
+        /// 作用：获取指定类型的平板
+        /// 作者：汪建龙
+        /// 编写时间：2016年12月9日10:48:09
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public List<iPad> Get(iPadType type)
+        {
+            using (var db = GetDbContext())
+            {
+                var list = db.iPads.Where(e => e.Type == type).OrderByDescending(e => e.ID).ToList();
+                foreach(var item in list)
+                {
+                    item.Account = db.iPad_Accounts.Find(item.AID);
+                    item.Relations = db.Register_iPads.Where(e => e.IID == item.ID).ToList();
+                }
+                return list;
+            }
+        }
         public iPad Get(int id)
         {
             if (id == 0) return null;

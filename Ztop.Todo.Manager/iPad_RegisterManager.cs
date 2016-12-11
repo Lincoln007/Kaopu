@@ -27,6 +27,12 @@ namespace Ztop.Todo.Manager
             }
         }
 
+        /// <summary>
+        /// 作用：获取所有借用记录
+        /// 作者：汪建龙
+        /// 编写时间：2016年12月11日10:55:23
+        /// </summary>
+        /// <returns></returns>
         public List<iPadRegister> Get()
         {
             using (var db = GetDbContext())
@@ -41,7 +47,6 @@ namespace Ztop.Todo.Manager
                         entry.iPad = db.iPads.Find(entry.IID);
                     }
                     item.Register_iPads = relations;
-                    //item.iPads = db.Register_iPads.Where(e => e.RID == item.ID&&e.Relation==Relation.Register_iPad).ToList().Select(e =>db.iPads.Find(e.IID)).ToList();
                 }
                 return list;
             }

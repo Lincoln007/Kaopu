@@ -1,0 +1,91 @@
+﻿@using Ztop.Todo.ActiveDirectory
+@{ 
+    Layout = null;
+    List<iPadRegister> Registers = ViewBag.List;
+}
+
+<table class="table table-condensed table-striped">
+    <thead>
+        <tr>
+            <th>序号</th>
+            <th>领取编号</th>
+            <th>项目名称/地方</th>
+            <th>用途/说明</th>
+            <th>领取人</th>
+            <th>领取时间</th>
+            <th>领取平板</th>
+            <th>使用状态</th>
+            <th>备注</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var register in Registers)
+        {
+            <tr>
+                <td>@(register.ID)</td>
+                <td>@(register.Number)</td>
+                <td>
+                    @if (register.Name.Length > 10)
+                    {
+<abbr title="@(register.Name)">@(register.Name.Substring(0,10))</abbr>
+                    }
+                    else
+                    {
+                        @(register.Name)
+                    }
+                 
+                </td>
+                <td>@(register.Mark)</td>
+                <td>@(register.Borrower)</td>
+                <td>@(register.BorrowTime.ToLongDateString())</td>
+                <td>
+                    <table class="table">
+                        @foreach (var array in register.iPads.ListToTable(3))
+                        {
+                            <tr style="">
+                                @foreach (var ipad in array)
+                                {
+                                    if (ipad != null)
+                                    {
+                                        <td>
+                                            <label class="label label-default">@(ipad.Name)</label>
+                                        </td>
+                                    }
+                                }
+                            </tr>
+                        }
+                    </table>
+
+                </td>
+
+                <td>
+                    <a data-toggle="modal" data-target="#Modal" href="/iPad/DetailRelation?rid=@(register.ID)&&relation=@(Relation.Register_iPad)" class="btn @(register.Revert?"btn-success":"btn-danger") btn-xs"><i class="glyphicon glyphicon-flash"></i>@(register.Revert ? "已归还" : "借用中")</a>
+                </td>
+                <td>
+                    @if (register.Remark.Length > 10)
+                    {
+                        <abbr title="@(register.Remark)">@(register.Remark.Substring(0,10))</abbr>
+                    }
+                    else
+                    {
+                        @(register.Remark)
+                    }
+                 
+                </td>
+                <td>
+
+                    @if (!register.Revert)
+                    {
+                        <a data-toggle="modal" data-target="#Modal" href="/iPad/CreateRegister?id=@(register.ID)" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i>编辑</a>
+                                <a data-toggle="modal" data-target="#Modal" href="/iPad/Restore?rid=@(register.ID)" class="btn btn-success btn-xs"><i class="glyphicon glyphicon-warning-sign"></i>归还</a>
+                                <a data-toggle="modal" data-target="#Modal" href="/iPad/Translate?rid=@(register.ID)" class="btn btn-warning btn-xs"><i class="glyphicon glyphicon-share-alt"></i>作为项目使用</a>
+                                <a href="/iPad/DeleteRegister?id=@(register.ID)" class="btn btn-danger btn-xs btn-delete"><i class="glyphicon glyphicon-remove-circle"></i>删除</a>
+                    }
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

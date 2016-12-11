@@ -1,0 +1,22 @@
+﻿@{ 
+    Layout = null;
+    iPadType Type = ViewBag.Type;
+}
+
+<ul class="nav nav-pills" role="tablist">
+    @foreach(iPadType item in Enum.GetValues(typeof(iPadType)))
+    {
+        <li role="presentation" class="@(Type==item?"active":"")"><a href="#@(item.ToString())" role="tab" data-toggle="tab">@(item.GetDescription())</a></li>
+    }
+</ul>
+
+<div class="tab-content">
+    @foreach(iPadType item in Enum.GetValues(typeof(iPadType)))
+    {
+        <div role="tabpanel" class="tab-pane @(Type==item?"active":"")" id="@(item.ToString())">
+            @{ 
+                Html.RenderAction("iPadList", new { iPadType = item });
+            }
+        </div>
+    }
+</div>

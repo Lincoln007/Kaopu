@@ -164,5 +164,9 @@ namespace Ztop.Todo.Model
         Account,
         [Description("联系人")]
         Contact,
+        [Description("平板数据")]
+        Datum,
+        [Description("系统配置")]
+        Configuration
     }
 }
