@@ -4,6 +4,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     List<Bill_Head> evaluations = ViewBag.Evaluations;
     List<Bill_Head> projections = ViewBag.Projections;
+    List<Bill_Head> projection2s = ViewBag.Projection2s;
     List<Sheet> sheets = ViewBag.Sheets;
 }
 
@@ -13,23 +14,16 @@
 
 @if (Identity.Finance||Identity.Name== "靳小阳")
 {
-    @*<div class="btn-group">
-        <a data-toggle="modal" data-target="#Modal" href="/Bank/InputFile" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-plus-sign"></i>录入月末账单Excel</a>
-        <a data-toggle="modal" data-target="#Modal" href="/Bank/SetBalance" class="btn btn-warning btn-sm"><i class="glyphicon glyphicon-warning-sign"></i>设置初始余额</a>
-    </div>*@
 
     <div class="btn-group" role="group">
         <a data-toggle="modal" data-target="#Modal" href="/Bank/InputEvaluation" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-plus"></i>录入评估银行账单</a>
-        <a data-toggle="modal" data-target="#Modal" href="/Bank/InputProjection" class="btn btn-success btn-sm"><i class="glyphicon glyphicon-plus"></i>录入规划银行账单</a>
+        <a data-toggle="modal" data-target="#Modal" href="/Bank/InputProjection" class="btn btn-success btn-sm"><i class="glyphicon glyphicon-plus"></i>录入规划玉泉支行账单</a>
+        <a data-toggle="modal" data-target="#Modal" href="/Bank/InputProjection?company=@(Company.Projection2)" class="btn btn-warning btn-sm"><i class="glyphicon glyphicon-plus"></i>录入规划文化广场支行账单</a>
     </div>
 }
 
 
 <hr />
-
-<div class="row">
-
-</div>
 
 
 <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true" id="Modal">
@@ -60,22 +54,12 @@
         </div>
         <div class="panel panel-body">
             <table class="table table-striped">
-                @if (Identity.Name == "靳小阳")
-                {
-                    @*<tr>
-                        <td>
-                            <a href="/Bank/Create?Company=@(Company.Evaluation)" class="btn btn-sm"><i class="glyphicon glyphicon-plus"></i>添加</a>
-                        </td>
-                    </tr>*@
-                }
-
                 @foreach (var head in evaluations)
                 {
                     <tr>
                         <td><a href="/Bank/ViewEvaluation?id=@(head.ID)">@(head.Head)</a></td>
                     </tr>
                 }
-
             </table>
         </div>
     </div>
@@ -89,22 +73,35 @@
             </h3>
         </div>
         <div class="panel panel-body">
-            <table class="table table-striped">
-                @if (Identity.Name == "靳小阳")
-                {
-                    @*<tr>
-                        <td>
-                            <a href="/Bank/Create?Company=@(Company.Projection)" class="btn btn-sm"><i class="glyphicon glyphicon-plus"></i>添加</a>
-                        </td>
-                    </tr>*@
-                }
-               @foreach(var head in projections)
-               {
-                   <tr>
-                       <td><a href="/Bank/ViewProjection?id=@(head.ID)">@(head.Head)</a></td>
-                   </tr>
-               }
-            </table>
+            <div class="col-md-6">
+                <blockquote>
+                    <h4 class="text-center">@(Company.Projection.GetDescription())</h4>
+                </blockquote>
+               
+                <table class="table table-striped">
+                    @foreach (var head in projections)
+                    {
+                        <tr>
+                            <td><a href="/Bank/ViewProjection?id=@(head.ID)">@(head.Head)</a></td>
+                        </tr>
+                    }
+                </table>
+            </div>
+            <div class="col-md-6">
+                <blockquote>
+                    <h4 class="text-center">@(Company.Projection2.GetDescription())</h4>
+                </blockquote>
+              
+                <table class="table table-striped">
+                    @foreach (var head in projection2s)
+                    {
+                        <tr>
+                            <td><a href="/Bank/ViewProjection?id=@(head.ID)">@(head.Head)</a></td>
+                        </tr>
+                    }
+                </table>
+            </div>
+      
         </div>
     </div>
 </div>

@@ -55,8 +55,10 @@ namespace Ztop.Todo.Model
     {
         [Description("评估")]
         Evaluation,
-        [Description("规划")]
+        [Description("规划玉泉支行")]
         Projection,
+        [Description("规划文化广场支行")]
+        Projection2,
         [Description("现金")]
         Cash,
         [Description("合计")]

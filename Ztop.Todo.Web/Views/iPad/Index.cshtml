@@ -35,6 +35,7 @@
     <li role="presentation" class="@(category.ToString()=="Invoice"?"active":"")"><a href="#Invoice" role="tab" data-toggle="tab">平板发票</a></li>
     <li role="presentation" class="@(category.ToString()=="Contract"?"active":"")"><a href="#Contract" role="tab" data-toggle="tab">项目合同</a></li>
     <li role="presentation" class="@(category.ToString()=="Account"?"active":"")"><a href="#Account" role="tab" data-toggle="tab">Apple ID</a></li>
+    <li role="presentation" class="@(category.ToString()=="Datum"?"active":"")"><a href="#Datum" role="tab" data-toggle="tab">平板数据</a></li>
     <li role="presentation" class="@(category.ToString()=="Contact"?"active":"")"><a href="#Contact" role="tab" data-toggle="tab">联系人</a></li>
 </ul>
 <div class="tab-content">
@@ -164,6 +165,12 @@
             </tbody>
         </table>
     </div>
+    <div role="tabpanel" class="tab-pane @(category.ToString()=="Datum"?"active":"")" id="Datum">
+        @{ 
+            Html.RenderAction("ManagerDatum");
+        }
+    </div>
+
     <div role="tabpanel" class="tab-pane @(category.ToString()=="Contact"?"active":"")" id="Contact">
         @{ 
             Html.RenderAction("ManagerContact");

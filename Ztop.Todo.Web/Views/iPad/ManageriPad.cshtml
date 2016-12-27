@@ -8,6 +8,7 @@
     {
         <li role="presentation" class="@(Type==item?"active":"")"><a href="#@(item.ToString())" role="tab" data-toggle="tab">@(item.GetDescription())</a></li>
     }
+    <li role="presentation" class=""><a href="#Search" role="tab" data-toggle="tab">高级查询</a></li>
 </ul>
 
 <div class="tab-content">
@@ -19,4 +20,8 @@
             }
         </div>
     }
+    <div role="tabpanel" class="tab-pane" id="Search">
+
+    </div>
+
 </div>

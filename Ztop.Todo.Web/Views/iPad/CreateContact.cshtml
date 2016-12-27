@@ -5,7 +5,8 @@
 <script>
     $(function () {
         $("#Contact-form").submit(function () {
-            $("#Contact-form button[type='submit']").text("正在保存......").attr("disabled", "disabled");
+            var node = $("#Contact-form button[type='submit']");
+            node.text("正在保存......").attr("disabled", "disabled");
             ShowMessage("正在保存联系人，请稍等......");
             var data = $(this).serialize();
             $.request("/iPad/SaveContact", data, function (json) {

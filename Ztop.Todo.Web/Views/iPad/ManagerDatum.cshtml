@@ -4,6 +4,25 @@
 }
 
 
+<script>
+    $(function () {
+        $("#Datum a[name='Repeal']").click(function () {
+            var node = $(this);
+            node.text("正在作废......").attr("disabled", "disabled");
+            ShowMessage("正在作废，请稍等......");
+            var href = node.attr("href");
+            $.request(href, null, function (json) {
+                if (json.result == 0) {
+                    ShowErrorMessage("作废失败！" + json.content);
+                } else {
+                    ShowSuccessMessage("成功作废！");
+                    node.parent().parent().remove();
+                }
+            });
+            return false;
+        });
+    });
+</script>
 <table class="table table-striped table-condensed">
     <thead>
         <tr>
@@ -25,15 +44,20 @@
                 <td>@(item.Name)</td>
                 <td>@(item.Time.ToLongDateString())</td>
                 <td>
-                    @if (item.Content.Length > 10)
+                    @if (item.Content.Length > 20)
                     {
-                        <abbr title="@(item.Content)">@(item.Content.Substring(0,10))</abbr>
+                        <abbr title="@(item.Content)">@(item.Content.Substring(0,20))</abbr>
                     }
                     else
                     {
                         @(item.Content)
                     }
-                  
+                </td>
+                <td>
+                    <a href="@(item.DownLoadPath)" class=""><i class="glyphicon glyphicon-download-alt"></i></a>
+                </td>
+                <td>
+                    <a href="/iPad/Repeal?id=@(item.ID)" name="Repeal" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-remove-circle"></i>过期作废</a>
                 </td>
             </tr>
         }

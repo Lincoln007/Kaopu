@@ -122,7 +122,7 @@ namespace Ztop.Todo.Manager
                 return null;
             }
             var a = .0;
-            var b = 0;
+           // var b = 0;
             var list = new List<Traffic>();
             //var times = context.Request.Form["Times"].Split(',');
             var plates = context.Request.Form["Plate"].Split(',');

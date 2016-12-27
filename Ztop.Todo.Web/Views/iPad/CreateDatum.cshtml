@@ -8,6 +8,23 @@
             timepicker: false,
             format: 'Y-m-d'
         });
+
+        $("#Create-form").submit(function () {
+            var node = $("#Create-form button[type='submit']");
+            node.text("正在保存......").attr("disabled", "disabled");       
+            var data = $(this).serialize();
+            ShowMessage("正在保存，请稍等......");
+            $.request("/iPad/SaveDatum", data, function (json) {
+                if (json.result == 0) {
+                    ShowErrorMessage(json.content);
+                } else {
+                    ShowSuccessMessage("成功保存，正在刷新......");
+                    location.href = "/iPad/Index?category=@(iPadCategory.Datum)";
+                }
+            });
+            return false;
+
+        });
     });
 </script>
 
@@ -15,23 +32,27 @@
 <hr />
 <div class="row">
     <div class="col-md-12">
-        <form class="form-horizontal" method="post" enctype="multipart/form-data" action="/">
+        <div class="alert alert-warning" role="alert" name="Message" style="display:none;">
+            <i class="icon-spin icon-spinner icon-large"></i>
+            <span></span>
+        </div>
+        <form class="form-horizontal" method="post"  action="" id="Create-form">
             <div class="form-group">
                 <label class="control-label col-md-4">所属单位【必填】：</label>
                 <div class="col-md-7">
-                    <input type="text" name="Address" class="form-control" placeholder="所属单位" />
+                    <input type="text" name="Address" class="form-control" placeholder="所属单位" required/>
                 </div>
             </div>
             <div class="form-group">
                 <label class="control-label col-md-4">更新内容【必填】：</label>
                 <div class="col-md-7">
-                    <textarea class="form-control" name="Content" rows="4"></textarea>
+                    <textarea class="form-control" name="Content" rows="4" required></textarea>
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-md-4">数据包路径【必填】：</label>
+                <label class="control-label col-md-4">数据包FTP路径【必填】：</label>
                 <div class="col-md-7">
-                    <input type="text" class="form-control" name="Path"  placeholder="数据包路径"/>
+                    <input type="text" class="form-control" name="Path"  placeholder="数据包FTP路径" required/>
                 </div>
             </div>
             <div class="form-group">
@@ -44,15 +65,10 @@
                 <label class="control-label col-md-4">数据制作时间：</label>
                 <div class="col-md-7">
                     <input type="text" class="form-control datetimepicker" name="Time" value="@(DateTime.Now.ToString("yyyy-MM-dd"))" readonly />
+                    <input type="hidden" name="CreateTime" value="@(DateTime.Now)" />
                 </div>
             </div>
             
-            <div class="form-group">
-                <label class="control-label col-md-4">数据包：</label>
-                <div class="col-md-7">
-                    <input type="file" class="form-control" name="File" />
-                </div>
-            </div>
             <div class="form-group">
                 <div class="col-md-7 col-md-offset-4">
                     <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-upload"></i>确定</button>

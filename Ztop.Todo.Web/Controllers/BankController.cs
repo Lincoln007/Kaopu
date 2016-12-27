@@ -24,6 +24,7 @@ namespace Ztop.Todo.Web.Controllers
             var heads = Core.Bill_OneManager.GetAllHeads();
             ViewBag.Evaluations = heads.Where(e => e.Company == Company.Evaluation).ToList();
             ViewBag.Projections = heads.Where(e => e.Company == Company.Projection).ToList();
+            ViewBag.Projection2s = heads.Where(e => e.Company == Company.Projection2).ToList();
             ViewBag.Sheets = Core.SheetManager.Collect();
             return View();
         }
@@ -187,8 +188,9 @@ namespace Ztop.Todo.Web.Controllers
         /// 编写时间：2016年12月6日10:39:31
         /// </summary>
         /// <returns></returns>
-        public ActionResult InputProjection()
+        public ActionResult InputProjection(Company company=Company.Projection)
         {
+            ViewBag.Company = company;
             return View();
         }
 

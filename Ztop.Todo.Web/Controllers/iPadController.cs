@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -453,6 +454,39 @@ namespace Ztop.Todo.Web.Controllers
             {
                 return ErrorJsonResult("添加失败！");
             }
+            return SuccessJsonResult();
+        }
+
+        /// <summary>
+        /// 作用：
+        /// 作者：汪建龙
+        /// 编写时间：2016年12月14日11:46:17
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult Repeal(int id)
+        {
+            if (!Core.iPad_DatumManager.Repeal(id))
+            {
+                return ErrorJsonResult("平板数据作废失败！");
+            }
+            return SuccessJsonResult();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult EditDatum(int id)
+        {
+            return View();
+        }
+
+
+        [HttpPost]
+        public ActionResult EditDatum(iPadDatum datum)
+        {
             return SuccessJsonResult();
         }
 

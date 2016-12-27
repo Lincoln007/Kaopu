@@ -4,6 +4,24 @@
     List<iPadRegister> Registers = ViewBag.List;
 }
 
+
+<script >
+    $(function () {
+        $("button[name='iPad-Toggle']").click(function () {
+            var node = $(this).children(".glyphicon");
+            if (node.hasClass("glyphicon-plus-sign")) {
+                node.removeClass("glyphicon-plus-sign").addClass("glyphicon-minus-sign");
+                $("tr[name='Hide']").show(1000);
+                // $(this).parent().parent().nextAll("tr").show();
+            } else if (node.hasClass("glyphicon-minus-sign")) {
+                node.removeClass("glyphicon-minus-sign").addClass("glyphicon-plus-sign");
+                $("tr[name='Hide']").hide();
+                // $(this).parent().parent().nextAll("tr").fadeOut();
+            }
+            return false;
+        });
+    });
+</script>
 <table class="table table-condensed table-striped">
     <thead>
         <tr>
@@ -28,7 +46,7 @@
                 <td>
                     @if (register.Name.Length > 10)
                     {
-<abbr title="@(register.Name)">@(register.Name.Substring(0,10))</abbr>
+                        <abbr title="@(register.Name)">@(register.Name.Substring(0,10))</abbr>
                     }
                     else
                     {
@@ -41,22 +59,56 @@
                 <td>@(register.BorrowTime.ToLongDateString())</td>
                 <td>
                     <table class="table">
-                        @foreach (var array in register.iPads.ListToTable(3))
+                        @if (register.iPads.Count < 3)
                         {
-                            <tr style="">
-                                @foreach (var ipad in array)
-                                {
-                                    if (ipad != null)
+                            foreach (var array in register.iPads.ListToTable(2))
+                            {
+                                <tr>
+                                    @foreach (var ipad in array)
                                     {
-                                        <td>
-                                            <label class="label label-default">@(ipad.Name)</label>
-                                        </td>
+                                        if (ipad != null)
+                                        {
+                                            <td>
+                                                <label class="label label-default">@(ipad.Name)</label>
+                                            </td>
+                                        }
                                     }
-                                }
-                            </tr>
+                                </tr>
+                            }
                         }
-                    </table>
+                        else
+                        {
+                            var list = register.iPads.OrderBy(e => e.ID).ToList();
+                            var three = list.Take(2);
+                            <tr name="Awlays">
+                                @foreach (var ipad in three)
+                                {
+                                    <td>
+                                        <label class="label label-default">@(ipad.Name)</label>
+                                    </td>
+                                }
+                                <td>
+                                    <button type="button" class="btn btn-primary btn-xs" name="iPad-Toggle"><i class="glyphicon glyphicon-plus-sign"></i><span class="badge">@(register.iPads.Count)</span></button>
+                                </td>
+                            </tr>
+                            foreach (var array in list.Skip(2).ToList().ListToTable(2))
+                            {
+                                <tr name="Hide" style="display:none;">
+                                    @foreach (var ipad in array)
+                                    {
+                                        if (ipad != null)
+                                        {
+                                            <td>
+                                                <label class="label label-default">@(ipad.Name)</label>
+                                            </td>
+                                        }
+                                    }
+                                </tr>
+                            }
+                        }
 
+
+                    </table>
                 </td>
 
                 <td>

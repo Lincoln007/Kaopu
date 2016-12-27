@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -14,6 +15,23 @@ namespace Ztop.Todo.Common
             // IPHostEntry ipHostEntry = Dns.Resolve(Dns.GetHostName());
             var ipHostEntry = Dns.GetHostEntry(Dns.GetHostName()); 
             return ipHostEntry.AddressList[0];
+        }
+
+        public static bool ConnectState(string path,string userName,string password)
+        {
+            bool flag = false;
+            Process proc = new Process();
+            try
+            {
+
+
+
+            }catch(Exception ex)
+            {
+                throw ex;
+            }
+
+            return flag;
         }
     }
 }

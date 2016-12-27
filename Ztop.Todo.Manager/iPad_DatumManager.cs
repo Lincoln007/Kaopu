@@ -38,5 +38,26 @@ namespace Ztop.Todo.Manager
                 return db.iPad_Datums.Where(e=>e.Repeal==false).OrderByDescending(e => e.ID).ToList();
             }
         }
+        /// <summary>
+        /// 作用：平板数据作废
+        /// 作者：汪建龙
+        /// 编写时间：2016年12月14日11:46:04
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public bool Repeal(int id)
+        {
+            using (var db = GetDbContext())
+            {
+                var entry = db.iPad_Datums.Find(id);
+                if (entry == null)
+                {
+                    return false;
+                }
+                entry.Repeal = true;
+                db.SaveChanges();
+                return true;
+            }
+        }
     }
 }
