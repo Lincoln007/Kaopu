@@ -144,6 +144,10 @@ namespace Ztop.Todo.Manager
                 {
                     query = query.Where(e => e.Creator == parameter.UserName);
                 }
+                if (!string.IsNullOrEmpty(parameter.Number))//登记编号
+                {
+                    query = query.Where(e => e.Number.Contains(parameter.Number));
+                }
                 if (parameter.Deleted.HasValue)//是否删除
                 {
                     query = query.Where(e => e.Deleted == parameter.Deleted.Value);

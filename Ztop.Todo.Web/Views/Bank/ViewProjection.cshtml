@@ -29,6 +29,11 @@
 {
     <div class="row">
         <div class="col-md-12">
+            <div class="col-md-12">
+                @{ 
+                    Html.RenderAction("CollectBills2", new { list = list });
+                }
+            </div>
             <div class="col-md-3">
                 <strong>公司名称：@string.Format("杭州智拓{0}有限公司", head.Company.GetDescription())</strong> <hr />
                 <strong>交易笔数：@(list.Count)</strong><hr />
@@ -62,6 +67,7 @@
                             <th>交易说明</th>
                             <th>交易摘要</th>
                             <th>交易附言</th>
+                            <th>备注</th>
                             <th>归类</th>
                         </tr>
                     </thead>
@@ -80,9 +86,11 @@
                                 <td>@(item.Bank)</td>
                                 <td>@(item.Type)</td>
                                 <td>@(item.Address)</td>
-                                <td>@(item.Account)</td>
                                 <td>
-                                    @if (item.Name.Length > 8)
+                                    @(item.Account)
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.Name)&&item.Name.Length > 8)
                                     {
                                         <abbr title="@(item.Name)">@(item.Name.Substring(0,8))</abbr>
                                     }
@@ -93,7 +101,7 @@
                                     
                                 </td>
                                 <td>
-                                    @if (item.Remark.Length > 8)
+                                    @if (!string.IsNullOrEmpty(item.Remark)&&item.Remark.Length > 8)
                                     {
                                         <abbr title="@(item.Remark)">@(item.Remark.Substring(0,8))</abbr>
                                     }
@@ -125,6 +133,24 @@
                                         @(item.PostScript)
                                     }
                                    
+                                </td>
+                                <td>
+                                    @if (string.IsNullOrEmpty(item.Remark2))
+                                    {
+                                        <a data-toggle="modal" data-target="#Modal" href="/Bank/Remark2?id=@(item.ID)" class="btn btn-warning btn-xs"><i class="glyphicon glyphicon-flag"></i>备注</a>
+                                    }
+                                    else
+                                    {
+                                        if (item.Remark2.Length > 8)
+                                        {
+                                            <abbr title="@(item.Remark2)">@(item.Remark2.Substring(0,8))</abbr>
+                                        }
+                                        else
+                                        {
+                                            @(item.Remark2)
+                                        }
+                                        <a data-toggle="modal" data-target="#Modal" href="/Bank/Remark2?id=@(item.ID)" class="btn btn-success btn-xs"><i class="glyphicon glyphicon-edit"></i>编辑备注</a>
+                                    }
                                 </td>
                                 <td>
                                     @if (item.Cost.HasValue)

@@ -502,7 +502,7 @@ namespace Ztop.Todo.Web.Controllers
         }
 
 
-        public ActionResult ContractSearch(string name=null,string OtherSide=null,DateTime? startime=null,DateTime? endtime=null,string status=null,string recevied=null,double? minmoney=null,double? maxmoney=null,string department=null, string archived=null,string ztopcompany=null, int page=1)
+        public ActionResult ContractSearch(string name=null,string OtherSide=null,DateTime? startime=null,DateTime? endtime=null,string status=null,string recevied=null,double? minmoney=null,double? maxmoney=null,string department=null, string archived=null,string ztopcompany=null,string number=null, int page=1)
         {
             var parameter = new ContractParameter()
             {
@@ -514,6 +514,7 @@ namespace Ztop.Todo.Web.Controllers
                 MaxMoney=maxmoney,
                 Department=department,
                 Deleted=false,
+                Number=number,
                 Page = new PageParameter(page, 20)
             };
             if (!string.IsNullOrEmpty(archived))
@@ -613,7 +614,7 @@ namespace Ztop.Todo.Web.Controllers
             return Json(list, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult ArticleSearch(string name=null,string otherside=null,double? minmoney=null,double? maxmoney=null,int page=1)
+        public ActionResult ArticleSearch(string name=null,string otherside=null,double? minmoney=null,double? maxmoney=null,string number=null,int page=1)
         {
             var parameter = new ArticleParameter
             {
@@ -621,6 +622,7 @@ namespace Ztop.Todo.Web.Controllers
                 OtherSide = otherside,
                 MinMoney = minmoney,
                 MaxMoney = maxmoney,
+                Number=number,
                 Page = new PageParameter(page, 20)
             };
             ViewBag.List = Core.ArticleManager.Search(parameter);

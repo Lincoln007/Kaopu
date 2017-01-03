@@ -1,0 +1,48 @@
+﻿@{ 
+    Layout = null;
+    Ztop.Todo.Model.BillTwo two = ViewBag.BillTwo;
+}
+
+
+<script>
+    $(function () {
+        $("#Remark-form").submit(function () {
+            $("#Remark-form button[type='submit']").text("正在备注......").attr("disabled", "disabled");
+            ShowMessage("正在备注，请稍等......");
+            var data = $(this).serialize();
+            $.request("/Bank/Remark2", data, function (json) {
+                if (json.result == 0) {
+                    $("#Remark-form button[type='submit']").text("备注").removeAttr("disabled");
+                    ShowErrorMessage(json.content);
+
+
+                } else {
+                    ShowSuccessMessage("成功备注，正在刷新......");
+                    location.href="/Bank/ViewProjection?id="+@(two.HID);
+                }
+            });
+            return false;
+        });
+    });
+</script>
+<h3 class="text-center">评估公司备注</h3>
+<hr />
+<div class="alert alert-warning" name="Message" role="alert" style="display:none;">
+    <i class="icon-spin icon-spinner icon-large"></i>
+    <span></span>
+</div>
+<form class="form-horizontal" method="post" id="Remark-form">
+    <div class="form-group">
+        <label class="control-label col-md-3">备注：</label>
+        <div class="col-md-8">
+            <input type="hidden" name="ID" value="@(two.ID)" />
+            <textarea rows="3" class="form-control" name="Remark">@(two.Remark2)</textarea>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-8 col-md-offset-3">
+            <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok-sign"></i>备注</button>
+        </div>
+    </div>
+</form>

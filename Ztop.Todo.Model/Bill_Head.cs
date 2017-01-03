@@ -83,9 +83,13 @@ namespace Ztop.Todo.Model
         /// </summary>
         public string Summary { get; set; }
         /// <summary>
-        /// 备注
+        /// 银行备注
         /// </summary>
         public string Remark { get; set; }
+        /// <summary>
+        /// 备注（remark为银行备注，remark2为智拓自己备注）
+        /// </summary>
+        public string Remark2 { get; set; }
         /// <summary>
         /// 年月ID
         /// </summary>

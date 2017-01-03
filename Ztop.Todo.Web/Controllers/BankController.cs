@@ -371,6 +371,60 @@ namespace Ztop.Todo.Web.Controllers
             ViewBag.Dict = dict;
             return View();
         }
+        public ActionResult CollectBills2(List<BillTwo> list)
+        {
+            var dict = Core.Bill_OneManager.Collect(list);
+            ViewBag.Dict = dict;
+            return View("CollectBills");
+        }
+        /// <summary>
+        /// 作用：评估公司备注
+        /// 作者：汪建龙
+        /// 编写时间：2017年1月3日13:49:09
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult Remark(int id)
+        {
+            var billOne = Core.Bill_OneManager.GetBillOne(id);
+            ViewBag.BillOne = billOne;
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Remark(int id,string remark)
+        {
+            var entry = Core.Bill_OneManager.Remark(id, remark);
+            if (entry == null)
+            {
+                return ErrorJsonResult("备注失败！");
+            }
+            return SuccessJsonResult();
+        }
+        /// <summary>
+        /// 作用：规划公司备注账单
+        /// 作者：汪建龙
+        /// 编写时间：2017年1月3日14:50:32
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult Remark2(int id)
+        {
+            var billTwo = Core.Bill_OneManager.GetBillTwo(id);
+            ViewBag.BillTwo = billTwo;
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Remark2(int id,string remark)
+        {
+            var entry = Core.Bill_OneManager.Remark2(id, remark);
+            if (entry == null)
+            {
+                return ErrorJsonResult("备注失败！");
+            }
+            return SuccessJsonResult();
+        }
 
         /// <summary>
         /// 作用：对某一笔账单进行归类

@@ -58,6 +58,7 @@
                             <th>对方账号</th>
                             <th>对方户名</th>
                             <th>摘要</th>
+                            <th>银行备注</th>
                             <th>备注</th>
                             <th>归类</th>
                         </tr>
@@ -105,6 +106,25 @@
                                     {
                                         @(item.Remark)
                                     }
+                                </td>
+                                <td>
+                                    @if (string.IsNullOrEmpty(item.Remark2))
+                                    {
+                                        <a data-toggle="modal" data-target="#Modal" href="/Bank/Remark?id=@(item.ID)" class="btn btn-warning btn-xs"><i class="glyphicon glyphicon-flag"></i>备注</a>
+                                    }
+                                    else
+                                    {
+                                        if (item.Remark2.Length > 8)
+                                        {
+                                            <abbr title="@(item.Remark2)">@(item.Remark2.Substring(0, 8))</abbr>
+                                        }
+                                        else
+                                        {
+                                            @(item.Remark2)
+                                        }
+                                        <a data-toggle="modal" data-target="#Modal" href="/Bank/Remark?id=@(item.ID)" class="btn btn-success btn-xs"><i class="glyphicon glyphicon-edit"></i>编辑备注</a>
+                                    }
+                                 
                                 </td>
                                 <td>
                                     @if (item.Cost.HasValue)

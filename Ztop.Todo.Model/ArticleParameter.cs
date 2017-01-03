@@ -14,6 +14,7 @@ namespace Ztop.Todo.Model
         public double? MinMoney { get; set; }
         public double? MaxMoney { get; set; }
         public bool? Deleted { get; set; }
+        public string Number { get; set; }
         public PageParameter Page { get; set; }
     }
 }

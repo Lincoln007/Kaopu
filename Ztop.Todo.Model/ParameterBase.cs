@@ -37,6 +37,10 @@ namespace Ztop.Todo.Model
         /// 用户名
         /// </summary>
         public string UserName { get; set; }
+        /// <summary>
+        /// 登记编号
+        /// </summary>
+        public string Number { get; set; }
         public PageParameter Page { get; set; }
     }
 }

@@ -91,6 +91,10 @@ namespace Ztop.Todo.Manager
                 {
                     query = query.Where(e => e.Deleted == parameter.Deleted.Value);
                 }
+                if (!string.IsNullOrEmpty(parameter.Number))
+                {
+                    query = query.Where(e => e.Number.Contains(parameter.Number));
+                }
                 if (!string.IsNullOrEmpty(parameter.Name))
                 {
                     query = query.Where(e => e.Name.Contains(parameter.Name));
