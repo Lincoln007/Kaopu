@@ -12,6 +12,8 @@
         $("#City button[name='OK']").click(function () {
             var val = $("input[name='CityName']:checked").val();
             $("input[name='City']").val(val);
+            var vid = $("input[name='CityName']:checked").attr("VID");
+            $("input[name='CID']").val(vid);
         });
 
         $("#City a[name='Node']").click(function () {
@@ -44,10 +46,10 @@
                     <a name="Node" data-target="City-@(province.Name)"><i class="glyphicon glyphicon-plus-sign"></i></a>
                 </td>
                 <td>
-                    <label class="radio-inline">
+                    @*<label class="radio-inline">
                         <input type="radio" name="CityName" value="@(province.Name)" /> @(province.Name)
-                    </label>
-                 
+                    </label>*@
+                    @(province.Name)
                 </td>
                 <td>@(province.Code)</td>
             </tr>
@@ -59,10 +61,10 @@
                         <a name="Node" data-target="City-@(province.Name)-@(city.Name)"><i class="glyphicon glyphicon-plus-sign"></i></a>
                     </td>
                     <td>
-                      
-                        <label class="radio-inline">
+                        @*<label class="radio-inline">
                             <input type="radio" name="CityName" value="@string.Format("{0}--{1}",province.Name,city.Name)" />@string.Format("--{0}", city.Name)
-                        </label>
+                        </label>*@
+                        @string.Format("--{0}", city.Name)
                     </td>
                     <td>@(city.Code)</td>
                 </tr>
@@ -75,7 +77,7 @@
                         </td>
                         <td>
                             <label class="radio-inline">
-                                <input type="radio" name="CityName" value="@string.Format("{0}--{1}--{2}",province.Name,city.Name,district.Name)" />@string.Format("----{0}", district.Name)
+                                <input type="radio" name="CityName" value="@string.Format("{0}--{1}--{2}",province.Name,city.Name,district.Name)" VID="@(district.ID)" />@string.Format("----{0}", district.Name)
                             </label>
                         </td>
                         <td>@(district.Code)</td>
@@ -87,7 +89,7 @@
                             <td></td>
                             <td>
                                 <label class="radio-inline">
-                                    <input type="radio" name="CityName" value="@string.Format("{0}--{1}--{2}--{3}",province.Name,city.Name,district.Name,town.Name)" />@string.Format("------{0}", town.Name)
+                                    <input type="radio" name="CityName" value="@string.Format("{0}--{1}--{2}--{3}",province.Name,city.Name,district.Name,town.Name)" VID="@(town.ID)" />@string.Format("------{0}", town.Name)
                                 </label>
                             </td>
                             <td>@(town.Code)</td>

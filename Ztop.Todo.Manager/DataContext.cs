@@ -82,6 +82,10 @@ namespace Ztop.Todo.Manager
         public DbSet<City> Citys { get; set; }
 
         public DbSet<ProjectType> Project_Types { get; set; }
+        public DbSet<ArticleView> Article_Views { get; set; }
+        public DbSet<BillTwoView> BillTwo_Views { get; set; }
+
+        public DbSet<BillView> Bill_views { get; set; }
         #endregion
 
         #region 平板管理系统
@@ -106,6 +110,9 @@ namespace Ztop.Todo.Manager
         #region  银行对账系统
         public DbSet<BillOne> BillOnes { get; set; }
         public DbSet<BillTwo> BillTwos { get; set; }
+
+
+        public DbSet<BillRecord> Bill_Records { get; set; }
 
         public DbSet<Bill_Head> Bill_Heads { get; set; }
 

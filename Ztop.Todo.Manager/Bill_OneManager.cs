@@ -62,21 +62,61 @@ namespace Ztop.Todo.Manager
         /// <returns></returns>
         public int Add(BillTwo billTwo)
         {
-            using (var db = GetDbContext())
+            if (billTwo != null)
             {
-                var entry = db.BillTwos.FirstOrDefault(e => e.SerialNumber == billTwo.SerialNumber && e.HID == billTwo.HID);
-                if (entry != null)
+                return Core.Bill_RecordManager.Add(new BillRecord
                 {
-                    billTwo.ID = entry.ID;
-                    db.Entry(entry).CurrentValues.SetValues(billTwo);
-                }
-                else
-                {
-                    db.BillTwos.Add(billTwo);
-                }
-                db.SaveChanges();
-                return billTwo.ID;
+                    ID = billTwo.ID,
+                    SerialNumber = billTwo.SerialNumber,
+
+                    Date = billTwo.Date,
+                    Time = billTwo.Time,
+
+                    Budget = billTwo.Budget,
+                    Money = billTwo.Money,
+
+                    Balance = billTwo.Balance,
+                    Account = billTwo.Account,
+
+                    Summary = billTwo.Summary,
+                    Remark = billTwo.Remark,
+
+                    Remark2 = billTwo.Remark2,
+                    HID = billTwo.HID,
+
+                    Cost = billTwo.Cost,
+                    Category = billTwo.Category,
+
+                    TimeStamp = billTwo.TimeStamp,
+                    CommissionCharge = billTwo.CommissionCharge,
+
+                    Way = billTwo.Way,
+                    Bank = billTwo.Bank,
+
+                    Type = billTwo.Type,
+                    Address = billTwo.Address,
+
+                    Name = billTwo.Name,
+                    PostScript = billTwo.PostScript,
+                    Sync = billTwo.Sync
+                });
             }
+            return 0;
+            //using (var db = GetDbContext())
+            //{
+            //    var entry = db.BillTwos.FirstOrDefault(e => e.SerialNumber == billTwo.SerialNumber && e.HID == billTwo.HID);
+            //    if (entry != null)
+            //    {
+            //        billTwo.ID = entry.ID;
+            //        db.Entry(entry).CurrentValues.SetValues(billTwo);
+            //    }
+            //    else
+            //    {
+            //        db.BillTwos.Add(billTwo);
+            //    }
+            //    db.SaveChanges();
+            //    return billTwo.ID;
+            //}
         }
 
         /// <summary>
@@ -88,23 +128,49 @@ namespace Ztop.Todo.Manager
         /// <returns></returns>
         public int Add(BillOne billOne)
         {
-            using (var db = GetDbContext())
+            if (billOne != null)
             {
-                var entry = db.BillOnes.FirstOrDefault(e => e.SerialNumber == billOne.SerialNumber && e.HID == billOne.HID);
-                if (entry != null)
+                return Core.Bill_RecordManager.Add(new BillRecord
                 {
-                    billOne.ID = entry.ID;
-                    db.Entry(entry).CurrentValues.SetValues(billOne);
-                }
-                else
-                {
-                    db.BillOnes.Add(billOne);
-                }
-               
-                db.SaveChanges();
-                return billOne.ID;
+                    ID = billOne.ID,
+                    SerialNumber = billOne.SerialNumber,
+                    Date = billOne.Date,
+                    Time = billOne.Time,
+                    Voucher = billOne.Voucher,
+                    Budget = billOne.Budget,
+                    Money = billOne.Money,
+                    Balance = billOne.Balance,
+                    CounterPart = billOne.CounterPart,
+                    Account = billOne.Account,
+                    Summary = billOne.Summary,
+                    Remark = billOne.Remark,
+                    Remark2 = billOne.Remark2,
+                    Cost = billOne.Cost,
+                    Category = billOne.Category,
+                    HID = billOne.HID,
+                    Sync = billOne.Sync
+                });
             }
+            return 0;
+            //using (var db = GetDbContext())
+            //{
+            //    var entry = db.BillOnes.FirstOrDefault(e => e.SerialNumber == billOne.SerialNumber && e.HID == billOne.HID);
+            //    if (entry != null)
+            //    {
+            //        billOne.ID = entry.ID;
+            //        db.Entry(entry).CurrentValues.SetValues(billOne);
+            //    }
+            //    else
+            //    {
+            //        db.BillOnes.Add(billOne);
+            //    }
+               
+            //    db.SaveChanges();
+            //    return billOne.ID;
+            //}
         }
+
+        
         /// <summary>
         /// 作用：将规划公司银行对账单导入
         /// 作者：汪建龙
@@ -132,6 +198,28 @@ namespace Ztop.Todo.Manager
                     if (!BillClass.CheckTime(item, year, month))
                     {
                         error += string.Format("交易日期不在{0}年{1}月,请核对！", year, month);
+                    }
+                }
+                else
+                {
+                    if (item.SerialNumber == 1)
+                    {
+                        BillRecord last = null;
+                        if (month == 1)
+                        {
+                            last = Core.Bill_RecordManager.GetLast(year - 1, 12);
+                        }
+                        else
+                        {
+                            last = Core.Bill_RecordManager.GetLast(year, month - 1);
+                        }
+                        if (last != null)
+                        {
+                            if (!BillClass.CheckLogic(last, item))
+                            {
+                                error += string.Format("当前月初第一笔收支与上个月不符，请核对！");
+                            }
+                        }
                     }
                 }
                 if (!string.IsNullOrEmpty(error))
@@ -176,6 +264,28 @@ namespace Ztop.Todo.Manager
                         error += string.Format("交易日期不在{0}年{1}月,请核对!", year, month);
                     }
                 }
+                else
+                {
+                    if (item.SerialNumber == 1)
+                    {
+                        BillRecord last = null;
+                        if (month == 1)
+                        {
+                            last = Core.Bill_RecordManager.GetLast(year - 1, 12);
+                        }
+                        else
+                        {
+                            last = Core.Bill_RecordManager.GetLast(year, month - 1);
+                        }
+                        if (last != null)
+                        {
+                            if (!BillClass.CheckLogic(last, item))
+                            {
+                                error += string.Format("当前月初第一笔收支与上个月不符，请核对！");
+                            }
+                        }
+                    }
+                }
                 if (!string.IsNullOrEmpty(error))
                 {
                     errors.Add(string.Format("第{0}个数据存在如下错误：{1}", preSerialNumber, error));
@@ -206,14 +316,27 @@ namespace Ztop.Todo.Manager
             using (var db = GetDbContext())
             {
                 var entry = db.Bill_Heads.Find(id);
-                //if (entry != null)
-                //{
-                //    entry.Ones = db.BillOnes.Where(e => e.HID == entry.ID).OrderBy(e=>e.SerialNumber).ToList();
-                //    entry.Twos = db.BillTwos.Where(e => e.HID == entry.ID).OrderBy(e => e.SerialNumber).ToList();
-                //}
                 return entry;
             }
         }
+        /// <summary>
+        /// 作用：获取上个月和下个月信息
+        /// 作者：汪建龙
+        /// 编写时间：2017年1月12日10:04:35
+        /// </summary>
+        /// <param name="year"></param>
+        /// <param name="month"></param>
+        /// <returns></returns>
+        public Bill_Head[] GetNearBy(int year,int month,Company company)
+        {
+            using (var db = GetDbContext())
+            {
+                var pre = month == 1 ? db.Bill_Heads.FirstOrDefault(e => e.Year == year - 1 && e.Month == 12&&e.Company==company) : db.Bill_Heads.FirstOrDefault(e => e.Year == year && e.Month == month - 1&&e.Company==company);
+                var next = month == 12 ? db.Bill_Heads.FirstOrDefault(e => e.Year == year + 1 && e.Month == 1&&e.Company==company) : db.Bill_Heads.FirstOrDefault(e => e.Year == year && e.Month == month + 1&&e.Company==company);
+                return new Bill_Head[] { pre, next };
+            }
+        }
+
         /// <summary>
         /// 作用：通过HID获取评估公司银行对账单
         /// 作者：汪建龙

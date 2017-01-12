@@ -16,7 +16,7 @@
 </script>
 
 <div class="col-md-12 col-xs-12 well" style="padding:0px;">
-    <fieldset><legend>查询设置</legend></fieldset>
+    <fieldset><legend>合同——查询设置</legend></fieldset>
     <form method="get">
         <input type="hidden" name="ZtopCompany" value="@(parameter.ZtopCompany.HasValue?parameter.ZtopCompany.Value.GetDescription():"")" />
         <input type="hidden" name="Archived" value="@(parameter.Archived.HasValue?parameter.Archived.Value.ToString():"")" />
@@ -180,7 +180,17 @@
                 <tr>
                     <td><a href="/Finance/Detail?id=@(contract.ID)">@(contract.Coding)</a> </td>
                     <td>@(contract.Number)</td>
-                    <td>@(contract.Name)</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(contract.Name) && contract.Name.Length > 30)
+                        {
+                            <abbr title="@(contract.Name)">@(contract.Name.Substring(0,30))</abbr>
+                        }
+                        else
+                        {
+                            @(contract.Name)
+                        }
+                       
+                    </td>
                     <td>@(contract.Company)</td>
                     <td>@(contract.ZtopCompany.GetDescription())</td>
                     <td>@(contract.StartTime.ToShortDateString())</td>

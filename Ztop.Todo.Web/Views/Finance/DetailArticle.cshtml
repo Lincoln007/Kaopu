@@ -2,7 +2,7 @@
 @{
     ViewBag.Title = "项目查看";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    Article article = ViewBag.Article;
+    ArticleView article = ViewBag.Article;
 }
 
 <hr />
@@ -35,14 +35,39 @@
                 <th>登记编号</th>
                 <td>@(article.Number)</td>
                 <th>所属城市</th>
-                <td>@(article.City)</td>
+                <td>@(article.CName)</td>
             </tr>
             <tr>
                 <th>意向金额（元）</th>
                 <td>@(article.Money)</td>
                 <th>项目类型</th>
-                <td>@(article.ProjectType)</td>
- 
+                <td>@(article.FullName)</td>
+            </tr>
+            <tr>
+                <th>所属年份</th>
+                <td>@(article.Year)</td>
+                <th>乡镇（主体）</th>
+                <td>@(article.Town)</td>
+            </tr>
+            <tr>
+                <th>支出单位</th>
+                <td>@(article.PayCompany)</td>
+                <th>支出部分金额【元】</th>
+                <td>@(article.PayMoney)</td>
+            </tr>
+            <tr>
+                <th>项目状态</th>
+                <td colspan="3">
+                    <div class="col-md-2">
+                        @(article.State.GetDescription())
+                        <button type="button" class="btn btn-primary btn-xs" name="Edit"><i class="glyphicon glyphicon-edit"></i>修改</button>
+                    </div>
+                    <div class="col-md-10 Edit" style="display:none;">
+                      @{ 
+                          Html.RenderAction("ArticleState", new { id = article.ID });
+                      }
+                    </div>
+                </td>
             </tr>
             <tr>
                 <th>备注</th>
@@ -100,6 +125,10 @@
             } else {
                 return false;
             }
+        });
+
+        $("button[type='button'][name='Edit']").click(function () {
+            $("div.Edit").slideToggle("slow");
         });
     });
 </script>

@@ -9,6 +9,7 @@
         $("#Project button[name='OK']").click(function () {
             var val = $("input[name='ProjectTypeName']:checked").val();
             $("input[name='ProjectType']").val(val);
+            $("input[name='PID']").val($("input[name='ProjectTypeName']:checked").attr("PID"));
         });
 
 
@@ -43,9 +44,10 @@
                     <a name="Node" data-target="First-@(first.Name)"><i class="glyphicon glyphicon-plus-sign"></i></a>
                 </td>
                 <td>
-                    <label class="radio-inline">
+                    @*<label class="radio-inline">
                         <input type="radio" name="ProjectTypeName" value="@(first.FullName)" />@(first.FullName)
-                    </label>
+                    </label>*@
+                    @(first.FullName)
                 </td>
                 <td>@(first.Remark)</td>
             </tr>
@@ -56,7 +58,7 @@
                     <td></td>
                     <td>
                         <label class="radio-inline">
-                            <input type="radio" name="ProjectTypeName" value="@string.Format("{0}--{1}",first.FullName,second.FullName)" />@string.Format("--{0}",second.FullName)
+                            <input type="radio" name="ProjectTypeName" value="@string.Format("{0}--{1}",first.FullName,second.FullName)"  PID="@(second.ID)"/>@string.Format("--{0}",second.FullName)
                         </label>
                     </td>
                     <td>@(second.Remark)</td>

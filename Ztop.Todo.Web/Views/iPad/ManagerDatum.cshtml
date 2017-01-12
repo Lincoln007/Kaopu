@@ -44,14 +44,14 @@
                 <td>@(item.Name)</td>
                 <td>@(item.Time.ToLongDateString())</td>
                 <td>
-                    @if (item.Content.Length > 20)
+                    @*@if (item.Content.Length > 20)
                     {
                         <abbr title="@(item.Content)">@(item.Content.Substring(0,20))</abbr>
                     }
                     else
                     {
                         @(item.Content)
-                    }
+                    }*@
                 </td>
                 <td>
                     <a href="@(item.DownLoadPath)" class=""><i class="glyphicon glyphicon-download-alt"></i></a>

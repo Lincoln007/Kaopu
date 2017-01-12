@@ -1,0 +1,39 @@
+﻿@{ 
+    Layout = null;
+    Ztop.Todo.Model.Article article = ViewBag.Article;
+}
+
+<script>
+    $(function () {
+        $("#Article-State-form").submit(function () {
+            if (confirm("您确定要修改项目装填吗？")) {
+                var but = $("#Article-State-form button[type='submit']");
+                but.text("正在修改......").attr("disabled", "disabled");
+                var data = $(this).serialize();
+                $.request("/Finance/EditState", data, function (json) {
+                    if (json.result == 0) {
+                        but.text("确认修改").removeAttr("disabled");
+                        alert(json.content);
+                    } else {
+                        location.href="/Finance/DetailArticle?id="+@(article.ID);
+                    }
+                });
+
+            }
+            return false;
+        });
+    });
+</script>
+<form class="form-inline" role="form" id="Article-State-form" method="post">
+    <div class="form-group">
+        <label class="control-label">状态：</label>
+        <input type="hidden" name="ID" value="@(article.ID)" />
+        @foreach (ArticleState state in Enum.GetValues(typeof(ArticleState)))
+        {
+            <label class="radio-inline">
+                <input type="radio" name="State" value="@(state)" @(article.State==state?"checked=checked":"") />@(state.GetDescription())
+            </label>
+        }
+    </div>
+    <button type="submit" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i>确认修改</button>
+</form>

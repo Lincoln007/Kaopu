@@ -2,9 +2,10 @@
     bool depend = ViewBag.Depend;
     Layout = depend ? "~/Views/Shared/_Layout.cshtml" : null;
     Bill_Head head = ViewBag.Head;
-    List<BillOne> list = ViewBag.List;
+    List<BillRecord> list = ViewBag.List;
     var start = list.OrderBy(e => e.SerialNumber).FirstOrDefault();
     var end = list.OrderByDescending(e => e.SerialNumber).FirstOrDefault();
+  
 }
 
 <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true" id="Modal">
@@ -33,6 +34,7 @@
             <div class="col-md-12">
                 @{ Html.RenderAction("CollectBills", new { list = list });}
             </div>
+            @Html.Partial("Nav_Head", "/Bank/ViewEvaluation" as object)
             <div class="col-md-3">
                 <strong>公司名称：@string.Format("杭州智拓{0}有限公司", head.Company.GetDescription())</strong> <hr />
                 <strong>交易笔数：@(list.Count)</strong><hr />
@@ -42,10 +44,10 @@
                     <a href="/Bank/Index" class="btn btn-default"><i class="glyphicon glyphicon-home"></i>银行对账主页</a>
                 </div>
             </div>
-
+          
         
             <div class="col-md-12">
-                <table class="table table-striped table-condensed">
+                <table class="table table-striped table-condensed table-hover">
                     <thead>
                         <tr>
                             <th>序号</th>

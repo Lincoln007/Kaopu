@@ -1,6 +1,6 @@
 ﻿@{ 
     Layout = null;
-    BillOne one = ViewBag.BillOne;
+    BillRecord record = ViewBag.Record;
 }
 
 <h3 class="text-center">账目归类</h3>
@@ -19,12 +19,12 @@
             <div class="form-group">
                 <label class="control-label col-md-3">收支：</label>
                 <div class="col-md-8">
-                    <input type="hidden" name="ID" value="@(one.ID)" />
-                    <input type="text" name="" class="form-control" value="@(one.Budget.GetDescription())" readonly="readonly" />
+                    <input type="hidden" name="ID" value="@(record.ID)" />
+                    <input type="text" name="" class="form-control" value="@(record.Budget.GetDescription())" readonly="readonly" />
                 </div>
             </div>
 
-            @if (one.Budget == Budget.Income)
+            @if (record.Budget == Budget.Income)
             {
                 <div class="form-group">
                     <label class="control-label col-md-3">类别：</label>
@@ -34,7 +34,7 @@
                             {
                                 if (((int)cost) < 3)
                                 {
-                                    <option value="@(cost)" @(one.Cost.HasValue&&one.Cost.Value==cost?"selected=selected":"")>@(cost.GetDescription())</option>
+                                    <option value="@(cost)" @(record.Cost.HasValue&&record.Cost.Value==cost?"selected=selected":"")>@(cost.GetDescription())</option>
                                 }
                             }
                         </select>
@@ -52,19 +52,19 @@
                             {
                                 if (((int)cost) >= 3)
                                 {
-                                    <option value="@(cost)" @(one.Cost.HasValue&&one.Cost.Value==cost?"selected=selected":"")>@(cost.GetDescription())</option>
+                                    <option value="@(cost)" @(record.Cost.HasValue&&record.Cost.Value==cost?"selected=selected":"")>@(cost.GetDescription())</option>
                                 }
                             }
                         </select>
                     </div>
                 </div>
-                <div class="form-group" id="Second" style="@(one.Category.HasValue?"":"display:none")">
+                <div class="form-group" id="Second" style="@(record.Category.HasValue?"":"display:none")">
                     <label class="control-label col-md-3">二级类别：</label>
                     <div class="col-md-8">
                         <select name="Category" class="form-control">
                             @foreach (Category category in Enum.GetValues(typeof(Category)))
                             {
-                                <option value="@(category)" @(one.Category.HasValue&&one.Category.Value==category?"selected=selected":"")>@(category.GetDescription())</option>
+                                <option value="@(category)" @(record.Category.HasValue&&record.Category.Value==category?"selected=selected":"")>@(category.GetDescription())</option>
                             }
                         </select>
                     </div>

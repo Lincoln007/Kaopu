@@ -2,11 +2,26 @@
 @{
     ViewBag.Title = "发票挂账";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    BillView bill = ViewBag.Bill;
     List<string> Department = ViewBag.Department;
 }
 
+<script>
+    $(function () {
+        $("#Contract-Search-form").submit(function () {
+            ShowMessage("正在查询系统，请稍等......");
+            $("#Contract_search-form button[type='submit']").text("正在查询.......").attr("disabled", "disabled");
+            var values = $(this).serialize();
+            var href = $(this).attr("action");
+            $("#Contract-Result").load(href, values, function () {
+                HideMessage();
+            });
+            return false;
+        });
+       
+    });
+</script>
 <div class="row">
-  
     <form class="form-horizontal" method="post" id="Bill-Contract">
         <div class="col-md-12 col-xs-12 col-sm-12">
             <div class="alert alert-danger" role="alert" id="Error">
@@ -16,12 +31,87 @@
      
         <div class="col-md-6 col-xs-6 col-sm-6">
             <h3 class="text-center">到账</h3>
-            <button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#Bill-Search"><i class="glyphicon glyphicon-search"></i>选择到账</button>
+            @*<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#Bill-Search"><i class="glyphicon glyphicon-search"></i>选择到账</button>*@
             <hr />
             <div class="Select-Bill">
-               <div class="alert alert-warning" role="alert">
-                   <span>当前未选择到账，请选择到账</span>
-               </div>
+                @if (bill == null)
+                {
+                    <div class="alert alert-warning" role="alert">
+                        <span>当前未获取到账信息</span>
+                    </div>
+                }
+                else
+                {
+                    <div class="Bill">
+                        <input type="hidden" name="Bill_ID" value="@(bill.ID)" />
+                        <div class="form-group">
+                            <label class="control-label col-xs-4 col-md-4 col-sm-4">到账时间：</label>
+                            <div class="col-md-8 col-sm-8 col-xs-8">
+                                <input type="text" readonly="readonly" name="Bill_Time" class="form-control" value="@(bill.Time.HasValue?bill.Time.Value.ToLongDateString():"未获取时间")" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-xs-4 col-md-4 col-sm-4">到账金额：</label>
+                            <div class="col-md-8 col-xs-8 col-sm-8">
+                                <div class="input-group">
+                                    <input type="text" readonly="readonly" name="Bill_Money" class="form-control" value="@(bill.Money)" />
+                                    <span class="input-group-addon">元</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-xs-4 col-md-4 col-xs-4">对方户名：</label>
+                            <div class="col-md-8 col-xs-8 col-sm-8">
+                                <input type="text" readonly="readonly" name="Bill_OtherSide" class="form-control" value="@(bill.Account)" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-4 col-xs-4 col-sm-4">备注：</label>
+                            <div class="col-md-8 col-xs-8 col-sm-8">
+                                <textarea name="Bill_Remark" readonly="readonly" class="form-control">@(bill.Remark)</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-xs-4 col-md-4 col-sm-4">可关联金额：</label>
+                            <div class="col-md-8 col-xs-8 col-sm-8">
+                                <div class="input-group">
+                                    <input type="text" name="Bill_Leave" readonly="readonly" class="form-control" value="@(bill.Leave)" />
+                                    <span class="input-group-addon">元</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    if (bill.Bill_Contracts != null && bill.Bill_Contracts.Count > 0)
+                    {
+                       
+                        <div class="panel panel-default">
+                            <div class="panel-heading">已关联合同</div>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>合同名称</th>
+                                        <th>合同金额[元]</th>
+                                        <th>本次到账金额[元]</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in bill.Bill_Contracts)
+                                    {
+                                        if (item.Contract != null)
+                                        {
+                                            <tr>
+                                                <td><a href="/Finance/Detail?id=@(item.Contract.ID)">@(item.Contract.Name)</a></td>
+                                                <td>@(item.Contract.Money)</td>
+                                                <td>@(item.Price)</td>
+                                            </tr>
+                                        }
+
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                }
             </div>
         </div>
         <div class="col-md-6 col-xs-6 col-sm-6">
@@ -52,12 +142,21 @@
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-md-3 col-xs-3 col-sm-3 well" style="padding:0px;">
+                    @{ 
+                        Html.RenderPartial("BillSearch2");
+                    }
+                    @*<div class="col-md-3 col-xs-3 col-sm-3 well" style="padding:0px;">
                         <fieldset><legend>可关联到账查询设置</legend></fieldset>
                         <div class="alert alert-danger" role="alert" id="Bill-Info">
                             <span></span>
                         </div>
                         <form method="get" id="Bill-Search-form">
+                            <div class="form-group">
+                                <label class="control-label">到账银行：</label>
+                                <div class="col-md-12">
+                                    
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label class="control-label">到账时间：</label>
                                 <div class="col-md-12">
@@ -109,6 +208,7 @@
                         </form>
                     </div>
                     <div class="col-md-8 col-xs-8 col-sm-8">
+
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
@@ -122,7 +222,7 @@
                             </thead>
                             <tbody id="Bill"></tbody>
                         </table>
-                    </div>
+                    </div>*@
                 </div>
             </div>
             <div class="modal-footer">
@@ -144,10 +244,11 @@
                 <div class="row">
                     <div class="col-md-3 col-xs-3 col-sm-3 well" style="padding:0px;">
                         <fieldset><legend>合同查询设置</legend></fieldset>
-                        <div class="alert alert-danger" role="alert" id="Contract-Info">
+                        <div class="alert alert-danger" role="alert" name="Message" style="display:none;">
+                            <i class="icon-spin icon-spinner"></i>
                             <span>警告框</span>
                         </div>
-                        <form method="get" id="Contract-Search-form">
+                        <form method="get" id="Contract-Search-form" action="/Finance/SearchContract">
                             <input type="hidden" name="Recevied" />
                             <input type="hidden" name="Status" />
                             <input type="hidden" name="Department" />
@@ -261,22 +362,8 @@
                             </div>
                         </form>
                     </div>
-                    <div class="col-md-8 col-xs-8 col-sm-8">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>合同名称</th>
-                                    <th>对方单位</th>
-                                    <th>合同起始时间</th>
-                                    <th>合同金额（元）</th>
-                                    <th>未到账金额（元）</th>
-                                    <th>关联操作</th>
-                                </tr>
-                            </thead>
-                            <tbody id="Contract-Result">
-
-                            </tbody>
-                        </table>
+                    <div class="col-md-9 col-xs-9 col-sm-9" id="Contract-Result">
+                      
                     </div>
                 </div>
             </div>
@@ -432,44 +519,44 @@
             return false;
         });
 
-        $("#Contract-Search-form").submit(function () {
-            $("#Contract-Info").hide();
-            var VALUE = $(this).serialize();
-            $.getJSON("/Finance/GetJsonContract", VALUE, function (data) {
-                if (data.length == 0) {
-                    $("#Contract-Info>span").html("未找到相关合同记录！");
-                    $("#Contract-Info").show(500);
-                    return false;
-                }
-                $("#Contract-Result").empty();
-                $.each(data, function (index, value) {
-                    var timeString = value.StartTime.replace("/Date(", "").replace(")/", "");
-                    var currentTime = new Date();
-                    currentTime.setTime(timeString);
-                    $("#Contract-Result").append("<tr><td name='Name'>" + value.Name + "</td><td name='OtherSide'>" + value.Company + "</td><td name='StartTime'>"+currentTime.toLocaleDateString()+"</td><td name='Money'>" + value.Money + "</td><td name='Leave'>" + value.Leave + "</td><td><button type='button' class='btn btn-sm btn-success btn-Contract' Index='"+value.ID+"' >关联</button></td></tr>");
-                });
+        //$("#Contract-Search-form").submit(function () {
+        //    $("#Contract-Info").hide();
+        //    var VALUE = $(this).serialize();
+        //    $.getJSON("/Finance/GetJsonContract", VALUE, function (data) {
+        //        if (data.length == 0) {
+        //            $("#Contract-Info>span").html("未找到相关合同记录！");
+        //            $("#Contract-Info").show(500);
+        //            return false;
+        //        }
+        //        $("#Contract-Result").empty();
+        //        $.each(data, function (index, value) {
+        //            var timeString = value.StartTime.replace("/Date(", "").replace(")/", "");
+        //            var currentTime = new Date();
+        //            currentTime.setTime(timeString);
+        //            $("#Contract-Result").append("<tr><td name='Name'>" + value.Name + "</td><td name='OtherSide'>" + value.Company + "</td><td name='StartTime'>"+currentTime.toLocaleDateString()+"</td><td name='Money'>" + value.Money + "</td><td name='Leave'>" + value.Leave + "</td><td><button type='button' class='btn btn-sm btn-success btn-Contract' Index='"+value.ID+"' >关联</button></td></tr>");
+        //        });
 
-                $("#Contract-Result button.btn-Contract").unbind("click").bind("click", function () {
-                    var replaceHtml = contractHtml;
-                    var Index = $(this).attr("Index");
-                    replaceHtml = replaceHtml.replace("{Index}", Index);
-                    var chilrens = $(this).parent().parent().children("td");
-                    $.each(chilrens, function (index, node) {
-                        var name = $(this).attr("name");
-                        if (name != undefined) {
-                            replaceHtml = replaceHtml.replace("{" + name + "}", $(this).text());
-                        }
-                    });
-                    $("ul.Select-Contract").append(replaceHtml);
-                    $("ul.Select-Contract button.btn-destory").unbind("click").bind("click", function () {
-                        $(this).parent().parent().parent().remove();
-                    });
+        //        $("#Contract-Result button.btn-Contract").unbind("click").bind("click", function () {
+        //            var replaceHtml = contractHtml;
+        //            var Index = $(this).attr("Index");
+        //            replaceHtml = replaceHtml.replace("{Index}", Index);
+        //            var chilrens = $(this).parent().parent().children("td");
+        //            $.each(chilrens, function (index, node) {
+        //                var name = $(this).attr("name");
+        //                if (name != undefined) {
+        //                    replaceHtml = replaceHtml.replace("{" + name + "}", $(this).text());
+        //                }
+        //            });
+        //            $("ul.Select-Contract").append(replaceHtml);
+        //            $("ul.Select-Contract button.btn-destory").unbind("click").bind("click", function () {
+        //                $(this).parent().parent().parent().remove();
+        //            });
 
-                });
-                return false;
-            });
-            return false;
-        });
+        //        });
+        //        return false;
+        //    });
+        //    return false;
+        //});
 
         $("#Bill-Contract").submit(function () {
             $("#Error").hide();

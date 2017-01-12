@@ -13,7 +13,7 @@ namespace Ztop.Todo.Manager
         {
             using (var db = GetDbContext())
             {
-                var entry = db.Articles.FirstOrDefault(e => e.Name == article.Name && e.OtherSide == article.OtherSide);
+                var entry = db.Articles.FirstOrDefault(e =>e.ID==article.ID);
                 return entry != null;
             }
         }
@@ -26,7 +26,7 @@ namespace Ztop.Todo.Manager
         /// <returns></returns>
         public int Save(Article article)
         {
-            if (Exist(article) && article.ID > 0)
+            if (article.ID > 0&&Exist(article))
             {
                 Edit(article);
                 return article.ID;
@@ -75,12 +75,50 @@ namespace Ztop.Todo.Manager
                 return article.ID;
             }
         }
+        /// <summary>
+        /// 作用：通过ID获取Articel  项目
+        /// 作者：汪建龙
+        /// 备注时间：2017年1月5日12:49:57
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public Article Get(int id)
         {
             using (var db = GetDbContext())
             {
                 return db.Articles.FirstOrDefault(e => e.ID == id);
             }
+        }
+
+        public ArticleView Get2(int id)
+        {
+            using (var db = GetDbContext())
+            {
+                return db.Article_Views.FirstOrDefault(e => e.ID == id);
+            }
+        }
+        /// <summary>
+        /// 作用：修改项目状态  成功返回ture 失败  返回false
+        ///作者：汪建龙
+        ///编写时间：2017年1月5日12:51:32
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="state"></param>
+        /// <returns></returns>
+        public bool Edit(int id,ArticleState state)
+        {
+            using(var db = GetDbContext())
+            {
+                var entry = db.Articles.Find(id);
+                if (entry != null)
+                {
+                    entry.State = state;
+                    db.SaveChanges();
+                    return true;
+                }
+
+            }
+            return false;
         }
         public List<Article> Search(ArticleParameter parameter)
         {
@@ -90,6 +128,10 @@ namespace Ztop.Todo.Manager
                 if (parameter.Deleted.HasValue)
                 {
                     query = query.Where(e => e.Deleted == parameter.Deleted.Value);
+                }
+                if (parameter.State.HasValue)
+                {
+                    query = query.Where(e => e.State == parameter.State.Value);
                 }
                 if (!string.IsNullOrEmpty(parameter.Number))
                 {
@@ -107,6 +149,28 @@ namespace Ztop.Todo.Manager
                 {
                     query = query.Where(e => e.Remark.Contains(parameter.Remark));
                 }
+                if (!string.IsNullOrEmpty(parameter.Year))
+                {
+                    query = query.Where(e => e.Year.Contains(parameter.Year));
+                }
+
+                if (!string.IsNullOrEmpty(parameter.City))
+                {
+                    query = query.Where(e => e.City.Contains(parameter.City));
+                }
+
+                if (!string.IsNullOrEmpty(parameter.Town))
+                {
+                    query = query.Where(e => e.Town.Contains(parameter.Town));
+                }
+                if (!string.IsNullOrEmpty(parameter.ProjectType))
+                {
+                    query = query.Where(e => e.ProjectType.Contains(parameter.ProjectType));
+                }
+                if (!string.IsNullOrEmpty(parameter.PayCompany))
+                {
+                    query = query.Where(e => e.PayCompany.Contains(parameter.PayCompany));
+                }
                 if (parameter.MinMoney.HasValue)
                 {
                     query = query.Where(e => e.Money >= parameter.MinMoney.Value);
@@ -116,6 +180,61 @@ namespace Ztop.Todo.Manager
                     query = query.Where(e => e.Money <= parameter.MaxMoney.Value);
                 }
                 query = query.OrderBy(e => e.ID).SetPage(parameter.Page);
+                return query.ToList();
+            }
+        }
+
+        public List<ArticleView> Search2(ArticleParameter parameter)
+        {
+            using (var db = GetDbContext())
+            {
+                var query = db.Article_Views.AsQueryable();
+                if (parameter.Deleted.HasValue)
+                {
+                    query = query.Where(e => e.Deleted == parameter.Deleted.Value);
+                }
+                if (parameter.State.HasValue)
+                {
+                    query = query.Where(e => e.State == parameter.State.Value);
+                }
+                if (!string.IsNullOrEmpty(parameter.Number))
+                {
+                    query = query.Where(e => e.Number.Contains(parameter.Number));
+                }
+                if (!string.IsNullOrEmpty(parameter.Year))
+                {
+                    query = query.Where(e => e.Year.Contains(parameter.Year));
+                }
+                if (!string.IsNullOrEmpty(parameter.Town))
+                {
+                    query = query.Where(e => e.Town.Contains(parameter.Town));
+                }
+                if (!string.IsNullOrEmpty(parameter.Name))
+                {
+                    query = query.Where(e => e.Name.Contains(parameter.Name));
+                }
+                if (!string.IsNullOrEmpty(parameter.OtherSide))
+                {
+                    query = query.Where(e => e.OtherSide.Contains(parameter.OtherSide));
+                }
+                if (!string.IsNullOrEmpty(parameter.City))
+                {
+                    query = query.Where(e => e.CName.Contains(parameter.City));
+                }
+                if (!string.IsNullOrEmpty(parameter.ProjectType))
+                {
+                    query = query.Where(e => e.PName.Contains(parameter.ProjectType));
+                }
+                if (parameter.MinMoney.HasValue)
+                {
+                    query = query.Where(e => e.Money >= parameter.MinMoney.Value);
+                }
+                if (parameter.MaxMoney.HasValue)
+                {
+                    query = query.Where(e => e.Money <= parameter.MaxMoney.Value);
+                }
+                query = query.OrderBy(e => e.ID).SetPage(parameter.Page);
+
                 return query.ToList();
             }
         }

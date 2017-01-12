@@ -180,9 +180,9 @@ namespace Ztop.Todo.Model
                         Time = currentTime,
                         Money = income,
                         Account = cells[4] == null ? string.Empty : cells[4].ToString(),
-                        Budget = budget,
-                        Cost = cost,
-                        Category = category,
+                        //Budget = budget,
+                        //Cost = cost,
+                        //Category = category,
                         Summary = cells[5] == null ? string.Empty : cells[5].ToString(),
                         Remark= cells[5] == null ? string.Empty : cells[5].ToString(),
                         BID = bid,
@@ -199,9 +199,9 @@ namespace Ztop.Todo.Model
                         Time = currentTime,
                         Money = pay,
                         Account = cells[4] == null ? string.Empty : cells[4].ToString(),
-                        Budget = budget,
-                        Cost = cost,
-                        Category = category,
+                        //Budget = budget,
+                        //Cost = cost,
+                        //Category = category,
                         Summary = cells[5] == null ? string.Empty : cells[5].ToString(),
                         Remark= cells[5] == null ? string.Empty : cells[5].ToString(),
                         BID = bid,
@@ -350,9 +350,9 @@ namespace Ztop.Todo.Model
                         Time = currentTime,
                         Money = income,
                         Account = cells[4] == null ? string.Empty : cells[4].ToString(),
-                        Budget = budget,
-                        Cost = cost,
-                        Category = category,
+                        //Budget = budget,
+                        //Cost = cost,
+                        //Category = category,
                         Summary = cells[5] == null ? string.Empty : cells[5].ToString(),
                         Remark = cells[5] == null ? string.Empty : cells[5].ToString(),
                         Balance = balance
@@ -368,9 +368,9 @@ namespace Ztop.Todo.Model
                         Time = currentTime,
                         Money = pay,
                         Account = cells[4] == null ? string.Empty : cells[4].ToString(),
-                        Budget = budget,
-                        Cost = cost,
-                        Category = category,
+                        //Budget = budget,
+                        //Cost = cost,
+                        //Category = category,
                         Summary = cells[5] == null ? string.Empty : cells[5].ToString(),
                         Remark = cells[5] == null ? string.Empty : cells[5].ToString(),
                         Balance = balance
@@ -618,6 +618,22 @@ namespace Ztop.Todo.Model
             return false;
         }
 
+        public static bool CheckLogic<T>(BillRecord last,T current)where T :BillBase
+        {
+            if (last == null || current == null)
+            {
+                return false;
+            }
+            if (current.Budget == Budget.Income && Math.Abs(last.Balance + current.Money - current.Balance) < 0.01)
+            {
+                return true;
+            }else if (current.Budget == Budget.Expense && Math.Abs(current.Balance + current.Money - last.Balance) < 0.01)
+            {
+                return true;
+            }
+            return false;
+        }
+
         /// <summary>
         /// 作用：比较两个对账记录逻辑-评估公司银行
         /// 作者：汪建龙
@@ -836,11 +852,11 @@ namespace Ztop.Todo.Model
                             list.Add(bill);
                             if (temp != null)
                             {
-                                var sum = bill.Budget == Budget.Income ? bill.Balance - bill.Money : bill.Balance + bill.Money;
-                                if (Math.Abs(sum - temp.Balance) > 0.01)
-                                {
-                                    errors.Add(string.Format("第{0}行的账户余额收支不正确", i + 1));
-                                }
+                                //var sum = bill.Budget == Budget.Income ? bill.Balance - bill.Money : bill.Balance + bill.Money;
+                                //if (Math.Abs(sum - temp.Balance) > 0.01)
+                                //{
+                                //    errors.Add(string.Format("第{0}行的账户余额收支不正确", i + 1));
+                                //}
                             }
                             temp = bill;
                         }

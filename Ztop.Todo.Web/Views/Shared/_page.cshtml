@@ -1,0 +1,58 @@
+﻿@{ 
+    if (Model == null)
+    {
+        return;
+    }
+    var page = Model as PageParameter;
+    if (page.PageSize == 0)
+    {
+        page.PageSize = 10;
+    }
+    var pageCount = page.RecordCount / page.PageSize;
+    if (pageCount < 2)
+    {
+        return;
+    }
+    var pageRegex = new System.Text.RegularExpressions.Regex(@"page=(\d+)", System.Text.RegularExpressions.RegexOptions.Compiled | System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
+    Func<int, string> GetPageLink = (p) =>
+    {
+        var query = Request.Url.Query;
+        if (string.IsNullOrEmpty(query))
+        {
+            query = "?";
+        }
+        else if (query.Contains("page="))
+        {
+            query = pageRegex.Replace(query, string.Empty);
+        }
+        query += "&page=" + p;
+        return query;
+    };
+}
+
+<ul class="pagination">
+    <li><a href="@(GetPageLink(1))" name="load">首页</a></li>
+    @if (page.PageIndex > 1)
+    {
+        <li><a href="@(GetPageLink(page.PageIndex - 1))" name="load">上一页</a></li>
+    }
+    @if (page.PageIndex < pageCount - 1)
+    {
+        <li><a href="@(GetPageLink(page.PageIndex + 1))" name="load">下一页</a></li>
+    }
+    <li><a href="@(GetPageLink(pageCount))" name="load">尾页</a></li>
+    @(page.PageIndex)/@(pageCount)
+</ul>
+
+<script>
+    $(function () {
+
+        $("ul.pagination a[name='load']").click(function () {
+            var values = $(this).attr("href");
+            $("#Contract-Result").load("/Finance/SearchContract", values, function () {
+            });
+            return false;
+        });
+    });
+</script>

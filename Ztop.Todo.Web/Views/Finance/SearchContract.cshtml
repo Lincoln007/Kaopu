@@ -1,0 +1,55 @@
+﻿@{ 
+    Layout = null;
+    List<Contract> list = ViewBag.List;
+}
+
+<script>
+    $(function () {
+        $("button[name='Relate']").click(function () {
+            var replaceHtml = contractHtml;
+            var Index = $(this).attr("Index");
+            replaceHtml = replaceHtml.replace("{Index}", Index);
+            var childrens = $(this).parent().parent().children("td");
+            $.each(childrens, function (index, node) {
+                var name = $(this).attr("name");
+                if (name != undefined) {
+                    replaceHtml = replaceHtml.replace("{" + name + "}", $(this).text());
+                }
+            });
+            $("ul.Select-Contract").append(replaceHtml);
+            $("ul.Select-Contract button.btn-destory").unbind("click").bind("click", function () {
+                $(this).parent().parent().parent().remove();
+            });
+            return false;
+        });
+
+    });
+</script>
+<table class="table table-bordered table-condensed">
+    <thead>
+        <tr>
+            <th>合同名称</th>
+            <th>对方单位</th>
+            <th>合同起始时间</th>
+            <th>合同金额（元）</th>
+            <th>未到账金额（元）</th>
+            <th>关联操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var item in list)
+        {
+            <tr>
+                <td name="Name">@(item.Name)</td>
+                <td name="OtherSide">@(item.Company)</td>
+                <td name="StartTime">@(item.StartTime.ToShortDateString())</td>
+                <td name="Money">@(item.Money)</td>
+                <td name="Leave">@(item.Leave)</td>
+                <td>
+                    <button type="button" class="btn btn-xs btn-success" name="Relate" Index="@(item.ID)"><i class="glyphicon glyphicon-plus-sign"></i>关联</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@Html.Partial("_page",ViewBag.Page as object)

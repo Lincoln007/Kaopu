@@ -219,7 +219,7 @@
                     @foreach(var bill in Bills)
                     {
                         <tr>
-                            <td><a href="/Finance/DetailBill?id=@(bill.ID)">@(bill.Time.ToLongDateString())</a></td>
+                            <td><a href="/Finance/DetailBill?id=@(bill.ID)">@(bill.Time.HasValue?bill.Time.Value.ToLongDateString():"未指定时间")</a></td>
                             <td>@(bill.Money)</td>
                             <td>@(bill.Account)</td>
                         </tr>

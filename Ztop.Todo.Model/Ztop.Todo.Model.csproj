@@ -81,6 +81,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Article.cs" />
+    <Compile Include="BillRecord.cs" />
+    <Compile Include="BillView.cs" />
     <Compile Include="Bill_Head.cs" />
     <Compile Include="City.cs" />
     <Compile Include="iPadDatum.cs" />

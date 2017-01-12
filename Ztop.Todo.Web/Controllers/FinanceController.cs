@@ -337,7 +337,7 @@ namespace Ztop.Todo.Web.Controllers
         [HttpPost]
         public ActionResult SaveBillAccount(Bill bill)
         {
-            bill.Budget = Budget.Income;
+            //bill.Budget = Budget.Income;
             bill.Leave = bill.Money;
             bill.Summary = bill.Remark;
             Core.BillManager.Save(bill);
@@ -352,28 +352,49 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
 
-        public ActionResult OnAccount()
+        public ActionResult OnAccount(int id)
         {
+            var billView = Core.Bill_ViewManager.Get(id);
+            if (billView != null)
+            {
+                billView.Bill_Contracts = Core.BillContractManager.GetByBillID(billView.ID);
+            }
+            ViewBag.Bill = billView;
             ViewBag.Department = Core.UserManager.GetUserGroups().Select(e => e.Name).ToList();
             return View();
         }
+ 
         [HttpGet]
-        public ActionResult GetJsonBill(DateTime?startTime=null,DateTime? endTime=null,double?minMoney=null,double?maxMoney=null,string otherside=null,string remark=null,string association=null)
+        public ActionResult GetJsonContract(
+            string name = null, string otherside = null,
+            DateTime? starttime = null, DateTime? endtime = null,
+            double? minmoney = null, double? maxmoney = null, 
+            string ztopcompany = null,int page=1)
         {
-            var parameter = new BillParamter()
+
+            var parameter = new ContractParameter()
             {
-                StartTime = startTime,
-                EndTime = endTime,
-                MinMoney = minMoney,
-                MaxMoney = maxMoney,
+                Name = name,
                 OtherSide = otherside,
-                Remark = remark
+                StartTime = starttime,
+                EndTime = endtime,
+                MinMoney = minmoney,
+                MaxMoney = maxmoney,
+                Page = new PageParameter(page, 15)
             };
-            var list = Core.BillManager.Search(parameter).Where(e => e.Association != Association.Full);
+            if (!string.IsNullOrEmpty(ztopcompany))
+            {
+                parameter.ZtopCompany = EnumHelper.GetEnum<ZtopCompany>(ztopcompany);
+            }
+            var list = Core.ContractManager.Search(parameter).Where(e => e.Leave > 0).ToList();
             return Json(list, JsonRequestBehavior.AllowGet);
         }
         [HttpGet]
-        public ActionResult GetJsonContract(string name = null, string otherside = null, DateTime? starttime = null, DateTime? endtime = null, double? minmoney = null, double? maxmoney = null, string ztopcompany = null)
+        public ActionResult SearchContract(
+            string name = null, string otherside = null,
+            DateTime? starttime = null, DateTime? endtime = null,
+            double? minmoney = null, double? maxmoney = null,
+            string ztopcompany = null, int page = 1)
         {
             var parameter = new ContractParameter()
             {
@@ -382,14 +403,18 @@ namespace Ztop.Todo.Web.Controllers
                 StartTime = starttime,
                 EndTime = endtime,
                 MinMoney = minmoney,
-                MaxMoney = maxmoney
+                MaxMoney = maxmoney,
+                Page = new PageParameter(page, 15)
             };
             if (!string.IsNullOrEmpty(ztopcompany))
             {
                 parameter.ZtopCompany = EnumHelper.GetEnum<ZtopCompany>(ztopcompany);
             }
-            var list = Core.ContractManager.Search(parameter).Where(e=>e.Leave>0).ToList();
-            return Json(list, JsonRequestBehavior.AllowGet);
+            var list = Core.ContractManager.Search(parameter).Where(e => e.Leave > 0).ToList();
+            ViewBag.List = list;
+            ViewBag.Page = parameter.Page;
+            ViewBag.Parameter = parameter;
+            return View();
         }
 
         [HttpPost]
@@ -435,7 +460,19 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
 
-        public ActionResult BillSearch(DateTime? startTime=null,DateTime? endTime=null,double? minMoney=null,double? maxMoney=null,string otherside=null,string remark=null,string association=null,int page=1)
+        /// <summary>
+        /// 作用：到账  与合同挂账的时候，查询到账信息
+        /// </summary>
+        /// <param name="startTime"></param>
+        /// <param name="endTime"></param>
+        /// <param name="minMoney"></param>
+        /// <param name="maxMoney"></param>
+        /// <param name="otherside"></param>
+        /// <param name="remark"></param>
+        /// <param name="association"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public ActionResult GetJsonBill(string company = null, DateTime? startTime = null, DateTime? endTime = null, double? minMoney = null, double? maxMoney = null, string otherside = null, string remark = null, string association = null)
         {
             var parameter = new BillParamter()
             {
@@ -444,19 +481,157 @@ namespace Ztop.Todo.Web.Controllers
                 MinMoney = minMoney,
                 MaxMoney = maxMoney,
                 OtherSide = otherside,
-                Remark=remark,
+                Remark = remark
+            };
+
+            var list = Core.BillManager.Search(parameter).Where(e => e.Association != Association.Full);
+            return Json(list, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult LoadBill(
+            DateTime? startTime = null, DateTime? endTime = null, 
+            double? minMoney = null, double? maxMoney = null, 
+            string otherside = null, string remark = null, 
+            string association = null,int page = 1)
+        {
+            var parameter = new BillParamter
+            {
+                StartTime = startTime,
+                EndTime = endTime,
+                MinMoney = minMoney,
+                MaxMoney = maxMoney,
+                OtherSide = otherside,
+                Remark = remark,
                 Page = new PageParameter(page, 20)
             };
+            parameter.Association = Association.None;
+
+            return View();
+        }
+        /// <summary>
+        /// 作用：同步银行账单
+        /// 作者：汪建龙
+        /// 编写时间：2017年1月10日10:19:33
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Synchronous()
+        {
+            var list1 = Core.Bill_RecordManager.GetSync();
+            if (list1 == null || list1.Count == 0)
+            {
+                return ErrorJsonResult("当前系统中没有可以同步到账信息");
+            }
+            try
+            {
+                Core.Bill_RecordManager.Sync(list1);
+            }catch(Exception ex)
+            {
+                return ErrorJsonResult(ex);
+            }
+            return SuccessJsonResult();
+        }
+        /// <summary>
+        /// 作用：基础搜索
+        /// 作者：汪建龙
+        /// 编写时间：2017年1月11日09:51:39
+        /// </summary>
+        /// <param name="startTime"></param>
+        /// <param name="endTime"></param>
+        /// <param name="minMoney"></param>
+        /// <param name="maxMoney"></param>
+        /// <param name="otherside"></param>
+        /// <param name="remark"></param>
+        /// <param name="association"></param>
+        /// <param name="cost"></param>
+        /// <param name="company"></param>
+        /// <param name="page"></param>
+        private void BillSearchBase(
+            DateTime? startTime = null, DateTime? endTime = null,
+            double? minMoney = null, double? maxMoney = null,
+            string otherside = null, string remark = null,
+            string association = null, string cost = "实际收入", string company = null, int page = 1)
+        {
+            var parameter = new BillParamter()
+            {
+                StartTime = startTime,
+                EndTime = endTime,
+                MinMoney = minMoney,
+                MaxMoney = maxMoney,
+                OtherSide = otherside,
+                Remark = remark,
+                Page = new PageParameter(page, 20)
+            };
+            if (!string.IsNullOrEmpty(company))
+            {
+                parameter.Company = EnumHelper.GetEnum<Company>(company);
+            }
             if (!string.IsNullOrEmpty(association))
             {
                 parameter.Association = EnumHelper.GetEnum<Association>(association);
             }
+            else
+            {
+                parameter.Association = Association.None;
+            }
+            if (!string.IsNullOrEmpty(cost))
+            {
+                parameter.Cost = EnumHelper.GetEnum<Cost>(cost);
+            }
+            var blist = Core.Bill_ViewManager.Search(parameter);
 
-            ViewBag.Result = Core.BillManager.Search(parameter);
+            ViewBag.BResult = blist;
             ViewBag.Parameter = parameter;
-
+            ViewBag.Page = parameter.Page;
+        }
+        /// <summary>
+        /// 作用：合同挂账查询
+        /// 作者：汪建龙
+        /// 编写时间：2017年1月11日09:52:22
+        /// </summary>
+        /// <param name="startTime"></param>
+        /// <param name="endTime"></param>
+        /// <param name="minMoney"></param>
+        /// <param name="maxMoney"></param>
+        /// <param name="otherside"></param>
+        /// <param name="remark"></param>
+        /// <param name="company"></param>
+        /// <param name="page"></param>
+        /// <returns></returns>
+        public ActionResult SearchBill(
+            DateTime?startTime=null,DateTime?endTime=null,
+            double? minMoney=null,double?maxMoney=null,
+            string otherside=null,string remark=null,string company=null,int page = 1)
+        {
+            BillSearchBase(startTime, endTime, minMoney, maxMoney, otherside, remark, Association.None.GetDescription(), Cost.RealIncome.GetDescription(), company, page);
             return View();
         }
+  
+        /// <summary>
+        /// 作用：单独页面查询
+        /// 作者：汪建龙
+        /// 编写时间：2017年1月11日09:51:57
+        /// </summary>
+        /// <param name="startTime"></param>
+        /// <param name="endTime"></param>
+        /// <param name="minMoney"></param>
+        /// <param name="maxMoney"></param>
+        /// <param name="otherside"></param>
+        /// <param name="remark"></param>
+        /// <param name="association"></param>
+        /// <param name="cost"></param>
+        /// <param name="company"></param>
+        /// <param name="page"></param>
+        /// <returns></returns>
+        public ActionResult BillSearch(
+            DateTime? startTime=null,DateTime? endTime=null,
+            double? minMoney=null,double? maxMoney=null,
+            string otherside=null,string remark=null,
+            string association=null,string cost="实际收入",string company=null,int page=1)
+        {
+            BillSearchBase(startTime, endTime, minMoney, maxMoney, otherside, remark, association, cost, company, page);
+            return View();
+        }
+        
 
 
         public ActionResult InvoiceSearch(string status=null,string recevied=null,string ztopcompany=null, string department=null,string time=null,string otherside=null,double? minMoney=null,double? maxMoney=null, int page=1)
@@ -550,23 +725,13 @@ namespace Ztop.Todo.Web.Controllers
 
         public ActionResult CreateArticle(int id=0)
         {
-            if (id > 0)
+            var article = Core.ArticleManager.Get(id);
+            if (article != null)
             {
-                var article = Core.ArticleManager.Get(id);
-                if (article != null)
-                {
-                    var Clist = Core.ContractArticleManager.GetByArticleID(article.ID);
-                    if (Clist != null && Clist.Count > 0)
-                    {
-                        article.Contracts = Core.ContractManager.GetByIDList(Clist.Select(e => e.ContractID).ToList());
-                    }
-                }
-                ViewBag.Article = article;
+                article.CEntry = Core.CityManager.Get(article.CID);
+                article.PEntry = Core.Project_TypeManager.Get(article.PID);
             }
-            else
-            {
-                ViewBag.Article = null;
-            }
+            ViewBag.Article = article;
             return View();
         }
         [HttpPost]
@@ -582,14 +747,15 @@ namespace Ztop.Todo.Web.Controllers
 
         public ActionResult DetailArticle(int id)
         {
-            var article = Core.ArticleManager.Get(id);
+            var article = Core.ArticleManager.Get2(id);
             if (article != null)
             {
-                var CList = Core.ContractArticleManager.GetByArticleID(article.ID);
-                if (CList != null && CList.Count > 0)
-                {
-                    article.Contracts = Core.ContractManager.GetByIDList(CList.Select(e=>e.ContractID).ToList());
-                }
+                article.Contracts = Core.ContractManager.GetByNumber(article.Number);
+                //var CList = Core.ContractArticleManager.GetByArticleID(article.ID);
+                //if (CList != null && CList.Count > 0)
+                //{
+                //    article.Contracts = Core.ContractManager.GetByIDList(CList.Select(e=>e.ContractID).ToList());
+                //}
             }
             ViewBag.Article = article;
             return View();
@@ -598,6 +764,18 @@ namespace Ztop.Todo.Web.Controllers
         public ActionResult DeletedArticle(int id)
         {
             return Core.ArticleManager.Deleted(id) ? SuccessJsonResult() : ErrorJsonResult("删除失败！参数错误，未找到相关项目信息");
+        }
+
+        public ActionResult ArticleState(int id)
+        {
+            var article = Core.ArticleManager.Get(id);
+            ViewBag.Article = article;
+            return View();
+        }
+        [HttpPost]
+        public ActionResult EditState(int id,ArticleState state)
+        {
+            return Core.ArticleManager.Edit(id, state) ? SuccessJsonResult() : ErrorJsonResult("修改失败！");
         }
         
         [HttpGet]
@@ -614,7 +792,11 @@ namespace Ztop.Todo.Web.Controllers
             return Json(list, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult ArticleSearch(string name=null,string otherside=null,double? minmoney=null,double? maxmoney=null,string number=null,int page=1)
+        public ActionResult ArticleSearch(
+            string name=null,string otherside=null,double? minmoney=null, double? maxmoney=null,
+            string number=null,string year=null, string city=null, string town=null,
+            string projecttype=null, string state=null,string payCompany=null,
+            int page=1)
         {
             var parameter = new ArticleParameter
             {
@@ -623,12 +805,24 @@ namespace Ztop.Todo.Web.Controllers
                 MinMoney = minmoney,
                 MaxMoney = maxmoney,
                 Number=number,
+                Year=year,
+                City=city,
+                Town=town,
+                ProjectType=projecttype,
+                PayCompany=payCompany,
                 Page = new PageParameter(page, 20)
             };
-            ViewBag.List = Core.ArticleManager.Search(parameter);
+            if (!string.IsNullOrEmpty(state))
+            {
+                parameter.State = EnumHelper.GetEnum<ArticleState>(state);
+            }
+            ViewBag.List = Core.ArticleManager.Search2(parameter);
             ViewBag.Parameter = parameter;
+            ViewBag.Page = parameter.Page;
             return View();
         }
+
+    
 
     }
 }

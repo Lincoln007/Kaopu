@@ -22,7 +22,7 @@
         <table class="table table-bordered table-striped">
             <tr>
                 <th>到账日期</th>
-                <td>@(bill.Time.ToLongDateString())</td>
+                <td>@(bill.Time.HasValue?bill.Time.Value.ToLongDateString():"未获取到账时间")</td>
                 <th>到账金额[元]</th>
                 <td>@(bill.Money)</td>
             </tr>

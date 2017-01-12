@@ -178,6 +178,117 @@ namespace Ztop.Todo.Manager
             query = query.SetPage(parameter.Page);
             return query.ToList();
         }
+        private void WriteDialy(Sheet item,Substancs entry,IRow modelRow,int line,int serial,ref ISheet sheet)
+        {
+            var row = sheet.GetRow(line);
+            if (row == null)
+            {
+                row = sheet.CreateRow(line);
+            }
+            var cell = ExcelClass.GetCell(row, 0, modelRow);
+            cell.SetCellValue(serial);
+            ExcelClass.GetCell(row, 1, modelRow).SetCellValue(item.PrintNumber);
+            ExcelClass.GetCell(row, 2, modelRow).SetCellValue(item.CheckNumber);
+            ExcelClass.GetCell(row, 3, modelRow).SetCellValue(item.Name);
+            ExcelClass.GetCell(row, 4, modelRow).SetCellValue(item.Time.ToLongDateString());
+            ExcelClass.GetCell(row, 5, modelRow).SetCellValue(item.Count);
+            ExcelClass.GetCell(row, 6, modelRow).SetCellValue(item.Money);
+            ExcelClass.GetCell(row, 7, modelRow).SetCellValue(item.Remarks);
+            ExcelClass.GetCell(row, 8, modelRow).SetCellValue(item.Type.GetDescription());
+            ExcelClass.GetCell(row, 9, modelRow).SetCellValue(item.Status.GetDescription());
+            ExcelClass.GetCell(row, 10, modelRow).SetCellValue(item.Checkers);
+            ExcelClass.GetCell(row, 11, modelRow).SetCellValue(item.CheckTime.HasValue ? item.CheckTime.Value.ToLongDateString() : "未审核");
+            ExcelClass.GetCell(row, 12, modelRow).SetCellValue(string.Format("类别：{0}|内容：{1}|金额：{2}元", entry.Category.GetDescription(), entry.Details, Math.Round(entry.Price, 2)));
+        }
+  
+        private void WriteErrand(Errand item,IRow modelRow,int line,ref ISheet sheet)
+        {
+            var row = sheet.GetRow(line);
+            if (row == null)
+            {
+                row = sheet.CreateRow(line);
+            }
+            var cell = ExcelClass.GetCell(row, 19, modelRow);
+            cell.SetCellValue(item.Users);
+            ExcelClass.GetCell(row, 20, modelRow).SetCellValue(string.Format("{0}-{1}", item.StartTime.ToShortDateString(), item.EndTime.ToShortDateString()));
+            ExcelClass.GetCell(row, 21, modelRow).SetCellValue(item.Days);
+            ExcelClass.GetCell(row, 22, modelRow).SetCellValue(item.Days * item.Peoples * 40);
+        }
+        private void WrirteTraffic(Traffic first,IRow modelRow,int line,ref ISheet sheet)
+        {
+            var row = sheet.GetRow(line);
+            if (row == null)
+            {
+                row = sheet.CreateRow(line);
+            }
+            var cell = ExcelClass.GetCell(row, 23, modelRow);
+            cell.SetCellValue(first.Type.GetDescription());
+            ExcelClass.GetCell(row, 24, modelRow).SetCellValue(first.Cost);
+            ExcelClass.GetCell(row, 25, modelRow).SetCellValue(first.KiloMeters);
+            ExcelClass.GetCell(row, 26, modelRow).SetCellValue(first.Plate);
+            ExcelClass.GetCell(row, 27, modelRow).SetCellValue(first.Toll);
+            ExcelClass.GetCell(row, 28, modelRow).SetCellValue(first.Petrol);
+            ExcelClass.GetCell(row, 29, modelRow).SetCellValue(first.Driver.GetDescription());
+            ExcelClass.GetCell(row, 30, modelRow).SetCellValue(first.CarPetty);
+        }
+        private void WriteEvection(Sheet item,IRow modelRow, int serial,ref int line,ref ISheet sheet)
+        {
+            var row = sheet.GetRow(line);
+            if (row == null)
+            {
+                row = sheet.CreateRow(line);
+            }
+            var eline = line;
+            var tline = line;
+            var cell = ExcelClass.GetCell(row, 0, modelRow);
+            cell.SetCellValue(serial);
+            ExcelClass.GetCell(row, 1, modelRow).SetCellValue(item.PrintNumber);
+            ExcelClass.GetCell(row, 2, modelRow).SetCellValue(item.CheckNumber);
+            ExcelClass.GetCell(row, 3, modelRow).SetCellValue(item.Name);
+            ExcelClass.GetCell(row, 4, modelRow).SetCellValue(item.Time.ToLongDateString());
+            ExcelClass.GetCell(row, 5, modelRow).SetCellValue(item.Count);
+            ExcelClass.GetCell(row, 6, modelRow).SetCellValue(item.Money);
+            ExcelClass.GetCell(row, 7, modelRow).SetCellValue(item.Remarks);
+            ExcelClass.GetCell(row, 8, modelRow).SetCellValue(item.Type.GetDescription());
+            ExcelClass.GetCell(row, 9, modelRow).SetCellValue(item.Status.GetDescription());
+            ExcelClass.GetCell(row, 10, modelRow).SetCellValue(item.Checkers);
+            ExcelClass.GetCell(row, 11, modelRow).SetCellValue(item.CheckTime.HasValue ? item.CheckTime.Value.ToLongDateString() : "未审核");
+            ExcelClass.GetCell(row, 12, modelRow).SetCellValue("/");
+            if (item.Evection != null)
+            {
+                ExcelClass.GetCell(row, 13, modelRow).SetCellValue(item.Evection.Place);
+                ExcelClass.GetCell(row, 14, modelRow).SetCellValue(item.Evection.Reason);
+                ExcelClass.GetCell(row, 15, modelRow).SetCellValue(item.Evection.Persons);
+                ExcelClass.GetCell(row, 16, modelRow).SetCellValue(item.Evection.Hotel);
+                ExcelClass.GetCell(row, 17, modelRow).SetCellValue(item.Evection.Mark);
+                ExcelClass.GetCell(row, 18, modelRow).SetCellValue(item.Evection.Other);
+                if (item.Evection.Errands != null && item.Evection.Errands.Count > 0)
+                {
+                    foreach (var errand in item.Evection.Errands)
+                    {
+                        WriteErrand(errand, modelRow, eline, ref sheet);
+                    }
+ 
+                }
+                if (item.Evection.TCosts != null && item.Evection.TCosts.Count > 0)
+                {   
+                    foreach(var traffic in item.Evection.TCosts)
+                    {
+                        WrirteTraffic(traffic, modelRow, tline++, ref sheet);
+                    }
+                }
+            }
+            if (eline > tline)//出差人员多行
+            {
+
+            }
+            else//交通多行
+            {
+
+            }
+            line = eline > tline ? eline : tline;
+         
+        }
 
         public IWorkbook GetWorkbook(List<Sheet> list)
         {
@@ -187,88 +298,35 @@ namespace Ztop.Todo.Manager
                 ISheet sheet = workbook.GetSheetAt(0);
                 if (sheet != null)
                 {
-                    IRow row = sheet.GetRow(1);
+                    IRow row = sheet.GetRow(3);
                     if (row != null)
                     {
                         var modelRow = row;
                         var serial = 1;
-                        ICell cell = null;
+                        var rowNumber = 3;
                         foreach(var item in list)
                         {
                             if (item.Type == SheetType.Daily && item.Substances != null)
                             {
-                                //var startRow = serial;
                                 foreach(var entry in item.Substances)
                                 {
-                                    row = sheet.GetRow(serial);
-                                    if (row == null)
-                                    {
-                                        row = sheet.CreateRow(serial);
-                                    }
-                                    cell = ExcelClass.GetCell(row, 0, modelRow);
-                                    cell.SetCellValue(serial++);
-                                    ExcelClass.GetCell(row, 1, modelRow).SetCellValue(item.PrintNumber);
-                                    ExcelClass.GetCell(row, 2, modelRow).SetCellValue(item.CheckNumber);
-                                    ExcelClass.GetCell(row, 3, modelRow).SetCellValue(item.Name);
-                                    ExcelClass.GetCell(row, 4, modelRow).SetCellValue(item.Time.ToLongDateString());
-                                    ExcelClass.GetCell(row, 5, modelRow).SetCellValue(item.Count);
-                                    ExcelClass.GetCell(row, 6, modelRow).SetCellValue(item.Money);
-                                    ExcelClass.GetCell(row, 7, modelRow).SetCellValue(item.Remarks);
-                                    ExcelClass.GetCell(row, 8, modelRow).SetCellValue(item.Type.GetDescription());
-                                    ExcelClass.GetCell(row, 9, modelRow).SetCellValue(item.Status.GetDescription());
-                                    ExcelClass.GetCell(row, 10, modelRow).SetCellValue(item.Checkers);
-                                    ExcelClass.GetCell(row, 11, modelRow).SetCellValue(item.CheckTime.HasValue ? item.CheckTime.Value.ToLongDateString() : "未审核");
-                                    ExcelClass.GetCell(row, 12, modelRow).SetCellValue(string.Format("类别：{0}|内容：{1}|金额：{2}元", entry.Category.GetDescription(), entry.Details, Math.Round(entry.Price, 2)));
+                                    WriteDialy(item, entry, modelRow, rowNumber++, serial++, ref sheet);
                                 }
-                                //for(var i = 0; i < 12; i++)
-                                //{
-                                //    sheet.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(startRow, serial - 1, i, i));
-                                //}
                                
                             }
                             else
                             {
-                                row = sheet.GetRow(serial);
-                                if (row == null)
+                                var startrow = rowNumber;
+                                WriteEvection(item, modelRow, serial++,ref rowNumber, ref sheet);
+                                if (startrow != rowNumber)
                                 {
-                                    row = sheet.CreateRow(serial);
+                                    for (var i = 0; i < 19; i++)
+                                    {
+                                        sheet.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(startrow, rowNumber - 1, i, i));
                                 }
-                                cell = ExcelClass.GetCell(row, 0, modelRow);
-                                cell.SetCellValue(serial++);
-                                ExcelClass.GetCell(row, 1, modelRow).SetCellValue(item.PrintNumber);
-                                ExcelClass.GetCell(row, 2, modelRow).SetCellValue(item.CheckNumber);
-                                ExcelClass.GetCell(row, 3, modelRow).SetCellValue(item.Name);
-                                ExcelClass.GetCell(row, 4, modelRow).SetCellValue(item.Time.ToLongDateString());
-                                ExcelClass.GetCell(row, 5, modelRow).SetCellValue(item.Count);
-                                ExcelClass.GetCell(row, 6, modelRow).SetCellValue(item.Money);
-                                ExcelClass.GetCell(row, 7, modelRow).SetCellValue(item.Remarks);
-                                ExcelClass.GetCell(row, 8, modelRow).SetCellValue(item.Type.GetDescription());
-                                ExcelClass.GetCell(row, 9, modelRow).SetCellValue(item.Status.GetDescription());
-                                ExcelClass.GetCell(row, 10, modelRow).SetCellValue(item.Checkers);
-                                ExcelClass.GetCell(row, 11, modelRow).SetCellValue(item.CheckTime.HasValue ? item.CheckTime.Value.ToLongDateString() : "未审核");
+                                }
+                            
                             }
-                            //row = sheet.GetRow(serial);
-                            //if (row == null)
-                            //{
-                            //    row = sheet.CreateRow(serial);
-                            //}
-                            //var cell = ExcelClass.GetCell(row, 0,modelRow);
-                            //cell.SetCellValue(serial++);
-                            //ExcelClass.GetCell(row, 1, modelRow).SetCellValue(item.PrintNumber);
-                            //ExcelClass.GetCell(row, 2, modelRow).SetCellValue(item.CheckNumber);
-                            //ExcelClass.GetCell(row, 3, modelRow).SetCellValue(item.Name);
-                            //ExcelClass.GetCell(row, 4, modelRow).SetCellValue(item.Time.ToLongDateString());
-                            //ExcelClass.GetCell(row, 5, modelRow).SetCellValue(item.Count);
-                            //ExcelClass.GetCell(row, 6, modelRow).SetCellValue(item.Money);
-                            //ExcelClass.GetCell(row, 7, modelRow).SetCellValue(item.Remarks);
-                            //ExcelClass.GetCell(row, 8, modelRow).SetCellValue(item.Type.GetDescription());
-                            //ExcelClass.GetCell(row, 9, modelRow).SetCellValue(item.Status.GetDescription());
-                            //ExcelClass.GetCell(row, 10, modelRow).SetCellValue(item.Checkers);
-                            //ExcelClass.GetCell(row, 11, modelRow).SetCellValue(item.CheckTime.HasValue ? item.CheckTime.Value.ToLongDateString() : "未审核");
-                            //if (item.Type == SheetType.Daily&&item.Substances!=null)
-                            //{
-                            //    ExcelClass.GetCell(row, 12, modelRow).SetCellValue(string.Join(";", item.Substances.Select(e => string.Format("【类别：{0}|内容：{1}|金额：{2}元】", e.Category.GetDescription(), e.Details,Math.Round(e.Price,2))).ToArray()));
-                            //}
                         }
                     }
                 }

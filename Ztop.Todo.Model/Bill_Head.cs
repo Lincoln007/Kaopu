@@ -104,6 +104,10 @@ namespace Ztop.Todo.Model
         /// </summary>
         [Column(TypeName = "int")]
         public Category? Category { get; set; }
+        /// <summary>
+        /// 是否同步
+        /// </summary>
+        public bool Sync { get; set; }
     }
     /// <summary>
     /// 2016-11-12  重新设计银行对账Model----评估公司  
@@ -167,5 +171,34 @@ namespace Ztop.Todo.Model
         /// </summary>
         public string PostScript { get; set; }
 
+    }
+
+    [Table("bill_twos_view")]
+    public class BillTwoView
+    {
+        [Key]
+        public int ID { get; set; }
+        public string Date { get; set; }
+        public DateTime? Time { get; set; }
+        [Column(TypeName = "int")]
+        public Budget? Budget { get; set; }
+        public double Money { get; set; }
+        public string Account { get; set; }
+        public string Summary { get; set; }
+        public string Remark { get; set; }
+        public string Remark2 { get; set; }
+        public int Year { get; set; }
+        public int Month { get; set; }
+        [Column(TypeName = "int")]
+        public Company Company { get; set; }
+        public bool Sync { get; set; }
+        [Column(TypeName = "int")]
+        public Cost? Cost { get; set; }
+        /// <summary>
+        /// 二级类别  收入的时候 为null
+        /// </summary>
+        [Column(TypeName = "int")]
+        public Category? Category { get; set; }
+        public int HID { get; set; }
     }
 }

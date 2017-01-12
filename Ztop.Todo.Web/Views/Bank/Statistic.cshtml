@@ -1,0 +1,38 @@
+﻿@{ 
+    if (Model == null)
+    {
+        return;
+    }
+
+    List<Sheet> list = Model as List<Sheet>;
+    var last = list.OrderBy(e => e.Money).FirstOrDefault();
+    var first = list.OrderByDescending(e => e.Money).FirstOrDefault();
+    var daily = list.Where(e => e.Type == SheetType.Daily).ToList();
+    var errand = list.Where(e => e.Type == SheetType.Errand).ToList();
+    var dict = list.GroupBy(e => e.Name).ToDictionary(e => e.Key, e => e.Count());
+}
+
+<div class="panel panel-success">
+    <div class="panel-heading">总览</div>
+    <table class="table table-striped">
+        <tbody>
+            <tr>
+                <th rowspan="2">本月成功报销：</th>
+                <td rowspan="2">@(list.Count)笔</td>
+                <th>日常报销：</th>
+                <td>@(daily.Count)笔</td>
+            </tr>
+            <tr>
+                <th>出差报销：</th>
+                <td>@(errand.Count)笔</td>
+            </tr>
+            <tr>
+                <th>单笔报销金额最多[元]：</th>
+                <td><a href="/Report/Detail?id=@(first.ID)">@(string.Format("{0}报销了{1}元", first.Name, first.Money))</a></td>
+                <th>单笔报销金额最少[元]：</th>
+                <td><a href="/Report/Detail?id=@(last.ID)">@(string.Format("{0}报销了{1}元", last.Name, last.Money))</a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+

@@ -58,6 +58,7 @@ namespace Ztop.Todo.Manager
         
         public CityManager CityManager { get; private set; }
         public Project_TypeManager Project_TypeManager { get; private set; }
+        public Bill_ViewManager Bill_ViewManager { get; private set; }
 
         #endregion
 
@@ -72,6 +73,8 @@ namespace Ztop.Todo.Manager
         #region  银行对账系统
 
         public Bill_OneManager Bill_OneManager { get; private set; }
+
+        public Bill_RecordManager Bill_RecordManager { get; private set; }
 
         #endregion
 

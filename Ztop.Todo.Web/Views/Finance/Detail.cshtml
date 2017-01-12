@@ -488,7 +488,7 @@
                 <table class="table table-bordered table-striped">
                     <tr>
                         <th>到账时间</th>
-                        <td>@(billcontract.Bill.Time.ToLongDateString())</td>
+                        <td>@(billcontract.Bill.Time.HasValue?billcontract.Bill.Time.Value.ToLongDateString():"未获取到账时间")</td>
                         <th>到账金额（元）</th>
                         <td>@(billcontract.Bill.Money)</td>
                     </tr>

@@ -18,7 +18,7 @@ namespace Ztop.Todo.Model
         /// <summary>
         /// 交易时间
         /// </summary>
-        public DateTime Time { get; set; }
+        public DateTime? Time { get; set; }
         /// <summary>
         /// 交易金额
         /// </summary>
@@ -30,15 +30,16 @@ namespace Ztop.Todo.Model
         /// <summary>
         /// 收支
         /// </summary>
-        [Column(TypeName = "int")]
-        public Budget Budget { get; set; }
-        [Column(TypeName = "int")]
-        public Cost Cost { get; set; }
-        /// <summary>
-        /// 支出 的时候 选择实际支出 选择分类
-        /// </summary>
-        [Column(TypeName = "int")]
-        public Category? Category { get; set; }
+        //[Column(TypeName = "int")]
+        //public Budget? Budget { get; set; }
+        //[NotMapped]
+        //[Column(TypeName = "int")]
+        //public Cost? Cost { get; set; }
+        ///// <summary>
+        ///// 支出 的时候 选择实际支出 选择分类
+        ///// </summary>
+        //[Column(TypeName = "int")]
+        //public Category? Category { get; set; }
         /// <summary>
         /// 摘要
         /// </summary>
@@ -56,6 +57,14 @@ namespace Ztop.Todo.Model
         public Association Association { get; set; }
         [NotMapped]
         public List<BillContract> BillContracts { get; set; }
+        public int HID { get; set; }
+        public int BBID { get; set; }
+
+        [NotMapped]
+        public BillOne One { get; set; }
+
+        [NotMapped]
+        public BillTwoView TwoView { get; set; }
     }
 
  

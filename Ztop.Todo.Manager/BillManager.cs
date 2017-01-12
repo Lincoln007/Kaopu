@@ -36,17 +36,17 @@ namespace Ztop.Todo.Manager
                     Time = time[i],
                     Money = money[i],
                     Account = account[i],
-                    Budget = budget[i],
+                    //Budget = budget[i],
                     Summary = summary[i],
                     Remark=summary[i],
-                    Cost = cost[i],
+                    //Cost = cost[i],
                     BID = bid
                 };
 
-                if (bill.Cost == Cost.RealPay)
-                {
-                    bill.Category = category[j++];
-                }
+                //if (bill.Cost == Cost.RealPay)
+                //{
+                //    bill.Category = category[j++];
+                //}
 
                 list.Add(bill);
             }
@@ -75,16 +75,16 @@ namespace Ztop.Todo.Manager
                     Money = budget == Budget.Income ? income[i] : pay[i],
                     Balance = balance[i],
                     Account = account[i],
-                    Budget = budget,
+                    //Budget = budget,
                     Summary = summary[i],
                     Remark=summary[i],
-                    Cost = cost[i],
+                    //Cost = cost[i],
                     BID = bid
                 };
-                if (bill.Cost == Cost.RealPay)
-                {
-                    bill.Category = category[j++];
-                }
+                //if (bill.Cost == Cost.RealPay)
+                //{
+                //    bill.Category = category[j++];
+                //}
                 list.Add(bill);
             }
             return list;
@@ -201,16 +201,16 @@ namespace Ztop.Todo.Manager
                     if (bank.Bills != null&&bank.Bills.Count!=0)
                     {
                         row = sheet.GetRow(7);
-                        ExcelClass.GetCell(row, 0).SetCellValue(bank.Bills.Where(e => e.Budget == Budget.Income).Sum(e => e.Money));
-                        ExcelClass.GetCell(row, 1).SetCellValue(bank.Bills.Where(e => e.Budget == Budget.Income && e.Cost == Cost.RealIncome).Sum(e => e.Money));
-                        ExcelClass.GetCell(row, 2).SetCellValue(bank.Bills.Where(e => e.Budget == Budget.Income && e.Cost == Cost.Repayment).Sum(e => e.Money));
-                        ExcelClass.GetCell(row, 3).SetCellValue(bank.Bills.Where(e => e.Budget == Budget.Income && e.Cost == Cost.MarginIncome).Sum(e => e.Money));
-                        ExcelClass.GetCell(row, 4).SetCellValue(bank.Bills.Where(e => e.Budget == Budget.Expense).Sum(e => e.Money));
-                        ExcelClass.GetCell(row, 5).SetCellValue(bank.Bills.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.Posting).Sum(e => e.Money));
-                        ExcelClass.GetCell(row, 6).SetCellValue(bank.Bills.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.Load).Sum(e => e.Money));
-                        ExcelClass.GetCell(row, 7).SetCellValue(bank.Bills.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.MarginPay).Sum(e => e.Money));
-                        ExcelClass.GetCell(row, 8).SetCellValue(bank.Bills.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.RealPay).Sum(e => e.Money));
-                        ExcelClass.GetCell(row, 9).SetCellValue(bank.Bills.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.Petty).Sum(e => e.Money));
+                        //ExcelClass.GetCell(row, 0).SetCellValue(bank.Bills.Where(e => e.Budget == Budget.Income).Sum(e => e.Money));
+                        //ExcelClass.GetCell(row, 1).SetCellValue(bank.Bills.Where(e => e.Budget == Budget.Income && e.Cost == Cost.RealIncome).Sum(e => e.Money));
+                        //ExcelClass.GetCell(row, 2).SetCellValue(bank.Bills.Where(e => e.Budget == Budget.Income && e.Cost == Cost.Repayment).Sum(e => e.Money));
+                        //ExcelClass.GetCell(row, 3).SetCellValue(bank.Bills.Where(e => e.Budget == Budget.Income && e.Cost == Cost.MarginIncome).Sum(e => e.Money));
+                        //ExcelClass.GetCell(row, 4).SetCellValue(bank.Bills.Where(e => e.Budget == Budget.Expense).Sum(e => e.Money));
+                        //ExcelClass.GetCell(row, 5).SetCellValue(bank.Bills.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.Posting).Sum(e => e.Money));
+                        //ExcelClass.GetCell(row, 6).SetCellValue(bank.Bills.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.Load).Sum(e => e.Money));
+                        //ExcelClass.GetCell(row, 7).SetCellValue(bank.Bills.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.MarginPay).Sum(e => e.Money));
+                        //ExcelClass.GetCell(row, 8).SetCellValue(bank.Bills.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.RealPay).Sum(e => e.Money));
+                        //ExcelClass.GetCell(row, 9).SetCellValue(bank.Bills.Where(e => e.Budget == Budget.Expense && e.Cost == Cost.Petty).Sum(e => e.Money));
 
                         var line = 11;
                         var modelRow = sheet.GetRow(line);
@@ -225,26 +225,26 @@ namespace Ztop.Todo.Manager
                             line++;
                             cell = ExcelClass.GetCell(row, 0, modelRow);
                             cell.SetCellValue(serial++);
-                            ExcelClass.GetCell(row, 1, modelRow).SetCellValue(bill.Time.ToShortDateString());
-                            if (bill.Budget == Budget.Income)
-                            {
-                                ExcelClass.GetCell(row, 2, modelRow);
-                                ExcelClass.GetCell(row, 3, modelRow).SetCellValue(bill.Money);
-                            }
-                            else
-                            {
-                                ExcelClass.GetCell(row, 2, modelRow).SetCellValue(bill.Money);
-                                ExcelClass.GetCell(row, 3, modelRow);
-                            }
+                            ExcelClass.GetCell(row, 1, modelRow).SetCellValue(bill.Time.HasValue?bill.Time.Value.ToShortDateString():"未填写时间");
+                            //if (bill.Budget == Budget.Income)
+                            //{
+                            //    ExcelClass.GetCell(row, 2, modelRow);
+                            //    ExcelClass.GetCell(row, 3, modelRow).SetCellValue(bill.Money);
+                            //}
+                            //else
+                            //{
+                            //    ExcelClass.GetCell(row, 2, modelRow).SetCellValue(bill.Money);
+                            //    ExcelClass.GetCell(row, 3, modelRow);
+                            //}
                             ExcelClass.GetCell(row, 4, modelRow).SetCellValue(bill.Balance);
                             ExcelClass.GetCell(row, 5, modelRow).SetCellValue(bill.Account);
                             ExcelClass.GetCell(row, 6, modelRow).SetCellValue(bill.Summary);
-                            var description = bill.Cost.GetDescription();
-                            if (bill.Category.HasValue)
-                            {
-                                description += "-" + bill.Category.Value.GetDescription();
-                            }
-                            ExcelClass.GetCell(row, 7, modelRow).SetCellValue(description);
+                            //var description = bill.Cost.GetDescription();
+                            //if (bill.Category.HasValue)
+                            //{
+                            //    description += "-" + bill.Category.Value.GetDescription();
+                            //}
+                            //ExcelClass.GetCell(row, 7, modelRow).SetCellValue(description);
                      
                         }
                     }
@@ -286,6 +286,169 @@ namespace Ztop.Todo.Manager
             return saveFileFullPath;
             
         }
+        public List<BillTwoView> Search2(BillParamter parameter)
+        {
+            using (var db = GetDbContext())
+            {
+                var query = db.BillTwo_Views.Where(e=>e.Company==parameter.Company).AsQueryable();
+                if (parameter.MinMoney.HasValue)
+                {
+                    query = query.Where(e => e.Money >= parameter.MinMoney.Value);
+                }
+                if (parameter.MaxMoney.HasValue)
+                {
+                    query = query.Where(e => e.Money <= parameter.MaxMoney.Value);
+                }
+                if (parameter.StartTime.HasValue)
+                {
+                    query = query.Where(e => e.Time >= parameter.StartTime.Value);
+                }
+                if (parameter.EndTime.HasValue)
+                {
+                    query = query.Where(e => e.Time <= parameter.EndTime.Value);
+                }
+                if (!string.IsNullOrEmpty(parameter.OtherSide))
+                {
+                    query = query.Where(e => e.Account.Contains(parameter.OtherSide));
+                }
+                if (!string.IsNullOrEmpty(parameter.Remark))
+                {
+                    query = query.Where(e => e.Remark.Contains(parameter.Remark));
+                }
+
+                query = query.OrderBy(e => e.ID).SetPage(parameter.Page);
+                return query.ToList();
+            }
+        }
+        /// <summary>
+        /// 作用：获取未同步的评估账单
+        /// 作者：汪建龙
+        /// 编写时间：2017年1月10日10:16:56
+        /// </summary>
+        /// <returns></returns>
+        public List<BillOne> Get1()
+        {
+            using (var db = GetDbContext())
+            {
+                return db.BillOnes.Where(e => e.Budget == Budget.Income && e.Sync == false).ToList();
+            }
+        }
+
+        
+        public void Sync1(List<BillOne> ones)
+        {
+            using (var db = GetDbContext())
+            {
+                foreach(var item in ones)
+                {
+                    var ad = new Bill
+                    {
+                        Time = item.Time,
+                        Money = item.Money,
+                        Account = item.Account,
+                        //Budget = item.Budget,
+                        //Cost = item.Cost,
+                        //Category = item.Category,
+                        Summary = item.Summary,
+                        Remark = item.Remark,
+                        Balance = item.Money,
+                        Leave=item.Money,
+                        HID=item.HID,
+                        BBID=item.ID
+                    };
+                    var current = db.BillOnes.Find(item.ID);
+                    if (current != null&&current.Budget==Budget.Income)
+                    {
+                        current.Sync = true;
+                        db.Bills.Add(ad);
+                        db.SaveChanges();
+                    }
+                }
+                db.SaveChanges();
+            }
+        }
+        /// <summary>
+        /// 作用：获取规划未同步的收入规划账单
+        /// 作者：汪建龙
+        /// 编写时间：2017年1月10日10:17:27
+        /// </summary>
+        /// <returns></returns>
+        public List<BillTwoView> Get2()
+        {
+            using (var db = GetDbContext())
+            {
+                return db.BillTwo_Views.Where(e => e.Budget == Budget.Income && e.Sync == false).ToList();
+            }
+        }
+        public void Sync2(List<BillTwoView> list)
+        {
+            if (list == null || list.Count == 0)
+            {
+                return;
+            }
+            using (var db = GetDbContext())
+            {
+                foreach(var item in list)
+                {
+                    var ad = new Bill
+                    {
+                        Time = item.Time,
+                        Money = item.Money,
+                        Account = item.Account,
+                        //Budget = item.Budget,
+                        //Cost = item.Cost,
+                        //Category = item.Category,
+                        Summary = item.Summary,
+                        Remark = item.Remark,
+                        Balance = item.Money,
+                        Leave=item.Money,
+                        HID=item.HID,
+                        BBID=item.ID
+                    };
+                    var current = db.BillTwos.Find(item.ID);
+                    if (current != null && current.Budget == Budget.Income)
+                    {
+                        current.Sync = true;
+                        db.Bills.Add(ad);
+                        db.SaveChanges();
+                    }
+                }
+            }
+        }
+
+        public List<BillOne> Search1(BillParamter parameter)
+        {
+            using (var db = GetDbContext())
+            {
+                var query = db.BillOnes.Where(e=>e.Budget==Budget.Income).AsQueryable();
+                if (parameter.MinMoney.HasValue)
+                {
+                    query = query.Where(e => e.Money >= parameter.MinMoney.Value);
+                }
+                if (parameter.MaxMoney.HasValue)
+                {
+                    query = query.Where(e => e.Money <= parameter.MaxMoney.Value);
+                }
+                if (parameter.StartTime.HasValue)
+                {
+                    query = query.Where(e => e.Time >= parameter.StartTime.Value);
+                }
+                if (parameter.EndTime.HasValue)
+                {
+                    query = query.Where(e => e.Time <= parameter.EndTime.Value);
+                }
+                if (!string.IsNullOrEmpty(parameter.OtherSide))
+                {
+                    query = query.Where(e => e.Account.Contains(parameter.OtherSide));
+                }
+                if (!string.IsNullOrEmpty(parameter.Remark))
+                {
+                    query = query.Where(e => e.Remark.Contains(parameter.Remark));
+                }
+                query = query.OrderBy(e => e.ID).SetPage(parameter.Page);
+                return query.ToList();
+            }
+        }
 
         public List<Bill> Search(BillParamter parameter)
         {
@@ -320,6 +483,7 @@ namespace Ztop.Todo.Manager
                 {
                     query = query.Where(e => e.Remark.Contains(parameter.Remark));
                 }
+                
                 query = query.OrderBy(e => e.ID).SetPage(parameter.Page);
                 return query.ToList();
             }
@@ -349,6 +513,21 @@ namespace Ztop.Todo.Manager
             return true;
         }
 
-        
+        public List<Bill> Rebody(List<Bill> list)
+        {
+            using (var db = GetDbContext())
+            {
+                foreach(var item in list)
+                {
+                    var head = db.Bill_Heads.Find(item.HID);
+                    if (head != null)
+                    {
+                        item.One = db.BillOnes.FirstOrDefault(e => e.HID == head.ID && e.ID == item.BBID);
+                        item.TwoView = db.BillTwo_Views.FirstOrDefault(e => e.HID == head.ID && e.ID == item.BBID);
+                    }
+                }
+            }
+            return list;
+        }
     }
 }

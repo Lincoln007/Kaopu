@@ -53,7 +53,16 @@ namespace Ztop.Todo.Manager
                 var entry = db.Contracts.Find(contract.ID);
                 if (entry != null)
                 {
-                    db.Entry(entry).CurrentValues.SetValues(contract);
+                    /*部分字段不能修改编辑*/
+                    entry.Name = contract.Name;
+                    entry.Company = contract.Company;
+                    entry.ZtopCompany = contract.ZtopCompany;
+                    entry.StartTime = contract.StartTime;
+                    entry.EndTime = contract.EndTime;
+                    entry.Money = contract.Money;
+                    entry.PerformanceBond = contract.PerformanceBond;
+                    entry.PayWay = contract.PayWay;
+                    entry.Number = contract.Number;
                     db.SaveChanges();
                 }
                 return contract.ID;
@@ -289,6 +298,20 @@ namespace Ztop.Todo.Manager
                 }
             }
             return list;
+        }
+        /// <summary>
+        /// 作用：通过登记编号获取合同列表
+        /// 作者：汪建龙
+        /// 编写时间：2017年1月5日15:39:31
+        /// </summary>
+        /// <param name="number"></param>
+        /// <returns></returns>
+        public List<Contract> GetByNumber(string number)
+        {
+            using (var db = GetDbContext())
+            {
+                return db.Contracts.Where(e => e.Number == number).ToList();
+            }
         }
 
        

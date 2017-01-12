@@ -1,0 +1,34 @@
+﻿@{ 
+    List<BillView> blist = ViewBag.BResult;
+    Layout = null;
+}
+
+<table class="table table-striped table-condensed table-hover">
+    <thead>
+        <tr>
+            <th>到账日期</th>
+            <th>到账金额[元]</th>
+            <th>对方户名</th>
+            <th>摘要</th>
+            <th>银行备注</th>
+            <th>到账银行</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (blist != null)
+        {
+            foreach(var item in blist)
+            {
+                <tr>
+                    <td><a href="/Finance/DetailBill?id=@(item.ID)" target="_blank">@(item.Time.HasValue ? item.Time.Value.ToShortDateString() : "未指定时间")</a> </td>
+                    <td>@(item.Money)</td>
+                    <td>@(item.Account)</td>
+                    <td>@(item.Summary)</td>
+                    <td>@(item.Remark)</td>
+                    <td>@(item.Company.GetDescription())</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+@Html.Partial("_pagination", ViewBag.Page as object)

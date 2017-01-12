@@ -54,7 +54,7 @@
         </div>
         <div class="panel panel-body">
             <table class="table table-striped">
-                @foreach (var head in evaluations)
+                @foreach (var head in evaluations.OrderByDescending(e=>e.Year).ThenByDescending(e=>e.Month))
                 {
                     <tr>
                         <td><a href="/Bank/ViewEvaluation?id=@(head.ID)">@(head.Head)</a></td>
@@ -79,7 +79,7 @@
                 </blockquote>
                
                 <table class="table table-striped">
-                    @foreach (var head in projections)
+                    @foreach (var head in projections.OrderByDescending(e=>e.Year).ThenByDescending(e=>e.Month))
                     {
                         <tr>
                             <td><a href="/Bank/ViewProjection?id=@(head.ID)">@(head.Head)</a></td>
@@ -114,7 +114,7 @@
         </div>
         <div class="panel panel-body">
             <table class="table table-striped">
-                @foreach(var item in sheets.Select(e=>string.Format("{0}年{1}月",e.CheckTime.Value.Year,e.CheckTime.Value.Month)).Distinct())
+                @foreach(var item in sheets.OrderByDescending(e=>e.CheckTime.Value.Year).ThenByDescending(e=>e.CheckTime.Value.Month).Select(e=>string.Format("{0}年{1}月",e.CheckTime.Value.Year,e.CheckTime.Value.Month)).Distinct())
                 {
                     var query = item.Replace("年", ",").Replace("月", "").Split(',');
                     var year = int.Parse(query[0]);

@@ -88,6 +88,8 @@
     <Compile Include="BillContractManager.cs" />
     <Compile Include="BillManager.cs" />
     <Compile Include="Bill_OneManager.cs" />
+    <Compile Include="Bill_RecordManager.cs" />
+    <Compile Include="Bill_ViewManager.cs" />
     <Compile Include="CityManager.cs" />
     <Compile Include="CommentManager.cs" />
     <Compile Include="ContractArticleManager.cs" />

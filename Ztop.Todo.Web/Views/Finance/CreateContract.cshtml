@@ -339,5 +339,8 @@
             $("input[name='ArticleName']").val(selectName.join(';'));
         });
 
+        $("#Contract").submit(function () {
+            $("#Contract button[type='submit']").text("正在录入......").attr("disabled", "disabled");
+        });
     })
 </script>

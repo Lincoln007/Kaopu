@@ -22,45 +22,45 @@ namespace Ztop.Todo.Web.Controllers
             }
 
             #region  报销系统
-            //return Redirect("/Report/Index");
+            return Redirect("/Report/Index");
             #endregion
 
             #region 任务系统
-            ViewBag.ReceiveNewTasks = Core.TaskManager.GetUserTasks(new Model.TaskQueryParameter
-            {
-                ReceiverID = Identity.UserID,
-                GetCreator = true,
-                Order = Model.UserTaskOrder.CreateTime,
-                IsCompleted = false,
-                Page = new Model.PageParameter(1, 10),
-            });
+            //ViewBag.ReceiveNewTasks = Core.TaskManager.GetUserTasks(new Model.TaskQueryParameter
+            //{
+            //    ReceiverID = Identity.UserID,
+            //    GetCreator = true,
+            //    Order = Model.UserTaskOrder.CreateTime,
+            //    IsCompleted = false,
+            //    Page = new Model.PageParameter(1, 10),
+            //});
 
-            ViewBag.ReceiveUndoneTasks = Core.TaskManager.GetUserTasks(new Model.TaskQueryParameter
-            {
-                Order = Model.UserTaskOrder.ScheduleTime,
-                ReceiverID = Identity.UserID,
-                GetCreator = true,
-                IsCompleted = false,
-                Page = new Model.PageParameter(1, 10),
-            });
+            //ViewBag.ReceiveUndoneTasks = Core.TaskManager.GetUserTasks(new Model.TaskQueryParameter
+            //{
+            //    Order = Model.UserTaskOrder.ScheduleTime,
+            //    ReceiverID = Identity.UserID,
+            //    GetCreator = true,
+            //    IsCompleted = false,
+            //    Page = new Model.PageParameter(1, 10),
+            //});
 
-            ViewBag.CreateUndoneTasks = Core.TaskManager.GetUserTasks(new Model.TaskQueryParameter
-            {
-                CreatorID = Identity.UserID,
-                GetReceiver = true,
-                IsCompleted = false,
-                Page = new Model.PageParameter(1, 10),
-            });
+            //ViewBag.CreateUndoneTasks = Core.TaskManager.GetUserTasks(new Model.TaskQueryParameter
+            //{
+            //    CreatorID = Identity.UserID,
+            //    GetReceiver = true,
+            //    IsCompleted = false,
+            //    Page = new Model.PageParameter(1, 10),
+            //});
 
-            ViewBag.CreateDoneTasks = Core.TaskManager.GetUserTasks(new Model.TaskQueryParameter
-            {
-                CreatorID = Identity.UserID,
-                GetReceiver = true,
-                IsCompleted = true,
-                Page = new Model.PageParameter(1, 10),
-            });
+            //ViewBag.CreateDoneTasks = Core.TaskManager.GetUserTasks(new Model.TaskQueryParameter
+            //{
+            //    CreatorID = Identity.UserID,
+            //    GetReceiver = true,
+            //    IsCompleted = true,
+            //    Page = new Model.PageParameter(1, 10),
+            //});
 
-            return View();
+            //return View();
             #endregion
         }
 

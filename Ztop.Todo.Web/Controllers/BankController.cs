@@ -79,11 +79,11 @@ namespace Ztop.Todo.Web.Controllers
                 Money = income > 0 ? income : pay,
                 Account = account,
                 Balance = balance,
-                Budget = income > 0 ? Budget.Income : Budget.Expense,
+                //Budget = income > 0 ? Budget.Income : Budget.Expense,
                 Summary = summary,
                 Remark = summary,
-                Cost = cost,
-                Category = category,
+                //Cost = cost,
+                //Category = category,
                 BID = bank.ID
             });
             return SuccessJsonResult();
@@ -340,9 +340,14 @@ namespace Ztop.Todo.Web.Controllers
         public ActionResult ViewEvaluation(int id,bool depend=true)
         {
             var head = Core.Bill_OneManager.GetHead(id);
+            if (head != null)
+            {
+                var list = Core.Bill_RecordManager.GetByHID(head.ID);
+                ViewBag.List = list;
+                ViewBag.PN = Core.Bill_OneManager.GetNearBy(head.Year, head.Month,head.Company);
+            }
             ViewBag.Head = head;
-            var list = Core.Bill_OneManager.GetBillOneList(id);
-            ViewBag.List = list;
+           
             ViewBag.Depend = depend;
             return View();
         }
@@ -359,26 +364,24 @@ namespace Ztop.Todo.Web.Controllers
         {
             var head = Core.Bill_OneManager.GetHead(id);
             ViewBag.Head = head;
-            var list = Core.Bill_OneManager.GetBillTwoList(id);
-            ViewBag.List = list;
+            if (head != null)
+            {
+                var list = Core.Bill_RecordManager.GetByHID(head.ID);
+                ViewBag.List = list;
+                ViewBag.PN = Core.Bill_OneManager.GetNearBy(head.Year, head.Month,head.Company);
+            }
             ViewBag.Depend = depend;
             return View();
         }
 
-        public ActionResult CollectBills(List<BillOne> list)
+        public ActionResult CollectBills(List<BillRecord> list)
         {
-            var dict = Core.Bill_OneManager.Collect(list);
+            var dict = Core.Bill_RecordManager.Collect(list);
             ViewBag.Dict = dict;
             return View();
         }
-        public ActionResult CollectBills2(List<BillTwo> list)
-        {
-            var dict = Core.Bill_OneManager.Collect(list);
-            ViewBag.Dict = dict;
-            return View("CollectBills");
-        }
         /// <summary>
-        /// 作用：评估公司备注
+        /// 作用：公司备注
         /// 作者：汪建龙
         /// 编写时间：2017年1月3日13:49:09
         /// </summary>
@@ -386,39 +389,15 @@ namespace Ztop.Todo.Web.Controllers
         /// <returns></returns>
         public ActionResult Remark(int id)
         {
-            var billOne = Core.Bill_OneManager.GetBillOne(id);
-            ViewBag.BillOne = billOne;
+            var billRecord = Core.Bill_RecordManager.Get(id);
+            ViewBag.Record = billRecord;
             return View();
         }
 
         [HttpPost]
         public ActionResult Remark(int id,string remark)
         {
-            var entry = Core.Bill_OneManager.Remark(id, remark);
-            if (entry == null)
-            {
-                return ErrorJsonResult("备注失败！");
-            }
-            return SuccessJsonResult();
-        }
-        /// <summary>
-        /// 作用：规划公司备注账单
-        /// 作者：汪建龙
-        /// 编写时间：2017年1月3日14:50:32
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public ActionResult Remark2(int id)
-        {
-            var billTwo = Core.Bill_OneManager.GetBillTwo(id);
-            ViewBag.BillTwo = billTwo;
-            return View();
-        }
-
-        [HttpPost]
-        public ActionResult Remark2(int id,string remark)
-        {
-            var entry = Core.Bill_OneManager.Remark2(id, remark);
+            var entry = Core.Bill_RecordManager.Remark(id, remark);
             if (entry == null)
             {
                 return ErrorJsonResult("备注失败！");
@@ -435,31 +414,9 @@ namespace Ztop.Todo.Web.Controllers
         /// <returns></returns>
         public ActionResult Classify(int id)
         {
-            var billone = Core.Bill_OneManager.GetBillOne(id);
-            ViewBag.BillOne = billone;
+            var billRecord = Core.Bill_RecordManager.Get(id);
+            ViewBag.Record = billRecord;
             return View();
-        }
-
-        public ActionResult Classify2(int id)
-        {
-            var billtwo = Core.Bill_OneManager.GetBillTwo(id);
-            ViewBag.Two = billtwo;
-            return View();
-        }
-
-        [HttpPost]
-        public ActionResult Classify2(int id,Cost cost, Category? category)
-        {
-            if (cost != Cost.RealPay)
-            {
-                category = null;
-            }
-            var entry = Core.Bill_OneManager.Classify2(id, cost, category);
-            if (entry == null)
-            {
-                return ErrorJsonResult("归类失败！");
-            }
-            return SuccessJsonResult(entry.HID);
         }
         /// <summary>
         /// 作用：在对账单归类之后，进行POST保存
@@ -477,7 +434,7 @@ namespace Ztop.Todo.Web.Controllers
             {
                 category = null;
             }
-            var entry = Core.Bill_OneManager.Classify(id, cost, category);
+            var entry = Core.Bill_RecordManager.Classify(id, cost, category);
             if (entry == null)
             {
                 return ErrorJsonResult("归类失败");
@@ -500,6 +457,22 @@ namespace Ztop.Todo.Web.Controllers
             Session["Sheets"] = sheets;
             var users = Core.UserManager.GetAllUsers();
             ViewBag.Users = users.Select(e => e.RealName).ToList();
+            int[] pre = month == 1 ? new int[] { year - 1, 12 } : new int[] { year, month - 1 };
+            int[] next = month == 12 ? new int[] { year + 1, 1 } : new int[] { year, month + 1 };
+            int[][] PN = null;
+            if (year == 2016 && month == 8)
+            {
+                PN = new int[][] { null, next };
+
+            }else if (year == DateTime.Now.Year && month == DateTime.Now.Month)
+            {
+                PN = new int[][] { pre, null };
+            }
+            else
+            {
+                PN = new int[][] { pre, next };
+            }
+            ViewBag.PN = PN;
             return View();
         }
 

@@ -2,45 +2,46 @@
 @{
     ViewBag.Title = "项目查询";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    List<Article> list = ViewBag.List;
+    List<ArticleView> list = ViewBag.List;
     ArticleParameter parameter = ViewBag.Parameter;
 }
 
-<div class="col-md-4 col-xs-4 col-sm-4 well" style="padding:0px;">
-    <fieldset><legend>查询设置</legend></fieldset>
+<div class="col-md-12 col-xs-12 col-sm-12 well" style="padding:0px;">
+    <fieldset><legend>项目洽谈——查询设置</legend></fieldset>
     <form method="get">
+        <input type="hidden" name="State" value="@(parameter.State.HasValue?parameter.State.Value.GetDescription():"")" />
         <div class="row">
-            <div class="col-md-12 col-xs-12 col-sm-12">
+            <div class="col-md-6 col-xs-6 col-sm-6">
                 <div class="form-group">
                     <label class="control-label">项目名称：</label>
                     <div class="col-md-12">
-                        <div class="input-group">
+                        <div class="input-group input-group-sm">
                             <div class="input-group-btn" role="group">
-                                <button type="button" class="btn btn-sm btn-@(string.IsNullOrEmpty(parameter.Name)?"success":"default")" name="Name">全部</button>
+                                <button type="button" class="btn btn-@(string.IsNullOrEmpty(parameter.Name)?"success":"default")" name="Name">全部</button>
                             </div>
-                            <input type="text" name="Name" class="form-control input-sm" placeholder="项目名称" value="@(parameter.Name)" />
+                            <input type="text" name="Name" class="form-control" placeholder="项目名称" value="@(parameter.Name)" />
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="control-label">对方单位：</label>
                     <div class="col-md-12">
-                        <div class="input-group">
+                        <div class="input-group input-group-sm">
                             <div class="input-group-btn" role="group">
-                                <button type="button" class="btn btn-sm btn-@(string.IsNullOrEmpty(parameter.OtherSide)?"success":"default")" name="OtherSide">全部</button>
+                                <button type="button" class="btn btn-@(string.IsNullOrEmpty(parameter.OtherSide)?"success":"default")" name="OtherSide">全部</button>
                             </div>
-                            <input type="text" name="OtherSide" class="form-control input-sm" placeholder="对方单位" value="@(parameter.OtherSide)" />
+                            <input type="text" name="OtherSide" class="form-control" placeholder="对方单位" value="@(parameter.OtherSide)" />
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="control-label">登记编号：</label>
                     <div class="col-md-12">
-                        <div class="input-group">
+                        <div class="input-group input-group-sm">
                             <div class="input-group-btn" role="group">
-                                <button type="button" class="btn btn-sm btn-@(string.IsNullOrEmpty(parameter.Number)?"success":"default")" name="Number">全部</button>
+                                <button type="button" class="btn  btn-@(string.IsNullOrEmpty(parameter.Number)?"success":"default")" name="Number">全部</button>
                             </div>
-                            <input type="text" name="Number" class="form-control input-sm" placeholder="登记编号"  value="@(parameter.Number)"/>
+                            <input type="text" name="Number" class="form-control" placeholder="登记编号"  value="@(parameter.Number)"/>
                         </div>
                     </div>
                 </div>
@@ -51,6 +52,75 @@
                             <input type="text" name="MinMoney" class="form-control input-sm" placeholder="最小值" />
                             <span class="input-group-addon input-sm">至</span>
                             <input type="text" name="MaxMoney" class="form-control input-sm" placeholder="最大值" />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">项目状态：</label>
+                    <div class="col-md-12">
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-sm btn-@(parameter.State.HasValue?"default":"success")" name="State">全部</button>
+                            @foreach(ArticleState state in Enum.GetValues(typeof(ArticleState)))
+                            {
+                                <button type="button" class="btn btn-sm btn-@(parameter.State.HasValue&&parameter.State.Value==state?"success":"default")" name="State">@(state.GetDescription())</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xs-6 col-sm-6">
+                <div class="form-group">
+                    <label class="control-label">年份：</label>
+                    <div class="col-md-12">
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-btn" role="group">
+                                <button type="button" class="btn btn-@(string.IsNullOrEmpty(parameter.Year)?"success":"default")" name="Year">全部</button>
+                            </div>
+                            <input type="text" name="Year" class="form-control" placeholder="年份" value="@(parameter.Year)" />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">城市：</label>
+                    <div class="col-md-12">
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-btn" role="group">
+                                <button type="button" class="btn btn-@(string.IsNullOrEmpty(parameter.City)?"success":"default")" name="City">全部</button>
+                            </div>
+                            <input type="text" name="City" class="form-control" placeholder="城市" value="@(parameter.City)" />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">乡镇（主体）：</label>
+                    <div class="col-md-12">
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-btn" role="group">
+                                <button type="button" class="btn btn-@(string.IsNullOrEmpty(parameter.Town)?"success":"default")" name="Town">全部</button>
+                            </div>
+                            <input type="text" name="Town" class="form-control" placeholder="乡镇（主体）" value="@(parameter.Town)" />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">项目类型：</label>
+                    <div class="col-md-12">
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-btn" role="group">
+                                <button type="button" class="btn btn-@(string.IsNullOrEmpty(parameter.ProjectType)?"success":"default")" name="ProjectType">全部</button>
+                            </div>
+                            <input type="text" name="ProjectType" class="form-control" placeholder="项目类型" value="@(parameter.ProjectType)" />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">支出单位：</label>
+                    <div class="col-md-12">
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-btn" role="group">
+                                <button type="button" class="btn btn-@(string.IsNullOrEmpty(parameter.PayCompany)?"success":"default")" name="PayCompany">全部</button>
+                            </div>
+                            <input type="text" name="PayCompany" class="form-control" placeholder="支出单位" value="@(parameter.PayCompany)" />
                         </div>
                     </div>
                 </div>
@@ -69,7 +139,7 @@
         </div>
     </form>
 </div>
-<div class="col-md-8 col-xs-8 col-sm-8">
+<div class="col-md-12 col-xs-12 col-sm-12">
     <table class="table table-striped table-condensed">
         <thead>
             <tr>
@@ -77,6 +147,13 @@
                 <th>登记编号</th>
                 <th>对方单位</th>
                 <th>意向金额[元]</th>
+                <th>年份</th>
+                <th>城市</th>
+                <th>乡镇（主体）</th>
+                <th>项目类型</th>
+                <th>项目状态</th>
+                <th>支出单位</th>
+                <th>支出金额[元]</th>
             </tr>
         </thead>
         <tbody>
@@ -87,8 +164,16 @@
                     <td>@(article.Number)</td>
                     <td>@(article.OtherSide)</td>
                     <td>@(article.Money)</td>
+                    <td>@(article.Year)</td>
+                    <td>@(article.CName)</td>
+                    <td>@(article.Town)</td>
+                    <td>@(article.FullName)</td>
+                    <td>@(article.State.GetDescription())</td>
+                    <td>@(article.PayCompany)</td>
+                    <td>@(article.PayMoney)</td>
                 </tr>
             }
         </tbody>
     </table>
+    @Html.Partial("_pagination", ViewBag.Page as object)
 </div>

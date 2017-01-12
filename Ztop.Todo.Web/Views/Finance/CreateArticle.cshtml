@@ -34,6 +34,18 @@
                 </div>
             </div>
             <div class="form-group">
+                <label class="control-label col-md-4">项目经费所属年份：</label>
+                <div class="col-md-8">
+                    <input type="text" name="Year" class="form-control" placeholder="所属年份" value="@(article!=null?article.Year:"")" required />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">支出单位：</label>
+                <div class="col-md-8">
+                    <input type="text" name="PayCompany" class="form-control" placeholder="支出单位" value="@(article!=null?article.PayCompany:"")" />
+                </div>
+            </div>
+            <div class="form-group">
                 <label class="control-label col-md-4">意向金额：</label>
                 <div class="col-md-8">
                     <div class="input-group">
@@ -42,7 +54,7 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group">
+            @*<div class="form-group">
                 <label class="control-label col-md-4">关联合同：</label>
                 <div class="col-md-8">
                     <div class="ContractID">
@@ -62,20 +74,21 @@
                         </span>
                     </div>
                 </div>
-            </div>
+            </div>*@
         </div>
         <div class="col-md-6 col-xs-6 col-sm-6">
             <div class="form-group">
                 <label class="control-label col-md-4">对方单位：</label>
                 <div class="col-md-8">
-                    <input type="text" name="OtherSide" class="form-control" placeholder="对方单位" required value="@(article!=null?article.OtherSide:"")" />
+                    <input type="text" name="OtherSide" class="form-control" placeholder="对方单位" value="@(article!=null?article.OtherSide:"")" />
                 </div>
             </div>
             <div class="form-group">
                 <label class="control-label col-md-4">所属城市：</label>
                 <div class="col-md-8">
                     <div class="input-group" role="group">
-                        <input type="text" name="City" class="form-control"  placeholder="所属城市" value="@(article!=null?article.City:"")" readonly/>
+                        <input type="text" name="City" class="form-control"  placeholder="所属城市" value="@(article!=null&&article.CEntry!=null?article.CEntry.Name:"")" readonly required/>
+                        <input type="hidden" name="CID" value="@(article!=null?article.CID.ToString():"")"/>
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#City"><i class="glyphicon glyphicon-flag"></i></button>
                         </span>
@@ -83,10 +96,23 @@
                 </div>
             </div>
             <div class="form-group">
+                <label class="control-label col-md-4">乡镇（主体）：</label>
+                <div class="col-md-8">
+                    <input type="text" name="Town" class="form-control" placeholder="乡镇（主题）" value="@(article!=null?article.Town:"")" required />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">需支出部分金额【元】：</label>
+                <div class="col-md-8">
+                    <input type="text" name="PayMoney" class="form-control" placeholder="支出部分金额" value="@(article!=null&&article.PayMoney.HasValue?article.PayMoney.Value.ToString():"")" />
+                </div>
+            </div>
+            <div class="form-group">
                 <label class="control-label col-md-4">项目类型：</label>
                 <div class="col-md-8">
                     <div class="input-group" role="group">
-                        <input type="text" name="ProjectType" class="form-control" value="@(article!=null?article.ProjectType:"")" placeholder="项目类型" readonly />
+                        <input type="text" name="ProjectType" class="form-control" value="@(article!=null&&article.PEntry!=null?article.PEntry.FullName:"")" placeholder="项目类型" readonly required/>
+                        <input type="hidden" name="PID" value="@(article!=null?article.PID.ToString():"")"/>
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#Project"><i class="glyphicon glyphicon-send"></i></button>
                         </span>

@@ -1,0 +1,16 @@
+﻿@{ 
+    if (Model == null)
+    {
+        return;
+    }
+
+    Bill_Head[] PN = ViewBag.PN;
+    string url = Model as string;
+}
+
+<nav>
+    <ul class="pager">
+        <li class="previous @(PN[0]==null?"disabled":"")"><a href="@(PN[0]!=null?url+"?id="+PN[0].ID:"")">&larr;上个月</a></li>
+        <li class="next @(PN[1]==null?"disabled":"")"><a href="@(PN[1]!=null?url+"?id="+PN[1].ID:"")">下个月 &rarr;</a></li>
+    </ul>
+</nav>

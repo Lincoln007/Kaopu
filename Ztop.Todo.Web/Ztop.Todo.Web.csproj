@@ -380,6 +380,15 @@
     <Content Include="Views\iPad\ManagerDatum.cshtml" />
     <Content Include="Views\Bank\Remark.cshtml" />
     <Content Include="Views\Bank\Remark2.cshtml" />
+    <Content Include="Views\Finance\ArticleState.cshtml" />
+    <Content Include="Views\Finance\BillSearch1.cshtml" />
+    <Content Include="Views\Finance\BillSearch2.cshtml" />
+    <Content Include="Views\Finance\SearchBill.cshtml" />
+    <Content Include="Views\Finance\SearchContract.cshtml" />
+    <Content Include="Views\Shared\_page.cshtml" />
+    <Content Include="Views\Bank\ViewSheets.cshtml" />
+    <Content Include="Views\Bank\Nav_Head.cshtml" />
+    <Content Include="Views\Bank\Statistic.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
