@@ -1,6 +1,9 @@
 ﻿@{ 
     Layout = null;
     Ztop.Todo.Model.BillRecord one = ViewBag.Record;
+    Company company = ViewBag.Company;
+    var url = company == Company.Evaluation ? "/Bank/ViewEvaluation?id=" : "/Bank/ViewProjection?id=";
+    url = url + one.HID;
 }
 
 <script>
@@ -15,7 +18,7 @@
                     ShowErrorMessage(json.content);
                 } else {
                     ShowSuccessMessage("成功备注，正在刷新......");
-                    location.href="/Bank/ViewEvaluation?id="+@(one.HID);
+                    location.href="@(url)";
                 }
             });
             return false;

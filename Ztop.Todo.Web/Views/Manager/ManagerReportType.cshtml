@@ -1,0 +1,66 @@
+﻿@{ 
+    Layout = null;
+    List<ReportType> list = ViewBag.List;
+}
+<script>
+    $(function () {
+        $("a[name='Remove']").click(function () {
+            var href = $(this).attr("href");
+            var index = $(this).attr("Index");
+            var parent = $(this).parent().parent();
+            $.request(href, null, function (json) {
+                if (json.result == 0) {
+                    alert(json.content);
+                } else {
+                    parent.remove();
+                    $("tr[name='" + index + "']").each(function () {
+                        $(this).remove();
+                    });
+                }
+            })
+            return false;
+        });
+    })
+</script>
+
+<h3 class="text-center">报销类型管理</h3>
+<a href="/Manager/CreateReportType" data-toggle="modal" data-target="#Modal" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-plus"></i>添加报销类型</a>
+
+<hr />
+<div class="alert alert-danger" role="alert">
+    <span>注：如删除的报销类型下面存在二级类，二级类也一并删除！</span>
+</div>
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>名称</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var item in list)
+        {
+            <tr>
+                <th>@(item.Name)</th>
+                <td>
+                    <a href="/Manager/CreateReportType?rid=@(item.ID)" data-toggle="modal" data-target="#Modal" class="btn btn-warning btn-xs"><i class="glyphicon glyphicon-plus-sign"></i>添加二级类别</a>
+                    <a href="/Manager/EditReportType?id=@(item.ID)" data-toggle="modal" data-target="#Modal" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i>编辑</a>
+                    <a href="/Manager/DeleteReportType?id=@(item.ID)" name="Remove" Index="@(item.ID)" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-remove-circle"></i>删除</a>
+                </td>
+            </tr>
+            if (item.Children!=null&&item.Children.Count>0)
+            {
+                foreach(var child in item.Children)
+                {
+                    <tr name="@(item.ID)">
+                        <td>——@(child.Name)</td>
+                        <td>
+                            <a href="/Manager/EditReportType?id=@(child.ID)" data-toggle="modal" data-target="#Modal" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i>编辑</a>
+                            <a href="/Manager/DeleteReportType?id=@(child.ID)" name="Remove" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-remove-circle"></i>删除</a>
+                        </td>
+                    </tr>
+                }
+            }
+        }
+    </tbody>
+</table>

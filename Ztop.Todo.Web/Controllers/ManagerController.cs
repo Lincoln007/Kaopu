@@ -292,8 +292,102 @@ namespace Ztop.Todo.Web.Controllers
         {
             return View();
         }
-        
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult ManagerReportType()
+        {
+            var list = Core.Report_TypeManager.Get();
+            ViewBag.List = Core.Report_TypeManager.GetChildren(list);
+            return View();
+        }
+        /// <summary>
+        /// 作用：添加报销类型
+        /// 作者：汪建龙
+        /// 编写时间：2017年1月12日17:31:20
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult CreateReportType(int rid=0)
+        {
+            var parent = Core.Report_TypeManager.Get(rid);
+            ViewBag.Parent = parent;
+            return View();
+        }
+        [HttpPost]
+        public ActionResult SaveReportType(ReportType type)
+        {
+            if (type == null)
+            {
+                return ErrorJsonResult("未获取添加参数值");
+            }
+            var id = Core.Report_TypeManager.Add(type);
+            if (id > 0)
+            {
+                return SuccessJsonResult();
+            }
+            return ErrorJsonResult("添加失败！");
+        }
+
+        /// <summary>
+        /// 作用：编辑
+        /// 作者：汪建龙
+        /// 编写时间：2017年1月12日19:21:03
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult EditReportType(int id)
+        {
+            var entry = Core.Report_TypeManager.Get(id);
+            ViewBag.Entry = entry;
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult EditReportType(ReportType type)
+        {
+            if (!Core.Report_TypeManager.Edit(type))
+            {
+                return ErrorJsonResult("编辑失败！");
+            }
+            return SuccessJsonResult();
+        }
+        /// <summary>
+        /// 删除
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult DeleteReportType(int id)
+        {
+            if (!Core.Report_TypeManager.Delete(id))
+            {
+                return ErrorJsonResult("删除失败，未找到报销类型！");
+            }
+            return SuccessJsonResult();
+        }
+        
+        public ActionResult ManagerReport(ReportEnum RE=ReportEnum.Flow)
+        {
+            ViewBag.RE = RE;
+            return View();
+        }
+
+
+        public ActionResult ManageManager()
+        {
+            var list = Core.Report_ManagerManager.Get();
+            ViewBag.List = list;
+            return View();
+        }
+
+        public ActionResult CreateManager()
+        {
+            ViewBag.Groups = Core.UserManager.GetUserGroups();
+            ViewBag.AllUsers = Core.UserManager.GetAllUsers();
+            return View();
+        }
+        
 
     }
 }

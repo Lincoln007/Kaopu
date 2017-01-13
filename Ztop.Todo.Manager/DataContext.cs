@@ -60,6 +60,7 @@ namespace Ztop.Todo.Manager
         public DbSet<Sheet> Sheets { get; set; }
 
         public DbSet<Substancs> Substances { get; set; }
+        public DbSet<SubstancsView> Substancs_View { get; set; }
 
         public DbSet<Verify> Verifys { get; set; }
 
@@ -70,6 +71,11 @@ namespace Ztop.Todo.Manager
         public DbSet<Errand> Errands { get; set; }
 
         public DbSet<Traffic> Traffics { get; set; }
+        public DbSet<ReportType> ReportTypes { get; set; }
+        public DbSet<ReportManager> Report_Managers { get; set; }
+        public DbSet<ReportManagerView> Report_Manager_Views { get; set; }
+        public DbSet<Flow> Flows { get; set; }
+        public DbSet<FlowView> Flow_Views { get; set; }
 
         #endregion
 
@@ -113,6 +119,7 @@ namespace Ztop.Todo.Manager
 
 
         public DbSet<BillRecord> Bill_Records { get; set; }
+        public DbSet<BillRecordView> Bill_Records_View { get; set; }
 
         public DbSet<Bill_Head> Bill_Heads { get; set; }
 

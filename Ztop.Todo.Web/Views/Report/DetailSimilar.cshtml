@@ -1,0 +1,83 @@
+﻿@{ 
+    Layout = null;
+    List<Sheet> similars = ViewBag.Similar;
+}
+
+@if (similars == null || similars.Count == 0)
+{
+    <div class="alert alert-warning" role="alert">
+        <span>当前未有相似金额类型报销单</span>
+    </div>
+}
+else
+{
+
+    <div class="alert alert-warning" role="alert">
+        <span>类似报销单只展示最近10个报销单</span>
+    </div>
+    foreach (var entry in similars)
+    {
+        <table class="table table-condensed table-striped">
+            <tr>
+                <th>单据编号</th>
+                <td>
+                    @(entry.CheckNumber)
+                    @if (Identity.Name == "申屠杜平")
+                    {
+                        <a href="/Report/Detail?id=@(entry.ID)" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-new-window"></span></a>
+                    }
+
+                </td>
+            </tr>
+            <tr>
+                <th>报销人</th>
+                <td>@(entry.Name)</td>
+            </tr>
+            <tr>
+                <th>填报时间</th>
+                <td>@(entry.Time.ToLongDateString())</td>
+            </tr>
+            <tr>
+                <th>报销金额（元）</th>
+                <td>@(entry.Money)</td>
+            </tr>
+            <tr>
+                <th>发票张数</th>
+                <td>@(entry.Count)</td>
+            </tr>
+            <tr>
+                <th>备注</th>
+                <td>@(entry.Remarks)</td>
+            </tr>
+            <tr>
+                <th>报销类型</th>
+                <td>@(entry.Type.GetDescription())</td>
+            </tr>
+            @if (entry.Type == SheetType.Daily)
+            {
+                foreach (var item in entry.Substancs_Views)
+                {
+                    <tr>
+                        <th>@(item.Name)</th>
+                        <td>@(item.Details)</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <th>出差地点</th>
+                    <td>@(entry.Evection.Place)</td>
+                </tr>
+                                <tr>
+                                    <th>事由/项目</th>
+                                    <td>@(entry.Evection.Reason)</td>
+                                </tr>
+                                <tr>
+                                    <th>出差人员</th>
+                                    <td>@(entry.Evection.Persons)</td>
+                                </tr>
+            }
+        </table>
+    }
+}

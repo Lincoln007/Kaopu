@@ -75,6 +75,7 @@ namespace Ztop.Todo.Manager
         public Bill_OneManager Bill_OneManager { get; private set; }
 
         public Bill_RecordManager Bill_RecordManager { get; private set; }
+        public Bill_Records_ViewManager Bill_Records_ViewManager { get; private set; }
 
         #endregion
 
@@ -111,7 +112,8 @@ namespace Ztop.Todo.Manager
         public SubstancsManager SubstanceManager { get; private set; }
 
         public VerifyManager VerifyManager { get; private set; }
-
+        public Report_TypeManager Report_TypeManager { get; private set; }
+        public Report_ManagerManager Report_ManagerManager { get; private set; }
         #endregion
     }
 }

@@ -85,7 +85,7 @@ namespace Ztop.Todo.Manager
                     HID = billTwo.HID,
 
                     Cost = billTwo.Cost,
-                    Category = billTwo.Category,
+                    //Category = billTwo.Category,
 
                     TimeStamp = billTwo.TimeStamp,
                     CommissionCharge = billTwo.CommissionCharge,
@@ -146,7 +146,7 @@ namespace Ztop.Todo.Manager
                     Remark = billOne.Remark,
                     Remark2 = billOne.Remark2,
                     Cost = billOne.Cost,
-                    Category = billOne.Category,
+                    //Category = billOne.Category,
                     HID = billOne.HID,
                     Sync = billOne.Sync
                 });
@@ -181,7 +181,7 @@ namespace Ztop.Todo.Manager
         /// <param name="year"></param>
         /// <param name="month"></param>
         /// <returns></returns>
-        public List<string> Input2(int hid,List<BillTwo> list,int year,int month)
+        public List<string> Input2(int hid,List<BillTwo> list,int year,int month,Company company)
         {
             var errors = new List<string>();
             var preSerialNumber = 1;
@@ -207,11 +207,11 @@ namespace Ztop.Todo.Manager
                         BillRecord last = null;
                         if (month == 1)
                         {
-                            last = Core.Bill_RecordManager.GetLast(year - 1, 12);
+                            last = Core.Bill_RecordManager.GetLast(year - 1, 12,company);
                         }
                         else
                         {
-                            last = Core.Bill_RecordManager.GetLast(year, month - 1);
+                            last = Core.Bill_RecordManager.GetLast(year, month - 1,company);
                         }
                         if (last != null)
                         {
@@ -245,7 +245,7 @@ namespace Ztop.Todo.Manager
         /// <param name="hid">账单头文件ID</param>
         /// <param name="list">追加的列表</param>
         /// <returns></returns>
-        public List<string> Input(int hid,List<BillOne> list,int year,int month)
+        public List<string> Input(int hid,List<BillOne> list,int year,int month,Company company)
         {
             var errors = new List<string>();
             var preSerialNumber = 1;
@@ -271,11 +271,11 @@ namespace Ztop.Todo.Manager
                         BillRecord last = null;
                         if (month == 1)
                         {
-                            last = Core.Bill_RecordManager.GetLast(year - 1, 12);
+                            last = Core.Bill_RecordManager.GetLast(year - 1, 12,company);
                         }
                         else
                         {
-                            last = Core.Bill_RecordManager.GetLast(year, month - 1);
+                            last = Core.Bill_RecordManager.GetLast(year, month - 1,company);
                         }
                         if (last != null)
                         {

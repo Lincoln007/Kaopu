@@ -1,6 +1,9 @@
 ﻿@{ 
     Layout = null;
     BillRecord record = ViewBag.Record;
+    Company company = ViewBag.Company;
+    List<ReportType> list = ViewBag.ReportType;
+    var url = company == Company.Evaluation ? "/Bank/ViewEvaluation?id=" : "/Bank/ViewProjection?id=";
 }
 
 <h3 class="text-center">账目归类</h3>
@@ -58,15 +61,22 @@
                         </select>
                     </div>
                 </div>
-                <div class="form-group" id="Second" style="@(record.Category.HasValue?"":"display:none")">
+                <div class="form-group" id="Second" style="@(record.RID.HasValue?"":"display:none")">
                     <label class="control-label col-md-3">二级类别：</label>
                     <div class="col-md-8">
-                        <select name="Category" class="form-control">
+                        <select name="RID" class="form-control">
+                            @foreach(var item in list)
+                            {
+                                <option value="@(item.ID)"@(record.RID.HasValue&&record.RID.Value==item.ID?"selected=selected":"")>@(item.Name)</option>
+                            }
+                        </select>
+
+                        @*<select name="Category" class="form-control">
                             @foreach (Category category in Enum.GetValues(typeof(Category)))
                             {
                                 <option value="@(category)" @(record.Category.HasValue&&record.Category.Value==category?"selected=selected":"")>@(category.GetDescription())</option>
                             }
-                        </select>
+                        </select>*@
                     </div>
                 </div>
             }
@@ -95,7 +105,7 @@
             var data = $(this).serialize();
             $.request("/Bank/Classify", data, function (json) {
                 if (json.result == 1) {
-                    location.href = "/Bank/ViewEvaluation?id=" + json.data;
+                    location.href = "@(url)" + json.data;
                     }else{
                     alert(json.content);
                 }

@@ -58,6 +58,78 @@ namespace Ztop.Todo.Manager
                 return last == null ? 1 : last.CheckExt.Value + 1;
             }
         }
+        /// <summary>
+        /// 作用：获取报销单的详细信息
+        /// 作者：汪建龙
+        /// 编写时间：2017年1月13日15:35:33
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public Sheet GetFull(int id)
+        {
+            if (id == 0) return null;
+            using (var db = GetDbContext())
+            {
+                var model = db.Sheets.FirstOrDefault(e => e.ID == id);
+                if (model != null)
+                {
+                    if (model.Type == SheetType.Daily)
+                    {
+                        model.Substancs_Views = db.Substancs_View.Where(e => e.SID == id).OrderBy(e => e.ID).ToList();
+                    }
+                    else
+                    {
+                        model.Evection = db.Evections.FirstOrDefault(e => e.SID == id);//获取出差报销分项清单
+                        if (model.Evection != null)
+                        {
+                            model.Evection.Errands = db.Errands.Where(e => e.EID == model.Evection.ID).ToList();//获取出差人数列表
+                            model.Evection.TCosts = db.Traffics.Where(e => e.EID == model.Evection.ID).ToList();//获取用车类型列表
+                        }
+                    }
+                    model.Verifys = db.Verifys.Where(e => e.SID == id).OrderBy(e => e.ID).ToList();
+                    var similars= db.Sheets.Where(e => e.Type == model.Type && e.Deleted == false && Math.Abs(e.Money - model.Money) < double.Epsilon && e.ID != model.ID).ToList();
+                    model.SimilarCount = similars.Count;
+                }
+                return model;
+            }
+        }
+
+        /// <summary>
+        /// 作用：获取类似报销单
+        /// 作者：汪建龙
+        /// 编写时间：2017年1月13日15:43:46
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public List<Sheet> GetSimilars(int id)
+        {
+            using (var db = GetDbContext())
+            {
+                var model = db.Sheets.FirstOrDefault(e => e.ID == id);
+                if (model == null)
+                {
+                    return null;
+                }
+                var list= db.Sheets.Where(e => e.Type == model.Type && e.Deleted == false && Math.Abs(e.Money - model.Money) < double.Epsilon && e.ID != model.ID).OrderByDescending(e=>e.Time).Take(10).ToList();
+                foreach (var entry in list)
+                {
+                    if (entry.Type == SheetType.Daily)
+                    {
+                        entry.Substancs_Views = db.Substancs_View.Where(e => e.SID == entry.ID).OrderBy(e => e.ID).ToList();
+                    }
+                    else
+                    {
+                        entry.Evection = db.Evections.FirstOrDefault(e => e.SID == entry.ID);
+                        if (entry.Evection != null)
+                        {
+                            entry.Evection.Errands = db.Errands.Where(e => e.EID == entry.Evection.ID).ToList();
+                            entry.Evection.TCosts = db.Traffics.Where(e => e.EID == entry.Evection.ID).ToList();
+                        }
+                    }
+                }
+                return list;
+            }
+        }
 
         public Sheet GetAllModel(int id)
         {
@@ -67,11 +139,9 @@ namespace Ztop.Todo.Manager
                 var model = db.Sheets.FirstOrDefault(e => e.ID == id);
                 if (model != null)
                 {
-                    //获取流水单据编号
-                    //model.SerialNumber = db.SerialNumbers.FirstOrDefault(e => e.SID == model.ID);
                     if (model.Type == SheetType.Daily)
                     {
-                        model.Substances = db.Substances.Where(e => e.SID == id).OrderBy(e => e.ID).ToList();
+                       model.Substances = db.Substances.Where(e => e.SID == id).OrderBy(e => e.ID).ToList();
                     }
                     else
                     {
@@ -83,13 +153,15 @@ namespace Ztop.Todo.Manager
                         }
                       
                     }
-                    
+                    /* */
+                    #region   后续删除
                     model.Verifys = db.Verifys.Where(e => e.SID == id).OrderBy(e => e.ID).ToList();
                     model.Similars = db.Sheets.Where(e => e.Type == model.Type && e.Deleted == false && Math.Abs(e.Money - model.Money) < double.Epsilon && e.ID != model.ID).ToList();
                     foreach(var entry in model.Similars)
                     {
                         if (entry.Type == SheetType.Daily)
                         {
+                            //entry.Substancs_Views = db.Substancs_View.Where(e => e.SID == entry.ID).OrderBy(e => e.ID).ToList();
                             entry.Substances = db.Substances.Where(e => e.SID == entry.ID).OrderBy(e => e.ID).ToList();
                         }
                         else
@@ -102,6 +174,7 @@ namespace Ztop.Todo.Manager
                             }
                         }
                     }
+                    #endregion
                 }
                 return model;
             }
@@ -168,8 +241,8 @@ namespace Ztop.Todo.Manager
                     
                     db.Substances.AddRange(sheet.Substances.OrderBy(e => e.ID).Select(e => new Substancs
                     {
-                        Category = e.Category,
-                        SecondCategory=e.SecondCategory,
+                        RID=e.RID,
+                        SRID=e.SRID,
                         Details = e.Details,
                         Price = e.Price,
                         SID = sheet.ID

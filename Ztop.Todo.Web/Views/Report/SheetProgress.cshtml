@@ -1,0 +1,160 @@
+﻿@{ 
+    if (Model == null)
+    {
+        return;
+    }
+    Sheet sheet = Model as Sheet;
+    if (sheet == null)
+    {
+        return;
+    }
+
+}
+
+<h3>审核进度</h3>
+<div class="progress">
+    @if (sheet.Status == Status.OutLine)
+    {
+        <div class="progress-bar progress-bar-success progress-bar-striped active" style="width:17%;min-width:2em;">
+            @(sheet.Status.GetDescription())
+        </div>
+    }
+    else if (sheet.Status == Status.ExaminingDirector)
+    {
+        <div class="progress-bar progress-bar-success" style="width:17%;min-width:2em;">
+            报销填单
+        </div>
+                        <div class="progress-bar progress-bar-warning progress-bar-striped active" style="width:17%;min-width:2em;">
+                            @(sheet.Status.GetDescription())
+                        </div>
+    }
+    else if (sheet.Status == Status.ExaminingManager)
+    {
+        <div class="progress-bar progress-bar-success" style="width:17%;min-width:2em;">
+            报销填单
+        </div>
+                        <div class="progress-bar progress-bar-warning" style="width:17%;min-width:2em;">
+                            主管核实
+                        </div>
+                        <div class="progress-bar progress-bar-info progress-bar-striped active" style="width:17%;min-width:2em;">
+                            @(sheet.Status.GetDescription())
+                        </div>
+    }
+    else if (sheet.Status == Status.ExaminingFinance)
+    {
+        <div class="progress-bar progress-bar-success" style="width:17%;min-width:2em;">
+            报销填单
+        </div>
+                        <div class="progress-bar progress-bar-warning" style="width:17%;min-width:2em;">
+                            主管核实
+                        </div>
+                        <div class="progress-bar progress-bar-info" style="width:17%;min-width:2em;">
+                            财务负责人核准
+                        </div>
+                        <div class="progress-bar progress-bar-striped active" style="width:17%;min-width:2em;">
+                            @(sheet.Status.GetDescription())
+                        </div>
+    }
+    else if (sheet.Status == Status.Filing)
+    {
+        <div class="progress-bar progress-bar-success" style="width:17%;min-width:2em;">
+            报销填单
+        </div>
+                        <div class="progress-bar progress-bar-warning" style="width:17%;min-width:2em;">
+                            主管核实
+                        </div>
+                        <div class="progress-bar progress-bar-info" style="width:17%;min-width:2em;">
+                            财务负责人核准
+                        </div>
+                        <div class="progress-bar" style="width:17%;min-width:2em;">
+                            报销确认
+                        </div>
+                        <div class="progress-bar progress-bar-success progress-bar-striped active" style="width:17%;min-width:2em;">
+                            @(sheet.Status.GetDescription())
+                        </div>
+    }
+    else if (sheet.Status == Status.Examined)
+    {
+        <div class="progress-bar progress-bar-success" style="width:17%;min-width:2em;">
+            报销填单
+        </div>
+                        <div class="progress-bar progress-bar-warning" style="width:17%;min-width:2em;">
+                            主管核实
+                        </div>
+                        <div class="progress-bar progress-bar-info" style="width:17%;min-width:2em;">
+                            财务负责人核准
+                        </div>
+                        <div class="progress-bar" style="width:17%;min-width:2em;">
+                            报销确认
+                        </div>
+                        <div class="progress-bar progress-bar-warning" style="width:17%;min-width:2em;">
+                            报销归档
+                        </div>
+                        <div class="progress-bar progress-bar-success" style="width:15%;min-width:2em;">
+                            报销完成
+                        </div>
+    }
+    else
+    {
+        <div class="progress-bar progress-bar-danger progress-bar-striped active" style="width:100%;min-width:2em;">
+            退回
+        </div>
+    }
+
+</div>
+@if (sheet.Status != Status.OutLine && sheet.Status != Status.RollBack && sheet.Status != Status.Examined)
+{
+    <div class="alert alert-warning" role="alert">
+        <i class="icon-spinner icon-spin icon-large"></i>
+        <span>等待@(sheet.Controler)审核</span>
+    </div>
+}
+
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            审核信息
+        </h3>
+    </div>
+    <table class="table table-bordered table-condensed">
+        <thead>
+            <tr>
+                <th>步骤</th>
+                <th>姓名</th>
+                <th>时间</th>
+                <th>状态</th>
+                <th class="col-xs-4">备注</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (sheet.Verifys != null)
+            {
+                foreach (var verify in sheet.Verifys)
+                {
+                    <tr>
+                        <td>@(verify.Step.GetDescription())</td>
+                        <td>@(verify.Name)</td>
+                        @if (verify.Position == Position.Check)
+                        {
+                            <td>@(verify.Time.ToLongDateString())</td>
+                                            <td><i class="fa fa-check-square"></i></td>
+                        }
+                        else if (verify.Position == Position.RollBack)
+                        {
+                            <td>@(verify.Time.ToLongDateString())</td>
+                                            <td><i class="fa fa-ambulance"></i></td>
+                        }
+                        else
+                        {
+                            <td></td>
+                                            <td><i class="fa fa-refresh fa-spin"></i></td>
+                        }
+                        <td>@(verify.Reason)</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+

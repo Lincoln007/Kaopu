@@ -45,6 +45,9 @@ namespace Ztop.Todo.Web.Controllers
             ViewBag.Sheet = Core.SheetManager.GetSheet(id,type,Identity.Name);
             ViewBag.Groups = Core.UserManager.GetUserGroups();
             ViewBag.Users = Core.UserManager.GetAllUsers();
+            var types = Core.Report_TypeManager.Get();
+            types = Core.Report_TypeManager.GetChildren(types);
+            ViewBag.Types = types;
             return View();
         }
         private void Save(Sheet sheet,string DirectorVal)
@@ -87,12 +90,12 @@ namespace Ztop.Todo.Web.Controllers
         /// <param name="DirectorVal"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult Save(Sheet sheet,string DirectorVal,Evection evection,string[] busType,string lines,double[] CarPetty,Driver[] driver)
+        public ActionResult Save(Sheet sheet,string DirectorVal,Evection evection,int[] rid,int[] srid, string[] busType,string lines,double[] CarPetty,Driver[] driver)
         {
             double sum = .0;
             if (sheet.Type == SheetType.Daily)//日常报销
             {
-                sheet.Substances = Core.SubstanceManager.GetSubstances(HttpContext);//获取详细清单
+                sheet.Substances = Core.SubstanceManager.GetSubstances(HttpContext,rid,srid);//获取详细清单
                 sum = sheet.Substances.Sum(e => e.Price);
             }
             else//出差报销
@@ -100,12 +103,7 @@ namespace Ztop.Todo.Web.Controllers
                 if (string.IsNullOrEmpty(evection.Persons))
                 {
                     return ErrorJsonResult("出差报销，出差人员不能为空！");
-                    //throw new ArgumentException("");
                 }
-                //if (string.IsNullOrEmpty(evection.Way))
-                //{
-                //    throw new ArgumentException("出差交通方式未选择！");
-                //}
                 evection.Errands = Core.SubstanceManager.GetErrands(HttpContext,lines);
                 evection.TCosts = Core.SubstanceManager.GetTraffic(HttpContext, busType,driver,CarPetty);
                 sheet.Evection = evection;
@@ -114,7 +112,6 @@ namespace Ztop.Todo.Web.Controllers
             if (Math.Abs(sheet.Money - sum) > 0.001)
             {
                 return ErrorJsonResult("报销金额合计与清单合计不符，请核对金额！");
-               // throw new ArgumentException("");
             }
 
             Save(sheet, DirectorVal);
@@ -138,7 +135,8 @@ namespace Ztop.Todo.Web.Controllers
         /// <returns></returns>
         public ActionResult Detail(int id,InfoType? infoType=null,int ?verifyid=null)
         {
-            var model= Core.SheetManager.GetAllModel(id);
+            var model = Core.SheetManager.GetFull(id);
+            //var model= Core.SheetManager.GetAllModel(id);
             if (model.Status == Status.Filing || model.Status == Status.Examined)
             {
                 if (!model.CheckExt.HasValue&&model.CheckTime.HasValue)
@@ -161,6 +159,22 @@ namespace Ztop.Todo.Web.Controllers
             }
             return View();
         }
+        /// <summary>
+        /// 作用：查看类似金额报销单
+        /// 作者：汪建龙
+        /// 编写时间：2017年1月13日15:35:05
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult DetailSimilar(int id)
+        {
+            if (id > 0)
+            {
+                ViewBag.Similar = Core.SheetManager.GetSimilars(id);
+            }
+            return View();
+        }
+
         /// <summary>
         /// 删除报销单
         /// </summary>

@@ -2,7 +2,7 @@
     bool depend = ViewBag.Depend;
     Layout = depend ? "~/Views/Shared/_Layout.cshtml" : null;
     Bill_Head head = ViewBag.Head;
-    List<BillRecord> list = ViewBag.List;
+    List<BillRecordView> list = ViewBag.List;
     var start = list.OrderBy(e => e.SerialNumber).FirstOrDefault();
     var end = list.OrderByDescending(e => e.SerialNumber).FirstOrDefault();
   
@@ -112,7 +112,7 @@
                                 <td>
                                     @if (string.IsNullOrEmpty(item.Remark2))
                                     {
-                                        <a data-toggle="modal" data-target="#Modal" href="/Bank/Remark?id=@(item.ID)" class="btn btn-warning btn-xs"><i class="glyphicon glyphicon-flag"></i>备注</a>
+                                        <a data-toggle="modal" data-target="#Modal" href="/Bank/Remark?id=@(item.ID)&&company=@(Company.Evaluation)" class="btn btn-warning btn-xs"><i class="glyphicon glyphicon-flag"></i>备注</a>
                                     }
                                     else
                                     {
@@ -124,26 +124,26 @@
                                         {
                                             @(item.Remark2)
                                         }
-                                        <a data-toggle="modal" data-target="#Modal" href="/Bank/Remark?id=@(item.ID)" class="btn btn-success btn-xs"><i class="glyphicon glyphicon-edit"></i>编辑备注</a>
+                                        <a data-toggle="modal" data-target="#Modal" href="/Bank/Remark?id=@(item.ID)&&company=@(Company.Evaluation)" class="btn btn-success btn-xs"><i class="glyphicon glyphicon-edit"></i>编辑备注</a>
                                     }
                                  
                                 </td>
                                 <td>
                                     @if (item.Cost.HasValue)
                                     {
-                                        if (item.Category.HasValue)
+                                        if (!string.IsNullOrEmpty(item.TName))
                                         {
-                                            <label class="label label-danger">@string.Format("{0}-{1}", item.Cost.Value.GetDescription(), item.Category.Value.GetDescription())</label>
+                                            <label class="label label-@(item.Budget==Budget.Income?"danger":"success")">@string.Format("{0}-{1}", item.Cost.Value.GetDescription(), item.TName)</label>
                                         }
                                         else
                                         {
-                                            <label class="label label-danger">@(item.Cost.Value.GetDescription())</label>
+                                            <label class="label label-@(item.Budget==Budget.Income?"danger":"success")">@(item.Cost.Value.GetDescription())</label>
                                         }
-                                        <a data-toggle="modal" data-target="#Modal" href="/Bank/Classify?id=@(item.ID)" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i>修改类型</a>
+                                        <a data-toggle="modal" data-target="#Modal" href="/Bank/Classify?id=@(item.ID)&&company=@(Company.Evaluation)" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i>修改类型</a>
                                     }
                                     else
                                     {
-                                        <a data-toggle="modal" data-target="#Modal" href="/Bank/Classify?id=@(item.ID)" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-tags"></i>归类</a>
+                                        <a data-toggle="modal" data-target="#Modal" href="/Bank/Classify?id=@(item.ID)&&company=@(Company.Evaluation)" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-tags"></i>归类</a>
                                     }
                                 </td>
                             </tr>

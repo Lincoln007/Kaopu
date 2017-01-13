@@ -1,0 +1,47 @@
+﻿@{ 
+    Layout = null;
+    ReportType type = ViewBag.Entry;
+}
+
+<script>
+    $(function () {
+        $("#EditReport").submit(function () {
+            ShowMessage("正在编辑，请稍等......");
+            var button = $("#EditReport button[type='submit']");
+            button.text("正在编辑......").attr("disabled", "disabled");
+            var values = $(this).serialize();
+            var href = $(this).attr("action");
+            $.request(href, values, function (json) {
+                if (json.result == 0) {
+                    ShowErrorMessage(json.content);
+                    button.text("编辑").removeAttr("disabled");
+                } else {
+                    ShowSuccessMessage("成功编辑，正在刷新......");
+                    location.href = "/Manager/Index?category=@(SystemCategory.ReportSystem)";
+                }
+            });
+            return false;
+        });
+    });
+</script>
+
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="text-center">编辑报销类型</h3>
+        @Html.Partial("_Message")
+        <form class="form-horizontal" method="post" action="/Manager/EditReportType" id="EditReport">
+            <input type="hidden" name="ID" value="@(type.ID)" />
+            <div class="form-group">
+                <label class="control-label col-md-3">类型名称：</label>
+                <div class="col-md-8">
+                    <input type="text" name="Name" class="form-control" placeholder="类型名称" required value="@(type.Name)" />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-8 col-md-offset-3">
+                    <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-edit"></i>编辑</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

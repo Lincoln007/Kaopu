@@ -277,7 +277,7 @@ namespace Ztop.Todo.Web.Controllers
             var head = Core.Bill_OneManager.GetBillHead(year, month, company);
 
             var hid = head != null ? head.ID : Core.Bill_OneManager.Add(new Bill_Head { Year = year, Month = month, Company = company });
-            var errors = Core.Bill_OneManager.Input2(hid, bills, year, month);
+            var errors = Core.Bill_OneManager.Input2(hid, bills, year, month,company);
             if (errors.Count > 0)
             {
                 return ErrorJsonResult(string.Join("<br />", errors));
@@ -308,7 +308,7 @@ namespace Ztop.Todo.Web.Controllers
             
             var hid = head != null ? head.ID : Core.Bill_OneManager.Add(new Bill_Head { Year = year, Month = month, Company = company });
 
-            var errors = Core.Bill_OneManager.Input(hid, bills,year,month);
+            var errors = Core.Bill_OneManager.Input(hid, bills,year,month,company);
             if (errors.Count > 0)
             {
                 return ErrorJsonResult(string.Join("-", errors));
@@ -342,7 +342,8 @@ namespace Ztop.Todo.Web.Controllers
             var head = Core.Bill_OneManager.GetHead(id);
             if (head != null)
             {
-                var list = Core.Bill_RecordManager.GetByHID(head.ID);
+                var list = Core.Bill_Records_ViewManager.GetByHID(head.ID);
+                //var list = Core.Bill_RecordManager.GetByHID(head.ID);
                 ViewBag.List = list;
                 ViewBag.PN = Core.Bill_OneManager.GetNearBy(head.Year, head.Month,head.Company);
             }
@@ -366,7 +367,8 @@ namespace Ztop.Todo.Web.Controllers
             ViewBag.Head = head;
             if (head != null)
             {
-                var list = Core.Bill_RecordManager.GetByHID(head.ID);
+                var list = Core.Bill_Records_ViewManager.GetByHID(head.ID);
+                //var list = Core.Bill_RecordManager.GetByHID(head.ID);
                 ViewBag.List = list;
                 ViewBag.PN = Core.Bill_OneManager.GetNearBy(head.Year, head.Month,head.Company);
             }
@@ -374,7 +376,7 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
 
-        public ActionResult CollectBills(List<BillRecord> list)
+        public ActionResult CollectBills(List<BillRecordView> list)
         {
             var dict = Core.Bill_RecordManager.Collect(list);
             ViewBag.Dict = dict;
@@ -387,10 +389,11 @@ namespace Ztop.Todo.Web.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public ActionResult Remark(int id)
+        public ActionResult Remark(int id,Company company)
         {
             var billRecord = Core.Bill_RecordManager.Get(id);
             ViewBag.Record = billRecord;
+            ViewBag.Company = company;
             return View();
         }
 
@@ -412,10 +415,13 @@ namespace Ztop.Todo.Web.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public ActionResult Classify(int id)
+        public ActionResult Classify(int id,Company company)
         {
             var billRecord = Core.Bill_RecordManager.Get(id);
+            var list = Core.Report_TypeManager.Get();
+            ViewBag.ReportType = list;
             ViewBag.Record = billRecord;
+            ViewBag.Company = company;
             return View();
         }
         /// <summary>
@@ -428,13 +434,13 @@ namespace Ztop.Todo.Web.Controllers
         /// <param name="category"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult Classify(int id,Cost cost,Category? category)
+        public ActionResult Classify(int id,Cost cost,int ?rid)
         {
             if (cost != Cost.RealPay)
             {
-                category = null;
+                rid = null;
             }
-            var entry = Core.Bill_RecordManager.Classify(id, cost, category);
+            var entry = Core.Bill_RecordManager.Classify(id, cost, rid);
             if (entry == null)
             {
                 return ErrorJsonResult("归类失败");

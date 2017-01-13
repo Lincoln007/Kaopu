@@ -61,7 +61,9 @@ namespace Ztop.Todo.Model
     {
         City,
         ProjectType,
-        ProjectSystem
+        ProjectSystem,
+        ReportSystem,
+        ReportManager
     }
 
 }

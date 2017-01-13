@@ -96,7 +96,7 @@ namespace Ztop.Todo.Manager
         /// <param name="cost"></param>
         /// <param name="category"></param>
         /// <returns></returns>
-        public BillRecord Classify(int id,Cost cost,Category? category)
+        public BillRecord Classify(int id,Cost cost,int? rid)
         {
             using (var db = GetDbContext())
             {
@@ -104,14 +104,15 @@ namespace Ztop.Todo.Manager
                 if (entry != null)
                 {
                     entry.Cost = cost;
-                    entry.Category = category;
+                    // entry.Category = category;
+                    entry.RID = rid;
                     db.SaveChanges();
                     return entry;
                 }
             }
             return null;
         }
-        public Dictionary<string, double> Collect(List<BillRecord> list, Budget budget) 
+        public Dictionary<string, double> Collect(List<BillRecordView> list, Budget budget) 
         {
             list = list.Where(e => e.Budget.Value == budget).ToList();
             var dict = new Dictionary<string, double>();
@@ -130,10 +131,21 @@ namespace Ztop.Todo.Manager
                     {
                         if (cost == Cost.RealPay)
                         {
-                            foreach (Category category in Enum.GetValues(typeof(Category)))
+                            var rnone = list.Where(e => e.RID == null).ToList();
+                            if (rnone.Count > 0)
                             {
-                                dict.Add(string.Format("{0}-{1}", cost.GetDescription(), category.GetDescription()), list.Where(e => e.Category.HasValue && e.Cost.Value == cost && e.Category.Value == category).Sum(e => e.Money));
+                                dict.Add(cost.GetDescription()+"无二级类", rnone.Sum(e => e.Money));
                             }
+                            var tnames = list.Where(e => e.RID.HasValue).GroupBy(e => e.TName).Select(e => e.Key);
+                            foreach(var tname in tnames)
+                            {
+                                dict.Add(string.Format("{0}-{1}", cost.GetDescription(), tname), list.Where(e => e.RID.HasValue && e.TName == tname).Sum(e => e.Money));
+                            }
+                            /*等待修改*/
+                            //foreach (Category category in Enum.GetValues(typeof(Category)))
+                            //{
+                            //    dict.Add(string.Format("{0}-{1}", cost.GetDescription(), category.GetDescription()), list.Where(e => e.Category.HasValue && e.Cost.Value == cost && e.Category.Value == category).Sum(e => e.Money));
+                            //}
                         }
                         else
                         {
@@ -163,7 +175,7 @@ namespace Ztop.Todo.Manager
         /// </summary>
         /// <param name="list"></param>
         /// <returns></returns>
-        public Dictionary<string,Dictionary<string,double>> Collect(List<BillRecord> list)
+        public Dictionary<string,Dictionary<string,double>> Collect(List<BillRecordView> list)
         {
             var result = new Dictionary<string, Dictionary<string, double>>();
             if (list != null)
@@ -189,11 +201,11 @@ namespace Ztop.Todo.Manager
         /// <param name="year"></param>
         /// <param name="month"></param>
         /// <returns></returns>
-        public BillRecord GetLast(int year,int month)
+        public BillRecord GetLast(int year,int month,Company company)
         {
             using (var db = GetDbContext())
             {
-                var head = db.Bill_Heads.FirstOrDefault(e => e.Year == year && e.Month == month);
+                var head = db.Bill_Heads.FirstOrDefault(e => e.Year == year && e.Month == month&&e.Company==company);
                 if (head == null)
                 {
                     return null;

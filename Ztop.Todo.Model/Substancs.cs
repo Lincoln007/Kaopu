@@ -29,6 +29,14 @@ namespace Ztop.Todo.Model
         [Column(TypeName ="int")]
         public SecondCategory? SecondCategory { get; set; }
         /// <summary>
+        /// 一级类ID
+        /// </summary>
+        public int RID { get; set; }
+        /// <summary>
+        /// 二级类ID
+        /// </summary>
+        public int? SRID { get; set; }
+        /// <summary>
         /// 内容
         /// </summary>
         public string Details { get; set; }
@@ -39,34 +47,63 @@ namespace Ztop.Todo.Model
         public int SID { get; set; }
     }
 
+    [Table("substancs_view")]
+    public class SubstancsView
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int ID { get; set; }
+        public string Details { get; set; }
+        public double Price { get; set; }
+        public int SID { get; set; }
+        public string Name { get; set; }
+        public string SName { get; set; }
+    }
+
     public enum Category
     {
-        [Description("日常办公")]
+        [Description("办公用品费")]
         OfficialBussiness,
-        [Description("固定资产")]
+        [Description("固定资产费")]
         FixedAsssets,
-        [Description("耗材")]
+        [Description("耗材费")]
         Equipment,
         [Description("交通费")]
         Traffic,
-        [Description("维修维护")]
+        [Description("维修维护费")]
         Maintenance,
-        [Description("邮电费")]
+        [Description("快递邮寄费")]
         Express,
-        [Description("印刷装订")]
+        [Description("印刷装订费")]
         Print,
-        [Description("招待费")]
+        [Description("日常招待费")]
         Reception,
-        [Description("福利费")]
+        [Description("福利相关费")]
         Welfare,
-        [Description("评审费")]
+        [Description("评审会务费")]
         Evaluate,
-        [Description("招投标费")]
+        [Description("招标相关费")]
         Bidding,
         [Description("财务费")]
         Financial,
         [Description("其他")]
-        Other
+        Other,
+        [Description("薪资")]
+        Emolument,
+        [Description("增值税")]
+        ValueAddTax,
+        [Description("所得税")]
+        InComeTax,
+        [Description("五险")]
+        FiveInsurance,
+        [Description("公积金")]
+        AccumulationFound,
+        [Description("水电物管费")]
+        Property,
+        [Description("项目合作费")]
+        Projection,
+        [Description("年检培训费")]
+        Trainning
     }
 
     public enum SecondCategory
@@ -87,8 +124,8 @@ namespace Ztop.Todo.Model
         Car,
         [Description("邮寄")]
         Post,
-        [Description("通讯")]
-        Communication,
+        //[Description("通讯")]
+        //Communication,
         [Description("印刷")]
         Printing,
         [Description("复印")]

@@ -1,0 +1,56 @@
+﻿@{ 
+    Layout = null;
+    ReportType parent = ViewBag.Parent;
+}
+
+<script >
+    $(function () {
+        $("#ReportType-form").submit(function () {
+            ShowMessage("正在添加，请稍等......");
+            var button = $("#ReportType-form button[type='submit']");
+            button.text("正在添加......").attr("disabled", "disabled");
+            var values = $(this).serialize();
+            var href = $(this).attr("action");
+            $.request(href, values, function (json) {
+                if (json.result == 0) {
+                    ShowErrorMessage(json.content);
+                    button.text("确定").removeAttr("disabled");
+                } else {
+                    ShowSuccessMessage("成功保存，正在跳转");
+                    location.href="/Manager/Index?category=@(SystemCategory.ReportSystem)";
+                }
+            });
+            return false;
+        });
+    });
+</script>
+
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="text-center">添加报销类型</h3>
+        @Html.Partial("_Message")
+        <form class="form-horizontal" method="post" action="/Manager/SaveReportType" id="ReportType-form" >
+            <input type="hidden" name="RID" value="@(parent!=null?parent.ID.ToString():"")" />
+            <div class="form-group">
+                <label class="control-label col-md-3">类型名称：</label>
+                <div class="col-md-8">
+                    <input type="text" name="Name" class="form-control" placeholder="类型名称" required />
+                </div>
+            </div>
+            @if (parent != null)
+            {
+                <div class="form-group">
+                    <label class="control-label col-md-3">上级类型：</label>
+                    <div class="col-md-8">
+                        <input type="text" name="" class="form-control" readonly value="@(parent.Name)" />
+                    </div>
+                </div>
+            }
+            <div class="form-group">
+                <div class="col-md-8 col-md-offset-3">
+                    <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i>确定</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

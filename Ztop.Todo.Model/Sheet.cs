@@ -102,6 +102,8 @@ namespace Ztop.Todo.Model
         /// </summary>
         [NotMapped]
         public List<Substancs> Substances { get; set; }
+        [NotMapped]
+        public List<SubstancsView> Substancs_Views { get; set; }
         /// <summary>
         /// 出差报销——分类清单
         /// </summary>
@@ -122,6 +124,8 @@ namespace Ztop.Todo.Model
         public DateTime? CheckTime { get; set; }
         [NotMapped]
         public List<Sheet> Similars { get; set; }
+        [NotMapped]
+        public int SimilarCount { get; set; }
 
     }
     public enum SheetType

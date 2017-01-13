@@ -29,6 +29,8 @@
             <ul class="nav nav-pills nav-stacked" role="tablist">
                 <li role="presentation" class="@(category.ToString()=="City"?"active":"")"><a href="#City" role="tab" data-toggle="tab">城市管理</a></li>
                 <li role="presentation" class="@(category.ToString()=="ProjectType"?"active":"")"><a href="#Project" role="tab" data-toggle="tab">项目类型管理</a></li>
+                <li role="presentation" class="@(category.ToString()==SystemCategory.ReportSystem.ToString()?"active":"")"><a href="#Report" role="tab" data-toggle="tab">日常报销类型管理</a></li>
+                <li role="presentation" class="@(category==SystemCategory.ReportManager?"active":"")"><a href="#ReportManager" role="tab" data-toggle="tab">报销人员管理</a></li>
                 <li role="presentation"><a href="#Authority" role="tab" data-toggle="tab">权限管理</a></li>
             </ul>
         </div>
@@ -39,6 +41,12 @@
                 </div>
                 <div role="tabpanel" class="tab-pane @(category.ToString()=="ProjectType"?"active":"")" id="Project">
                     @{ Html.RenderAction("ManagerProjectType");}
+                </div>
+                <div role="tabpanel" class="tab-pane @(category.ToString()==SystemCategory.ReportSystem.ToString()?"active":"")" id="Report">
+                    @{ Html.RenderAction("ManagerReportType");}
+                </div>
+                <div role="tabpanel" class="tab-pane @(category==SystemCategory.ReportSystem?"active":"")" id="ReportManager">
+                    @{ Html.RenderAction("ManagerReport");}
                 </div>
                 <div role="tabpanel" class="tab-pane" id="Authority">
 

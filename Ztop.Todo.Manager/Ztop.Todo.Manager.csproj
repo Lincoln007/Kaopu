@@ -89,6 +89,7 @@
     <Compile Include="BillManager.cs" />
     <Compile Include="Bill_OneManager.cs" />
     <Compile Include="Bill_RecordManager.cs" />
+    <Compile Include="Bill_Records_ViewManager.cs" />
     <Compile Include="Bill_ViewManager.cs" />
     <Compile Include="CityManager.cs" />
     <Compile Include="CommentManager.cs" />
@@ -114,6 +115,8 @@
     <Compile Include="QueryableExtensions.cs" />
     <Compile Include="QueryManager.cs" />
     <Compile Include="Register_iPadManager.cs" />
+    <Compile Include="Report_ManagerManager.cs" />
+    <Compile Include="Report_TypeManager.cs" />
     <Compile Include="SerialNumberManager.cs" />
     <Compile Include="SheetManager.cs" />
     <Compile Include="SubstancsManager.cs" />

@@ -10,13 +10,11 @@ namespace Ztop.Todo.Manager
 {
     public class SubstancsManager:ManagerBase
     {
-        public List<Substancs> GetSubstances(HttpContextBase context)
+        public List<Substancs> GetSubstances(HttpContextBase context,int[] rid,int[] srid)
         {
-            var categorys = context.Request.Form["Category"].ToString().Split(',');
-            var secondCategorys = context.Request.Form["SecondCategory"].ToString().Split(',');
             var details = context.Request.Form["Detail"].Split(',');
             var prices = context.Request.Form["Price"].Split(',');
-            if (categorys.Count() != 10 || details.Count() != 10 || prices.Count() != 10)
+            if (rid == null || rid.Count() != 10||details.Count()!=10||prices.Count()!=10)
             {
                 return null;
             }
@@ -25,32 +23,25 @@ namespace Ztop.Todo.Manager
             var j = 0;
             for(var i = 0; i < 10; i++)
             {
-                if (string.IsNullOrEmpty(categorys[i]) || string.IsNullOrEmpty(details[i]) || string.IsNullOrEmpty(prices[i]))
+                if (rid[i] == 0)
                 {
                     break;
                 }
+                var rt = Core.Report_TypeManager.Get(rid[i]);
+                if (rt == null)
+                {
+                    continue;
+                }
                 var entry = new Substancs()
                 {
-                    Category = (Category)Enum.Parse(typeof(Category), categorys[i]),
+                    RID=rid[i],
                     Details = details[i],
                     Price = double.TryParse(prices[i], out temp) ? temp : .0
                 };
-
-                switch (entry.Category)
+                if (rt.Children != null&&srid!=null&&srid.Length>j&&rt.Children.FirstOrDefault(e=>e.ID==srid[j])!=null)
                 {
-                    case Category.FixedAsssets://固定资产
-                    case Category.Equipment://耗材
-                    case Category.Traffic://交通费
-                    case Category.Express://邮电费
-                    case Category.Print://印刷装订
-                    case Category.Welfare://福利费
-                    case Category.Bidding://招投标费
-                        entry.SecondCategory = (SecondCategory)Enum.Parse(typeof(SecondCategory), secondCategorys[j++]);
-                        break;
-                    default:
-                        break;
+                    entry.SRID = srid[j++];
                 }
-
                 list.Add(entry);
             }
             return list;

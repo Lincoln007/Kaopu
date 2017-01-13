@@ -66,7 +66,11 @@ namespace Ztop.Todo.Model
         /// <summary>
         /// 二级类
         /// </summary>
-        public Category? Category { get; set; }
+        //public Category? Category { get; set; }
+        /// <summary>
+        /// 二级类 RID
+        /// </summary>
+        public int? RID { get; set; }
         public bool Sync { get; set; }
         /*以上为两家银行共同*/
 
@@ -121,5 +125,12 @@ namespace Ztop.Todo.Model
         #endregion
 
 
+    }
+
+    [Table("bill_records_view")]
+    public class BillRecordView : BillRecord
+    {
+        public string TName { get; set; }
+        public bool? Delete { get; set; }
     }
 }

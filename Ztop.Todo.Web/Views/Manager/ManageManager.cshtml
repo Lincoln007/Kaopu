@@ -1,0 +1,13 @@
+﻿@{ 
+    Layout = null;
+    List<ReportManagerView> list = ViewBag.List;
+}
+
+<h4 class="text-center">报销审核人管理</h4>
+<hr />
+<a href="/Manager/CreateManager" data-toggle="modal" data-traget="#Modal" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-plus-sign"></i>添加审核人</a>
+
+@foreach(var item in list)
+{
+    <label class="label label-primary">@(item.Name)</label>
+}

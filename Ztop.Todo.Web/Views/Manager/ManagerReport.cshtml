@@ -1,0 +1,35 @@
+﻿@{ 
+    Layout = null;
+    ReportEnum RE = ViewBag.RE;
+}
+
+
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="text-center">报销人员管理</h3>
+        <hr />
+        <div class="col-md-3">
+            <ul class="nav nav-pills nav-stacked" role="tablist">
+                @foreach(ReportEnum re in Enum.GetValues(typeof(ReportEnum)))
+                {
+                    <li role="presentation" class="@(RE==re?"active":"")"><a href="#@(re.ToString())" role="tab" data-toggle="tab">@(re.GetDescription())</a></li>
+                }
+            </ul>
+        </div>
+        <div class="col-md-9">
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane @(RE==ReportEnum.Flow?"active":"")" id="Flow">
+                    @{ 
+                        //Html.RenderAction("ManageFlow");
+
+                    }
+                </div>
+                <div role="tabpanel" class="tab-pane @(RE==ReportEnum.Manager?"active":"")" id="Manager">
+                    @{ Html.RenderAction("ManageManager");}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

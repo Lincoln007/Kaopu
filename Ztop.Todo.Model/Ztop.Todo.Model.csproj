@@ -126,6 +126,8 @@
     <Compile Include="ProjectType.cs" />
     <Compile Include="Record.cs" />
     <Compile Include="Register_iPad.cs" />
+    <Compile Include="ReportManager.cs" />
+    <Compile Include="ReportType.cs" />
     <Compile Include="SerialNumber.cs" />
     <Compile Include="Sheet.cs" />
     <Compile Include="SheetQueryParameter.cs" />

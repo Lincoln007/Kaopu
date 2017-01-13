@@ -156,6 +156,10 @@ namespace Ztop.Todo.Model
         /// 录入时间
         /// </summary>
         public DateTime CreateTime { get; set; }
+        /// <summary>
+        /// 备注
+        /// </summary>
+        public string Remark { get; set; }
     }
 
     public enum ZtopCompany
