@@ -44,6 +44,7 @@ namespace Ztop.Todo.Web.Controllers
         {
             ViewBag.Controller = filterContext.RequestContext.RouteData.Values["controller"];
             ViewBag.Action = filterContext.RequestContext.RouteData.Values["action"];
+            ViewBag.Identity = Identity;
             ViewBag.GroupType = Identity != null ? Identity.GroupType : GroupType.Guest;
             base.OnActionExecuting(filterContext);
         }

@@ -1,0 +1,168 @@
+﻿
+@{
+    ViewBag.Title = "现金核算";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<Sheet> list = ViewBag.List;
+    List<string> users = ViewBag.Users;
+    string name = ViewBag.Name;
+}
+
+<script>
+    function RemoveCheck() {
+        $("input[name='SID']:checked").each(function () {
+            var node = $(this).parent().parent().parent();
+            node.remove();
+        });
+    }
+    function HEJI() {
+        var sum = .0;
+        $("input[name='SID']").each(function () {
+            var val = parseFloat($(this).attr("Money"));
+            if (!isNaN(val)) {
+                sum += val;
+            }
+        });
+        $("input[name='HJ']").val(sum);
+    }
+
+    $(function () {
+
+        $("#ALL").click(function () {
+            $("input[name='SID']").prop("checked", true);
+        });
+        $("#NOT").click(function () {
+            $("input[name='SID']").prop("checked", false);
+        });
+
+        $("#SUM").click(function () {
+            var sum = .0;
+            $("input[name='SID']:checked").each(function () {
+                var val = parseFloat($(this).attr("Money"));
+                if (!isNaN(val)) {
+                    sum += val;
+                }
+            });
+            $("input[name='Sum']").val(sum);
+
+        })
+
+        $("#Cash-form").submit(function () {
+            var node = $("#Cash-form button[type='submit']");
+            node.text("正在处理......").attr("disabled", "disabled");
+            ShowMessage("正在处理报销单,请稍等......");
+            var href = $(this).attr("action");
+            var values=$(this).serialize();
+            $.request(href, values, function (json) {
+                node.text("支付现金").removeAttr("disabled");
+                if (json.result == 0) {
+                   
+                    ShowErrorMessage(json.content);
+                } else {
+                    RemoveCheck();
+                    ShowSuccessMessage("成功支付");
+                    HEJI();
+                }
+            })
+            return false;
+        });
+    })
+</script>
+
+<div class="col-md-4 col-xs-4 well">
+    <fieldset><legend>现金支付报销单查询设置</legend></fieldset>
+    <form method="get">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="control-label">用户名：</label>
+                    <div class="col-md-12">
+                        <select name="Name" class="form-control">
+                            <option value="">请选择</option>
+                            @foreach(var item in users)
+                            {
+                                <option value="@(item)" @(name==item?"selected=selected":"")>@(item)</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <hr />
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <button type="submit" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-search"></i>立即查询</button>
+                    </div>
+                   
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<form class="form-horizontal" method="post" action="/Report/PayCash" id="Cash-form">
+    <div class="col-md-8 col-xs-8" id="Result">
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                现金支付查询结果<span class="badge">@(list.Count)</span>
+            </div>
+            <div class="panel-body">
+                @{ 
+                    Html.RenderPartial("_Message");
+                }
+                <div class="form-group">
+                    <label class="control-label col-md-3">当前合计总金额[元]：</label>
+                    <div class="col-md-8">
+                        <input type="text" readonly name="HJ" class="form-control" value="@(list.Sum(e=>e.Money))" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">当前勾选金额[元]：</label>
+                    <div class="col-md-8">
+                        <input type="text" name="Sum" class="form-control" readonly />
+                    </div>
+                </div>
+                <div class="btn-group btn-group-sm">
+                    <button type="button" class="btn btn-primary" id="ALL"><i class="glyphicon glyphicon-ok-circle"></i>全选</button>
+                    <button type="button" class="btn btn-default" id="NOT"><i class="glyphicon glyphicon-remove-circle"></i>全不选</button>
+                    <button type="button" class="btn btn-warning" id="SUM"><i class="glyphicon glyphicon-calendar"></i>合计</button>
+                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-credit-card"></i>支付现金</button>
+                </div>
+            </div>
+            <table class="table table-striped table-condensed">
+                <thead>
+                    <tr>
+                        <th>选择</th>
+                        <th>单据编号</th>
+                        <th>报销人</th>
+                        <th>报销时间</th>
+                        <th>报销金额[元]</th>
+                        <th>备注</th>
+                        <th>发票张数</th>
+                        <th>报销类型</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in list)
+                    {
+                        <tr>
+                            <td>
+                                <label>
+                                    <input type="checkbox" value="@(item.ID)" Money="@(item.Money)" name="SID" />
+                                </label>
+                            </td>
+                            <td>@(item.CheckNumber)</td>
+                            <td>@(item.Name)</td>
+                            <td>@(item.Time.ToLongDateString())</td>
+                            <td>@(item.Money)</td>
+                            <td>@(item.Remarks)</td>
+                            <td>@(item.Count)</td>
+                            <td>@(item.Type.GetDescription())</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</form>
+
+
+

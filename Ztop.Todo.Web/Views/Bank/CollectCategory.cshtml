@@ -4,7 +4,7 @@
     var labels = dict.Select(e => e.Key).ToArray();
     var values = dict.Select(e => Math.Round(e.Value,2)).ToArray();
     double sum = .0;
-    const string errand = "出差报销";
+    const string errand = "差旅费";
 }
 
 
@@ -20,7 +20,7 @@
         </thead>
         <tbody>
             <tr>
-                <th rowspan="15">日常报销</th>
+                <th rowspan="@(dict.Count+1)">日常报销</th>
             </tr>
             @foreach (var entry in dict)
             {

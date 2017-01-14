@@ -20,12 +20,17 @@
 @if (sheet != null)
 {
     <div class="col-md-12 noprint">
+        
         <h3>报销单详情</h3>
         @Html.Partial("_Message")
 
-        @{ 
-            Html.RenderPartial("SheetHead", sheet as object);
-        }
+        <div class="col-md-12">
+            @{
+                Html.RenderPartial("SheetHead", sheet as object);
+            }
+
+        </div>
+
       
     </div>
 

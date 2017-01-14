@@ -37,7 +37,7 @@ namespace Ztop.Todo.Model
         {
             get
             {
-                if (Status == Status.Filing || Status == Status.Examined)
+                if (Status == Status.Filing || Status == Status.Examined||Status==Status.Cash)
                 {
                     if (CheckTime.HasValue&&CheckExt.HasValue)
                     {
@@ -153,7 +153,9 @@ namespace Ztop.Todo.Model
         [Description("已完成")]//审核完成
         Examined,
         [Description("审核不通过")]
-        RollBack
+        RollBack,
+        [Description("现金核算")]
+        Cash
     }
     
 }

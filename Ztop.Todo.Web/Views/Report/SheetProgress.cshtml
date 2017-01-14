@@ -94,6 +94,12 @@
                             报销完成
                         </div>
     }
+    else if (sheet.Status == Status.Cash)
+    {
+        <div class="progress-bar progress-bar-danger progress-bar-striped active" style="width:100%;min-width:2em;">
+            现金核算
+        </div>
+    }
     else
     {
         <div class="progress-bar progress-bar-danger progress-bar-striped active" style="width:100%;min-width:2em;">
@@ -102,13 +108,24 @@
     }
 
 </div>
-@if (sheet.Status != Status.OutLine && sheet.Status != Status.RollBack && sheet.Status != Status.Examined)
+@if (sheet.Status == Status.Cash)
 {
-    <div class="alert alert-warning" role="alert">
+    <div class="alert alert-danger" role="alert">
         <i class="icon-spinner icon-spin icon-large"></i>
-        <span>等待@(sheet.Controler)审核</span>
+        <span>恭喜您报销审核通过，静待现金支付给您！</span>
     </div>
 }
+else
+{
+    if (sheet.Status != Status.OutLine && sheet.Status != Status.RollBack && sheet.Status != Status.Examined)
+    {
+        <div class="alert alert-warning" role="alert">
+            <i class="icon-spinner icon-spin icon-large"></i>
+            <span>等待@(sheet.Controler)审核</span>
+        </div>
+    }
+}
+
 
 
 <div class="panel panel-default">
@@ -143,7 +160,7 @@
                         else if (verify.Position == Position.RollBack)
                         {
                             <td>@(verify.Time.ToLongDateString())</td>
-                                            <td><i class="fa fa-ambulance"></i></td>
+                            <td><i class="fa fa-ambulance"></i></td>
                         }
                         else
                         {

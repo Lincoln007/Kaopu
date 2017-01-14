@@ -399,6 +399,11 @@
     <Content Include="Views\Manager\ManagerReport.cshtml" />
     <Content Include="Views\Manager\ManageManager.cshtml" />
     <Content Include="Views\Manager\CreateManager.cshtml" />
+    <Content Include="Views\Report\_Cash.cshtml" />
+    <Content Include="Views\Report\_OutLine.cshtml" />
+    <Content Include="Views\Report\_Check.cshtml" />
+    <Content Include="Views\Report\_Done.cshtml" />
+    <Content Include="Views\Report\CashCheck.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

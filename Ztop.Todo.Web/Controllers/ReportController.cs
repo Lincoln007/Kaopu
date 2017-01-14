@@ -21,16 +21,17 @@ namespace Ztop.Todo.Web.Controllers
                 Name = Identity.Name,
                 Deleted=false
             };
-            var list = Core.SheetManager.GetSheets(parameter).OrderByDescending(e=>e.Time);
-            ViewBag.OutList = list.Where(e => e.Status == Status.OutLine).Take(10).ToList();//草稿
-            //未完成审核    提交 主管审核  申屠审核  财务审核  退回
-            ViewBag.ExaminingList = list.Where(e => e.Status == Status.ExaminingDirector || e.Status == Status.ExaminingFinance || e.Status == Status.ExaminingManager||e.Status==Status.RollBack||e.Status==Status.Filing).Take(10).ToList();
-            //  我提交的报销单  同时也
-            ViewBag.ExaminList = list.Where(e => e.Status == Status.Examined).Take(10).ToList();
+            var list = Core.SheetManager.GetSheets(parameter).OrderByDescending(e=>e.Time).ToList();
+            ViewBag.List = list;
+            //ViewBag.OutList = list.Where(e => e.Status == Status.OutLine).Take(10).ToList();//草稿
+            ////未完成审核    提交 主管审核  申屠审核  财务审核  退回
+            //ViewBag.ExaminingList = list.Where(e => e.Status == Status.ExaminingDirector || e.Status == Status.ExaminingFinance || e.Status == Status.ExaminingManager||e.Status==Status.RollBack||e.Status==Status.Filing).Take(10).ToList();
+            ////  我提交的报销单  同时也
+            //ViewBag.ExaminList = list.Where(e => e.Status == Status.Examined).Take(10).ToList();
             ViewBag.RollBackList = list.Where(e => e.Status == Status.RollBack).Take(10).ToList();
             if(Identity.Director||Identity.Name== "靳小阳")
             {
-                ViewBag.WaitForMe = Core.SheetManager.GetSheets(new SheetQueryParameter { Deleted = false, Controler = Identity.Name }).Where(e => e.Status != Status.Examined && e.Status != Status.OutLine&&e.Status!=Status.RollBack).ToList();
+                ViewBag.WaitForMe = Core.SheetManager.GetSheets(new SheetQueryParameter { Deleted = false, Controler = Identity.Name }).Where(e => e.Status != Status.Examined && e.Status != Status.OutLine&&e.Status!=Status.RollBack&&e.Status!=Status.Cash).ToList();
                 ViewBag.Checks = Core.VerifyManager.GetSheetByVerify(Identity.Name).OrderByDescending(e=>e.Time).Take(20).ToList();
             }
             return View();
@@ -301,9 +302,9 @@ namespace Ztop.Todo.Web.Controllers
                     sheet.CheckExt = Core.SheetManager.GetCheckExt(sheet.CheckTime.Value);
                     sverify.Step = Step.Approved;
                     break;
-                case Status.Filing:
-                    sheet.Status = Status.Examined;
-                    sheet.Controler = sheet.Name;
+                case Status.Filing://报销归档之后，进入现金核算
+                    sheet.Status = Status.Cash;
+                    sheet.Controler = XmlHelper.GetFinance();
                     sverify.Step = Step.Filing;
                     break;
                 default:
@@ -537,6 +538,40 @@ namespace Ztop.Todo.Web.Controllers
             ms.Flush();
             byte[] fileContents = ms.ToArray();
             return File(fileContents, "application/ms-excel", DateTime.Now.ToLongDateString()+".xls");
+        }
+
+        public ActionResult CashCheck(string name=null)
+        {
+            var parameter = new SheetQueryParameter
+            {
+                Status = Status.Cash
+            };
+            var list= Core.SheetManager.GetSheets(parameter);
+            var users = list.GroupBy(e => e.Name).Select(e => e.Key).ToList();
+            ViewBag.Users = users;
+            if (!string.IsNullOrEmpty(name))
+            {
+                list = list.Where(e => e.Name.ToLower() == name.ToLower()).ToList();
+            }
+            else
+            {
+                list = list.OrderByDescending(e => e.Name).ToList();
+            }
+            ViewBag.Name = name;
+            ViewBag.List = list;
+   
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult PayCash(int[] sid)
+        {
+            if (sid == null)
+            {
+                return ErrorJsonResult("未获取勾选的报销单信息");
+            }
+            var sum = Core.SheetManager.Pay(sid);
+            return sum > 0 ? SuccessJsonResult() : ErrorJsonResult("支付失败！请告知");
         }
 
     }

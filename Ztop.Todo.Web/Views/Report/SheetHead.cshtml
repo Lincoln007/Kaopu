@@ -14,26 +14,32 @@
 
 @if (!sheet.Deleted)
 {
-    if (sheet.Controler == Identity.Name)
-    {
-        if (sheet.Status == Status.ExaminingDirector || sheet.Status == Status.ExaminingFinance || sheet.Status == Status.ExaminingManager)
+    <a href="/Report/Index" class="btn btn-default btn-sm"><em class="glyphicon glyphicon-home">报销主页</em></a>
+    <div class="btn-group">
+       
+        @if (sheet.Controler == Identity.Name)
         {
-            <button type="button" class="btn btn-sm btn-primary  btn-checked">
-                <em class="glyphicon glyphicon-ok">审核通过</em>
-            </button>
+            if (sheet.Status == Status.ExaminingDirector || sheet.Status == Status.ExaminingFinance || sheet.Status == Status.ExaminingManager)
+            {
+                <button type="button" class="btn btn-sm btn-primary  btn-checked">
+                    <em class="glyphicon glyphicon-ok">审核通过</em>
+                </button>
+            }
+            else if (sheet.Status == Status.Filing)
+            {
+                <button type="button" class="btn btn-sm btn-warning btn-Fill">
+                    <em class="glyphicon glyphicon-ok">报销归档</em>
+                </button>
+            }
         }
-        else if (sheet.Status == Status.Filing)
+        @if (sheet.Status == Status.ExaminingFinance && Identity.Name == "申屠杜平")
         {
-            <button type="button" class="btn btn-sm btn-warning btn-Fill">
-                <em class="glyphicon glyphicon-ok">报销归档</em>
-            </button>
+            <a href="/Report/CancelCheck?id=@(sheet.ID)" class="btn btn-danger btn-sm"><em class="glyphicon glyphicon-log-out"></em>撤销通过</a>
         }
-    }
+    </div>
+  
 
-    if (sheet.Status == Status.ExaminingFinance && Identity.Name == "申屠杜平")
-    {
-        <a href="/Report/CancelCheck?id=@(sheet.ID)" class="btn btn-danger btn-sm"><em class="glyphicon glyphicon-log-out"></em>撤销通过</a>
-    }
+    
 
 
     if (sheet.Status == Status.OutLine || sheet.Status == Status.RollBack)//草稿  或者退回
@@ -42,50 +48,50 @@
         {
             <form method="post" class="form-horizontal col-md-12" action="" id="form-Check">
                 <input type="text" name="ID" value="@(sheet.ID)" style="display:none" />
-                @{
-                    Html.RenderPartial("SubmitButton");
-                }
-                <a href="/Report/Create?id=@(sheet.ID)" class="btn btn-sm btn-primary">
-                    <em class="glyphicon glyphicon-edit"></em>修改
-                </a>
-                <button type="button" class="btn btn-sm btn-danger btn-delete">
-                    <em class="glyphicon glyphicon-remove"></em>删除
-                </button>
-            </form>
-                        }
+                <div class="btn-group">
+                    @{
+                        Html.RenderPartial("SubmitButton");
                     }
-                    else if (sheet.Status == Status.ExaminingDirector || sheet.Status == Status.ExaminingManager || sheet.Status == Status.ExaminingFinance)//主管审核
-                    {
-                        if (sheet.Name == Identity.Name)//用户自己查看报销单时候
-                        {
-                            if (sheet.Controler == sheet.Checkers)
-                            {
-                                <button type="button" class="btn btn-sm btn-danger" id="Revoke">
-                                    <em class="glyphicon glyphicon-log-out"></em>撤回
-                                </button>
+                    <a href="/Report/Create?id=@(sheet.ID)" class="btn btn-sm btn-primary">
+                        <em class="glyphicon glyphicon-edit"></em>修改
+                    </a>
+                    <button type="button" class="btn btn-sm btn-danger btn-delete">
+                        <em class="glyphicon glyphicon-remove"></em>删除
+                    </button>
+                </div>
+            </form>
                             }
                         }
-                        else if (sheet.Controler == Identity.Name)//主管  查看报销单
+                        else if (sheet.Status == Status.ExaminingDirector || sheet.Status == Status.ExaminingManager || sheet.Status == Status.ExaminingFinance)//主管审核
                         {
-                            if (Identity.Name == XmlHelper.GetFinance())
+                            if (sheet.Name == Identity.Name)//用户自己查看报销单时候
                             {
-                                <button class="btn btn-warning btn-sm" type="button" onclick="javascript: Preview()">
+                                if (sheet.Controler == sheet.Checkers)
+                                {
+                                    <button type="button" class="btn btn-sm btn-danger" id="Revoke">
+                                        <em class="glyphicon glyphicon-log-out"></em>撤回
+                                    </button>
+                                }
+                            }
+                            else if (sheet.Controler == Identity.Name)//主管  查看报销单
+                            {
+                                if (Identity.Name == XmlHelper.GetFinance())
+                                {
+                                    <button class="btn btn-warning btn-sm" type="button" onclick="javascript: Preview()">
+                                        <em class="glyphicon glyphicon-print"></em> 打印
+                                    </button>
+                                }
+                                {
+                                    Html.RenderPartial("WithDrawal", sheet);
+                                }
+                            }
+
+                        }
+                        else if (sheet.Status == Status.Filing && Identity.Name == XmlHelper.GetFinance())
+                        {
+                                <button class="btn btn-sm btn-warning" type="button" onclick="javascript: Preview()">
                                     <em class="glyphicon glyphicon-print"></em> 打印
                                 </button>
-                            }
-                            {
-                                Html.RenderPartial("WithDrawal", sheet);
-                            }
-                        }
-                    }
-                    else if (sheet.Status == Status.Examined)
-                    {
-                    }
-                    else if (sheet.Status == Status.Filing && Identity.Name == XmlHelper.GetFinance())
-                    {
-                        <button class="btn btn-sm btn-warning" type="button" onclick="javascript: Preview()">
-                            <em class="glyphicon glyphicon-print"></em> 打印
-                        </button>
                         }
 
 
@@ -96,3 +102,4 @@
                             <span>当前报销单已经被删除，以下内容只做查看使用</span>
                         </div>
                     }
+

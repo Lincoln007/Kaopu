@@ -74,10 +74,10 @@ namespace Ztop.Todo.Manager
                 return null;
             }
             var user = GetAllUsers().FirstOrDefault(e => e.RealName.ToLower() == realname.ToLower());
-            if (user != null)
-            {
-                user.Type = GetGroupType(user.Username);
-            }
+            //if (user != null)
+            //{
+            //    user.Type = GetGroupType(user.Username);
+            //}
             return user;
         }
 

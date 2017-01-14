@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Ztop.Todo.ActiveDirectory;
 using Ztop.Todo.Common;
 using Ztop.Todo.Model;
 
@@ -346,7 +347,8 @@ namespace Ztop.Todo.Manager
             var list = new List<Sheet>();
             foreach(var id in ids)
             {
-                list.Add(GetAllModel(id));
+                list.Add(GetFull(id));
+                //list.Add(GetAllModel(id));
             }
             return list;
         }
@@ -680,6 +682,44 @@ namespace Ztop.Todo.Manager
             {
                 return db.Sheets.Where(e => e.Deleted == false && (e.Status == Status.Examined || e.Status == Status.Filing)).ToList();
             }
+        }
+
+        public double Pay(int[] sid)
+        {
+            var sum = .0;
+            
+            var finance = XmlHelper.GetFinance();
+            using (var db = GetDbContext())
+            {
+                var vlist = new List<Verify>();
+                foreach (var id in sid)
+                {
+                    var entry = db.Sheets.FirstOrDefault(e => e.ID == id);
+                    if (entry == null)
+                    {
+                        continue;
+                    }
+                    if (entry.Status != Status.Cash)
+                    {
+                        continue;
+                    }
+                    entry.Status = Status.Examined;
+                    entry.Controler = entry.Name;
+                    sum += entry.Money;
+                    db.SaveChanges();
+                    vlist.Add(new Verify
+                    {
+                        Name = finance,
+                        SID = entry.ID,
+                        Time = DateTime.Now,
+                        Position = Position.Check,
+                        Step = Step.Cash
+                    });
+                }
+                db.Verifys.AddRange(vlist);
+                db.SaveChanges();
+            }
+            return sum;
         }
 
     }

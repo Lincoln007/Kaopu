@@ -62,7 +62,9 @@ namespace Ztop.Todo.Model
         [Description("归档")]//申屠报销归档
         Filing,
         [Description("撤回")]
-        Roll
+        Roll,
+        [Description("现金核算")]
+        Cash
     }
 
     public enum Position

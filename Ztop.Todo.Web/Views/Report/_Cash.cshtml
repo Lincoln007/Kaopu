@@ -1,0 +1,43 @@
+﻿@{ 
+    if (Model == null)
+    {
+        return;
+    }
+    List<Sheet> list = Model as List<Sheet>;
+    if (list == null || list.Count == 0)
+    {
+        return;
+    }
+}
+
+<div class="panel panel-danger">
+    <div class="panel-heading">
+        现金核算<span class="badge">@(list.Count)</span>
+    </div>
+    <div class="panel-body">
+        <p>合计金额[元]：@(list.Sum(e=>e.Money))</p>
+    </div>
+    <table class="table table-striped table-condensed">
+        <thead>
+            <tr>
+                <th>单据编号</th>
+                <th>报销提交时间</th>
+                <th>报销金额[元]</th>
+                <th>备注</th>
+                <th>报销类型</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in list)
+            {
+                <tr>
+                    <td><a href="/Report/Detail?id=@(item.ID)">@(item.CheckNumber)</a></td>
+                    <td>@(item.Time.ToShortDateString())</td>
+                    <td>@(item.Money)</td>
+                    <td>@(item.Remarks)</td>
+                    <td>@(item.Type.GetDescription())</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

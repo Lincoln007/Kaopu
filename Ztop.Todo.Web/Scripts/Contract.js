@@ -7,9 +7,13 @@ $(function () {
         }
         var targetName = $(this).attr("name");
         if (targetName != undefined) {
-            $(".btn-group>button[name='" + targetName + "']").removeClass("btn-success").addClass("btn-default");
-            $(this).removeClass("btn-default").addClass("btn-success");
-            $("input[name='" + targetName + "']").val(val);
+            var node = $("input[name='" + targetName + "']");
+            if (node.length>0) {
+                $(".btn-group>button[name='" + targetName + "']").removeClass("btn-success").addClass("btn-default");
+                $(this).removeClass("btn-default").addClass("btn-success");
+                $("input[name='" + targetName + "']").val(val);
+            }
+         
         }
        
     });

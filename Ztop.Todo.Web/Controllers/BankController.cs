@@ -460,7 +460,7 @@ namespace Ztop.Todo.Web.Controllers
         {
             var sheets = Core.SheetManager.GetSheets(year, month);
             ViewBag.Sheets = sheets;
-            Session["Sheets"] = sheets;
+            //Session["Sheets"] = sheets;
             var users = Core.UserManager.GetAllUsers();
             ViewBag.Users = users.Select(e => e.RealName).ToList();
             int[] pre = month == 1 ? new int[] { year - 1, 12 } : new int[] { year, month - 1 };
@@ -492,27 +492,27 @@ namespace Ztop.Todo.Web.Controllers
         public ActionResult CollectCategory(List<Sheet> sheets)
         {
             var dailys = sheets.Where(e => e.Type == SheetType.Daily).ToList();
-            var substances = new List<Substancs>();
+            var SV = new List<SubstancsView>();
             foreach (var item in dailys)
             {
-                if (item.Substances != null)
+                if (item.Substancs_Views != null)
                 {
-                    substances.AddRange(item.Substances);
+                    SV.AddRange(item.Substancs_Views);
                 }
                
             }
             var dict = new Dictionary<string, double>();
-            foreach(Category category in Enum.GetValues(typeof(Category)))
+            var categorys = SV.GroupBy(e => e.Name).Select(e => e.Key).ToList();
+            foreach(var name in categorys)
             {
-                var sum = substances.Where(e => e.Category == category).Sum(e => e.Price);
-                var key = category.GetDescription();
-                if (!dict.ContainsKey(key))
+                var sum = SV.Where(e => e.Name.ToLower() == name).Sum(e => e.Price);
+                if (!dict.ContainsKey(name))
                 {
-                    dict.Add(key, sum);
+                    dict.Add(name, sum);
                 }
             }
             var errands= sheets.Where(e => e.Type == SheetType.Errand).ToList();
-            dict.Add("出差报销", errands.Sum(e => e.Money));
+            dict.Add("差旅费", errands.Sum(e => e.Money));
             ViewBag.Dict = dict;
             ViewBag.Sheets = sheets;
            
