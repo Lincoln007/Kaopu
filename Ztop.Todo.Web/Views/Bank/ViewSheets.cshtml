@@ -4,11 +4,14 @@
         return;
     }
     List<Sheet> list = Model as List<Sheet>;
+    bool flag = list != null && list.Count > 0 && list.Select(e => e.Name).Distinct().Count() > 1;
     var dialy = list.Where(e => e.Type == SheetType.Daily).ToList();
     var errand = list.Where(e => e.Type == SheetType.Errand).ToList();
     var last = list.OrderBy(e => e.Money).FirstOrDefault();
     var first = list.OrderByDescending(e => e.Money).FirstOrDefault();
 }
+
+
 
 <div class="col-md-12">
     <h3 class="text-center">报销单详情</h3>
@@ -23,7 +26,7 @@
             <table class="table table-striped">
                 <tbody>
                     <tr>
-                        <th rowspan="2">本月成功报销：</th>
+                        <th rowspan="2">成功报销：</th>
                         <td rowspan="2">@(list.Count)笔</td>
                         <th>日常报销：</th>
                         <td>@(dialy.Count)笔</td>
@@ -34,9 +37,21 @@
                     </tr>
                     <tr>
                         <th>单笔报销金额最多[元]：</th>
-                        <td><a href="/Report/Detail?id=@(first.ID)">@(string.Format("{0}报销了{1}元", first.Name, first.Money))</a></td>
+                        <td>
+                            @if (first != null)
+                            {
+                                <a href="/Report/Detail?id=@(first.ID)">@(flag?string.Format("{0}报销了{1}元", first.Name, first.Money):first.Money.ToString())</a>
+                            }
+                           
+                        </td>
                         <th>单笔报销金额最少[元]：</th>
-                        <td><a href="/Report/Detail?id=@(last.ID)">@(string.Format("{0}报销了{1}元", last.Name, last.Money))</a></td>
+                        <td>
+                            @if (last != null)
+                            {
+                                <a href="/Report/Detail?id=@(last.ID)">@(flag ? string.Format("{0}报销了{1}元", last.Name, last.Money) :last.Money.ToString())</a>
+                            }
+                           
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -95,19 +110,19 @@
                 <tbody>
                     @foreach(var item in dialy.OrderBy(e => e.CheckNumber))
                     {
-                        var row = item.Substances != null && item.Substances.Count > 0 ? item.Substances.Count : 0;
+                        var row = item.Substancs_Views != null && item.Substancs_Views.Count > 0 ? item.Substancs_Views.Count : 0;
                         row = row + 1;
                         <tr>
                             <td rowspan="@(row)"><a href="/Report/Detail?id=@(item.ID)">@(item.CheckNumber)</a></td>
                             <td rowspan="@(row)">@(item.Money)</td>
                             <td rowspan="@(row)">@(item.Name)</td>
                         </tr>
-                        if (item.Substances != null && item.Substances.Count > 0)
+                        if (item.Substancs_Views != null && item.Substancs_Views.Count > 0)
                         {
-                            foreach (var sub in item.Substances)
+                            foreach (var sub in item.Substancs_Views)
                             {
                                 <tr>
-                                    <td>@(sub.SecondCategory.HasValue ? sub.Category.GetDescription() + "-" + sub.SecondCategory.Value.GetDescription() : sub.Category.GetDescription())</td>
+                                    <td>@(string.IsNullOrEmpty(sub.SName)?sub.Name:sub.Name+"-"+sub.SName)</td>
                                     <td>@(sub.Details)</td>
                                     <td>@(sub.Price)</td>
                                 </tr>
@@ -124,16 +139,18 @@
                         <th rowspan="2">单据编号</th>
                         <th rowspan="2">报销金额[元]</th>
                         <th rowspan="2">报销人</th>
-                        <th colspan="7" class="text-center">出差详情</th>
+                        <th colspan="9" class="text-center">出差详情</th>
                     </tr>
                     <tr>
-                        <th>出差地点</th>
-                        <th>事由/项目</th>
-                        <th>出差人员</th>
-                        <th>交通费用[元]</th>
-                        <th>出差住宿</th>
-                        <th>其他内容</th>
-                        <th>其他金额[元]</th>
+                        <th >出差地点</th>
+                        <th >事由/项目</th>
+                        <th >出差人员</th>
+                        <th >出差补贴[元]</th>
+                        <th >交通费用[元]</th>
+                        <th >出差住宿[元]</th>
+                        <th >其他内容</th>
+                        <th >其他金额[元]</th>
+                        <th>出差时间/交通费用详情</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -146,12 +163,38 @@
                                 <td>@(item.Money)</td>
                                 <td>@(item.Name)</td>
                                 <td>@(item.Evection.Place)</td>
-                                <td>@(item.Evection.Reason)</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.Evection.Reason) && item.Evection.Reason.Length > 8)
+                                    {
+                                        <abbr title="@(item.Evection.Reason)">@(item.Evection.Reason.Substring(0,8))</abbr>
+                                    }
+                                    else
+                                    {
+                                        @(item.Evection.Reason)
+                                    }
+                               
+                                </td>
                                 <td>@(item.Evection.Persons)</td>
+                                <td>@(item.Evection.SubSidy)</td>
                                 <td>@(item.Evection.Traffic)</td>
                                 <td>@(item.Evection.Hotel)</td>
-                                <td>@(item.Evection.Mark)</td>
-                                <td>@(item.Evection.Other)</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.Evection.Mark) && item.Evection.Mark.Length > 10)
+                                    {
+                                        <abbr title="@(item.Evection.Mark)">@(item.Evection.Mark.Substring(0,10))</abbr>
+                                    }
+                                    else
+                                    {
+                                        @(item.Evection.Mark)
+                                    }
+                                
+                                </td>
+                                <td>
+                                    @(item.Evection.Other)
+                                </td>
+                                <td>
+                                  <a href="/Bank/DetailTraffic?id=@(item.Evection.ID)" class="btn btn-warning btn-xs"  data-toggle="modal" data-target="#Modal"><i class="glyphicon glyphicon-eye-open"></i>查看出差时间详情</a>
+                                </td>
                             </tr>
                         }
 

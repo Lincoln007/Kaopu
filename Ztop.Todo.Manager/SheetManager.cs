@@ -59,6 +59,33 @@ namespace Ztop.Todo.Manager
                 return last == null ? 1 : last.CheckExt.Value + 1;
             }
         }
+
+        /// <summary>
+        /// 作用：通过ID获取出差详情
+        /// 作者：汪建龙
+        /// 编写时间：2017年1月16日13:31:37
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public Evection GetEvection(int id)
+        {
+            if (id == 0)
+            {
+                return null;
+            }
+
+            using (var db = GetDbContext())
+            {
+                var entry = db.Evections.FirstOrDefault(e => e.ID == id);
+                if (entry != null)
+                {
+                    entry.Errands = db.Errands.Where(e => e.EID == entry.ID).ToList();
+                    entry.TCosts = db.Traffics.Where(e => e.EID == entry.ID).ToList();
+                }
+                return entry;
+            }
+        }
+
         /// <summary>
         /// 作用：获取报销单的详细信息
         /// 作者：汪建龙
@@ -361,9 +388,14 @@ namespace Ztop.Todo.Manager
         /// <param name="year"></param>
         /// <param name="month"></param>
         /// <returns></returns>
-        public List<Sheet> GetSheets(int year,int month)
+        public List<Sheet> GetSheets(int year,int month,string name=null)
         {
-            var query = Collect(year, month).Select(e=>e.ID).ToList();
+            var list = Collect(year, month);
+            if (!string.IsNullOrEmpty(name))
+            {
+                list = list.Where(e => e.Name.ToLower() == name.ToLower()).ToList();
+            }
+            var query = list.Select(e=>e.ID).ToList();
             return GetSheets(query);
         }
         public List<Sheet> GetSheets(SheetQueryParameter2 parameter)
@@ -386,7 +418,7 @@ namespace Ztop.Todo.Manager
                 var flag = false;
                 if (!string.IsNullOrEmpty(parameter.Category))
                 {
-                    if (parameter.Category == "出差报销")
+                    if (parameter.Category == "差旅费")
                     {
                         query = query.Where(e => e.Type == SheetType.Errand);
                     }
@@ -400,11 +432,7 @@ namespace Ztop.Todo.Manager
                 var list = GetSheets(result);
                 if (flag)
                 {
-                    Category category;
-                    if(Enum.TryParse(parameter.Category,out category))
-                    {
-                        list = list.Where(e => e.Substances.Select(k => k.Category).Contains(category)).ToList();
-                    }
+                    list = list.Where(e => e.Substancs_Views.Select(k => k.Name.ToLower()).Contains(parameter.Category.ToLower())).ToList();
                 }
                 return list;
             }

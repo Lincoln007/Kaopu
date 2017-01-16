@@ -147,6 +147,7 @@
     </Compile>
     <Compile Include="Common\ControllerBase.cs" />
     <Compile Include="Common\BaseView.cs" />
+    <Compile Include="Common\ExcelManager.cs" />
     <Compile Include="Common\UserAuthorizeAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -188,6 +189,7 @@
     <Content Include="Content\jqtree.css" />
     <Content Include="Content\jquery.autocomplete.css" />
     <Content Include="Content\logo.png" />
+    <Content Include="Content\None.png" />
     <Content Include="Content\Print.css" />
     <Content Include="Content\sb-admin-2.css" />
     <Content Include="Content\sb-admin.css" />
@@ -229,12 +231,16 @@
     <Content Include="Content\font\fontawesome-webfont.ttf" />
     <Content Include="Content\font\fontawesome-webfont.woff" />
     <Content Include="Content\font\FontAwesome.otf" />
+    <Content Include="Excels\Contract.xls" />
+    <Content Include="Excels\Article.xls" />
     <None Include="Properties\PublishProfiles\TODO.pubxml" />
     <None Include="Scripts\jquery-1.9.1.intellisense.js" />
     <Content Include="ProjectInfo.xml" />
     <Content Include="Scripts\2\Chart.js" />
     <Content Include="Scripts\2\TodoChart.js" />
     <Content Include="Scripts\BarBase.js" />
+    <Content Include="Scripts\bootstrap-switch.js" />
+    <Content Include="Scripts\bootstrap-switch.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\Chart.js" />
@@ -404,6 +410,9 @@
     <Content Include="Views\Report\_Check.cshtml" />
     <Content Include="Views\Report\_Done.cshtml" />
     <Content Include="Views\Report\CashCheck.cshtml" />
+    <Content Include="Views\Bank\DetailTraffic.cshtml" />
+    <Content Include="Views\Bank\TimeList.cshtml" />
+    <Content Include="Views\Bank\StatisticSheet.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -456,13 +456,18 @@ namespace Ztop.Todo.Web.Controllers
         /// <param name="year"></param>
         /// <param name="month"></param>
         /// <returns></returns>
-        public ActionResult CollectSheet(int year,int month)
+        public ActionResult CollectSheet(int year,int month,string name=null)
         {
-            var sheets = Core.SheetManager.GetSheets(year, month);
+            var sheets = Core.SheetManager.GetSheets(year, month,name);
             ViewBag.Sheets = sheets;
-            //Session["Sheets"] = sheets;
+            ViewBag.Name = name;
             var users = Core.UserManager.GetAllUsers();
             ViewBag.Users = users.Select(e => e.RealName).ToList();
+            ViewBag.PN = GetPN(year, month);
+            return View();
+        }
+        private int[][] GetPN(int year,int month)
+        {
             int[] pre = month == 1 ? new int[] { year - 1, 12 } : new int[] { year, month - 1 };
             int[] next = month == 12 ? new int[] { year + 1, 1 } : new int[] { year, month + 1 };
             int[][] PN = null;
@@ -470,7 +475,8 @@ namespace Ztop.Todo.Web.Controllers
             {
                 PN = new int[][] { null, next };
 
-            }else if (year == DateTime.Now.Year && month == DateTime.Now.Month)
+            }
+            else if (year == DateTime.Now.Year && month == DateTime.Now.Month)
             {
                 PN = new int[][] { pre, null };
             }
@@ -478,7 +484,21 @@ namespace Ztop.Todo.Web.Controllers
             {
                 PN = new int[][] { pre, next };
             }
-            ViewBag.PN = PN;
+            return PN;
+        }
+
+        /// <summary>
+        /// 作用：返回个人报销情况
+        /// 作者：汪建龙
+        /// 编写时间：2017年1月16日14:52:08
+        /// </summary>
+        /// <param name="year"></param>
+        /// <param name="month"></param>
+        /// <returns></returns>
+        public ActionResult StatisticSheet(int year,int month)
+        {
+            var sheets = Core.SheetManager.GetSheets(year, month, Identity.Name);
+            ViewBag.Sheets = sheets;
             return View();
         }
 
@@ -596,9 +616,24 @@ namespace Ztop.Todo.Web.Controllers
             };
             var sheets = Core.SheetManager.GetSheets(parameter);
             ViewBag.Sheets = sheets;
+            ViewBag.ReportType = Core.Report_TypeManager.Get();
             ViewBag.Parameter = parameter;
             var users = Core.UserManager.GetAllUsers();
             ViewBag.Users = users.Select(e => e.RealName).ToList();
+            return View();
+        }
+
+        /// <summary>
+        /// 作用：返回出差和交通详情
+        /// 作者：汪建龙
+        /// 编写时间：2017年1月16日13:28:15
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult DetailTraffic(int id)
+        {
+            var evection = Core.SheetManager.GetEvection(id);
+            ViewBag.Evection = evection;
             return View();
         }
 
@@ -613,5 +648,11 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
         #endregion
+
+        public ActionResult TimeList()
+        {
+            ViewBag.Months = Core.SheetManager.Collect().Where(e=>e.Name.ToLower()==Identity.Name.ToLower()).OrderByDescending(e=>e.CheckTime.Value.Year).ThenByDescending(e=>e.CheckTime.Value.Month).Select(e=>string.Format("{0}年{1}月",e.CheckTime.Value.Year,e.CheckTime.Value.Month)).Distinct().ToList();
+            return View();
+        }
     }
 }

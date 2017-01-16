@@ -171,9 +171,9 @@
                         <td>
                             @if (item.Cost.HasValue)
                             {
-                                if (item.Category.HasValue)
+                                if (!string.IsNullOrEmpty(item.TName))
                                 {
-                                    @(string.Format("{0}-{1}",item.Cost.GetDescription(),item.Category.GetDescription()))
+                                    @(string.Format("{0}-{1}",item.Cost.GetDescription(),item.TName))
                                 }
                                 else
                                 {

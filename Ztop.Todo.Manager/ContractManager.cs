@@ -16,7 +16,7 @@ namespace Ztop.Todo.Manager
         {
             using (var db = GetDbContext())
             {
-                var entry = db.Contracts.FirstOrDefault(e => e.Coding == contract.Coding && e.Name == contract.Name);
+                var entry = db.Contracts.FirstOrDefault(e => e.Coding == contract.Coding);
                 return entry != null;
             }
         }
@@ -210,6 +210,19 @@ namespace Ztop.Todo.Manager
             }
         }
 
+        public List<Contract> Rebody(List<Contract> list)
+        {
+            if (list == null || list.Count == 0)
+            {
+                return list;
+            }
+            foreach (var item in list)
+            {
+                item.Invoices = Core.InvoiceManager.GetByCID(item.ID);
+                item.BillContracts = Core.BillContractManager.GetByContractID(item.ID);
+            }
+            return list;
+        }
         public bool UpdateState(int id)
         {
             using (var db = GetDbContext())

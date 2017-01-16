@@ -1,0 +1,67 @@
+﻿@{ 
+    Layout = null;
+    Evection evection = ViewBag.Evection;
+}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">出差时间/交通费用详情</h3>
+    </div>
+    <table class="table table-striped table-condensed table-bordered">
+        <thead>
+            <tr>
+                <th>人员</th>
+                <th>时间</th>
+                <th>人数</th>
+                <th>天数</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (evection.Errands != null)
+            {
+                foreach(var item in evection.Errands)
+                {
+                    <tr>
+                        <td>@(item.Users)</td>
+                        <td>@(item.Time)</td>
+                        <td>@(item.Peoples)</td>
+                        <td>@(item.Days)</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    <table class="table table-striped table-condensed table-bordered">
+        <thead>
+            <tr>
+                <th>交通名称</th>
+                <th>金额[元]</th>
+                <th>公里数</th>
+                <th>车牌</th>
+                <th>过路费[元]</th>
+                <th>油费[元]</th>
+                <th>司机</th>
+                <th>车补[元]</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (evection.TCosts != null)
+            {
+                foreach (var item in evection.TCosts)
+                {
+                    <tr>
+                        <td>@(item.Type.GetDescription())</td>
+                        <td>@(item.Cost)</td>
+                        <td>@(item.KiloMeters>0?item.KiloMeters.ToString():"/")</td>
+                        <td>@(item.Plate)</td>
+                        <td>@(item.Toll>0?item.Toll.ToString():"/")</td>
+                        <td>@(item.Petrol>0?item.Petrol.ToString():"/")</td>
+                        <td>@(item.Driver.GetDescription())</td>
+                        <td>@(item.CarPetty>0?item.CarPetty.ToString():"/")</td>
+                    </tr>
+                }
+
+            }
+        </tbody>
+    </table>
+</div>

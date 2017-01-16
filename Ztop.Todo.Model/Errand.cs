@@ -29,5 +29,14 @@ namespace Ztop.Todo.Model
         public int Peoples { get; set; }
         public int Days { get; set; }
         public int EID { get; set; }
+
+        [NotMapped]
+        public string Time
+        {
+            get
+            {
+                return string.Format("{0}至{1}", StartTime.ToString("yyyy-MM-dd"), EndTime.ToString("yyyy-MM-dd"));
+            }
+        }
     }
 }

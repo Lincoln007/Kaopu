@@ -1,0 +1,99 @@
+﻿@{ 
+    List<string> months = ViewBag.Months;
+    var time = DateTime.Now.AddMonths(-1);
+    var timeString =  string.Format("{0}年{1}月", time.Year, time.Month);
+}
+
+<style>
+    .btn-white{
+        color: #333;
+        background-color: #fff;
+        border-color: #ccc;
+    }
+    .btn-white:hover{
+        color: #333;
+        background-color: #e6e6e6;
+        border-color: #adadad;
+    }
+</style>
+<script src="~/Scripts/2/Chart.js"></script>
+<script>
+    $(function () {
+
+        $("#Modal").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+
+        $("a[name='TimeList']").each(function () {
+            if ($(this).hasClass("btn-primary")) {
+                var href = $(this).attr("href");
+                ShowMessage("正在统计，请稍等......");
+                $("#Panel").load(href, null, function () {
+                    HideMessage();
+                });
+            }
+        });
+
+
+        $("a[name='TimeList']").click(function () {
+            $("a[name='TimeList']").each(function () {
+                $(this).removeClass("btn-primary").addClass("btn-white");
+            });
+            $(this).removeClass("btn-white").addClass("btn-primary");
+            var href = $(this).attr("href");
+            var text = $(this).text();
+            ShowMessage("正在统计，请稍等......");
+            $("#Panel").load(href, null, function () {
+                HideMessage();
+            });
+            return false;
+        });
+    });
+   
+</script>
+
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true" id="Modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="text-center">各个月份报销统计情况</h3>
+        @if (months != null && months.Count > 0)
+        {
+            <div class="col-md-2">
+                @foreach (var item in months)
+                {
+                    var query = item.Replace("年", ",").Replace("月", "").Split(',');
+                    var year = int.Parse(query[0]);
+                    var month = int.Parse(query[1]);
+                    <a href="/Bank/StatisticSheet?year=@(year)&&month=@(month)" name="TimeList" class="btn btn-@(item.ToLower()==timeString.ToLower()?"primary":"white") btn-block">@(item)</a>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="col-md-3">
+                <img src="~/Content/None.png" class="img-rounded" />
+            </div>
+            <div class="col-md-9">
+                
+            </div>
+        }
+
+
+
+        <div class="col-md-10">
+            @{ 
+                Html.RenderPartial("_Message");
+            }
+          <div id="Panel">
+
+          </div>
+        </div>
+    </div>
+</div>

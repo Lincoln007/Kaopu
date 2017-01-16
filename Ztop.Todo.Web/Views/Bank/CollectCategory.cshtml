@@ -9,49 +9,56 @@
 
 
 <div class="col-md-6">
-    <h3 class="text-center">各项报销统计表</h3>
-    <table class="table table-striped table-bordered">
-        <thead>
-            <tr>
-                <th>报销类型</th>
-                <th>类别</th>
-                <th>金额【元】</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <th rowspan="@(dict.Count+1)">日常报销</th>
-            </tr>
-            @foreach (var entry in dict)
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">各项报销统计表</h3>
+
+        </div>
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>报销类型</th>
+                    <th>类别</th>
+                    <th>金额【元】</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th rowspan="@(dict.Count+1)">日常报销</th>
+                </tr>
+                @foreach (var entry in dict)
             {
                 if (entry.Key != errand)
                 {
                     sum += entry.Value;
+                        <tr>
+                            <td>
+                                @(entry.Key)
+                            </td>
+                            <td>@(entry.Value)</td>
+                        </tr>
+                    }
+                }
+                <tr>
+                    <td>日常报销合计</td>
+                    <td>@(sum)</td>
+                </tr>
+                @{
+                    var item = dict[errand];
                     <tr>
-                        <td>
-                            @(entry.Key)
-                        </td>
-                        <td>@(entry.Value)</td>
+                        <th colspan="2">@(errand)</th>
+                        <td>@(item)</td>
                     </tr>
                 }
-            }
-            <tr>
-                <td>日常报销合计</td>
-                <td>@(sum)</td>
-            </tr>
-            @{ 
-                var item = dict[errand];
                 <tr>
-                    <td colspan="2">@(errand)</td>
-                    <td>@(item)</td>
+                    <th colspan="2">总计</th>
+                    <td>@(values.Sum())</td>
                 </tr>
-            }
-            <tr>
-                <td colspan="2">总计</td>
-                <td>@(values.Sum())</td>
-            </tr>
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </div>
+    
+    
 </div>
 <div class="col-md-6">
     <h3 class="text-center">各项报销统计图</h3>

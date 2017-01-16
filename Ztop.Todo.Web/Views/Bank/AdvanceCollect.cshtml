@@ -4,12 +4,16 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     List<string> users = ViewBag.Users;
     List<Sheet> sheets = ViewBag.Sheets;
+    List<ReportType> reportTypes = ViewBag.ReportType;
     SheetQueryParameter2 parameter = ViewBag.Parameter;
 }
 
 <script src="~/Scripts/2/Chart.js"></script>
 <script>
     $(function () {
+        $("#Modal").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
         $("a[name='Time']").click(function () {
             var currentStr = "@(DateTime.Now.ToString("yyyy-MM-dd"))";
             var days = parseInt($(this).attr("data"));
@@ -62,10 +66,10 @@
                 <label class="control-label" for="">类别：</label>
                 <select name="Cate" class="form-control">
                     <option value="" @(string.IsNullOrEmpty(parameter.Category)?"selected=selected":"")>所有类别</option>
-                    <option value="出差报销" @(parameter.Category=="出差报销"?"selected=selected":"")>出差报销</option>
-                    @foreach(Category category in Enum.GetValues(typeof(Category)))
+                    <option value="差旅费" @(parameter.Category=="差旅费"?"selected=selected":"")>差旅费</option>
+                    @foreach(var item in reportTypes)
                     {
-                        <option value="@(category)" @(parameter.Category==category.ToString()?"selected=selected":"")>@(category.GetDescription())</option>
+                        <option value="@(item.Name)" @(!string.IsNullOrEmpty(parameter.Category)&&parameter.Category.ToLower()==item.Name.ToLower()?"selected=selected":"")>@(item.Name)</option>
                     }
                 </select>
             </div>
@@ -94,10 +98,28 @@
         <div class="row">
             @{ Html.RenderAction("CollectCategory", new { Sheets = sheets });}
         </div>
+        <hr />
+        @if (string.IsNullOrEmpty(parameter.Name))
+        {
+            <div class="row">
+                @{ Html.RenderAction("CollectUser", new { Sheets = sheets });}
+            </div>
+            <hr />
+                    }
+
         <div class="row">
-            @{ Html.RenderAction("CollectUser", new { Sheets = sheets });}
+            @{ 
+                Html.RenderPartial("ViewSheets", sheets as object);
+            }
         </div>
+   
     </div>
 </div>
 
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true" id="Modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
 
+        </div>
+    </div>
+</div>

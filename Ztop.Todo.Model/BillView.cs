@@ -28,8 +28,9 @@ namespace Ztop.Todo.Model
         public Company Company { get; set; }
         [Column(TypeName = "int")]
         public Cost? Cost { get; set; }
-        [Column(TypeName = "int")]
-        public Category? Category { get; set; }
+        public string TName { get; set; }
+        //[Column(TypeName = "int")]
+        //public Category? Category { get; set; }
         [NotMapped]
         public List<BillContract> Bill_Contracts { get; set; }
     }

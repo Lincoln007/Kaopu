@@ -5,6 +5,7 @@
     List<Sheet> sheets = ViewBag.Sheets;
     List<string> users = ViewBag.Users;
     int[][] PN = ViewBag.PN;
+    string name = ViewBag.Name;
 }
 
 <script src="~/Scripts/2/Chart.js"></script>
@@ -16,8 +17,13 @@
 
         $("a[name='Advance']").click(function () {
             $(this).attr("disabled", "false");
-            $("#Message").show(500);
+            ShowMessage("正在进入高级统计界面,请稍等......");
         });
+        $("#Name-form").submit(function () {
+            var node = $("#Name-form button[type='submit']");
+            node.text("正在查询......").attr("disabled", "disabled");
+            ShowMessage("正在查询，请稍等......");
+        })
     });
 </script>
 
@@ -27,46 +33,76 @@
         <hr />
         <div class="row">
             <div class="col-md-12">
-                <div class="btn-group" role="group">
-                    <a href="/Bank/AdvanceCollect" class="btn btn-primary" name="Advance"><i class="glyphicon glyphicon-cog"></i>高级统计</a>
-                    <a href="/Bank/Index" class="btn btn-default"><i class="glyphicon glyphicon-home"></i>银行对账首页</a>
-                    @if (PN[0] != null)
+                @{ 
+                    Html.RenderPartial("_Message");
+                }
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-xs-12 well">
+                <fieldset><legend>用户查询设置</legend></fieldset>
+                <form method="get" class="form-inline" role="form" id="Name-form">
+                    <input type="hidden" name="Year" value="@(Request.QueryString["year"])" />
+                    <input type="hidden" name="Month" value="@(Request.QueryString["month"])" />
+                    <div class="col-md-6 col-xs-6">
+                        <div class="form-group">
+                            <label class="control-label">用户：</label>
+                            <select name="Name" class="form-control">
+                                <option value="">请选择</option>
+                                @foreach (var item in users)
+                                {
+                                    <option value="@(item)" @(name==item?"selected=selected":"")>@(item)</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="btn-group" role="group">
+                            <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-search"></i>立即过滤</button>
+                            <a href="/Bank/AdvanceCollect" class="btn btn-primary" name="Advance"><i class="glyphicon glyphicon-cog"></i>高级统计</a>
+                            <a href="/Bank/Index" class="btn btn-default"><i class="glyphicon glyphicon-home"></i>银行对账首页</a>
+                            @if (PN[0] != null)
+                            {
+                                <a href="/Bank/CollectSheet?year=@(PN[0][0])&&month=@(PN[0][1])" class="btn btn-warning"><i class="glyphicon glyphicon-arrow-left"></i>@string.Format("上个月{0}年{1}月", PN[0][0], PN[0][1])</a>
+                            }
+                            @if (PN[1] != null)
+                            {
+                                <a href="/Bank/CollectSheet?year=@(PN[1][0])&&month=@(PN[1][1])" class="btn btn-success"><i class="glyphicon glyphicon-arrow-right"></i>@string.Format("下个月{0}年{1}月", PN[1][0], PN[1][1])</a>
+                            }
+                        </div>
+                       
+                    </div>
+                   
+                </form>
+            </div>
+        </div>
+        <hr />
+        @if (sheets != null && sheets.Count > 0)
+        {
+            <div class="row">
+                @{ Html.RenderAction("CollectCategory", new { Sheets = sheets });}
+            </div>
+            <hr />
+                    if (string.IsNullOrEmpty(name))
                     {
-                        <a href="/Bank/CollectSheet?year=@(PN[0][0])&&month=@(PN[0][1])" class="btn btn-warning"><i class="glyphicon glyphicon-arrow-left"></i>@string.Format("上个月{0}年{1}月",PN[0][0],PN[0][1])</a>
+                        <div class="row">
+                            @{ Html.RenderAction("CollectUser", new { Sheets = sheets });}
+                        </div>
+                        <hr />
+
+                                }
+
+            <div class="row">
+                @Html.Partial("ViewSheets", sheets as object)
+            </div>
+
                     }
-                    @if (PN[1] != null)
+                    else
                     {
-                        <a href="/Bank/CollectSheet?year=@(PN[1][0])&&month=@(PN[1][1])" class="btn btn-success"><i class="glyphicon glyphicon-arrow-right"></i>@string.Format("下个月{0}年{1}月", PN[1][0], PN[1][1])</a>
+                        <div class="alert alert-warning" role="alert">
+                            <span>@(string.Format("{0}本月无报销",name))</span>
+                        </div>
                     }
-                </div>
-            </div>
-        </div>
-        <hr />
-        <div class="row">
-            <div class="col-md-12">
-                <div class="alert alert-warning" role="alert" id="Message" style="display:none;">
-                    <i class="icon-spinner icon-spin icon-large"></i>
-                    <span>正在进入高级统计界面,请稍等......</span>
-                </div>
-            </div>
-        </div>
-        @*<div class="row">
-            <div class="col-md-12">
-                @Html.Partial("Statistic", sheets as object)
-            </div>
-        </div>
-        <hr />*@
-        <div class="row">
-            @{ Html.RenderAction("CollectCategory", new { Sheets = sheets });}
-        </div>
-        <hr />
-        <div class="row">
-            @{ Html.RenderAction("CollectUser", new { Sheets = sheets });}
-        </div>
-        <hr />
-        <div class="row">
-           @Html.Partial("ViewSheets",sheets as object)
-        </div>
+
+
         <nav>
             <ul class="pager">
                 <li class="previous @(PN[0]==null?"disabled":"")"><a href="/Bank/CollectSheet?@(PN[0]!=null?"year="+PN[0][0]+"&&month="+PN[0][1]:"")">&larr;上个月</a></li>

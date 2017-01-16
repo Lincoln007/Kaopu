@@ -6,9 +6,19 @@
     ArticleParameter parameter = ViewBag.Parameter;
 }
 
+<script>
+    $(function () {
+        $("a[name='Download']").click(function () {
+            var values = $("#Article-form").serialize();
+            $(this).attr("href", "/Finance/DownloadArticle?" + values);
+            return true;
+        });
+    });
+</script>
+
 <div class="col-md-12 col-xs-12 col-sm-12 well" style="padding:0px;">
     <fieldset><legend>项目洽谈——查询设置</legend></fieldset>
-    <form method="get">
+    <form method="get" id="Article-form">
         <input type="hidden" name="State" value="@(parameter.State.HasValue?parameter.State.Value.GetDescription():"")" />
         <div class="row">
             <div class="col-md-6 col-xs-6 col-sm-6">
@@ -131,6 +141,7 @@
                     <div class="col-md-12">
                         <div class="btn-group">
                             <button type="submit" class="btn btn-sm btn-success"><i class="glyphicon glyphicon-search"></i>立即查询</button>
+                            <a href="/Finance/DownloadArticle" class="btn btn-primary btn-sm" name="Download"><i class="glyphicon glyphicon-download-alt"></i>下载统计表</a>
                             <button type="button" class="btn btn-sm btn-default" onclick="history.back();"><i class="glyphicon glyphicon-arrow-left"></i>返回</button>
                         </div>
                     </div>

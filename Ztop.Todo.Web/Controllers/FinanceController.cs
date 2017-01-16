@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using Ztop.Todo.Common;
 using Ztop.Todo.Model;
+using Ztop.Todo.Web.Common;
 
 namespace Ztop.Todo.Web.Controllers
 {
@@ -677,7 +679,13 @@ namespace Ztop.Todo.Web.Controllers
         }
 
 
-        public ActionResult ContractSearch(string name=null,string OtherSide=null,DateTime? startime=null,DateTime? endtime=null,string status=null,string recevied=null,double? minmoney=null,double? maxmoney=null,string department=null, string archived=null,string ztopcompany=null,string number=null, int page=1)
+        public ActionResult ContractSearch(
+            string name=null,string OtherSide=null,
+            DateTime? startime=null,DateTime? endtime=null,
+            string status=null,string recevied=null,
+            double? minmoney=null,double? maxmoney=null,
+            string department=null, string archived=null,
+            string ztopcompany=null,string number=null, int page=1)
         {
             var parameter = new ContractParameter()
             {
@@ -720,6 +728,79 @@ namespace Ztop.Todo.Web.Controllers
             ViewBag.Parameter = parameter;
             ViewBag.Page = parameter.Page;
             return View(); 
+        }
+        /// <summary>
+        /// 作用：下载合同统计表
+        /// 作者：汪建龙
+        /// 编写时间：2017年1月16日19:53:58
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="OtherSide"></param>
+        /// <param name="startime"></param>
+        /// <param name="endtime"></param>
+        /// <param name="status"></param>
+        /// <param name="recevied"></param>
+        /// <param name="minmoney"></param>
+        /// <param name="maxmoney"></param>
+        /// <param name="department"></param>
+        /// <param name="archived"></param>
+        /// <param name="ztopcompany"></param>
+        /// <param name="number"></param>
+        /// <returns></returns>
+        public ActionResult DownContract(
+            string name = null, string OtherSide = null,
+            DateTime? startime = null, DateTime? endtime = null,
+            string status = null, string recevied = null,
+            double? minmoney = null, double? maxmoney = null,
+            string department = null, string archived = null,
+            string ztopcompany = null, string number = null)
+        {
+
+            var parameter = new ContractParameter()
+            {
+                OtherSide = OtherSide,
+                Name = name,
+                StartTime = startime,
+                EndTime = endtime,
+                MinMoney = minmoney,
+                MaxMoney = maxmoney,
+                Department = department,
+                Deleted = false,
+                Number = number
+            };
+            if (!string.IsNullOrEmpty(archived))
+            {
+                if (archived == "未归档")
+                {
+                    parameter.Archived = false;
+                }
+                else
+                {
+                    parameter.Archived = true;
+                }
+            }
+            if (!string.IsNullOrEmpty(recevied))
+            {
+                parameter.Recevied = EnumHelper.GetEnum<Recevied>(recevied);
+            }
+            if (!string.IsNullOrEmpty(status))
+            {
+                parameter.Status = EnumHelper.GetEnum<ContractState>(status);
+            }
+            if (!string.IsNullOrEmpty(ztopcompany))
+            {
+                parameter.ZtopCompany = EnumHelper.GetEnum<ZtopCompany>(ztopcompany);
+            }
+            var result= Core.ContractManager.Search(parameter);
+            result = Core.ContractManager.Rebody(result);
+            var workbook = ExcelManager.DownContractWorkbook(result);
+            if (workbook != null)
+            {
+                byte[] fileContents = ExcelManager.Translate(workbook);
+                return File(fileContents, "application/ms-excel", string.Format("合同统计表-{0}.xls", DateTime.Now.ToLongDateString()));
+            }
+            
+            return Content("内部服务器错误！");
         }
 
 
@@ -820,6 +901,56 @@ namespace Ztop.Todo.Web.Controllers
             ViewBag.Parameter = parameter;
             ViewBag.Page = parameter.Page;
             return View();
+        }
+
+        /// <summary>
+        /// 作用：下载项目洽谈表格
+        /// 作者：汪建龙
+        /// 编写时间：2017年1月16日19:53:26
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="otherside"></param>
+        /// <param name="minmoney"></param>
+        /// <param name="maxmoney"></param>
+        /// <param name="number"></param>
+        /// <param name="year"></param>
+        /// <param name="city"></param>
+        /// <param name="town"></param>
+        /// <param name="projecttype"></param>
+        /// <param name="state"></param>
+        /// <param name="payCompany"></param>
+        /// <returns></returns>
+        public ActionResult DownloadArticle(
+            string name = null, string otherside = null, double? minmoney = null, double? maxmoney = null,
+            string number = null, string year = null, string city = null, string town = null,
+            string projecttype = null, string state = null, string payCompany = null)
+        {
+            var parameter = new ArticleParameter
+            {
+                Name = name,
+                OtherSide = otherside,
+                MinMoney = minmoney,
+                MaxMoney = maxmoney,
+                Number = number,
+                Year = year,
+                City = city,
+                Town = town,
+                ProjectType = projecttype,
+                PayCompany = payCompany
+            };
+            if (!string.IsNullOrEmpty(state))
+            {
+                parameter.State = EnumHelper.GetEnum<ArticleState>(state);
+            }
+
+            var list = Core.ArticleManager.Search2(parameter);
+            var workbook = ExcelManager.DownloadArticleWorkbook(list);
+            if (workbook != null)
+            {
+                byte[] fileContents = ExcelManager.Translate(workbook);
+                return File(fileContents, "application/ms-excel", string.Format("项目洽谈统计表-{0}.xls", DateTime.Now.ToLongDateString()));
+            }
+            return Content("内部服务器错误！");
         }
 
     
