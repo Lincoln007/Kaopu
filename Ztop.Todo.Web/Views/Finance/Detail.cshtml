@@ -151,8 +151,8 @@
     <div class="tab-pane fade in active" id="contract" role="tabpanel">
         <table class="table table-bordered table-striped">
             <tr>
-                <th>合同编号</th>
-                <td>@(contract.Coding)</td>
+                <th>编号</th>
+                <td>@(contract.ID)</td>
                 <th>登记编号</th>
                 <td>@(contract.Number)</td>
 
@@ -246,37 +246,6 @@
                 <span>@string.Format("当前系统中未找到登记编号为{0}的项目洽谈",contract.Number)</span>
             </div>
         }
-
-        @*@if (contract.Articles != null)
-        {
-            <table class="table table-bordered table-striped table-condensed">
-                <thead>
-                    <tr class="info">
-                        <th>项目名称</th>
-                        <th>对方单位</th>
-                        <th>意向金额（元）</th>
-                        <th>备注</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach(var article in contract.Articles)
-                    {
-                        <tr>
-                            <td>@(article.Name)</td>
-                            <td>@(article.OtherSide)</td>
-                            <td>@(article.Money)</td>
-                            <td>@(article.Remark)</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        }
-        else
-        {
-            <div class="alert alert-warning" role="alert">
-                <span>当前合同未关联项目，请检查！</span>
-            </div>
-        }*@
     </div>
     <div class="tab-pane fade" id="applyinvoice" role="tabpanel">
         @if (contract.Invoices != null&&contract.Invoices.Count!=0)
@@ -633,11 +602,15 @@
         });
 
         $("[name='Edit']").submit(function(){
+            var node=$("form[name='Edit'] button[type='submit']");
+            node.text("正在编辑......").attr("disabled","disabled");
             var data=$(this).serialize();
             $.request("/Finance/EditInvoice",data,function(json){
                 alert(json.content);
                 if(json.result==1){
                     location.href="/Finance/Detail?id="+@(contract.ID);
+                }else{
+                    node.text("编辑").removeAttr("disabled");
                 }
                 return false;
             });

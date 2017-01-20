@@ -113,7 +113,7 @@ namespace Ztop.Todo.Manager
         {
             using (var db = GetDbContext())
             {
-                var query = db.Invoices.AsQueryable();
+                var query = db.Invoices.Where(e=>e.Deleted==false).AsQueryable();
                 if (!string.IsNullOrEmpty(parameter.Key))
                 {
                     query = query.Where(e => e.GroupName.Contains(parameter.Key) || e.OtherSideCompany.Contains(parameter.Key));

@@ -45,8 +45,11 @@
     });
 
     $("[name='Plus']").submit(function () {
+        var node=$("form[name='Plus'] button[type='submit']");
+        node.text("正在录入系统.....").attr("disabled","disabled");
         var data = $(this).serialize();
         $.request("/Finance/ImproveInvoice", data, function (json) {
+            node.text("补充").removeAttr("disabled");
             alert(json.content);
             if (json.result == 1) {
                 location.href = "/Finance/InvoiceDetail?id=" +@(invoice.ID); 

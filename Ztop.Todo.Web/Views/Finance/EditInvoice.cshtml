@@ -43,8 +43,11 @@
         });
 
         $("#form-invoice").submit(function () {
+            var node=$("#from-invoice button[type='submit']");
+            node.text("正在编辑......").attr("disabled","disabled");
             var data = $(this).serialize();
             $.request("/Finance/ImproveInvoice", data, function (json) {
+                node.text("编辑").removeAttr("disabled");
                 alert(json.content);
                 if (json.result == 1) {
                     location.href="/Finance/Detail?id="+@(invoice.CID);

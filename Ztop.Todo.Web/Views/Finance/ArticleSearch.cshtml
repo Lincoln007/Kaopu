@@ -141,7 +141,11 @@
                     <div class="col-md-12">
                         <div class="btn-group">
                             <button type="submit" class="btn btn-sm btn-success"><i class="glyphicon glyphicon-search"></i>立即查询</button>
-                            <a href="/Finance/DownloadArticle" class="btn btn-primary btn-sm" name="Download"><i class="glyphicon glyphicon-download-alt"></i>下载统计表</a>
+                            @if (Identity.Name == "袁洋")
+                            {
+                                <a href="/Finance/DownloadArticle" class="btn btn-primary btn-sm" name="Download"><i class="glyphicon glyphicon-download-alt"></i>下载统计表</a>
+                            }
+                          
                             <button type="button" class="btn btn-sm btn-default" onclick="history.back();"><i class="glyphicon glyphicon-arrow-left"></i>返回</button>
                         </div>
                     </div>
@@ -171,7 +175,19 @@
             @foreach(var article in list)
             {
                 <tr>
-                    <td><a href="/Finance/DetailArticle?id=@(article.ID)">@(article.Name)</a> </td>
+                    <td>
+                        <a href="/Finance/DetailArticle?id=@(article.ID)">
+                            @if (article.Name.Length > 20)
+                            {
+                                <abbr title="@(article.Name)">@(article.Name.Substring(0,20))</abbr>
+                            }
+                            else
+                            {
+                                @(article.Name)
+                            }
+                          
+                        </a>
+                     </td>
                     <td>@(article.Number)</td>
                     <td>@(article.OtherSide)</td>
                     <td>@(article.Money)</td>

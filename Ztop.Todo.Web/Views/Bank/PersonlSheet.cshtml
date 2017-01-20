@@ -1,0 +1,27 @@
+﻿@{ 
+    Layout = null;
+    List<Sheet> sheets = ViewBag.Sheets;
+}
+
+<h3 class="text-center">@(string.Format("{0}-报销系统汇报",Identity.Name))</h3>
+
+@if (sheets != null && sheets.Count > 0)
+{
+    <div class="row">
+        @{
+            Html.RenderAction("CollectCategory", new { Sheets = sheets });
+        }
+    </div>
+    <hr />
+    <div class="row">
+        @{
+            Html.RenderPartial("ViewSheets", sheets as object);
+        }
+    </div>
+            }
+            else
+            {
+                <div class="alert alert-warning" role="alert">
+                    <span>系统中不存在报销数据</span>
+                </div>
+            }

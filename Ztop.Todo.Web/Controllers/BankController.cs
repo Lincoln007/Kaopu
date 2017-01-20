@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using Ztop.Todo.Common;
 using Ztop.Todo.Model;
+using Ztop.Todo.Web.Common;
 
 namespace Ztop.Todo.Web.Controllers
 {
@@ -503,6 +504,19 @@ namespace Ztop.Todo.Web.Controllers
         }
 
         /// <summary>
+        /// 作用：个人用户查看所有报销单情况
+        /// 作者：汪建龙
+        /// 编写时间：2017年1月17日09:59:25
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult PersonlSheet()
+        {
+            var sheets = Core.SheetManager.GetDone(Identity.Name);
+            ViewBag.Sheets = sheets;
+            return View();
+        }
+
+        /// <summary>
         /// 作用：统计各个类别报销情况
         /// 作者：汪建龙
         /// 编写时间：2016年11月19日11:23:27
@@ -653,6 +667,45 @@ namespace Ztop.Todo.Web.Controllers
         {
             ViewBag.Months = Core.SheetManager.Collect().Where(e=>e.Name.ToLower()==Identity.Name.ToLower()).OrderByDescending(e=>e.CheckTime.Value.Year).ThenByDescending(e=>e.CheckTime.Value.Month).Select(e=>string.Format("{0}年{1}月",e.CheckTime.Value.Year,e.CheckTime.Value.Month)).Distinct().ToList();
             return View();
+        }
+
+
+        public ActionResult DownloadCollect(int year, int month)
+        {
+            var reportTypes = Core.Report_TypeManager.Get();
+            var sheets = Core.SheetManager.GetSheets(year, month);
+            var evaluation = Core.Bill_OneManager.GetBillHead(year, month, Company.Evaluation);
+            List<BillRecordView> bill1 = null;
+            List<BillRecordView> bill2 = null;
+            if (evaluation != null)
+            {
+                bill1 = Core.Bill_Records_ViewManager.GetByHID(evaluation.ID);
+            }
+            var project1 = Core.Bill_OneManager.GetBillHead(year, month, Company.Projection);
+            if (project1 != null)
+            {
+                bill2 = Core.Bill_Records_ViewManager.GetByHID(project1.ID);
+            }
+            var project2 = Core.Bill_OneManager.GetBillHead(year, month, Company.Projection2);
+            if (project2 != null)
+            {
+                var temp = Core.Bill_Records_ViewManager.GetByHID(project2.ID);
+                if (bill2 == null)
+                {
+                    bill2 = temp;
+                }
+                else
+                {
+                    bill2.AddRange(temp);
+                }
+            }
+            var workbook = ExcelManager.DownloadCollect(year, month,reportTypes, sheets, bill1, bill2);
+            if (workbook != null)
+            {
+                byte[] fileContents = ExcelManager.Translate(workbook);
+                return File(fileContents, "application/ms-excel", string.Format("杭州智拓汇总表格-{0}.xls", DateTime.Now.ToLongDateString()));
+            }
+            return Content("内部服务器错误！");
         }
     }
 }

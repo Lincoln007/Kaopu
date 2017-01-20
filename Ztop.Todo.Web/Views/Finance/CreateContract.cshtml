@@ -123,7 +123,7 @@
             <div class="form-group">
                 <label class="control-label col-md-4">备注：</label>
                 <div class="col-md-8">
-                    <textarea name="Remark" class="form-control" rows="3" placeholder="备注">@(contract.Remark)</textarea>
+                    <textarea name="Remark" class="form-control" rows="3" placeholder="备注">@(contract!=null?contract.Remark:"")</textarea>
                 </div>
             </div>
 

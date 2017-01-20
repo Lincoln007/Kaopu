@@ -66,6 +66,7 @@
         @if (months != null && months.Count > 0)
         {
             <div class="col-md-2">
+                <a href="/Bank/PersonlSheet" name="TimeList" class="btn btn-white btn-block">总览</a>
                 @foreach (var item in months)
                 {
                     var query = item.Replace("年", ",").Replace("月", "").Split(',');

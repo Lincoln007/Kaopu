@@ -130,6 +130,9 @@ namespace Ztop.Todo.Model
     [Table("bill_records_view")]
     public class BillRecordView : BillRecord
     {
+        /// <summary>
+        /// 类别
+        /// </summary>
         public string TName { get; set; }
         public bool? Delete { get; set; }
     }

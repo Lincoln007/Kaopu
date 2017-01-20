@@ -97,6 +97,7 @@
                 <thead>
                     <tr>
                         <th rowspan="2">单据编号</th>
+                        <th rowspan="2">填写时间</th>
                         <th rowspan="2">报销金额[元]</th>
                         <th rowspan="2">报销人</th>
                         <th colspan="3" class="text-center">日常分项详情</th>
@@ -114,6 +115,7 @@
                         row = row + 1;
                         <tr>
                             <td rowspan="@(row)"><a href="/Report/Detail?id=@(item.ID)">@(item.CheckNumber)</a></td>
+                            <td rowspan="@(row)">@(item.Time.ToString("yyyy-MM-dd"))</td>
                             <td rowspan="@(row)">@(item.Money)</td>
                             <td rowspan="@(row)">@(item.Name)</td>
                         </tr>
@@ -137,6 +139,7 @@
                 <thead>
                     <tr>
                         <th rowspan="2">单据编号</th>
+                        <th rowspan="2">填写时间</th>
                         <th rowspan="2">报销金额[元]</th>
                         <th rowspan="2">报销人</th>
                         <th colspan="9" class="text-center">出差详情</th>
@@ -160,6 +163,7 @@
                         {
                             <tr>
                                 <td><a href="/Report/Detail?id=@(item.ID)">@(item.CheckNumber)</a></td>
+                                <td>@(item.Time.ToString("yyyy-MM-dd"))</td>
                                 <td>@(item.Money)</td>
                                 <td>@(item.Name)</td>
                                 <td>@(item.Evection.Place)</td>

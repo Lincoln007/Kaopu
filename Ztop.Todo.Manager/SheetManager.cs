@@ -398,6 +398,44 @@ namespace Ztop.Todo.Manager
             var query = list.Select(e=>e.ID).ToList();
             return GetSheets(query);
         }
+
+        /// <summary>
+        /// 作用：单独获取某一个人的所有成功报销的报销单
+        /// 作者：汪建龙
+        /// 编写时间：2017年1月17日09:58:20
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public List<Sheet> GetDone(string name)
+        {
+            using (var db = GetDbContext())
+            {
+                var list = db.Sheets.Where(e => e.Name.ToLower()==name.ToLower()&&e.CheckTime.HasValue && e.Deleted == false&&e.Status==Status.Examined).ToList();
+                if (list == null)
+                {
+                    return null;
+                }
+                foreach(var item in list)
+                {
+                    if (item.Type == SheetType.Daily)
+                    {
+                        item.Substancs_Views = db.Substancs_View.Where(e => e.SID == item.ID).OrderBy(e => e.ID).ToList();
+                    }
+                    else
+                    {
+                        item.Evection = db.Evections.FirstOrDefault(e => e.SID == item.ID);//获取出差报销分项清单
+                        if (item.Evection != null)
+                        {
+                            item.Evection.Errands = db.Errands.Where(e => e.EID == item.Evection.ID).ToList();//获取出差人数列表
+                            item.Evection.TCosts = db.Traffics.Where(e => e.EID == item.Evection.ID).ToList();//获取用车类型列表
+                        }
+                    }
+                }
+
+                return list;
+
+            }
+        }
         public List<Sheet> GetSheets(SheetQueryParameter2 parameter)
         {
             using (var db = GetDbContext())

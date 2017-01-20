@@ -6,7 +6,22 @@
     List<Bill_Head> projections = ViewBag.Projections;
     List<Bill_Head> projection2s = ViewBag.Projection2s;
     List<Sheet> sheets = ViewBag.Sheets;
+    List<string> list = sheets.OrderByDescending(e => e.CheckTime.Value.Year).ThenByDescending(e => e.CheckTime.Value.Month).Select(e => string.Format("{0}年{1}月", e.CheckTime.Value.Year, e.CheckTime.Value.Month)).Distinct().ToList();
 }
+
+<style>
+    .btn-white {
+        color: #333;
+        background-color: #fff;
+        border-color: #ccc;
+    }
+
+        .btn-white:hover {
+            color: #333;
+            background-color: #e6e6e6;
+            border-color: #adadad;
+        }
+</style>
 
 <div class="col-md-12">
     <h2>@(Identity.Name)  您好! &nbsp;&nbsp;</h2>
@@ -44,109 +59,125 @@
 
 
 
-<div class="col-md-3">
-    <div class="panel panel-green">
-        <div class="panel panel-heading">
-            <h3 class="panel-title">
-                房地产评估咨询有限公司  银行对账单
-            </h3>
-           
+<div class="row">
+    <div class="col-md-12">
+        <div class="col-md-4">
+            <ul class="nav nav-pills nav-stacked" role="tablist">
+                <li role="presentation" class="active"><a href="#@(Company.Evaluation)" role="tab" data-toggle="tab">房地产评估咨询有限公司</a></li>
+                <li role="presentation"><a href="#@(Company.Projection)" role="tab" data-toggle="tab"> 土地规划设计咨询有限公司</a></li>
+                <li role="presentation"><a href="#@(Company.Cash)" role="tab" data-toggle="tab">现金收支</a></li>
+                <li role="presentation"><a href="#@(Company.Sum)" role="tab" data-toggle="tab">收支汇总</a></li>
+            </ul>
         </div>
-        <div class="panel panel-body">
-            <table class="table table-striped">
-                @foreach (var head in evaluations.OrderByDescending(e=>e.Year).ThenByDescending(e=>e.Month))
-                {
-                    <tr>
-                        <td><a href="/Bank/ViewEvaluation?id=@(head.ID)">@(head.Head)</a></td>
-                    </tr>
-                }
-            </table>
-        </div>
-    </div>
-</div>
+        <div class="col-md-8">
+            @{ 
+                Html.RenderPartial("_Message");
+            }
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="@(Company.Evaluation)">
+                    <div class="panel panel-green">
+                        <div class="panel panel-heading">
+                            <h3 class="panel-title">
+                                房地产评估咨询有限公司  银行对账单
+                            </h3>
 
-<div class="col-md-3">
-    <div class="panel panel-yellow">
-        <div class="panel panel-heading">
-            <h3 class="panel-title">
-                土地规划设计咨询有限公司  银行对账单
-            </h3>
-        </div>
-        <div class="panel panel-body">
-            <div class="col-md-6">
-                <blockquote>
-                    <h4 class="text-center">@(Company.Projection.GetDescription())</h4>
-                </blockquote>
-               
-                <table class="table table-striped">
-                    @foreach (var head in projections.OrderByDescending(e=>e.Year).ThenByDescending(e=>e.Month))
-                    {
-                        <tr>
-                            <td><a href="/Bank/ViewProjection?id=@(head.ID)">@(head.Head)</a></td>
-                        </tr>
-                    }
-                </table>
-            </div>
-            <div class="col-md-6">
-                <blockquote>
-                    <h4 class="text-center">@(Company.Projection2.GetDescription())</h4>
-                </blockquote>
-              
-                <table class="table table-striped">
-                    @foreach (var head in projection2s)
-                    {
-                        <tr>
-                            <td><a href="/Bank/ViewProjection?id=@(head.ID)">@(head.Head)</a></td>
-                        </tr>
-                    }
-                </table>
-            </div>
-      
-        </div>
-    </div>
-</div>
-<div class="col-md-3">
-    <div class="panel panel-primary">
-        <div class="panel panel-heading">
-            <h3 class="panel-title">
-                现金收支
-            </h3>
-        </div>
-        <div class="panel panel-body">
-            <table class="table table-striped">
-                @foreach(var item in sheets.OrderByDescending(e=>e.CheckTime.Value.Year).ThenByDescending(e=>e.CheckTime.Value.Month).Select(e=>string.Format("{0}年{1}月",e.CheckTime.Value.Year,e.CheckTime.Value.Month)).Distinct())
+                        </div>
+                        <div class="panel panel-body">
+                            <table class="table table-striped">
+                                @foreach (var head in evaluations.OrderByDescending(e => e.Year).ThenByDescending(e => e.Month))
+                                {
+                                    <tr>
+                                        <td><a href="/Bank/ViewEvaluation?id=@(head.ID)">@(head.Head)</a></td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="@(Company.Projection)">
+                    <div class="panel panel-yellow">
+                        <div class="panel panel-heading">
+                            <h3 class="panel-title">
+                                土地规划设计咨询有限公司  银行对账单
+                            </h3>
+                        </div>
+                        <div class="panel panel-body">
+                            <div class="col-md-6">
+                                <blockquote>
+                                    <h4 class="text-center">@(Company.Projection.GetDescription())</h4>
+                                </blockquote>
+
+                                <table class="table table-striped">
+                                    @foreach (var head in projections.OrderByDescending(e => e.Year).ThenByDescending(e => e.Month))
+                                    {
+                                        <tr>
+                                            <td><a href="/Bank/ViewProjection?id=@(head.ID)">@(head.Head)</a></td>
+                                        </tr>
+                                    }
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <blockquote>
+                                    <h4 class="text-center">@(Company.Projection2.GetDescription())</h4>
+                                </blockquote>
+
+                                <table class="table table-striped">
+                                    @foreach (var head in projection2s)
+                                    {
+                                        <tr>
+                                            <td><a href="/Bank/ViewProjection?id=@(head.ID)">@(head.Head)</a></td>
+                                        </tr>
+                                    }
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="@(Company.Cash)">
+                    <div class="panel panel-primary">
+                        <div class="panel panel-heading">
+                            <h3 class="panel-title">
+                                现金收支
+                            </h3>
+                        </div>
+                        <div class="panel panel-body">
+                            <table class="table table-striped">
+                                @foreach (var item in list)
+                                {
+                                    var query = item.Replace("年", ",").Replace("月", "").Split(',');
+                                    var year = int.Parse(query[0]);
+                                    var month = int.Parse(query[1]);
+                                    <tr>
+                                        <td><a href="/Bank/CollectSheet?year=@(year)&&month=@(month)">@(item)</a> </td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="@(Company.Sum)">
+                    <div class="panel panel-red">
+                        <div class="panel panel-heading">
+                            <div class="panel-title">
+                                收支汇总
+                            </div>
+                        </div>
+                        <div class="panel panel-body">
+                            @if (list != null && list.Count > 0)
+            {
+                foreach (var item in list)
                 {
                     var query = item.Replace("年", ",").Replace("月", "").Split(',');
                     var year = int.Parse(query[0]);
                     var month = int.Parse(query[1]);
-                    <tr>
-                        <td><a href="/Bank/CollectSheet?year=@(year)&&month=@(month)">@(item)</a> </td>
-                    </tr>
-                }
-            </table>
-        </div>
-    </div>
-</div>
-<div class="col-md-3">
-    <div class="panel panel-red">
-        <div class="panel panel-heading">
-            <div class="panel-title">
-                收支汇总
+                                    <a href="/Bank/DownloadCollect?year=@(year)&&month=@(month)" name="TimeList" class="btn btn-white btn-block"><i class="glyphicon glyphicon-download-alt"></i> @(item)</a>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="panel panel-body">
-            <table class="table table-striped">
-                @*@foreach (var item in Districts)
-                {
-                    var query = item.Replace("年", ",").Replace("月", "").Split(',');
-                    var year = int.Parse(query[0]);
-                    var month = int.Parse(query[1]);
-                    <tr>
-                        <td><a href="/Bank/Collect?year=@(year)&&month=@(month)">@(item)</a></td>
-                    </tr>
-
-                }*@
-            </table>
         </div>
     </div>
 </div>

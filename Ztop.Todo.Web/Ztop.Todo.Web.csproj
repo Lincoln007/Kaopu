@@ -193,6 +193,7 @@
     <Content Include="Content\Print.css" />
     <Content Include="Content\sb-admin-2.css" />
     <Content Include="Content\sb-admin.css" />
+    <Content Include="Content\switch\bootstrap.min.css" />
     <Content Include="Content\token-input.css" />
     <Content Include="error.txt" />
     <Content Include="Content\jquery.datetimepicker.css" />
@@ -233,6 +234,7 @@
     <Content Include="Content\font\FontAwesome.otf" />
     <Content Include="Excels\Contract.xls" />
     <Content Include="Excels\Article.xls" />
+    <Content Include="Excels\Collect.xls" />
     <None Include="Properties\PublishProfiles\TODO.pubxml" />
     <None Include="Scripts\jquery-1.9.1.intellisense.js" />
     <Content Include="ProjectInfo.xml" />
@@ -413,6 +415,7 @@
     <Content Include="Views\Bank\DetailTraffic.cshtml" />
     <Content Include="Views\Bank\TimeList.cshtml" />
     <Content Include="Views\Bank\StatisticSheet.cshtml" />
+    <Content Include="Views\Bank\PersonlSheet.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
