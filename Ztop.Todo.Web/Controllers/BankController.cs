@@ -496,7 +496,7 @@ namespace Ztop.Todo.Web.Controllers
         /// <param name="year"></param>
         /// <param name="month"></param>
         /// <returns></returns>
-        public ActionResult StatisticSheet(int year,int month)
+        public ActionResult StatisticSheet(int year,int ?month=null)
         {
             var sheets = Core.SheetManager.GetSheets(year, month, Identity.Name);
             ViewBag.Sheets = sheets;

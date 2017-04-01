@@ -8,6 +8,10 @@
 <hr />
 <div class="btn-group">
     <button type="button" class="btn btn-default" onclick="history.back()" ><i class="glyphicon glyphicon-arrow-left"></i>返回</button>
+    @if (Identity.Name == "袁洋")
+    {
+        <a href="/Finance/BillSearch" class="btn btn-success"><i class="glyphicon glyphicon-search"></i>到账查询</a>
+    }
 </div>
 
 <hr />

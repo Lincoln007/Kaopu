@@ -112,7 +112,7 @@ namespace Ztop.Todo.Web.Common
                 }
                 line++;
                 var cell = ExcelClass.GetCell(row, 0, modelrow);
-                cell.SetCellValue(item.Coding);
+                cell.SetCellValue(item.ID);
                 ExcelClass.GetCell(row, 1, modelrow).SetCellValue(item.Number);
                 ExcelClass.GetCell(row, 2, modelrow).SetCellValue(item.Name);
                 ExcelClass.GetCell(row, 3, modelrow).SetCellValue(item.Company);

@@ -3,7 +3,7 @@
     List<Sheet> sheets = ViewBag.Sheets;
 }
 
-<h3 class="text-center">@(string.Format("{0}年{1}月报销情况",Request.QueryString["year"],Request.QueryString["month"]))</h3>
+<h3 class="text-center">@(string.Format("{0}年{1}报销情况",Request.QueryString["year"],Request.QueryString["month"]==null?"度":Request.QueryString["month"].ToString()+"月"))</h3>
 @if (sheets != null && sheets.Count > 0)
 {
     <div class="row">

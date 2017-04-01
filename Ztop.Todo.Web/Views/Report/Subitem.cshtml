@@ -30,74 +30,32 @@
              
                     <td>
                         <div class="col-md-7 col-xs-7" style="padding:0px;">
-                            <select name="Category" class="form-control input-sm" targetIndex="@(serial-1)">
+                            <select class="form-control input-sm" name="RID">
                                 <option value="">请选择</option>
-                                @foreach (Category category in Enum.GetValues(typeof(Category)))
+                                @foreach(var type in types)
                                 {
-                                    <option value="@(category)" @(subtance.Category == category ? "selected=selected" : "")>@(category.GetDescription())</option>
+                                    <option value="@(type.ID)" @(subtance.RID==type.ID?"selected=slected":"")>@(type.Name)</option>
                                 }
                             </select>
+          
                         </div>
-                        @if (subtance.SecondCategory.HasValue)
-                        {
-                            <div class="col-md-5 col-xs-5" style="padding:0px;" id="@(serial-1)">
-                                <select name="SecondCategory" class="form-control input-sm">
-                                    @foreach (SecondCategory secondCategory in Enum.GetValues(typeof(SecondCategory)))
-                                    {
-                                        if (subtance.Category == Category.FixedAsssets)
+                        @{
+                            var parent = types.FirstOrDefault(e => e.ID == subtance.RID);
+                            if (parent != null && parent.Children != null && parent.Children.Count > 0)
+                            {
+                                <div class="col-md-5 col-xs-5" style="padding:0px;">
+                                    <select name="SRID" class="form-control input-sm">
+                                        @foreach (var child in parent.Children)
                                         {
-                                            if (((int)secondCategory) < 2)
-                                            {
-                                                <option value="@(secondCategory)" @(subtance.SecondCategory.Value==secondCategory?"selected=selected":"")>@(secondCategory.GetDescription())</option>
-                                            }
+                                            <option value="@(child.ID)" @(subtance.SRID.HasValue&&subtance.SRID.Value==child.ID?"selected=selected":"")>@(child.Name)</option>
                                         }
-                                        else if (subtance.Category == Category.Equipment)
-                                        {
-                                            if (((int)secondCategory) > 1 && ((int)secondCategory) < 5)
-                                            {
-                                                <option value="@(secondCategory)" @(subtance.SecondCategory.Value == secondCategory ? "selected=selected" : "")>@(secondCategory.GetDescription())</option>
-                                            }
-                                        }
-                                        else if (subtance.Category == Category.Traffic)
-                                        {
-                                            if (((int)secondCategory) > 4 && ((int)secondCategory) < 7)
-                                            {
-                                                <option value="@(secondCategory)" @(subtance.SecondCategory.Value == secondCategory ? "selected=selected" : "")>@(secondCategory.GetDescription())</option>
-                                            }
-                                        }
-                                        else if (subtance.Category == Category.Express)
-                                        {
-                                            if (((int)secondCategory) > 6 && ((int)secondCategory) < 9)
-                                            {
-                                                <option value="@(secondCategory)" @(subtance.SecondCategory.Value == secondCategory ? "selected=selected" : "")>@(secondCategory.GetDescription())</option>
-                                            }
-                                        }
-                                        else if (subtance.Category == Category.Print)
-                                        {
-                                            if (((int)secondCategory) > 8 && ((int)secondCategory) < 12)
-                                            {
-                                                <option value="@(secondCategory)" @(subtance.SecondCategory.Value == secondCategory ? "selected=selected" : "")>@(secondCategory.GetDescription())</option>
-                                            }
-                                        }
-                                        else if (subtance.Category == Category.Welfare)
-                                        {
-                                            if (((int)secondCategory) > 11 && ((int)secondCategory) < 14)
-                                            {
-                                                <option value="@(secondCategory)" @(subtance.SecondCategory.Value == secondCategory ? "selected=selected" : "")>@(secondCategory.GetDescription())</option>
-                                            }
-                                        }
-                                        else if (subtance.Category == Category.Bidding)
-                                        {
-                                            if (((int)secondCategory) > 13 && ((int)secondCategory) < 17)
-                                            {
-                                                <option value="@(secondCategory)" @(subtance.SecondCategory.Value == secondCategory ? "selected=selected" : "")>@(secondCategory.GetDescription())</option>
-                                            }
-                                        }
-                                    }
-                                    <option value="@(SecondCategory.Other)" @(subtance.SecondCategory.Value == SecondCategory.Other ? "selected=selected" : "")>@(SecondCategory.Other.GetDescription())</option>
-                                </select>
-                            </div>
+                                    </select>
+                                </div>
+                            }
                         }
+  
+
+                     
                        
                        
                     </td>

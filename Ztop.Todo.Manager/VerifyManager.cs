@@ -61,9 +61,13 @@ namespace Ztop.Todo.Manager
                 if (query.Count() > 0)
                 {
                     var result = query.GroupBy(e => e.SID).Select(e => e.Key).ToList();
-                    foreach(var sid in result)
+                    var sheets = (from t in db.Sheets
+                    where result.Contains(t.ID)
+                    select t).ToList();
+
+                    foreach(var sheet in sheets)
                     {
-                        var sheet = db.Sheets.Find(sid);
+                        //var sheet = db.Sheets.Find(sid);
                         if (sheet != null)
                         {
                             if (sheet.Type == SheetType.Daily)

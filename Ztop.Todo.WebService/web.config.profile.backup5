@@ -1,0 +1,54 @@
+<?xml version="1.0"?><configuration>
+    <appSettings>
+	<add key="Microsoft.VisualStudio.Enterprise.AspNetHelper.VsInstrLocation" value="C:\Program Files (x86)\Microsoft Visual Studio 14.0\Team Tools\Performance Tools\vsinstr.exe"/>
+	
+	
+	
+	
+	</appSettings>
+  <connectionStrings>
+    <!--版本号-->
+    <add name="version" connectionString="2016-05-20 14:00"/>
+    <!--下载地址-->
+    <add name="url" connectionString="http://10.22.102.3:8060/"/>
+    <!--下载目录，最好为一级目录-->
+    <add name="directory" connectionString="UpDateFiles"/>
+  </connectionStrings>
+    <system.web>
+      <webServices>
+        <protocols>
+          <add name="HttpSoap"/>
+          <add name="HttpPost"/>
+          <add name="HttpGet"/>
+          <add name="Documentation"/>
+        </protocols>
+      </webServices>
+        <compilation debug="true" assemblyPostProcessorType="Microsoft.VisualStudio.Enterprise.Common.AspPerformanceInstrumenter, Microsoft.VisualStudio.Enterprise.AspNetHelper, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+
+        </compilation>
+    <!--
+      The <authentication> section enables configuration 
+      of the security authentication mode used by 
+      ASP.NET to identify an incoming user. 
+    -->
+    <authentication mode="Windows"/>
+    <!--
+       The <customErrors> section enables configuration 
+       of what to do if/when an unhandled error occurs 
+       during the execution of a request. Specifically, 
+       it enables developers to configure html error pages 
+       to be displayed in place of a error stack trace.
+
+       <customErrors mode="RemoteOnly" defaultRedirect="GenericErrorPage.htm">
+         <error statusCode="403" redirect="NoAccess.htm" />
+         <error statusCode="404" redirect="FileNotFound.htm" />
+       </customErrors>
+    -->
+    </system.web>
+
+
+	<runtime>
+		<assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+			<dependentAssembly>
+				<assemblyIdentity name="Microsoft.VisualStudio.Enterprise.AspNetHelper" publicKeyToken="b03f5f7f11d50a3a" culture="neutral"/>
+				<codeBase version="14.0.0.0" href="file:///C:/Program%20Files%20(x86)/Microsoft%20Visual%20Studio%2014.0/Common7/IDE/PrivateAssemblies/Microsoft.VisualStudio.Enterprise.AspNetHelper.DLL"/></dependentAssembly></assemblyBinding></runtime></configuration>

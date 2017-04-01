@@ -71,8 +71,14 @@
                 {
                     var query = item.Replace("年", ",").Replace("月", "").Split(',');
                     var year = int.Parse(query[0]);
+
+
                     var month = int.Parse(query[1]);
                     <a href="/Bank/StatisticSheet?year=@(year)&&month=@(month)" name="TimeList" class="btn btn-@(item.ToLower()==timeString.ToLower()?"primary":"white") btn-block">@(item)</a>
+                    if (month == 1)
+                    {
+                        <a href="/Bank/StatisticSheet?year=@(year-1)" name="TimeList" class="btn btn-white btn-block">@string.Format("{0}年度", year - 1)</a>
+                    }
                 }
             </div>
         }

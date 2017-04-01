@@ -32,7 +32,9 @@
             <th>对方单位</th>
             <th>合同起始时间</th>
             <th>合同金额（元）</th>
-            <th>未到账金额（元）</th>
+            <th>已开发票[元]</th>
+            <th>到账金额[元]</th>
+     
             <th>关联操作</th>
         </tr>
     </thead>
@@ -40,11 +42,32 @@
         @foreach(var item in list)
         {
             <tr>
-                <td name="Name">@(item.Name)</td>
-                <td name="OtherSide">@(item.Company)</td>
+                <td name="Name">
+                    @if (!string.IsNullOrEmpty(item.Name) && item.Name.Length > 10)
+                    {
+                        <abbr title="@(item.Name)">@(item.Name.Substring(0,10))</abbr>
+                    }
+                    else
+                    {
+                        @(item.Name)
+                    }
+                  
+                </td>
+                <td name="OtherSide">
+                    @if (!string.IsNullOrEmpty(item.Company) && item.Company.Length > 8)
+                    {
+                        <abbr title="@(item.Company)">@(item.Company.Substring(0,8))</abbr>
+                    }
+                    else
+                    {
+                        @(item.Company)
+                    }
+                
+                </td>
                 <td name="StartTime">@(item.StartTime.ToShortDateString())</td>
                 <td name="Money">@(item.Money)</td>
-                <td name="Leave">@(item.Leave)</td>
+                <td name="OpenMoney">@(item.Invoices==null||item.Invoices.Count==0?"无开票信息":item.Invoices.Where(e=>e.State==InvoiceState.Have).Sum(e=>e.Money).ToString())</td>
+                <td name="Leave">@(item.Money-item.Leave)</td>
                 <td>
                     <button type="button" class="btn btn-xs btn-success" name="Relate" Index="@(item.ID)"><i class="glyphicon glyphicon-plus-sign"></i>关联</button>
                 </td>

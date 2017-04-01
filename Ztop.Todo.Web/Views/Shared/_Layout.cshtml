@@ -1,5 +1,6 @@
 ﻿@{ 
     Ztop.Todo.Web.Common.UserIdentity identity = ViewBag.Identity;
+    
 }
 <!DOCTYPE html>
 <html>
@@ -64,7 +65,7 @@
                         <span class="icon-bar"></span>
                     </button>
                     <a href="/" class="navbar-brand logo">智拓TODO</a>
-                    <a href="/"class="navbar-brand">任务系统</a>
+                    <a href="/"class="navbar-brand">报销系统</a>
                 </div>
                 <ul class="navbar-right nav navbar-nav">
                     @if (identity!=null&&!string.IsNullOrEmpty(identity.Name))
@@ -86,7 +87,6 @@
                         }
                     }
                 </ul>
-
                 @if (identity!=null&&identity.IsAuthenticated)
                 {
                     <div class="navbar-default sidebar" role="navigation">

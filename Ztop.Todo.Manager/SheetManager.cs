@@ -388,7 +388,7 @@ namespace Ztop.Todo.Manager
         /// <param name="year"></param>
         /// <param name="month"></param>
         /// <returns></returns>
-        public List<Sheet> GetSheets(int year,int month,string name=null)
+        public List<Sheet> GetSheets(int year,int? month=null,string name=null)
         {
             var list = Collect(year, month);
             if (!string.IsNullOrEmpty(name))
@@ -493,11 +493,16 @@ namespace Ztop.Todo.Manager
         }
 
 
-        public List<Sheet> Collect(int year,int month)
+        public List<Sheet> Collect(int year,int? month=null)
         {
             using (var db = GetDbContext())
             {
-                return db.Sheets.Where(e => e.CheckTime.HasValue).Where(e => e.CheckTime.Value.Year == year && e.CheckTime.Value.Month == month).ToList();
+                var query = db.Sheets.Where(e => e.CheckTime.HasValue && e.CheckTime.Value.Year == year).AsQueryable();
+                if (month.HasValue)
+                {
+                    query = query.Where(e => e.CheckTime.Value.Month == month.Value);
+                }
+                return query.ToList();
             }
         }
         /// <summary>

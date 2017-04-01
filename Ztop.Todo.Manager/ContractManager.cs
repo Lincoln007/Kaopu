@@ -210,6 +210,60 @@ namespace Ztop.Todo.Manager
             }
         }
 
+        public List<string> Validate()
+        {
+            var list = new List<string>();
+            var count = 0;
+            using(var db = GetDbContext())
+            {
+                var contracts = db.Contracts.Where(e => e.Deleted == false).ToList();
+                foreach(var contract in contracts)
+                {
+                    try
+                    {
+                        contract.BillContracts = db.BillContracts.Where(e => e.ContractID == contract.ID).ToList();
+                        double current = contract.Money;
+                        if (contract.BillContracts.Count > 0)
+                        {
+                            current = contract.Money - contract.BillContracts.Sum(e => e.Price);
+                            if (current < 0)
+                            {
+                                list.Add(string.Format("合同：{0} 存在到账金额错误", contract.Name));
+                                continue;
+                            }
+                        }
+
+                        if (Math.Abs(contract.Leave - current) > 0.01)
+                        {
+                            contract.Leave = current;
+                            if (Math.Abs(contract.Money - contract.Leave) > 0.01)
+                            {
+                                contract.Recevied = contract.Leave > 0 ? Recevied.Part : Recevied.ALL;
+                            }
+                            else
+                            {
+                                contract.Recevied = Recevied.None;
+                            }
+                            db.SaveChanges();
+                            count++;
+                        }
+                       
+                    }
+                    catch(Exception ex)
+                    {
+                        list.Add(string.Format("更新合同：{0}时，发生错误：{1}", contract.Name, ex.Message));
+                    }
+              
+                }
+            }
+            if (count > 0)
+            {
+                list.Add(string.Format("本次验证更新{0}个合同到账信息", count));
+            }
+           
+            return list;
+        }
+
         public List<Contract> Rebody(List<Contract> list)
         {
             if (list == null || list.Count == 0)

@@ -413,6 +413,7 @@ namespace Ztop.Todo.Web.Controllers
                 parameter.ZtopCompany = EnumHelper.GetEnum<ZtopCompany>(ztopcompany);
             }
             var list = Core.ContractManager.Search(parameter).Where(e => e.Leave > 0).ToList();
+            list = Core.ContractManager.Rebody(list);
             ViewBag.List = list;
             ViewBag.Page = parameter.Page;
             ViewBag.Parameter = parameter;
@@ -529,6 +530,16 @@ namespace Ztop.Todo.Web.Controllers
             }catch(Exception ex)
             {
                 return ErrorJsonResult(ex);
+            }
+            return SuccessJsonResult();
+        }
+
+        public ActionResult Validate()
+        {
+            var errors = Core.ContractManager.Validate();
+            if (errors.Count > 0)
+            {
+                return ErrorJsonResult(string.Join(";", errors.ToArray()));
             }
             return SuccessJsonResult();
         }

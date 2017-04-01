@@ -5,6 +5,22 @@
 
 <script >
     $(function () {
+        $("a[name='Validate']").click(function () {
+            ShowMessage("正在验证合同到账信息，请稍等.....");
+            var node = $(this);
+            var curTxt = node.text();
+            node.text("正在验证......").attr("disabled", "disabled");
+            var href = node.attr("href");
+            $.request(href, null, function (json) {
+                if (json.result == 0) {
+                    ShowErrorMessage(json.content);
+                } else {
+                    ShowSuccessMessage("完成验证");
+                }
+                node.text(curTxt).removeAttr("disabled");
+            });
+            return false;
+        });
         $("a[name='Sync']").click(function () {
             ShowMessage("正在同步到账信息,请稍等......");
             var node = $(this);
@@ -39,6 +55,7 @@
                     <label class="control-label">到账同步：</label>
                     <div class="col-md-12">
                         <a href="/Finance/Synchronous" class="btn btn-block btn-danger" name="Sync">同步到账信息</a>
+                        <a href="/Finance/Validate" class="btn btn-block btn-warning" name="Validate">验证合同到账金额</a>
                     </div>
                 </div>        
                 <div class="form-group">
