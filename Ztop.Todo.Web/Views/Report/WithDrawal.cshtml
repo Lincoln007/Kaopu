@@ -1,4 +1,4 @@
-﻿@model Ztop.Todo.Model.Sheet
+﻿@model Sheet
 <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#WidthDrawal">
     <em class="glyphicon glyphicon-log-out"></em>审核不通过
 </button>
@@ -62,7 +62,7 @@
                 }
                 var data = $(this).serialize();
                 $.request("/Report/Reversion", data, function (json) {
-                    location.href = "/Report";
+                    location.href = "/Report/Director";
                 });
                 return false;
             }

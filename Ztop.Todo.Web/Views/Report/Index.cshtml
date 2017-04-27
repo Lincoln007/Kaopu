@@ -1,19 +1,47 @@
-﻿@using Ztop.Todo.Model;
-@using Ztop.Todo.ActiveDirectory;
-@{
+﻿@{
     ViewBag.Title = "报销系统";
     Layout = "~/Views/Shared/_Layout.cshtml";
     List<Sheet> list = ViewBag.List;
-    List<Sheet> WaitForMe = ViewBag.WaitForMe;//  需要我审核的报销单
-    List<Sheet> MyCheck = ViewBag.Checks;
+    //List<Sheet> WaitForMe = ViewBag.WaitForMe;//  需要我审核的报销单
+    //List<Sheet> MyCheck = ViewBag.Checks;
+    DateTime startTime = Convert.ToDateTime("2016-07-31 00:00:00");
 
 }
 
+
+
 <div class="col-md-12">
-    <h3>@(Identity.Name)  您好! &nbsp;&nbsp;</h3>
+    <div class="page-header">
+        <h3>@(Identity.Name)  您好! &nbsp;&nbsp;</h3>
+    </div>
+
+    @if (Identity.Director || Identity.Name == "靳小阳")
+    {
+        <div class="alert alert-warning">
+            <span>提交审核的报销单列表迁移到审核管理页面，当前页面只显示您的报销单列表！</span>
+        </div>
+    }
+  
     @if (Identity.Name == "蒋雷"||Identity.Name=="袁洋"||Identity.Name== "申屠杜平")
     {
-       <a href="/Report/DownloadExcel?name=申屠杜平&&order=@(Order.Time)&&content=招待费&&sheetType=日常报销" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-download"></i>下载招待费Excel</a>
+        <form class="form-inline" action="/Report/DownloadExcel" id="Server-form">
+            <input type="hidden" name="Name" value="申屠杜平" />
+            <input type="hidden" name="Order" value="Time" />
+            <input type="hidden" name="Content"  value="日常招待费"/>
+            <input type="hidden" name="SheetType" value="日常报销" />
+            <div class="form-group">
+                <label class="control-label">&nbsp;月份：</label>
+                <select name="Month" class="form-control input-sm">
+                    @for(var i = DateTime.Now; i >= startTime; i = i.AddMonths(-1))
+                    {
+                        var val = string.Format("{0}年{1}月", i.Year, i.Month);
+                        <option value="@val">@(val)</option>
+                    }
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm" data-loading-text="正在下载......" autocomplete="off"><i class="glyphicon glyphicon-download-alt"></i>&nbsp;下载招待费Excel</button>
+        </form>
+       @*<a href="/Report/DownloadExcel?name=申屠杜平&&order=@(Order.Time)&&content=日常招待费&&sheetType=日常报销" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-download"></i>下载招待费Excel</a>*@
        <hr />
     }
 </div>
@@ -45,125 +73,6 @@
             Html.RenderPartial("_Done", list.Where(e => e.Status == Status.Examined).Take(10).ToList() as object);
         }
     </div>
-</div>
-
-<div class="row">
-    <hr />
-    @if (WaitForMe != null)
-    {
-        <div class="col-md-6 col-xs-12 col-sm-12">
-            <div class="panel panel-success">
-                <div class="panel panel-heading">
-                    <h4 class="panel-title">
-                        待审核报销(注:需要我审核的报销单)
-                        <a style="float:right;font-size: 0.8em;" href="list.html">
-                            <em class="glyphicon glyphicon-info-sign"></em> 详情
-                        </a>
-                    </h4>
-                </div>
-                <table class="table table-striped table-condensed">
-                    <thead>
-                        <tr>
-                            <th>系统流水编号</th>
-                            <th>填报日期</th>
-                            <th>报销金额[元]</th>
-                            <th>报销人</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @{
-                            foreach (var sheet in WaitForMe.Where(e => e.Status != Status.Filing))
-                            {
-                                <tr>
-                                    <td><a href="/Report/Detail?id=@(sheet.ID)">@(sheet.PrintNumber)</a></td>
-                                    <td>@(sheet.Time.ToLongDateString())</td>
-                                    <td>@(sheet.Money)</td>
-                                    <td>@(sheet.Name)</td>
-                                </tr>
-                            }
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    }
-    @if (MyCheck != null)
-    {
-        <div class="col-md-6 col-xs-12 col-sm-12">
-            <div class="panel panel-primary">
-                <div class="panel panel-heading">
-                    <h4 class="panel-title">
-                        审核历史
-                        <a href="/Report/Review" style="float:right;font-size: 0.8em;">
-                            <em class="glyphicon glyphicon-info-sign"></em> 详情
-                        </a>
-                    </h4>
-                </div>
-                <table class="table table-striped table-condensed">
-                    <thead>
-                        <tr>
-                            <th>系统流水编号</th>
-                            <th>单据编号</th>
-                            <th>填报日期</th>
-                            <th>报销金额[元]</th>
-                            <th>报销人</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var sheet in MyCheck.OrderByDescending(e => e.CheckNumber))
-                        {
-                            <tr>
-                                <td><a href="/Report/Detail?id=@(sheet.ID)">@(sheet.PrintNumber)</a></td>
-                                <td>@(sheet.CheckNumber)</td>
-                                <td>@(sheet.Time.ToLongDateString())</td>
-                                <td>@(sheet.Money)</td>
-                                <td>@(sheet.Name)</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    }
-</div>
-<div class="row">
-    @if (Identity.Name == XmlHelper.GetManager())
-    {
-        var li = WaitForMe.Where(e => e.Status == Status.Filing).ToList();
-        <div class="col-md-6 col-xs-12 col-sm-12">
-            <div class="panel panel-primary">
-                <div class="panel panel-heading">
-                    <h4 class="panel-title">
-                        等待归档报销<span class="badge">@(li.Count)</span>
-                    </h4>
-                </div>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>系统流水编号</th>
-                            <th>填报日期</th>
-                            <th>报销金额</th>
-                            <th>报销人</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @{
-                            foreach (var sheet in li)
-                            {
-                                <tr>
-                                    <td><a href="/Report/Detail?id=@(sheet.ID)">@(sheet.PrintNumber)</a></td>
-                                    <td>@(sheet.Time.ToLongDateString())</td>
-                                    <td>@(sheet.Money)</td>
-                                    <td>@(sheet.Name)</td>
-                                </tr>
-                            }
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-                            }
 </div>
 
 

@@ -620,7 +620,7 @@ namespace Ztop.Todo.Web.Controllers
         }
   
         /// <summary>
-        /// 作用：单独页面查询
+        /// 作用：单独页面查询 主要针对袁总开放到账查询
         /// 作者：汪建龙
         /// 编写时间：2017年1月11日09:51:57
         /// </summary>
@@ -642,6 +642,17 @@ namespace Ztop.Todo.Web.Controllers
             string association=null,string cost="实际收入",string company=null,int page=1)
         {
             BillSearchBase(startTime, endTime, minMoney, maxMoney, otherside, remark, association, cost, company, page);
+            return View();
+        }
+        /// <summary>
+        /// 作用：针对市场部开放实际收入未关联的到账信息
+        /// 作者：汪建龙
+        /// 编写时间：2017年4月19日10:17:25
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult BillSearchMarket()
+        {
+            BillSearchBase(null, null, null, null, null, null, Association.None.GetDescription(), "实际收入");
             return View();
         }
         

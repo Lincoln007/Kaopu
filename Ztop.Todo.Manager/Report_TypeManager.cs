@@ -145,5 +145,13 @@ namespace Ztop.Todo.Manager
                 return true;
             }
         }
+
+        public ReportType Get(string name)
+        {
+            using (var db = GetDbContext())
+            {
+                return db.ReportTypes.FirstOrDefault(e => e.Name.ToLower() == name.ToLower());
+            }
+        }
     }
 }

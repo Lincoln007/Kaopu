@@ -181,6 +181,7 @@
     <Compile Include="UserTask.cs" />
     <Compile Include="UserTaskView.cs" />
     <Compile Include="Verify.cs" />
+    <Compile Include="VerifyView.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

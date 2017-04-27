@@ -25,6 +25,7 @@ namespace Ztop.Todo.Manager
                 if (entry != null)
                 {
                     record.ID = entry.ID;
+                    record.Sync = entry.Sync;
                     db.Entry(entry).CurrentValues.SetValues(record);
                 }
                 else

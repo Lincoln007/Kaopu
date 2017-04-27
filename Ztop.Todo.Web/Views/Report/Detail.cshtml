@@ -1,4 +1,4 @@
-﻿ @using Ztop.Todo.Model;
+﻿
 @{
     ViewBag.Title = "报销单";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -12,6 +12,7 @@
 @*<script src="http://10.22.102.4:8000/CLodopfuncs.js"></script>*@
 @*<script src="~/Scripts/CLodopfuncs.js?priority=1"></script>*@
 
+
 <script>
     $(function () {
         $("#Similar").load("/Report/DetailSimilar?id=@(sheet.ID)", null, function () {
@@ -20,19 +21,24 @@
     })
 </script>
 
-
 @if (sheet != null)
 {
     <div class="col-md-12 noprint">
         
-        <h3>报销单详情</h3>
+        <div class="page-header">
+            <h3>&nbsp;报销单详情</h3>
+           
+        </div>
+    
         @Html.Partial("_Message")
 
         <div class="col-md-12">
             @{
                 Html.RenderPartial("SheetHead", sheet as object);
             }
-
+            <span>
+                &nbsp;<strong>报销单类型：</strong> <label class="label label-success">@(sheet.Type.GetDescription())</label>
+            </span>
         </div>
 
       
@@ -45,8 +51,17 @@
             <table class="table table-bordered table-condensed">
                 <tbody>
                     <tr>
-                        <th>单据编号</th>
-                        <td>@(sheet.CheckNumber)</td>
+                        @if (sheet.Type == SheetType.Transfer)
+                        {
+                            <th>确认到账时间</th>
+                            <td>@(sheet.CheckTime.HasValue?sheet.CheckTime.Value.ToString("yyyy-MM-dd"):"未确认")</td>
+                        }
+                        else
+                        {
+                            <th>单据编号</th>
+                            <td>@(sheet.CheckNumber)</td>
+                        }
+                    
                         <th>报销人</th>
                         <td>@(sheet.Name)</td>
                     </tr>
@@ -75,44 +90,41 @@
                 </tbody>
             </table>
         </div>
-
-
-        @if (sheet.Type == SheetType.Daily)
-        {
-            <h3>内容分项清单&nbsp;</h3>
-                <table class="table table-striped table-condensed">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>分类</th>
-                            <th style="width:50%" class="text-center">内容</th>
-                            <th>金额（元）</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (sheet.Substancs_Views != null)
-                        {
-                            Serial = 1;
-                            foreach (var subView in sheet.Substancs_Views)
-                            {
-                                <tr>
-                                    <td>@(Serial++)</td>
-                                    <td>@(subView.Name) @(!string.IsNullOrEmpty(subView.SName)?"-"+subView.SName:"") </td>
-                                    <td class="text-center">@(subView.Details)</td>
-                                    <td>@(subView.Price)</td>
-                                </tr>
-                            }
-                        }
-                    </tbody>
-                </table>
-        }
-        else
+        @if (sheet.Type == SheetType.Errand)
         {
             if (sheet.Evection != null)
             {
                 Html.RenderPartial("Errand", sheet.Evection);
             }
-
+        }
+        else
+        {
+            <h3>内容分项清单&nbsp;</h3>
+            <table class="table table-striped table-condensed">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>分类</th>
+                        <th style="width:50%" class="text-center">内容</th>
+                        <th>金额（元）</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (sheet.Substancs_Views != null)
+                    {
+                        Serial = 1;
+                        foreach (var subView in sheet.Substancs_Views)
+                        {
+                            <tr>
+                                <td>@(Serial++)</td>
+                                <td>@(subView.Name) @(!string.IsNullOrEmpty(subView.SName) ? "-" + subView.SName : "") </td>
+                                <td class="text-center">@(subView.Details)</td>
+                                <td>@(subView.Price)</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
         }
         <div class="hidden">
             报销合计：@(sheet.Money) 元
@@ -180,6 +192,10 @@
             });
             return false;
         });
+
+ 
+
+
         $(".btn-delete").click(function () {
             if (confirm("您确定要删除报销单吗？")) {
                 ShowMessage("正在处理删除操作，请稍等......");
@@ -197,7 +213,7 @@
                 ShowMessage("审核通过处理中，请稍等.....");
                 $.request("/Report/Check?id=@(sheet.ID)", null, function () {
                     ShowMessage("审核通过处理完成，正在跳转，请稍等......");
-                    window.location.href = "/Report";
+                    window.location.href = "/Report/Director";
                 })
             }
         });
@@ -217,6 +233,11 @@
                     location.href = "/Report/Detail?id=@(sheet.ID)";
                 })
             }
-        })
+        });
+
+
+
+
+       
     })
 </script>

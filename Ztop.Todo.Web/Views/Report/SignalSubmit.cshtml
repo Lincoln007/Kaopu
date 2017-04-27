@@ -1,0 +1,10 @@
+﻿
+<input type="hidden" name="DirectorVal" />
+<button type="submit" class="btn btn-success btn-sm" name="Submit"><em class="glyphicon glyphicon-upload"></em>提交</button>
+<script>
+    $(function () {
+        $("button[name='Submit']").click(function () {
+            $("input[name='DirectorVal']").val("提交");
+        });
+    });
+</script>

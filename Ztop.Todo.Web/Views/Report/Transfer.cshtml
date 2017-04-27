@@ -1,0 +1,46 @@
+﻿
+@{
+    ViewBag.Title = "转账支出";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    Sheet sheet = ViewBag.Sheet;
+}
+
+<div class="page-header">
+    <h2>&nbsp;转账支出填写</h2>
+</div>
+
+
+<div class="row">
+    <div class="col-md-12 col-xs-12 col-sm-12">
+        <h3>&nbsp;基本信息</h3>
+        <table class="table table-striped table-bordered">
+            <tbody>
+                <tr>
+                    <th>流水单据编号</th>
+                    <td><input type="text" class="form-control input-sm" value="@(sheet==null?DateTime.Now.Ticks.ToString():sheet.Coding)" name="Coding" readonly="readonly" /></td>
+                    <th>报销日期</th>
+                    <td><input type="text" class="form-control input-sm" value="@(DateTime.Now.ToString("yyyy-MM-dd"))" name="Time" readonly="readonly" /></td>
+                </tr>
+                <tr>
+                    <th>报销人</th>
+                    <td>
+                        <input type="text" name="Name" class="form-control input-sm" value="@(Identity.Name)" readonly="readonly" />
+                    </td>
+                    <th>报销金额合计</th>
+                    <td>
+                        <input type="text" name="Money" value="@(sheet!=null? sheet.Money.ToString():"")" class="form-control input-sm" readonly="readonly" />
+                    </td>
+                </tr>
+                <tr>
+                    <th>发票张数</th>
+                    <td><input type="number" name="Count" value="@(sheet!=null? sheet.Count:0)" class="form-control input-sm" min="0" /></td>
+                    <th>备注</th>
+                    <td><input type="text" name="Remarks" style="width:100%" value="@(sheet!=null? sheet.Remarks:"")" class="form-control input-sm" /></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+

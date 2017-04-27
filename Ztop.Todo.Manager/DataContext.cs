@@ -63,6 +63,7 @@ namespace Ztop.Todo.Manager
         public DbSet<SubstancsView> Substancs_View { get; set; }
 
         public DbSet<Verify> Verifys { get; set; }
+        public DbSet<VerifyView> VerifyViews { get; set; }
 
         public DbSet<Record> Records { get; set; }
 

@@ -52,7 +52,7 @@ namespace Ztop.Todo.Manager
         }
 
        
-        public List<Sheet> GetSheetByVerify(string name)
+        public List<Sheet> GetSheetByVerify(string name,DateTime? startTime=null,DateTime? endTime=null)
         {
             using (var db = GetDbContext())
             {
@@ -65,9 +65,20 @@ namespace Ztop.Todo.Manager
                     where result.Contains(t.ID)
                     select t).ToList();
 
+                    var query2 = sheets.AsQueryable();
+                    if (startTime.HasValue)
+                    {
+                        query2 = query2.Where(e => e.Time >= startTime.Value);
+                    }
+
+                    if (endTime.HasValue)
+                    {
+                        query2 = query2.Where(e => e.Time <= endTime.Value);
+                    }
+
+                    sheets = query2.ToList();
                     foreach(var sheet in sheets)
                     {
-                        //var sheet = db.Sheets.Find(sid);
                         if (sheet != null)
                         {
                             if (sheet.Type == SheetType.Daily)
@@ -94,7 +105,7 @@ namespace Ztop.Todo.Manager
 
         public List<Sheet> GetSheetByVerify(SheetVerifyParameter parameter)
         {
-            var checks = GetSheetByVerify(parameter.Checker);
+            var checks = GetSheetByVerify(parameter.Checker,parameter.StartTime,parameter.EndTime);
             var query = checks.AsQueryable();
            
             if (!string.IsNullOrEmpty(parameter.Coding))
@@ -147,6 +158,14 @@ namespace Ztop.Todo.Manager
                 {
                     if (parameter.SheetType.Value == SheetType.Daily)
                     {
+                        if (parameter.RID.HasValue)
+                        {
+                            query = query.Where(e => e.Substances.Any(k => k.RID == parameter.RID.Value));
+                        }
+                        //if (parameter.SRID.HasValue)
+                        //{
+                        //    query = query.Where(e => e.Substances.Any(k => k.SRID == parameter.SRID.Value));
+                        //}
 
                         try
                         {

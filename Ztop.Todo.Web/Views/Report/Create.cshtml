@@ -1,4 +1,4 @@
-﻿@using Ztop.Todo.Model
+﻿
 @{
     ViewBag.Title = "创建报销单";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -9,7 +9,7 @@
 
 <div class="col-md-12">
     <form method="post" id="form-Create" action="/Report/Save" class="form-horizontal" enctype="multipart/form-data">
-        <h2 class="text-center">报销单填写</h2>
+        <h2 class="text-center">@(sheet.Type.GetDescription())填写</h2>
         <input type="hidden" name="ID" value="@(sheet.ID)" />
         <input type="hidden" name="Type" value="@(sheet.Type)" />
         <input type="hidden" name="Number" value="@(sheet.Number)" />
@@ -22,7 +22,15 @@
         </div>
         <div class="col-md-12 col-xs-12 col-sm-12">
             @{
-                Html.RenderPartial("SubmitButton");
+                if (sheet.Type == SheetType.Transfer)
+                {
+                    Html.RenderPartial("SignalSubmit");
+                }
+                else
+                {
+                    Html.RenderPartial("SubmitButton");
+                }
+
             }
 
             <button class="btn btn-sm btn-success" type="submit">
@@ -66,14 +74,15 @@
                     </tr>
                 </tbody>
             </table>
-            @if (sheet.Type == SheetType.Daily)
-            {
-                Html.RenderPartial("Subitem", sheet);
-            }
-            else
+            @if (sheet.Type == SheetType.Errand)
             {
                 Html.RenderPartial("Errand", sheet.Evection);
             }
+            else
+            {
+                Html.RenderPartial("Subitem", sheet);
+            }
+
         </div>
         <div class="col-md-12">
             @{

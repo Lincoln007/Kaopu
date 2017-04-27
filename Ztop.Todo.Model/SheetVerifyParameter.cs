@@ -1,4 +1,6 @@
-﻿namespace Ztop.Todo.Model
+﻿using System;
+
+namespace Ztop.Todo.Model
 {
     public class SheetVerifyParameter
     {
@@ -34,12 +36,20 @@
         /// 报销内容关键字
         /// </summary>
         public string Content { get; set; }
+        public int? RID { get; set; }
+
+        public int? SRID { get; set; }
         public SheetType? SheetType { get; set; }
         /// <summary>
         /// 时间
         /// </summary>
         public string Time { get; set; }
         public PageParameter Page { get; set; }
+        public DateTime? StartTime { get; set; }
+        public DateTime? EndTime { get; set; }
+
+        public Position? Position { get; set; }
+
     }
 
     

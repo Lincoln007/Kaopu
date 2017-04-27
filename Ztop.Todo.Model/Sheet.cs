@@ -97,6 +97,8 @@ namespace Ztop.Todo.Model
         /// 是否删除
         /// </summary>
         public bool Deleted { get; set; }
+
+        public Cost? Cost { get; set; }
         /// <summary>
         /// 日常报销—— 内容分项清单
         /// </summary>
@@ -133,7 +135,9 @@ namespace Ztop.Todo.Model
         [Description("日常报销")]
         Daily,
         [Description("出差报销")]
-        Errand
+        Errand,
+        [Description("转账支出")]
+        Transfer
     }
 
     public enum Status
@@ -155,7 +159,9 @@ namespace Ztop.Todo.Model
         [Description("审核不通过")]
         RollBack,
         [Description("现金核算")]
-        Cash
+        Cash,
+        [Description("审计")]
+        Auditing
     }
     
 }

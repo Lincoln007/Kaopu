@@ -53,7 +53,22 @@ else
                 <th>报销类型</th>
                 <td>@(entry.Type.GetDescription())</td>
             </tr>
-            @if (entry.Type == SheetType.Daily)
+            @if (entry.Type == SheetType.Errand)
+            {
+                <tr>
+                    <th>出差地点</th>
+                    <td>@(entry.Evection.Place)</td>
+                </tr>
+                <tr>
+                    <th>事由/项目</th>
+                    <td>@(entry.Evection.Reason)</td>
+                </tr>
+                                <tr>
+                                    <th>出差人员</th>
+                                    <td>@(entry.Evection.Persons)</td>
+                                </tr>
+            }
+            else
             {
                 foreach (var item in entry.Substancs_Views)
                 {
@@ -62,21 +77,6 @@ else
                         <td>@(item.Details)</td>
                     </tr>
                 }
-            }
-            else
-            {
-                <tr>
-                    <th>出差地点</th>
-                    <td>@(entry.Evection.Place)</td>
-                </tr>
-                                <tr>
-                                    <th>事由/项目</th>
-                                    <td>@(entry.Evection.Reason)</td>
-                                </tr>
-                                <tr>
-                                    <th>出差人员</th>
-                                    <td>@(entry.Evection.Persons)</td>
-                                </tr>
             }
         </table>
     }

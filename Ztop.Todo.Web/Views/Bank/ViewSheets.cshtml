@@ -7,6 +7,7 @@
     bool flag = list != null && list.Count > 0 && list.Select(e => e.Name).Distinct().Count() > 1;
     var dialy = list.Where(e => e.Type == SheetType.Daily).ToList();
     var errand = list.Where(e => e.Type == SheetType.Errand).ToList();
+    var transfer = list.Where(e => e.Type == SheetType.Transfer).ToList();
     var last = list.OrderBy(e => e.Money).FirstOrDefault();
     var first = list.OrderByDescending(e => e.Money).FirstOrDefault();
 }
@@ -20,20 +21,25 @@
         <li role="presentation" class=""><a href="#Sheet" role="tab" data-toggle="tab">报销列表<span class="badge">@(list.Count)</span></a></li>
         <li role="presentation" class=""><a href="#Sheet-Daily" role="tab" data-toggle="tab">日常报销<span class="badge">@(dialy.Count)</span></a></li>
         <li role="presentation" class=""><a href="#Sheet-Errand" role="tab" data-toggle="tab">出差报销<span class="badge">@(errand.Count)</span></a></li>
+        <li role="presentation" class=""><a href="#Sheet-Transfer" role="tab" data-toggle="tab">转账支出<span class="badge">@(transfer.Count)</span></a></li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" role="tabpanel" id="All">
             <table class="table table-striped">
                 <tbody>
                     <tr>
-                        <th rowspan="2">成功报销：</th>
-                        <td rowspan="2">@(list.Count)笔</td>
+                        <th rowspan="3">成功报销：</th>
+                        <td rowspan="3">@(list.Count)笔</td>
                         <th>日常报销：</th>
                         <td>@(dialy.Count)笔</td>
                     </tr>
                     <tr>
                         <th>出差报销：</th>
                         <td>@(errand.Count)笔</td>
+                    </tr>
+                    <tr>
+                        <th>转账支出：</th>
+                        <td>@(transfer.Count)笔</td>
                     </tr>
                     <tr>
                         <th>单笔报销金额最多[元]：</th>
@@ -81,9 +87,13 @@
                                 {
                                     <label class="label label-warning">@(item.Type.GetDescription())</label>
                                 }
-                                else
+                                else if(item.Type==SheetType.Errand)
                                 {
                                     <label class="label label-default">@(item.Type.GetDescription())</label>
+                                }
+                                else
+                                {
+                                    <label class="label label-success">@(item.Type.GetDescription())</label>
                                 }
                             </td>
                             <td>@(item.Remarks)</td>
@@ -202,6 +212,52 @@
                             </tr>
                         }
 
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-pane" role="tabpanel" id="Sheet-Transfer">
+            <table class="table table-bordered table-condensed table-hover">
+                <thead>
+                    <tr>
+                        <th rowspan="2">单据编号</th>
+                        <th rowspan="2">填写时间</th>
+                        <th rowspan="2">确认到账时间</th>
+                        <th rowspan="2">报销金额[元]</th>
+                        <th rowspan="2">报销人</th>
+                        <th rowspan="2">归类类型</th>
+                        <th colspan="3" class="text-center">分项详情</th>
+                    </tr>
+                    <tr>
+                        <th>类别</th>
+                        <th>内容</th>
+                        <th>金额[元]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in transfer.OrderBy(e => e.CheckNumber))
+                    {
+                        var row = item.Substancs_Views != null && item.Substancs_Views.Count > 0 ? item.Substancs_Views.Count : 0;
+                        row = row + 1;
+                        <tr>
+                            <td rowspan="@(row)"><a href="/Report/Detail?id=@(item.ID)">@(item.CheckNumber)</a></td>
+                            <td rowspan="@(row)">@(item.Time.ToString("yyyy-MM-dd"))</td>
+                            <td rowspan="@(row)">@(item.CheckTime.HasValue?item.CheckTime.Value.ToString("yyyy-MM-dd"):"???")</td>
+                            <td rowspan="@(row)">@(item.Money)</td>
+                            <td rowspan="@(row)">@(item.Name)</td>
+                            <td rowspan="@(row)">@(item.Cost.HasValue?item.Cost.Value.GetDescription():"未归类")</td>
+                        </tr>
+                        if (item.Substancs_Views != null && item.Substancs_Views.Count > 0)
+                        {
+                            foreach (var sub in item.Substancs_Views)
+                            {
+                                <tr>
+                                    <td>@(string.IsNullOrEmpty(sub.SName) ? sub.Name : sub.Name + "-" + sub.SName)</td>
+                                    <td>@(sub.Details)</td>
+                                    <td>@(sub.Price)</td>
+                                </tr>
+                            }
+                        }
                     }
                 </tbody>
             </table>

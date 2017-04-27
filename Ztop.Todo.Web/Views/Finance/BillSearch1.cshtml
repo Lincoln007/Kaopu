@@ -179,10 +179,26 @@
                     <tr>
                         <td><a href="/Finance/DetailBill?id=@(item.ID)">@(item.Time.HasValue ? item.Time.Value.ToShortDateString() : "未指定时间")</a> </td>
                         <td>@(item.Money)</td>
-                        <td>@(item.Account)</td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(item.Account) && item.Account.Length > 10)
+                            {
+                                <abbr title="@(item.Account)">@(item.Account.Substring(0, 10))</abbr>
+                            }
+                            else
+                            {
+                                @(item.Account)
+                            }
+                        </td>
                         <td>@(item.Summary)</td>
                         <td>
-                            @(item.Remark)
+                            @if (!string.IsNullOrEmpty(item.Remark) && item.Remark.Length > 10)
+                            {
+                                <abbr title="@(item.Remark)">@(item.Remark.Substring(0, 10))</abbr>
+                            }
+                            else
+                            {
+                                @(item.Remark)
+                            }
                         </td>
                         <td>@(item.Company.GetDescription())</td>
                         <td>

@@ -2,7 +2,8 @@
 @{
     ViewBag.Title = "我的审核";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    List<Sheet> sheets = ViewBag.List;
+    //List<Sheet> sheets = ViewBag.List;
+    List<VerifyView> list = ViewBag.List;
     SheetVerifyParameter parameter = ViewBag.Parameter;
 }
 <script >
@@ -13,6 +14,9 @@
     });
 </script>
 
+<div class="page-header">
+    <h3>我的审核</h3>
+</div>
 <div class="col-md-4 well" style="padding:0px;">
     <fieldset><legend>查询设置</legend></fieldset>
     <form method="get" id="Review-form">
@@ -160,20 +164,20 @@
             </tr>
         </thead>
         <tbody>
-            @foreach(var sheet in sheets)
+            @foreach (var sheet in list)
             {
                 <tr>
-                    <td><a href="/Report/Detail?id=@(sheet.ID)">@(sheet.PrintNumber)</a></td>
+                    <td><a href="/Report/Detail?id=@(sheet.SID)">@(sheet.PrintNumber)</a></td>
                     <td>@(sheet.CheckNumber)</td>
                     <td>@(sheet.Time.ToLongDateString())</td>
                     <td>@(sheet.Money)</td>
                     <td>@(sheet.Remarks)</td>
-                    <td>@(sheet.Name)</td>
+                    <td>@(sheet.SheetName)</td>
                 </tr>
             }
         </tbody>
     </table>
-    @Html.Partial("_pagination", ViewBag.Page as object)
+    @Html.Partial("_pagination", parameter.Page as object)
 </div>
 
 

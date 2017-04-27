@@ -159,6 +159,7 @@
     <Compile Include="TaskManager.cs" />
     <Compile Include="UserManager.cs" />
     <Compile Include="VerifyManager.cs" />
+    <Compile Include="VerifyViewManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Ztop.Todo.ActiveDirectory\Ztop.Todo.ActiveDirectory.csproj">

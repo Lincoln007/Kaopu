@@ -419,6 +419,14 @@
     <Content Include="Views\Bank\TimeList.cshtml" />
     <Content Include="Views\Bank\StatisticSheet.cshtml" />
     <Content Include="Views\Bank\PersonlSheet.cshtml" />
+    <Content Include="Views\Report\Transfer.cshtml" />
+    <Content Include="Views\Finance\BillSearchMarket.cshtml" />
+    <Content Include="Views\Report\SignalSubmit.cshtml" />
+    <Content Include="Views\Report\Director.cshtml" />
+    <Content Include="Views\Report\Wait.cshtml" />
+    <Content Include="Views\Report\CheckList.cshtml" />
+    <Content Include="Views\Report\WaitForCheck.cshtml" />
+    <Content Include="Views\Report\CheckTime.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

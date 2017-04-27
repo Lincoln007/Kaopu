@@ -516,6 +516,30 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
 
+        private Dictionary<string,double> Statistic(List<Sheet> list,string title)
+        {
+            var SV = new List<SubstancsView>();
+            foreach (var item in list)
+            {
+                if (item.Substancs_Views != null)
+                {
+                    SV.AddRange(item.Substancs_Views);
+                }
+
+            }
+            var dict = new Dictionary<string, double>();
+            var categorys = SV.GroupBy(e => e.Name).Select(e => e.Key).ToList();
+            foreach (var name in categorys)
+            {
+                var sum = SV.Where(e => e.Name.ToLower() == name).Sum(e => e.Price);
+                if (!dict.ContainsKey(title+name))
+                {
+                    dict.Add(title+name, sum);
+                }
+            }
+            return dict;
+        }
+
         /// <summary>
         /// 作用：统计各个类别报销情况
         /// 作者：汪建龙
@@ -525,28 +549,19 @@ namespace Ztop.Todo.Web.Controllers
         /// <returns></returns>
         public ActionResult CollectCategory(List<Sheet> sheets)
         {
-            var dailys = sheets.Where(e => e.Type == SheetType.Daily).ToList();
-            var SV = new List<SubstancsView>();
-            foreach (var item in dailys)
-            {
-                if (item.Substancs_Views != null)
-                {
-                    SV.AddRange(item.Substancs_Views);
-                }
-               
-            }
+            var result = new Dictionary<string, Dictionary<string, double>>();
             var dict = new Dictionary<string, double>();
-            var categorys = SV.GroupBy(e => e.Name).Select(e => e.Key).ToList();
-            foreach(var name in categorys)
-            {
-                var sum = SV.Where(e => e.Name.ToLower() == name).Sum(e => e.Price);
-                if (!dict.ContainsKey(name))
-                {
-                    dict.Add(name, sum);
-                }
-            }
+            var temp = Statistic(sheets.Where(e => e.Type == SheetType.Daily).ToList(),SheetType.Daily.GetDescription());
+            dict = dict.Union(temp).ToDictionary(e => e.Key, e => e.Value);
+            result.Add(SheetType.Daily.GetDescription(), temp);
+            temp = Statistic(sheets.Where(e => e.Type == SheetType.Transfer && e.Cost.HasValue && e.Cost.Value == Cost.RealPay).ToList(),SheetType.Transfer.GetDescription());
+            dict= dict.Union(temp).ToDictionary(e=>e.Key,e=>e.Value);
+            result.Add(SheetType.Transfer.GetDescription(), temp);
             var errands= sheets.Where(e => e.Type == SheetType.Errand).ToList();
-            dict.Add("差旅费", errands.Sum(e => e.Money));
+            temp = new Dictionary<string, double>() { { "差旅费", errands.Sum(e => e.Money) } };
+            dict= dict.Union(temp).ToDictionary(e => e.Key, e => e.Value);
+            result.Add(SheetType.Errand.GetDescription(), temp);
+            ViewBag.Result = result;
             ViewBag.Dict = dict;
             ViewBag.Sheets = sheets;
            

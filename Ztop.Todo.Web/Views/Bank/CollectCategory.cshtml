@@ -1,14 +1,14 @@
 ﻿@{ 
     Layout = null;
+    Dictionary<string, Dictionary<string, double>> result = ViewBag.Result;
     Dictionary<string, double> dict = ViewBag.Dict;
     var labels = dict.Select(e => e.Key).ToArray();
     var values = dict.Select(e => Math.Round(e.Value,2)).ToArray();
     double sum = .0;
-    const string errand = "差旅费";
 }
 
 
-<div class="col-md-6">
+<div class="col-md-6 col-xs-12 col-sm-12">
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">各项报销统计表</h3>
@@ -22,31 +22,23 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <th rowspan="@(dict.Count+1)">日常报销</th>
-                </tr>
-                @foreach (var entry in dict)
-            {
-                if (entry.Key != errand)
+                @foreach(var entry in result)
                 {
-                    sum += entry.Value;
+                    sum = 0;
+                    <tr>
+                        <th rowspan="@(entry.Value.Count+2)">@(entry.Key)</th>
+                    </tr>
+                    foreach(var item in entry.Value)
+                    {
+                        sum += item.Value;
                         <tr>
-                            <td>
-                                @(entry.Key)
-                            </td>
-                            <td>@(entry.Value)</td>
+                            <td>@(item.Key.Replace(entry.Key,""))</td>
+                            <td>@(item.Value)</td>
                         </tr>
                     }
-                }
-                <tr>
-                    <td>日常报销合计</td>
-                    <td>@(sum)</td>
-                </tr>
-                @{
-                    var item = dict[errand];
                     <tr>
-                        <th colspan="2">@(errand)</th>
-                        <td>@(item)</td>
+                        <td>@(entry.Key)合计</td>
+                        <td>@(sum)</td>
                     </tr>
                 }
                 <tr>
@@ -55,11 +47,9 @@
                 </tr>
             </tbody>
         </table>
-    </div>
-    
-    
+    </div> 
 </div>
-<div class="col-md-6">
+<div class="col-md-6 col-xs-12 col-sm-12">
     <h3 class="text-center">各项报销统计图</h3>
     <div class="col-md-12">
         <canvas id="Chart-Category"></canvas>

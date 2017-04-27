@@ -112,6 +112,7 @@ namespace Ztop.Todo.Manager
         public SubstancsManager SubstanceManager { get; private set; }
 
         public VerifyManager VerifyManager { get; private set; }
+        public VerifyViewManager VerifyViewManager { get; private set; }
         public Report_TypeManager Report_TypeManager { get; private set; }
         public Report_ManagerManager Report_ManagerManager { get; private set; }
         #endregion

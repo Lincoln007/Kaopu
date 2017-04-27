@@ -1,5 +1,4 @@
-﻿@using Ztop.Todo.ActiveDirectory
-@{ 
+﻿@{ 
     if (Model == null)
     {
         return;
@@ -15,6 +14,10 @@
 @if (!sheet.Deleted)
 {
     <a href="/Report/Index" class="btn btn-default btn-sm"><em class="glyphicon glyphicon-home">报销主页</em></a>
+    if(Identity.Director||Identity.Name== "靳小阳")
+    {
+        <a href="/Report/Director" class="btn btn-primary btn-sm"><em class="fa fa-fire"></em>审核管理</a>
+    }
     <div class="btn-group">
        
         @if (sheet.Controler == Identity.Name)
@@ -37,20 +40,25 @@
             <a href="/Report/CancelCheck?id=@(sheet.ID)" class="btn btn-danger btn-sm"><em class="glyphicon glyphicon-log-out"></em>撤销通过</a>
         }
     </div>
-  
-
-    
-
 
     if (sheet.Status == Status.OutLine || sheet.Status == Status.RollBack)//草稿  或者退回
     {
         if (Identity.Name == sheet.Name)
         {
+           
             <form method="post" class="form-horizontal col-md-12" action="" id="form-Check">
                 <input type="text" name="ID" value="@(sheet.ID)" style="display:none" />
                 <div class="btn-group">
                     @{
-                        Html.RenderPartial("SubmitButton");
+                        if (sheet.Type == SheetType.Transfer)
+                        {
+                            Html.RenderPartial("SignalSubmit");
+                        }
+                        else
+                        {
+                            Html.RenderPartial("SubmitButton");
+                        }
+
                     }
                     <a href="/Report/Create?id=@(sheet.ID)" class="btn btn-sm btn-primary">
                         <em class="glyphicon glyphicon-edit"></em>修改
@@ -93,11 +101,29 @@
                                     <em class="glyphicon glyphicon-print"></em> 打印
                                 </button>
                         }
+                        else if (sheet.Status == Status.Auditing)
+                        {
+                            if (sheet.Name == Identity.Name)
+                            {
+                                <a href="/Report/CheckTime?id=@(sheet.ID)" class="btn btn-success btn-sm" data-toggle="modal" data-target="#Modal"><i class="glyphicon glyphicon-ok-circle"></i>&nbsp;确认到账</a>
+
+                            }
+                        }
+                        else if (sheet.Status == Status.Examined)
+                        {
+                            if (sheet.Name == Identity.Name)
+                            {
+                                <a href="/Report/CheckTime?id=@(sheet.ID)" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#Modal"><i class="glyphicon glyphicon-edit"></i>&nbsp;编辑确认到账</a>
+
+                                }
+                            }
 
 
-                    }
-                    else
-                    {
+
+
+                        }
+                        else
+                        {
                         <div class="alert alert-danger col-md-8 col-xs-8 col-sm-8" role="alert">
                             <span>当前报销单已经被删除，以下内容只做查看使用</span>
                         </div>

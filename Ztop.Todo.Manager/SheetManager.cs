@@ -101,11 +101,7 @@ namespace Ztop.Todo.Manager
                 var model = db.Sheets.FirstOrDefault(e => e.ID == id);
                 if (model != null)
                 {
-                    if (model.Type == SheetType.Daily)
-                    {
-                        model.Substancs_Views = db.Substancs_View.Where(e => e.SID == id).OrderBy(e => e.ID).ToList();
-                    }
-                    else
+                    if (model.Type == SheetType.Errand)
                     {
                         model.Evection = db.Evections.FirstOrDefault(e => e.SID == id);//获取出差报销分项清单
                         if (model.Evection != null)
@@ -113,6 +109,10 @@ namespace Ztop.Todo.Manager
                             model.Evection.Errands = db.Errands.Where(e => e.EID == model.Evection.ID).ToList();//获取出差人数列表
                             model.Evection.TCosts = db.Traffics.Where(e => e.EID == model.Evection.ID).ToList();//获取用车类型列表
                         }
+                    }
+                    else
+                    {
+                        model.Substancs_Views = db.Substancs_View.Where(e => e.SID == id).OrderBy(e => e.ID).ToList();
                     }
                     model.Verifys = db.Verifys.Where(e => e.SID == id).OrderBy(e => e.ID).ToList();
                     var similars= db.Sheets.Where(e => e.Type == model.Type && e.Deleted == false && Math.Abs(e.Money - model.Money) < double.Epsilon && e.ID != model.ID).ToList();
@@ -141,11 +141,7 @@ namespace Ztop.Todo.Manager
                 var list= db.Sheets.Where(e => e.Type == model.Type && e.Deleted == false && Math.Abs(e.Money - model.Money) < double.Epsilon && e.ID != model.ID).OrderByDescending(e=>e.Time).Take(10).ToList();
                 foreach (var entry in list)
                 {
-                    if (entry.Type == SheetType.Daily)
-                    {
-                        entry.Substancs_Views = db.Substancs_View.Where(e => e.SID == entry.ID).OrderBy(e => e.ID).ToList();
-                    }
-                    else
+                    if (entry.Type == SheetType.Errand)
                     {
                         entry.Evection = db.Evections.FirstOrDefault(e => e.SID == entry.ID);
                         if (entry.Evection != null)
@@ -153,6 +149,10 @@ namespace Ztop.Todo.Manager
                             entry.Evection.Errands = db.Errands.Where(e => e.EID == entry.Evection.ID).ToList();
                             entry.Evection.TCosts = db.Traffics.Where(e => e.EID == entry.Evection.ID).ToList();
                         }
+                    }
+                    else
+                    {
+                        entry.Substancs_Views = db.Substancs_View.Where(e => e.SID == entry.ID).OrderBy(e => e.ID).ToList();
                     }
                 }
                 return list;
@@ -167,11 +167,7 @@ namespace Ztop.Todo.Manager
                 var model = db.Sheets.FirstOrDefault(e => e.ID == id);
                 if (model != null)
                 {
-                    if (model.Type == SheetType.Daily)
-                    {
-                       model.Substances = db.Substances.Where(e => e.SID == id).OrderBy(e => e.ID).ToList();
-                    }
-                    else
+                    if (model.Type == SheetType.Errand)
                     {
                         model.Evection = db.Evections.FirstOrDefault(e => e.SID == id);//获取出差报销分项清单
                         if (model.Evection != null)
@@ -179,8 +175,12 @@ namespace Ztop.Todo.Manager
                             model.Evection.Errands = db.Errands.Where(e => e.EID == model.Evection.ID).ToList();//获取出差人数列表
                             model.Evection.TCosts = db.Traffics.Where(e => e.EID == model.Evection.ID).ToList();//获取用车类型列表
                         }
-                      
                     }
+                    else
+                    {
+                        model.Substances = db.Substances.Where(e => e.SID == id).OrderBy(e => e.ID).ToList();
+                    }
+                  
                     /* */
                     #region   后续删除
                     model.Verifys = db.Verifys.Where(e => e.SID == id).OrderBy(e => e.ID).ToList();
@@ -258,7 +258,7 @@ namespace Ztop.Todo.Manager
                     }
                 }
                 db.SaveChanges();
-                if (sheet.Type==SheetType.Daily&&sheet.Substances != null)//第一次填写 日常报销的时候，substances不为空  当用户在草稿中点击提交的时候，分类项目清单已经存入
+                if ((sheet.Type==SheetType.Daily||sheet.Type==SheetType.Transfer)&&sheet.Substances != null)//第一次填写 日常报销的时候，substances不为空  当用户在草稿中点击提交的时候，分类项目清单已经存入
                 {
                     var older = db.Substances.Where(e => e.SID == sheet.ID).ToList();//如果重新编辑了报销单，则删除之前所有的子清单
                     if (older != null)
@@ -791,6 +791,43 @@ namespace Ztop.Todo.Manager
                 db.SaveChanges();
             }
             return sum;
+        }
+
+        /// <summary>
+        /// 作用：对转账支出单进行到账确认时间
+        /// 作者：汪建龙
+        /// 编写时间：2017年4月27日10:35:21
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="time"></param>
+        /// <returns></returns>
+        public bool CheckTranfer(int id,DateTime time,Cost cost)
+        {
+            using (var db = GetDbContext())
+            {
+                var model = db.Sheets.Find(id);
+                if (model == null)
+                {
+                    return false;
+                }
+                if (model.Type != SheetType.Transfer)
+                {
+                    return false;
+                }
+                model.CheckTime = time;
+                model.Status = Status.Examined;
+                model.Cost = cost;
+                db.Verifys.Add(new Verify()
+                {
+                    Step = Step.Affirm,
+                    Time = DateTime.Now,
+                    Name = model.Name,
+                    Position = Position.Check,
+                    SID = model.ID
+                });
+                db.SaveChanges();
+                return true;
+            }
         }
 
     }

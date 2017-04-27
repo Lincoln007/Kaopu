@@ -10,16 +10,16 @@ namespace Ztop.Todo.Manager
 {
     public class SubstancsManager:ManagerBase
     {
-        public List<Substancs> GetSubstances(HttpContextBase context,int[] rid,int[] srid)
+        public List<Substancs> GetSubstances(int[] rid,int[] srid,string[] details,double[] prices)
         {
-            var details = context.Request.Form["Detail"].Split(',');
-            var prices = context.Request.Form["Price"].Split(',');
+            //var details = context.Request.Form["Detail"].Split(',');
+            //var prices = context.Request.Form["Price"].Split(',');
             if (rid == null || rid.Count() != 10||details.Count()!=10||prices.Count()!=10)
             {
                 return null;
             }
             var list = new List<Substancs>();
-            double temp = .0;
+            //double temp = .0;
             var j = 0;
             for(var i = 0; i < 10; i++)
             {
@@ -28,7 +28,7 @@ namespace Ztop.Todo.Manager
                     break;
                 }
                 var rt = Core.Report_TypeManager.Get(rid[i]);
-                if (rt == null)
+                if (rt == null||Math.Round(prices[i]-0)<0.001)
                 {
                     continue;
                 }
@@ -36,7 +36,8 @@ namespace Ztop.Todo.Manager
                 {
                     RID=rid[i],
                     Details = details[i],
-                    Price = double.TryParse(prices[i], out temp) ? temp : .0
+                    Price=prices[i]
+                    //Price = double.TryParse(prices[i], out temp) ? temp : .0
                 };
                 if (rt.Children != null&&srid!=null&&srid.Length>j&&rt.Children.FirstOrDefault(e=>e.ID==srid[j])!=null)
                 {
