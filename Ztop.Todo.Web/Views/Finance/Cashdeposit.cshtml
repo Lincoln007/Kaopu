@@ -1,0 +1,172 @@
+﻿
+@{
+    ViewBag.Title = "保证金退款查询";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    List<BillView> Blist = ViewBag.BResult;
+    BillParamter parameter = ViewBag.Parameter;
+}
+
+<div class="page-header">
+    <h3>保证金退款详情</h3>
+</div>
+
+<div class="col-md-12 col-xs-12 well" style="padding:0px;">
+    <fieldset><legend>银行到账——查询设置</legend></fieldset>
+    <form method="get">
+        <div class="alert alert-warning" role="alert" name="Message" style="display:none;">
+            <i class="icon-spin icon-spinner"></i>
+            <span></span>
+        </div>
+        <input type="hidden" name="Association" value="@(parameter.Association.HasValue?parameter.Association.Value.GetDescription():"")" />
+        <input type="hidden" name="Company" value="@(parameter.Company.HasValue?parameter.Company.Value.GetDescription():"")" />
+        <div class="row">
+            <div class="col-md-6 col-xs-6 col-sm-6">
+               
+                <div class="form-group">
+                    <label class="control-label">到账银行：</label>
+                    <div class="col-md-12">
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-sm btn-@(parameter.Company.HasValue?"default":"success")" name="Company">全部</button>
+                            @foreach (Company company in Enum.GetValues(typeof(Company)))
+                            {
+                                if ((int)company < 3)
+                                {
+                                    <button type="button" class="btn btn-sm btn-@(parameter.Company.HasValue&&parameter.Company.Value==company?"success":"default")" name="Company">@(company.GetDescription())</button>
+                                }
+
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">到账金额：</label>
+                    <div class="col-md-12">
+                        <div class="input-group">
+                            <input type="text" name="MinMoney" placeholder="最小值" class="form-control input-sm" value="@(parameter.MinMoney.HasValue ? parameter.MinMoney.Value.ToString():"")" />
+                            <span class="input-group-addon input-sm">至</span>
+                            <input type="text" name="MaxMoney" placeholder="最大值" class="form-control input-sm" value="@(parameter.MaxMoney.HasValue?parameter.MaxMoney.Value.ToString():"")" />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">银行备注：</label>
+                    <div class="col-md-12">
+                        <div class="input-group input-group-sm" role="group">
+                            <div class="input-group-btn" role="group">
+                                <button type="button" class="btn btn-@(string.IsNullOrEmpty(parameter.Remark)?"success":"default")" name="Remark">全部</button>
+                            </div>
+                            <input type="text" name="Remark" placeholder="银行备注关键字" class="form-control" value="@(parameter.Remark)" />
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <div class="btn-group" role="group">
+                            <button type="submit" class="btn btn-sm btn-success"><i class="glyphicon glyphicon-search"></i> 立即查询</button>
+                            <button type="button" class="btn btn-sm btn-default" onclick="history.back();"><i class="glyphicon glyphicon-arrow-left"></i>返回</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xs-6 col-sm-6">
+                <div class="form-group">
+                    <label class="control-label">到账时间：</label>
+                    <div class="col-md-12">
+                        <div class="input-group">
+                            <input type="text" name="StartTime" placeholder="起始时间" class="form-control datetimepicker input-sm" value="@(parameter.StartTime.HasValue?parameter.StartTime.Value.ToString("yyyy-MM-dd"):"")" />
+                            <span class="input-group-addon input-sm">至</span>
+                            <input type="text" name="EndTime" placeholder="结束时间" class="form-control datetimepicker input-sm" value="@(parameter.EndTime.HasValue?parameter.EndTime.Value.ToString("yyyy-MM-dd"):"")" />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">对方户名：</label>
+                    <div class="col-md-12">
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-btn" role="group">
+                                <button type="button" class="btn btn-@(string.IsNullOrEmpty(parameter.OtherSide)?"success":"default")" name="OtherSide">全部</button>
+                            </div>
+                            <input type="text" name="OtherSide" placeholder="对方户名关键字" class="form-control" value="@(parameter.OtherSide)" />
+                        </div>
+                    </div>
+                </div>
+              
+
+               
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="col-md-12 col-xs-12">
+    <table class="table table-striped table-condensed table-hover">
+        <thead>
+            <tr>
+                <th>到账日期</th>
+                <th>到账金额[元]</th>
+                <th>对方户名</th>
+                <th>摘要</th>
+                <th>银行备注</th>
+                <th>到账银行</th>
+                <th>类别</th>
+              
+            </tr>
+        </thead>
+        <tbody>
+            @if (Blist != null)
+            {
+                foreach (var item in Blist)
+                {
+                    <tr>
+                        <td>@(item.Time.HasValue ? item.Time.Value.ToShortDateString() : "未指定时间")</td>
+                        <td>@(item.Money)</td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(item.Account) && item.Account.Length > 10)
+                            {
+                                <abbr title="@(item.Account)">@(item.Account.Substring(0, 10))</abbr>
+                            }
+                            else
+                            {
+                                @(item.Account)
+                            }
+                        </td>
+                        <td>@(item.Summary)</td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(item.Remark) && item.Remark.Length > 10)
+                            {
+                                <abbr title="@(item.Remark)">@(item.Remark.Substring(0, 10))</abbr>
+                            }
+                            else
+                            {
+                                @(item.Remark)
+                            }
+                        </td>
+                        <td>@(item.Company.GetDescription())</td>
+                        <td>
+                            @if (item.Cost.HasValue)
+                            {
+                                if (!string.IsNullOrEmpty(item.TName))
+                                {
+                                    @(string.Format("{0}-{1}", item.Cost.GetDescription(), item.TName))
+                                }
+                                else
+                                {
+                                    @(item.Cost.GetDescription())
+                                }
+                            }
+                            else
+                            {
+                                @("未归类")
+                            }
+                        </td>
+                      
+                    </tr>
+                }
+            }
+
+        </tbody>
+    </table>
+    @Html.Partial("_pagination", ViewBag.Page as object)
+</div>

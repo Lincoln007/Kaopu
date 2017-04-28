@@ -7,39 +7,38 @@ using System.Threading.Tasks;
 
 namespace Ztop.Todo.Model
 {
-    [Table("verify_view")]
-    public class VerifyView
+    [Table("sheet_view")]
+    public class SheetView
     {
         public int ID { get; set; }
-        /// <summary>
-        /// 步骤
-        /// </summary>
-        public Step Step { get; set; }
-        /// <summary>
-        /// 审核时间
-        /// </summary>
-        public DateTime Time { get; set; }
-        /// <summary>
-        /// 审核人
-        /// </summary>
         public string Name { get; set; }
-        public string Reason { get; set; }
-        public Position Position { get; set; }
-        /// <summary>
-        /// 报销单ID
-        /// </summary>
-        public int SID { get; set; }
-        /// <summary>
-        /// 报销人名字
-        /// </summary>
-        public string SheetName { get; set; }
-        public string Coding { get; set; }
+        public DateTime Time { get; set; }
         public int Count { get; set; }
         public double Money { get; set; }
         public Status Status { get; set; }
         public string Controler { get; set; }
+        public string Remarks { get; set; }
+        public bool Deleted { get; set; }
+        public SheetType Type { get; set; }
+        public string Checkers { get; set; }
+        public DateTime? CheckTime { get; set; }
+        public string Coding { get; set; }
         public string Number { get; set; }
         public int NumberExt { get; set; }
+        public int? CheckExt { get; set; }
+        public Cost? Cost { get; set; }
+        public int? subID { get; set; }
+        public int? RID { get; set; }
+        public int? SRID { get; set; }
+        public string Details { get; set; }
+        public double ? Price { get; set; }
+        public string subName { get; set; }
+        public string sName { get; set; }
+        public string Place { get; set; }
+        public string Reason { get; set; }
+        public string Persons { get; set; }
+        public double? Traffic { get; set; }
+        public int? SubSidy { get; set; }
         [NotMapped]
         public string PrintNumber
         {
@@ -48,8 +47,6 @@ namespace Ztop.Todo.Model
                 return string.Format("{0}{1}", Number, NumberExt.ToString("0000"));
             }
         }
-        public DateTime? CheckTime { get; set; }
-        public int ? CheckExt { get; set; }
         [NotMapped]
         public string CheckNumber
         {
@@ -65,16 +62,6 @@ namespace Ztop.Todo.Model
                 return "未生成单据编号";
             }
         }
-        public bool Deleted { get; set; }
-        public DateTime SheetTime { get; set; }
-        public SheetType Type { get; set; }
-        public int? SubID { get; set; }
-        public int? RID { get; set; }
-        public int? SRID { get; set; }
-        public string sName { get; set; }
-        public string Details { get; set; }
-        public string subName { get; set; }
-        public string Remarks { get; set; }
-        public string Place { get; set; }
+
     }
 }

@@ -425,8 +425,82 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
 
-        public ActionResult Search()
+        public ActionResult AdvanceSearch(
+            string name=null,DateTime? startTime=null,DateTime? endTime=null,
+            double? minMoney=null,double?maxMoney=null,SheetType? type=null,
+            int?RID=null,string content=null,Order order=Order.Time,
+            Cost? Cost=null,int page=1,int rows=20
+            )
         {
+            var parameter = new SheetParameter
+            {
+                Name = name,
+                StartTime = startTime,
+                EndTime = endTime,
+                minMoney = minMoney,
+                maxMoney = maxMoney,
+                Type = type,
+                Order = order,
+                Deleted = false,
+                Page = new PageParameter(page, rows)
+            };
+            if (parameter.Type.HasValue)
+            {
+                switch (parameter.Type.Value)
+                {
+                    case SheetType.Daily:
+                        parameter.RID = RID;
+                        break;
+                    case SheetType.Errand:
+                        parameter.Content = content;
+                        break;
+                    case SheetType.Transfer:
+                        parameter.Cost = Cost;
+                        break;
+                }
+            }
+            var list = Core.SheetViewManager.Search(parameter);
+            ViewBag.List = list;
+            ViewBag.Parameter = parameter;
+            var users = Core.UserManager.GetAllUsers();
+            var reportType = Core.Report_TypeManager.Get();
+            ViewBag.Users = users;
+            ViewBag.ReportType = reportType;
+            return View();
+        }
+        public ActionResult DownloadSheets(string name = null, DateTime? startTime = null, DateTime? endTime = null,
+        double? minMoney = null, double? maxMoney = null, SheetType? type = null,
+        int? RID = null, string content = null, Order order = Order.Time,
+        Cost? Cost = null)
+        {
+            var parameter = new SheetParameter
+            {
+                Name = name,
+                StartTime = startTime,
+                EndTime = endTime,
+                minMoney = minMoney,
+                maxMoney = maxMoney,
+                Type = type,
+                Order = order,
+                Deleted = false
+            };
+            if (parameter.Type.HasValue)
+            {
+                switch (parameter.Type.Value)
+                {
+                    case SheetType.Daily:
+                        parameter.RID = RID;
+                        break;
+                    case SheetType.Errand:
+                        parameter.Content = content;
+                        break;
+                    case SheetType.Transfer:
+                        parameter.Cost = Cost;
+                        break;
+                }
+            }
+            var dict = Core.SheetViewManager.Download(parameter);
+
             return View();
         }
         public ActionResult Statistic()
@@ -434,6 +508,8 @@ namespace Ztop.Todo.Web.Controllers
             ViewBag.Users = Core.UserManager.GetAllUsers().Select(e => e.RealName).ToList();
             return View();
         }
+
+
 
         public ActionResult Daily()
         {
@@ -585,14 +661,17 @@ namespace Ztop.Todo.Web.Controllers
             {
                 var array = month.Replace("年", ";").Replace("月", ";").Split(';');
                 var starttime= Convert.ToDateTime(string.Format("{0}-{1}-01 00:00:00", array[0], array[1]));
-                parameter.StartTime = starttime;
-                parameter.EndTime = starttime.AddMonths(1);
+                parameter.Year = int.Parse(array[0]);
+                parameter.Month = int.Parse(array[1]);
+                //parameter.StartTime = starttime;
+                //parameter.EndTime = starttime.AddMonths(1);
             }
            
             if (!string.IsNullOrEmpty(sheetType))
             {
                 parameter.SheetType = EnumHelper.GetEnum<SheetType>(sheetType);
             }
+            //var list = Core.VerifyViewManager.Search(parameter);
             var list = Core.VerifyManager.GetSheetByVerify(parameter);
             IWorkbook workbook = Core.VerifyManager.GetWorkbook(list);
             MemoryStream ms = new MemoryStream();

@@ -155,6 +155,7 @@
     <Compile Include="Report_TypeManager.cs" />
     <Compile Include="SerialNumberManager.cs" />
     <Compile Include="SheetManager.cs" />
+    <Compile Include="SheetViewManager.cs" />
     <Compile Include="SubstancsManager.cs" />
     <Compile Include="TaskManager.cs" />
     <Compile Include="UserManager.cs" />

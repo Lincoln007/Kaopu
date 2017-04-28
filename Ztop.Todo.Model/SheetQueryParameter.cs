@@ -30,6 +30,21 @@ namespace Ztop.Todo.Model
         /// </summary>
         public Status? Status { get; set; }
     }
+    public class SheetParameter
+    {
+        public string Name { get; set; }
+        public DateTime? StartTime { get; set; }
+        public DateTime? EndTime { get; set; }
+        public double? minMoney { get; set; }
+        public double? maxMoney { get; set; }
+        public int? RID { get; set; }
+        public string Content { get; set; }
+        public SheetType? Type { get; set; }
+        public Order Order { get; set; }
+        public bool? Deleted { get; set; }
+        public Cost? Cost { get; set; }
+        public PageParameter Page { get; set; }
+    }
 
     public class QueryParameter
     {

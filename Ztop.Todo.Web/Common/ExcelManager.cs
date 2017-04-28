@@ -255,5 +255,34 @@ namespace Ztop.Todo.Web.Common
 
         }
 
+
+
+        public static IWorkbook SaveSheets(Dictionary<string,List<SheetView>> dict)
+        {
+            IWorkbook workbook = ExcelClass.GetAbsolutePath(System.Configuration.ConfigurationManager.AppSettings["REPORT"].ToString()).OpenExcel();
+            if (workbook != null)
+            {
+                var sheet = workbook.GetSheetAt(0);
+                if (sheet != null)
+                {
+                    var row = sheet.GetRow(3);
+                    if (row != null)
+                    {
+                        var modelrow = row;
+                        var serial = 1;
+                        var rowNumber = 3;
+                        foreach(var entry in dict)
+                        {
+                            if (entry.Value.First().Type == SheetType.Errand)
+                            {
+
+                            }
+                        }
+                    }
+                }
+            }
+            return workbook;
+        }
+
     }
 }

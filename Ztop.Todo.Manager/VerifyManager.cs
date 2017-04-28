@@ -52,7 +52,7 @@ namespace Ztop.Todo.Manager
         }
 
        
-        public List<Sheet> GetSheetByVerify(string name,DateTime? startTime=null,DateTime? endTime=null)
+        public List<Sheet> GetSheetByVerify(string name,DateTime? startTime=null,DateTime? endTime=null,int?year=null,int?month=null)
         {
             using (var db = GetDbContext())
             {
@@ -75,7 +75,14 @@ namespace Ztop.Todo.Manager
                     {
                         query2 = query2.Where(e => e.Time <= endTime.Value);
                     }
-
+                    if (year.HasValue)
+                    {
+                        query2 = query2.Where(e => e.Time.Year == year.Value);
+                    }
+                    if (month.HasValue)
+                    {
+                        query2 = query2.Where(e => e.Time.Month == month.Value);
+                    }
                     sheets = query2.ToList();
                     foreach(var sheet in sheets)
                     {
@@ -84,6 +91,7 @@ namespace Ztop.Todo.Manager
                             if (sheet.Type == SheetType.Daily)
                             {
                                 sheet.Substances = db.Substances.Where(e => e.SID == sheet.ID).OrderBy(e => e.ID).ToList();
+                                sheet.Substancs_Views = db.Substancs_View.Where(e => e.SID == sheet.ID).OrderBy(e => e.ID).ToList();
                             }
                             else
                             {
@@ -105,7 +113,7 @@ namespace Ztop.Todo.Manager
 
         public List<Sheet> GetSheetByVerify(SheetVerifyParameter parameter)
         {
-            var checks = GetSheetByVerify(parameter.Checker,parameter.StartTime,parameter.EndTime);
+            var checks = GetSheetByVerify(parameter.Checker,parameter.StartTime,parameter.EndTime,parameter.Year,parameter.Month);
             var query = checks.AsQueryable();
            
             if (!string.IsNullOrEmpty(parameter.Coding))
@@ -167,15 +175,15 @@ namespace Ztop.Todo.Manager
                         //    query = query.Where(e => e.Substances.Any(k => k.SRID == parameter.SRID.Value));
                         //}
 
-                        try
-                        {
-                            var category = EnumHelper.GetEnum<Category>(parameter.Content);
-                            query = query.Where(e => e.Substances.Any(k => k.Category == category));
-                        }
-                        catch
-                        {
+                        //try
+                        //{
+                        //    var category = EnumHelper.GetEnum<Category>(parameter.Content);
+                        //    query = query.Where(e => e.Substances.Any(k => k.Category == category));
+                        //}
+                        //catch
+                        //{
 
-                        }
+                        //}
                     }
                     else if (parameter.SheetType.Value == SheetType.Errand)
                     {
@@ -201,7 +209,7 @@ namespace Ztop.Todo.Manager
             query = query.SetPage(parameter.Page);
             return query.ToList();
         }
-        private void WriteDialy(Sheet item,Substancs entry,IRow modelRow,int line,int serial,ref ISheet sheet)
+        private void WriteDialy(Sheet item,SubstancsView entry,IRow modelRow,int line,int serial,ref ISheet sheet)
         {
             var row = sheet.GetRow(line);
             if (row == null)
@@ -221,7 +229,7 @@ namespace Ztop.Todo.Manager
             ExcelClass.GetCell(row, 9, modelRow).SetCellValue(item.Status.GetDescription());
             ExcelClass.GetCell(row, 10, modelRow).SetCellValue(item.Checkers);
             ExcelClass.GetCell(row, 11, modelRow).SetCellValue(item.CheckTime.HasValue ? item.CheckTime.Value.ToLongDateString() : "未审核");
-            ExcelClass.GetCell(row, 12, modelRow).SetCellValue(string.Format("类别：{0}|内容：{1}|金额：{2}元", entry.Category.GetDescription(), entry.Details, Math.Round(entry.Price, 2)));
+            ExcelClass.GetCell(row, 12, modelRow).SetCellValue(string.Format("类别：{0}|内容：{1}|金额：{2}元", entry.Name, entry.Details, Math.Round(entry.Price, 2)));
         }
   
         private void WriteErrand(Errand item,IRow modelRow,int line,ref ISheet sheet)
@@ -331,11 +339,15 @@ namespace Ztop.Todo.Manager
                         {
                             if (item.Type == SheetType.Daily && item.Substances != null)
                             {
-                                foreach(var entry in item.Substances)
+                                foreach(var entry in item.Substancs_Views)
                                 {
                                     WriteDialy(item, entry, modelRow, rowNumber++, serial++, ref sheet);
                                 }
-                               
+                                //foreach (var entry in item.Substances)
+                                //{
+                                //    WriteDialy(item, entry, modelRow, rowNumber++, serial++, ref sheet);
+                                //}
+
                             }
                             else
                             {

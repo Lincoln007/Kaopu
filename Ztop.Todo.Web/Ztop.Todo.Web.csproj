@@ -427,6 +427,8 @@
     <Content Include="Views\Report\CheckList.cshtml" />
     <Content Include="Views\Report\WaitForCheck.cshtml" />
     <Content Include="Views\Report\CheckTime.cshtml" />
+    <Content Include="Views\Report\AdvanceSearch.cshtml" />
+    <Content Include="Views\Finance\Cashdeposit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

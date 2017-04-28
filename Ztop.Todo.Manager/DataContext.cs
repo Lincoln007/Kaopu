@@ -58,6 +58,7 @@ namespace Ztop.Todo.Manager
         #region 报销系统
 
         public DbSet<Sheet> Sheets { get; set; }
+        public DbSet<SheetView> SheetViews { get; set; }
 
         public DbSet<Substancs> Substances { get; set; }
         public DbSet<SubstancsView> Substancs_View { get; set; }

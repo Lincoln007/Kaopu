@@ -562,7 +562,7 @@ namespace Ztop.Todo.Web.Controllers
             DateTime? startTime = null, DateTime? endTime = null,
             double? minMoney = null, double? maxMoney = null,
             string otherside = null, string remark = null,
-            string association = null, string cost = "实际收入", string company = null, int page = 1)
+            string association = null, string cost = "实际收入", string company = null, PageParameter page=null)
         {
             var parameter = new BillParamter()
             {
@@ -572,7 +572,7 @@ namespace Ztop.Todo.Web.Controllers
                 MaxMoney = maxMoney,
                 OtherSide = otherside,
                 Remark = remark,
-                Page = new PageParameter(page, 20)
+                Page = page
             };
             if (!string.IsNullOrEmpty(company))
             {
@@ -615,7 +615,7 @@ namespace Ztop.Todo.Web.Controllers
             double? minMoney=null,double?maxMoney=null,
             string otherside=null,string remark=null,string company=null,int page = 1)
         {
-            BillSearchBase(startTime, endTime, minMoney, maxMoney, otherside, remark, Association.None.GetDescription(), Cost.RealIncome.GetDescription(), company, page);
+            BillSearchBase(startTime, endTime, minMoney, maxMoney, otherside, remark, Association.None.GetDescription(), Cost.RealIncome.GetDescription(), company, new PageParameter(page,20));
             return View();
         }
   
@@ -641,7 +641,33 @@ namespace Ztop.Todo.Web.Controllers
             string otherside=null,string remark=null,
             string association=null,string cost="实际收入",string company=null,int page=1)
         {
-            BillSearchBase(startTime, endTime, minMoney, maxMoney, otherside, remark, association, cost, company, page);
+            BillSearchBase(startTime, endTime, minMoney, maxMoney, otherside, remark, association, cost, company, new PageParameter(page,20));
+            return View();
+        }
+
+        /// <summary>
+        /// 作用：针对市场部人员查看保证金退款
+        /// 作者：汪建龙
+        /// 编写时间：2017年4月28日17:19:32
+        /// </summary>
+        /// <param name="startTime"></param>
+        /// <param name="endTime"></param>
+        /// <param name="minMoney"></param>
+        /// <param name="maxMoney"></param>
+        /// <param name="otherside"></param>
+        /// <param name="remark"></param>
+        /// <param name="association"></param>
+        /// <param name="cost"></param>
+        /// <param name="company"></param>
+        /// <param name="page"></param>
+        /// <returns></returns>
+        public ActionResult Cashdeposit(
+            DateTime? startTime = null, DateTime? endTime = null,
+            double? minMoney = null, double? maxMoney = null,
+            string otherside = null, string remark = null,
+            string association = null, string cost = "保证金退款", string company = null, int page = 1)
+        {
+            BillSearchBase(startTime, endTime, minMoney, maxMoney, otherside, remark, association, cost, company,new PageParameter(page,20));
             return View();
         }
         /// <summary>

@@ -105,9 +105,10 @@ namespace Ztop.Todo.Manager
 
         #region  报销系统
 
-        public SerialNumberManager SerialNumberManager { get; private set; }
+        //public SerialNumberManager SerialNumberManager { get; private set; }
 
         public SheetManager SheetManager { get; private set; }
+        public SheetViewManager SheetViewManager { get; private set; }
 
         public SubstancsManager SubstanceManager { get; private set; }
 
