@@ -226,12 +226,12 @@ namespace Ztop.Todo.Web.Controllers
             var model = Core.SheetManager.GetModel(id);
             if (model != null)
             {
-                if (model.Name != Identity.Name)
+                if (model.Name == Identity.Name||(model.Checkers==Identity.Name&&model.Type==SheetType.Transfer))
                 {
-                    throw new HttpException(401, "您没有权限删除该报销单");
+                    Core.SheetManager.Delete(id);
+                    return SuccessJsonResult();
                 }
-                Core.SheetManager.Delete(id);
-                return SuccessJsonResult();
+                throw new HttpException(401, "您没有权限删除该报销单");
             }
             throw new ArgumentException("参数错误，没有找到该报销单");
             

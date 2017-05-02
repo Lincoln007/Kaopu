@@ -111,11 +111,21 @@
                         }
                         else if (sheet.Status == Status.Examined)
                         {
-                            if (sheet.Name == Identity.Name)
+                            if (sheet.Type == SheetType.Transfer)
                             {
-                                <a href="/Report/CheckTime?id=@(sheet.ID)" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#Modal"><i class="glyphicon glyphicon-edit"></i>&nbsp;编辑确认到账</a>
+                                if (sheet.Name == Identity.Name)
+                                {
+                                    <a href="/Report/CheckTime?id=@(sheet.ID)" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#Modal"><i class="glyphicon glyphicon-edit"></i>&nbsp;编辑确认到账</a>
 
                                 }
+                                if (sheet.Checkers == Identity.Name)
+                                {
+                                    <button type="button" class="btn btn-sm btn-danger btn-delete">
+                                        <em class="glyphicon glyphicon-remove"></em>删除
+                                    </button>
+                                    }
+                                }
+
                             }
 
 
