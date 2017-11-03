@@ -9,6 +9,7 @@ namespace Ztop.Todo.Model
         [Key]
         public int ID { get; set; }
         public string RealName { get; set; }
-        public string Name { get; set; }
+        public string GroupName { get; set; }
+        public int Order { get; set; }
     }
 }

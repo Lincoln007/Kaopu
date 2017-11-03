@@ -78,6 +78,8 @@ namespace Ztop.Todo.Manager
         public DbSet<ReportManagerView> Report_Manager_Views { get; set; }
         public DbSet<Flow> Flows { get; set; }
         public DbSet<FlowView> Flow_Views { get; set; }
+        public DbSet<Reception> Receptions { get; set; }
+        public DbSet<ReceptionItem> ReceptionItems { get; set; }
 
         #endregion
 
@@ -94,6 +96,12 @@ namespace Ztop.Todo.Manager
         public DbSet<BillTwoView> BillTwo_Views { get; set; }
 
         public DbSet<BillView> Bill_views { get; set; }
+
+        public DbSet<Project> Projects { get; set; }
+        public DbSet<ProjectUser> Project_Users { get; set; }
+        public DbSet<ProjectProgress> Project_Progress { get; set; }
+        public DbSet<ProjectView> Project_Views { get; set; }
+        public DbSet<ProjectRecord> Project_Records { get; set; }
         #endregion
 
         #region 平板管理系统
@@ -142,11 +150,20 @@ namespace Ztop.Todo.Manager
         public DbSet<ContractFile> ContractFiles { get; set; }
         public DbSet<BillAccount> BillAccounts { get; set; }
         public DbSet<BillContract> BillContracts { get; set; }
-     
-     
-       
-      
-      
-     
+
+
+
+
+        #region  系统配置
+        public DbSet<OASystem> OASystems { get; set; }
+        public DbSet<Power> Powers { get; set; }
+        public DbSet<PowerItem> Items { get; set; }
+        /// <summary>
+        /// 客户端消息类型列表
+        /// </summary>
+        public DbSet<ClientMessage> Client_Messages { get; set; }
+        #endregion
+
+
     }
 }

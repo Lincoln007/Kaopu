@@ -32,22 +32,38 @@
         <form class="form-horizontal" method="post" action="/Manager/SaveReportType" id="ReportType-form" >
             <input type="hidden" name="RID" value="@(parent!=null?parent.ID.ToString():"")" />
             <div class="form-group">
-                <label class="control-label col-md-3">类型名称：</label>
-                <div class="col-md-8">
+                <label class="control-label col-md-4">类型名称：</label>
+                <div class="col-md-7">
                     <input type="text" name="Name" class="form-control" placeholder="类型名称" required />
                 </div>
             </div>
+     
             @if (parent != null)
             {
                 <div class="form-group">
-                    <label class="control-label col-md-3">上级类型：</label>
-                    <div class="col-md-8">
+                    <label class="control-label col-md-4">上级类型：</label>
+                    <div class="col-md-7">
                         <input type="text" name="" class="form-control" readonly value="@(parent.Name)" />
                     </div>
                 </div>
             }
+            else
+            {
+                <div class="form-group">
+                    <label class="control-label col-md-4">是否添加选项企业支付：</label>
+                    <div class="col-md-7">
+                        <label class="radio-inline">
+                            <input type="radio" name="IsEnterprise" value="false" checked="checked" />否
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="IsEnterprise" value="true" />是
+                        </label>
+                 
+                    </div>
+                </div>
+            }
             <div class="form-group">
-                <div class="col-md-8 col-md-offset-3">
+                <div class="col-md-7 col-md-offset-4">
                     <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i>确定</button>
                 </div>
             </div>

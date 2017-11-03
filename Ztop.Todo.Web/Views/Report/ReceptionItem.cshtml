@@ -1,0 +1,101 @@
+﻿@model List<ReceptionItem>
+<script>
+    var addhtml = $("#Add").html();
+    $(function () {
+        $("button[name='Remove']").click(function () {
+            var node = $(this).parent().parent();
+            node.remove();
+        });
+        $("button[name='Add']").click(function () {
+            $("#Item").append($("#Add").html());
+            $("button[name='Remove']").unbind("click").bind("click", function () {
+                var node = $(this).parent().parent();
+                node.remove();
+            });
+        });
+    });
+</script>
+
+<h3 style="margin-top:10px;">
+    招待项目
+</h3>
+
+<table class="table table-bordered table-condensed">
+    <thead>
+        <tr>
+            <th>招待内容</th>
+            <th>金额【元】</th>
+            <th>支付方式</th>
+            <th>人均消费【元】</th>
+            <th>备注</th>
+            <th>
+                <button type="button" class="btn btn-success btn-xs" name="Add"><i class="glyphicon glyphicon-plus-sign"></i></button>
+            </th>
+        </tr>
+    </thead>
+    <tbody id="Item">
+        @if (Model != null)
+        {
+            foreach(var item in Model)
+            {
+                <tr>
+                    <td>
+                        <input type="text" name="Content" class="form-control input-sm" placeholder="招待内容" required value="@(item.Content)" />
+                    </td>
+                    <td>
+                        <input type="text" name="Coin" class="form-control input-sm" placeholder="金额【元】" required value="@(item.Coin)" />
+                    </td>
+                    <td>
+                        <select name="Way" class="form-control input-sm">
+                            @foreach(PayWay way in Enum.GetValues(typeof(PayWay)))
+                            {
+                                <option value="@way" @(item.Way==way?"selected=selected":"")>@(way.GetDescription())</option>
+                            }
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" name="Average" class="form-control input-sm" placeholder="人均消费额" required value="@(item.Average)" />
+                    </td>
+                    <td>
+                        <input type="text" name="Memo" class="form-control input-sm" placeholder="备注" value="@(item.Memo)" />
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger btn-xs" name="Remove"><i class="glyphicon glyphicon-remove-sign"></i></button>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td>
+                    <input type="text" name="Content" class="form-control input-sm" placeholder="招待内容 " required />
+                </td>
+                <td>
+                    <input type="text" name="Coin" class="form-control input-sm" placeholder="金额【元】" required />
+                </td>
+                <td>
+                    <select name="Way" class="form-control input-sm">
+                        @foreach (PayWay way in Enum.GetValues(typeof(PayWay)))
+                        {
+                            <option value="@(way)">@(way.GetDescription())</option>
+                        }
+                    </select>
+                </td>
+                <td>
+                    <input type="text" name="Average" class="form-control input-sm" placeholder="人均消费额" required />
+                </td>
+                <td>
+                    <input type="text" name="Memo" class="form-control input-sm" placeholder="备注" />
+                </td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-xs" name="Remove"><i class="glyphicon glyphicon-remove-sign"></i></button>
+                </td>
+            </tr>
+        }
+   
+    </tbody>
+
+</table>
+
+

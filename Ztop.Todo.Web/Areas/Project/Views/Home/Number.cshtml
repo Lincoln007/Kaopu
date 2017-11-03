@@ -1,0 +1,32 @@
+﻿@{
+    Layout = null;
+    Project project = ViewBag.Model;
+}
+
+<script src="~/Scripts/Project.js"></script>
+
+<div class="page-header">
+    <h3 class="text-center">录入登记编号</h3>
+</div>
+<div class="row">
+    <div class="col-md-12 col-xs-12 col-sm-12">
+        <form class="form-horizontal" method="post" action="/Project/Home/SaveNumber" id="Project-Number">
+            @{ 
+                Html.RenderPartial("_Message");
+            }
+            <div class="form-group">
+                <label class="control-label col-md-3">登记编号：</label>
+                <div class="col-md-7">
+                    <input type="hidden" name="ID" value="@(project.ID)" />
+                    <input type="text" name="Number" class="form-control input-sm" placeholder="请输入7位有效登记编号" value="@(project.Number)"  required/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-7 col-md-offset-3">
+                    <button type="submit" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-ok-circle"></i>确定</button>
+                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><i class="glyphicon glyphicon-remove-circle"></i>&nbsp; 取消</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

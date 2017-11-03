@@ -1,0 +1,87 @@
+﻿@{ 
+    Layout = null;
+    Project project = ViewBag.Model;
+    List<UserGroup> groups = ViewBag.Groups;
+}
+<div class="page-header">
+    <h3 class="text-center">更改项目负责人</h3>
+</div>
+
+<script>
+    $(function () {
+        var node = $("#Select-User");
+        var select = $("select[name='UserId']");
+        $("select[name='GroupID']").change(function () {
+            var groupId = $(this).val();
+            if (groupId == undefined || groupId == "") {
+                node.hide(500);
+                return;
+            }
+            $.getJSON("/UserGroup/GetUser?groupId=" + groupId, null, function (data) {
+                select.empty().append("<option value=''>请选择</option>");
+                $.each(data, function (key, val) {
+                    select.append("<option value='"+val.ID+"'>"+val.RealName+"</option>")
+                });
+                node.show(500);
+            });
+
+        });
+
+        $("#Charge-form").submit(function () {
+            var btn = $("#Charge-form button[type='submit']");
+            btn.attr("disabled", "disabled");
+            ShowMessage("正在更改，请稍等......");
+            var href = $(this).attr("action");
+            var data=$(this).serialize();
+            $.request(href, data, function (json) {
+                if (json.result == 0) {
+                    ShowErrorMessage(json.content);
+                    btn.removeAttr("disabled");
+                } else {
+                    ShowSuccessMessage(json.content);
+                    location.href = "/Project/Home/Detail?id=@(project.ID)";
+                }
+            });
+            return false;
+        });
+    });
+</script>
+
+<div class="row">
+    <div class="col-md-12">
+        <form class="form-horizontal" action="/Project/Home/ChangeCharge" method="post" id="Charge-form">
+            @{ 
+                Html.RenderPartial("_Message");
+            }
+            <div class="form-group">
+                <label class="control-label col-md-3">部门：</label>
+                <div class="col-md-7">
+                    <input type="hidden" name="ID" value="@(project.ID)" />
+                    <select name="GroupID" class="form-control input-sm">
+                        <option value="">请选择</option>
+                        @foreach(var item in groups)
+                        {
+                            <option value="@(item.ID)">@(item.Name)</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group" id="Select-User" style="display:none;">
+                <label class="control-label col-md-3">用户：</label>
+                <div class="col-md-7">
+                    <select name="UserId" class="form-control input-sm">
+
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-7 col-md-offset-3">
+                    <button type="submit" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-ok-sign"></i>确定</button>
+                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><i class="glyphicon glyphicon-remove-circle"></i>&nbsp; 取消</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

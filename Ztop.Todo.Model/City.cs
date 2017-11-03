@@ -57,13 +57,22 @@ namespace Ztop.Todo.Model
         Town
     }
 
+    public class CityParameter : ParameterBase
+    {
+        public Rank? Rank { get; set; }
+        public int? PCID { get; set; }
+    }
+
     public enum SystemCategory
     {
         City,
         ProjectType,
         ProjectSystem,
         ReportSystem,
-        ReportManager
+        ReportManager,
+        OASystem,
+        User,
+        ClientMessage
     }
 
 }

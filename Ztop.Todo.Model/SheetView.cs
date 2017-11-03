@@ -27,18 +27,18 @@ namespace Ztop.Todo.Model
         public int NumberExt { get; set; }
         public int? CheckExt { get; set; }
         public Cost? Cost { get; set; }
-        public int? subID { get; set; }
-        public int? RID { get; set; }
-        public int? SRID { get; set; }
+        public int GroupID { get; set; }
+        public string UserName { get; set; }
         public string Details { get; set; }
-        public double ? Price { get; set; }
-        public string subName { get; set; }
-        public string sName { get; set; }
+        public double? Price { get; set; }
+        public string SubName { get; set; }
+        public string SubSName { get; set; }
         public string Place { get; set; }
         public string Reason { get; set; }
+        public string Mark { get; set; }
         public string Persons { get; set; }
-        public double? Traffic { get; set; }
-        public int? SubSidy { get; set; }
+
+
         [NotMapped]
         public string PrintNumber
         {

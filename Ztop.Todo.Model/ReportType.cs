@@ -20,6 +20,10 @@ namespace Ztop.Todo.Model
         public string Name { get; set; }
         public int RID { get; set; }
         public bool Delete { get; set; }
+        /// <summary>
+        /// 是否企业支付
+        /// </summary>
+        public bool IsEnterprise { get; set; }
         [NotMapped]
         public List<ReportType> Children { get; set; }
     }

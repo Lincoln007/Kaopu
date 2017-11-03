@@ -1,5 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Managers>
+  <Register>
+    <Person Name="袁洋"></Person>
+  </Register>
+  <Master>
+    <Person Name="袁洋"></Person>
+  </Master>
   <Projects>
     <Person Name="汪建龙"></Person>
   </Projects>

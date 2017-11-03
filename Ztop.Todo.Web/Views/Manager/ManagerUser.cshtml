@@ -1,0 +1,35 @@
+﻿@{ 
+    Layout = null;
+    Dictionary<string, List<UserGroupView>> dict = ViewBag.Dict;
+}
+
+<div class="page-header">
+    <h3 class="text-center">系统人员管理</h3>
+</div>
+
+<table class="table-bordered table ">
+   <thead>
+       <tr>
+           <th>组名称</th>
+           <th>用户名称</th>
+           <th>操作</th>
+       </tr>
+   </thead>
+    <tbody>
+        @foreach(var entry in dict)
+        {
+            <tr>
+                <td rowspan="@(entry.Value.Count+1)">@(entry.Key)</td>
+            </tr>
+            foreach(var item in entry.Value)
+            {
+                <tr>
+                    <td>@(item.RealName)</td>
+                    <td>
+                        <a href="" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-remove-circle"></i>删除</a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

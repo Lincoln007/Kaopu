@@ -16,10 +16,7 @@ namespace Ztop.Todo.Manager
         public Sheet GetModel(int id)
         {
             if (id == 0) return null;
-            using (var db = GetDbContext())
-            {
-                return db.Sheets.FirstOrDefault(e => e.ID == id);
-            }
+            return DB.Sheets.FirstOrDefault(e => e.ID == id);
         }
         public Sheet GetSheet(int id,SheetType type,string name)
         {
@@ -96,30 +93,28 @@ namespace Ztop.Todo.Manager
         public Sheet GetFull(int id)
         {
             if (id == 0) return null;
-            using (var db = GetDbContext())
+            var model = DB.Sheets.FirstOrDefault(e => e.ID == id);
+            if (model != null)
             {
-                var model = db.Sheets.FirstOrDefault(e => e.ID == id);
-                if (model != null)
+                if (model.Type == SheetType.Errand)
                 {
-                    if (model.Type == SheetType.Errand)
+                    model.Evection = DB.Evections.FirstOrDefault(e => e.SID == id);//获取出差报销分项清单
+                    if (model.Evection != null)
                     {
-                        model.Evection = db.Evections.FirstOrDefault(e => e.SID == id);//获取出差报销分项清单
-                        if (model.Evection != null)
-                        {
-                            model.Evection.Errands = db.Errands.Where(e => e.EID == model.Evection.ID).ToList();//获取出差人数列表
-                            model.Evection.TCosts = db.Traffics.Where(e => e.EID == model.Evection.ID).ToList();//获取用车类型列表
-                        }
+                        model.Evection.Errands = DB.Errands.Where(e => e.EID == model.Evection.ID).ToList();//获取出差人数列表
+                        model.Evection.TCosts = DB.Traffics.Where(e => e.EID == model.Evection.ID).ToList();//获取用车类型列表
                     }
-                    else
-                    {
-                        model.Substancs_Views = db.Substancs_View.Where(e => e.SID == id).OrderBy(e => e.ID).ToList();
-                    }
-                    model.Verifys = db.Verifys.Where(e => e.SID == id).OrderBy(e => e.ID).ToList();
-                    var similars= db.Sheets.Where(e => e.Type == model.Type && e.Deleted == false && Math.Abs(e.Money - model.Money) < double.Epsilon && e.ID != model.ID).ToList();
-                    model.SimilarCount = similars.Count;
                 }
-                return model;
+                else
+                {
+                    model.Substancs_Views = DB.Substancs_View.Where(e => e.SID == id).OrderBy(e => e.ID).ToList();
+                }
+                model.Verifys = DB.Verifys.Where(e => e.SID == id).OrderBy(e => e.ID).ToList();
+                var similars = DB.Sheets.Where(e => e.Type == model.Type && e.Deleted == false && Math.Abs(e.Money - model.Money) < double.Epsilon && e.ID != model.ID).ToList();
+                model.SimilarCount = similars.Count;
             }
+
+            return model;
         }
 
         /// <summary>
@@ -162,50 +157,57 @@ namespace Ztop.Todo.Manager
         public Sheet GetAllModel(int id)
         {
             if (id == 0) return null;
-            using (var db = GetDbContext())
+            var model = DB.Sheets.FirstOrDefault(e => e.ID == id);
+            if (model != null)
             {
-                var model = db.Sheets.FirstOrDefault(e => e.ID == id);
-                if (model != null)
+                if (model.Type == SheetType.Errand)
                 {
-                    if (model.Type == SheetType.Errand)
+                    model.Evection = DB.Evections.FirstOrDefault(e => e.SID == id);//获取出差报销分项清单
+                    if (model.Evection != null)
                     {
-                        model.Evection = db.Evections.FirstOrDefault(e => e.SID == id);//获取出差报销分项清单
-                        if (model.Evection != null)
+                        model.Evection.Errands = DB.Errands.Where(e => e.EID == model.Evection.ID).ToList();//获取出差人数列表
+                        model.Evection.TCosts = DB.Traffics.Where(e => e.EID == model.Evection.ID).ToList();//获取用车类型列表
+                    }
+                }
+                else if (model.Type == SheetType.Reception)
+                {
+                    if (model.Reception != null)
+                    {
+                        foreach (var item in model.Reception.Items)
                         {
-                            model.Evection.Errands = db.Errands.Where(e => e.EID == model.Evection.ID).ToList();//获取出差人数列表
-                            model.Evection.TCosts = db.Traffics.Where(e => e.EID == model.Evection.ID).ToList();//获取用车类型列表
+
                         }
+                    }
+                }
+                else
+                {
+                    model.Substances = DB.Substances.Where(e => e.SID == id).OrderBy(e => e.ID).ToList();
+                }
+
+                /* */
+                #region   后续删除
+                model.Verifys = DB.Verifys.Where(e => e.SID == id).OrderBy(e => e.ID).ToList();
+                model.Similars = DB.Sheets.Where(e => e.Type == model.Type && e.Deleted == false && Math.Abs(e.Money - model.Money) < double.Epsilon && e.ID != model.ID).ToList();
+                foreach (var entry in model.Similars)
+                {
+                    if (entry.Type == SheetType.Daily)
+                    {
+                        //entry.Substancs_Views = db.Substancs_View.Where(e => e.SID == entry.ID).OrderBy(e => e.ID).ToList();
+                        entry.Substances = DB.Substances.Where(e => e.SID == entry.ID).OrderBy(e => e.ID).ToList();
                     }
                     else
                     {
-                        model.Substances = db.Substances.Where(e => e.SID == id).OrderBy(e => e.ID).ToList();
-                    }
-                  
-                    /* */
-                    #region   后续删除
-                    model.Verifys = db.Verifys.Where(e => e.SID == id).OrderBy(e => e.ID).ToList();
-                    model.Similars = db.Sheets.Where(e => e.Type == model.Type && e.Deleted == false && Math.Abs(e.Money - model.Money) < double.Epsilon && e.ID != model.ID).ToList();
-                    foreach(var entry in model.Similars)
-                    {
-                        if (entry.Type == SheetType.Daily)
+                        entry.Evection = DB.Evections.FirstOrDefault(e => e.SID == entry.ID);
+                        if (entry.Evection != null)
                         {
-                            //entry.Substancs_Views = db.Substancs_View.Where(e => e.SID == entry.ID).OrderBy(e => e.ID).ToList();
-                            entry.Substances = db.Substances.Where(e => e.SID == entry.ID).OrderBy(e => e.ID).ToList();
-                        }
-                        else
-                        {
-                            entry.Evection = db.Evections.FirstOrDefault(e => e.SID == entry.ID);
-                            if (entry.Evection != null)
-                            {
-                                entry.Evection.Errands = db.Errands.Where(e => e.EID == entry.Evection.ID).ToList();
-                                entry.Evection.TCosts = db.Traffics.Where(e => e.EID == entry.Evection.ID).ToList();
-                            }
+                            entry.Evection.Errands = DB.Errands.Where(e => e.EID == entry.Evection.ID).ToList();
+                            entry.Evection.TCosts = DB.Traffics.Where(e => e.EID == entry.Evection.ID).ToList();
                         }
                     }
-                    #endregion
                 }
-                return model;
+                #endregion
             }
+            return model;
         }
 
         public void SaveSheet(Sheet sheet)
@@ -243,114 +245,147 @@ namespace Ztop.Todo.Manager
             {
                 sheet.BarCode = BarCode.GetBarCodePath(sheet.PrintNumber);
             }
-            using (var db = GetDbContext())
+            if (sheet.ID == 0)
             {
-                if (sheet.ID == 0)
+                DB.Sheets.Add(sheet);
+            }
+            else
+            {
+                var entry = DB.Sheets.FirstOrDefault(e => e.ID == sheet.ID);
+                if (entry != null)
                 {
-                    db.Sheets.Add(sheet);
+                    //sheet.ReceptionId = entry.ReceptionId;
+                    //if (entry.ReceptionId.HasValue)
+                    //{
+                    //    //sheet.Reception.ID = entry.ReceptionId.Value;
+                    //    var reception = DB.Receptions.Find(entry.ReceptionId.Value);
+                    //    if (reception == null)
+                    //    {
+                    //        DB.Receptions.Add(sheet.Reception);
+                    //        DB.SaveChanges();
+                    //        sheet.ReceptionId = sheet.Reception.ID;
+                    //    }
+                    //    else
+                    //    {
+                    //        var currents = sheet.Reception.Items;
+                    //        sheet.Reception.ID = entry.ReceptionId.Value;
+                    //        DB.Entry(reception).CurrentValues.SetValues(sheet.Reception);
+                    //        DB.SaveChanges();
+                    //        var items = DB.ReceptionItems.Where(e => e.ReceptionId == sheet.Reception.ID);
+                    //        if (items != null)
+                    //        {
+                    //            DB.ReceptionItems.RemoveRange(items);
+                    //            DB.SaveChanges();
+                    //        }
+                    //        if (currents != null && currents.Count > 0)
+                    //        {
+                    //            foreach(var item in currents)
+                    //            {
+                    //                item.ReceptionId = sheet.Reception.ID;
+                    //            }
+                    //            DB.ReceptionItems.AddRange(currents);
+                    //            DB.SaveChanges();
+                    //        }
+                    //    }
+                    //}
+                    DB.Entry(entry).CurrentValues.SetValues(sheet);
+                    entry.Reception = sheet.Reception;
+                }
+            }
+            DB.SaveChanges();
+            #region 日常报销
+            if ((sheet.Type == SheetType.Daily || sheet.Type == SheetType.Transfer) && sheet.Substances != null)//第一次填写 日常报销的时候，substances不为空  当用户在草稿中点击提交的时候，分类项目清单已经存入
+            {
+                var older = DB.Substances.Where(e => e.SID == sheet.ID).ToList();//如果重新编辑了报销单，则删除之前所有的子清单
+                if (older != null)
+                {
+                    DB.Substances.RemoveRange(older);
+                    DB.SaveChanges();
+                }
+
+                DB.Substances.AddRange(sheet.Substances.OrderBy(e => e.ID).Select(e => new Substancs
+                {
+                    RID = e.RID,
+                    SRID = e.SRID,
+                    Details = e.Details,
+                    Price = e.Price,
+                    SID = sheet.ID,
+                    EnterprisePay = e.EnterprisePay
+                }));
+            }
+            #endregion
+            if (sheet.Type == SheetType.Errand && sheet.Evection != null)
+            {
+                #region  更新出差报销中的分项清单
+
+                sheet.Evection.SID = sheet.ID;
+                var entry = DB.Evections.FirstOrDefault(e => e.SID == sheet.ID);
+                if (entry == null)
+                {
+                    DB.Evections.Add(sheet.Evection);
                 }
                 else
                 {
-                    var entry = db.Sheets.FirstOrDefault(e => e.ID == sheet.ID);
-                    if (entry != null)
-                    {
-                        db.Entry(entry).CurrentValues.SetValues(sheet);
-                    }
+                    sheet.Evection.ID = entry.ID;
+                    DB.Entry(entry).CurrentValues.SetValues(sheet.Evection);
                 }
-                db.SaveChanges();
-                if ((sheet.Type==SheetType.Daily||sheet.Type==SheetType.Transfer)&&sheet.Substances != null)//第一次填写 日常报销的时候，substances不为空  当用户在草稿中点击提交的时候，分类项目清单已经存入
+                DB.SaveChanges();
+                #endregion
+
+                #region  更新出差人数的列表
+                if (sheet.Evection.Errands != null)
                 {
-                    var older = db.Substances.Where(e => e.SID == sheet.ID).ToList();//如果重新编辑了报销单，则删除之前所有的子清单
+                    var older = DB.Errands.Where(e => e.EID == sheet.Evection.ID).ToList();
                     if (older != null)
                     {
-                        db.Substances.RemoveRange(older);
-                        db.SaveChanges();
+                        DB.Errands.RemoveRange(older);
+                        DB.SaveChanges();
                     }
-                    
-                    db.Substances.AddRange(sheet.Substances.OrderBy(e => e.ID).Select(e => new Substancs
+                    DB.Errands.AddRange(sheet.Evection.Errands.Select(e => new Errand
                     {
-                        RID=e.RID,
-                        SRID=e.SRID,
-                        Details = e.Details,
-                        Price = e.Price,
-                        SID = sheet.ID
+                        StartTime = e.StartTime,
+                        EndTime = e.EndTime,
+                        Peoples = e.Peoples,
+                        Days = e.Days,
+                        Users = e.Users,
+                        EID = sheet.Evection.ID
                     }));
+                    DB.SaveChanges();
+
                 }
-                if (sheet.Type == SheetType.Errand && sheet.Evection != null)
+
+                #endregion
+
+                #region  更新交通费用列表
+
+                if (sheet.Evection.TCosts != null)
                 {
-                    #region  更新出差报销中的分项清单
-
-                    sheet.Evection.SID = sheet.ID;
-                    var entry = db.Evections.FirstOrDefault(e => e.SID == sheet.ID);
-                    if (entry == null)
+                    var OLD = DB.Traffics.Where(e => e.EID == sheet.Evection.ID).ToList();
+                    if (OLD != null && OLD.Count != 0)
                     {
-                        db.Evections.Add(sheet.Evection);
+                        DB.Traffics.RemoveRange(OLD);
+                        DB.SaveChanges();
                     }
-                    else
+                    sheet.Evection.TCosts = sheet.Evection.TCosts.Select(e => new Traffic
                     {
-                        sheet.Evection.ID = entry.ID;
-                        db.Entry(entry).CurrentValues.SetValues(sheet.Evection);
-                    }
-                    db.SaveChanges();
-                    #endregion
-
-                    #region  更新出差人数的列表
-                    if (sheet.Evection.Errands != null)
-                    {
-                        var older = db.Errands.Where(e => e.EID == sheet.Evection.ID).ToList();
-                        if (older != null)
-                        {
-                            db.Errands.RemoveRange(older);
-                            db.SaveChanges();
-                        }
-                        db.Errands.AddRange(sheet.Evection.Errands.Select(e => new Errand
-                        {
-                            StartTime = e.StartTime,
-                            EndTime = e.EndTime,
-                            Peoples = e.Peoples,
-                            Days = e.Days,
-                            Users=e.Users,
-                            EID = sheet.Evection.ID
-                        }));
-                        db.SaveChanges();
-                       
-                    }
-
-                    #endregion
-
-                    #region  更新交通费用列表
-
-                    if (sheet.Evection.TCosts != null)
-                    {
-                        var OLD = db.Traffics.Where(e => e.EID == sheet.Evection.ID).ToList();
-                        if (OLD != null&&OLD.Count!=0)
-                        {
-                            db.Traffics.RemoveRange(OLD);
-                            db.SaveChanges();
-                        }
-                        sheet.Evection.TCosts = sheet.Evection.TCosts.Select(e => new Traffic
-                        {
-                            Type = e.Type,
-                            Cost = e.Cost,
-                            Toll = e.Toll,
-                            Petrol=e.Petrol,
-                            Driver=e.Driver,
-                            CarPetty=e.CarPetty,
-                            Plate = e.Plate,
-                            Times = e.Times,
-                            KiloMeters=e.KiloMeters,
-                            EID = sheet.Evection.ID
-                        }).ToList();
-                        db.Traffics.AddRange(sheet.Evection.TCosts);
-                        db.SaveChanges();
-                    }
-                   
-                    #endregion
+                        Type = e.Type,
+                        Cost = e.Cost,
+                        Toll = e.Toll,
+                        Petrol = e.Petrol,
+                        Driver = e.Driver,
+                        CarPetty = e.CarPetty,
+                        Plate = e.Plate,
+                        Times = e.Times,
+                        KiloMeters = e.KiloMeters,
+                        EID = sheet.Evection.ID
+                    }).ToList();
+                    DB.Traffics.AddRange(sheet.Evection.TCosts);
+                    DB.SaveChanges();
                 }
 
-                db.SaveChanges();
-
+                #endregion
             }
+            DB.SaveChanges();
         }
 
         private List<Sheet> GetSheets()
@@ -417,11 +452,7 @@ namespace Ztop.Todo.Manager
                 }
                 foreach(var item in list)
                 {
-                    if (item.Type == SheetType.Daily)
-                    {
-                        item.Substancs_Views = db.Substancs_View.Where(e => e.SID == item.ID).OrderBy(e => e.ID).ToList();
-                    }
-                    else
+                    if (item.Type == SheetType.Errand)
                     {
                         item.Evection = db.Evections.FirstOrDefault(e => e.SID == item.ID);//获取出差报销分项清单
                         if (item.Evection != null)
@@ -429,6 +460,10 @@ namespace Ztop.Todo.Manager
                             item.Evection.Errands = db.Errands.Where(e => e.EID == item.Evection.ID).ToList();//获取出差人数列表
                             item.Evection.TCosts = db.Traffics.Where(e => e.EID == item.Evection.ID).ToList();//获取用车类型列表
                         }
+                    }
+                    else
+                    {
+                        item.Substancs_Views = db.Substancs_View.Where(e => e.SID == item.ID).OrderBy(e => e.ID).ToList();
                     }
                 }
 
@@ -438,42 +473,50 @@ namespace Ztop.Todo.Manager
         }
         public List<Sheet> GetSheets(SheetQueryParameter2 parameter)
         {
-            using (var db = GetDbContext())
+            var query = DB.SheetViews.Where(e => e.Deleted == false).AsQueryable();
+            if (parameter.GroupId.HasValue)
             {
-                var query = db.Sheets.Where(e => e.Deleted == false).AsQueryable();
                 if (!string.IsNullOrEmpty(parameter.Name))
                 {
                     query = query.Where(e => e.Name.ToUpper() == parameter.Name.ToUpper());
                 }
-                if (parameter.StartTime.HasValue)
+                else
                 {
-                    query = query.Where(e => e.CheckTime >= parameter.StartTime.Value);
+                    query = query.Where(e => e.GroupID == parameter.GroupId.Value);
                 }
-                if (parameter.EndTime.HasValue)
-                {
-                    query = query.Where(e => e.CheckTime <= parameter.EndTime.Value);
-                }
-                var flag = false;
-                if (!string.IsNullOrEmpty(parameter.Category))
-                {
-                    if (parameter.Category == "差旅费")
-                    {
-                        query = query.Where(e => e.Type == SheetType.Errand);
-                    }
-                    else
-                    {
-                        query = query.Where(e => e.Type == SheetType.Daily);
-                        flag = true;
-                    }
-                }
-                var result = query.ToList().Select(e => e.ID).ToList();
-                var list = GetSheets(result);
-                if (flag)
-                {
-                    list = list.Where(e => e.Substancs_Views.Select(k => k.Name.ToLower()).Contains(parameter.Category.ToLower())).ToList();
-                }
-                return list;
             }
+            if (parameter.StartTime.HasValue)
+            {
+                query = query.Where(e => e.CheckTime >= parameter.StartTime.Value);
+            }
+            if (parameter.EndTime.HasValue)
+            {
+                query = query.Where(e => e.CheckTime <= parameter.EndTime.Value);
+            }
+            if (parameter.Type.HasValue)
+            {
+                query = query.Where(e => e.Type == parameter.Type.Value);
+                switch (parameter.Type.Value)
+                {
+                    case SheetType.Daily:
+                    case SheetType.Transfer:
+                        if (!string.IsNullOrEmpty(parameter.Category))
+                        {
+                            query = query.Where(e => e.SubName.ToLower() == parameter.Category.ToLower());
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+            if (!string.IsNullOrEmpty(parameter.Memo))
+            {
+                query = query.Where(e => e.Mark.Contains(parameter.Memo) || e.Details.Contains(parameter.Memo));
+            }
+
+            var result = query.ToList().Select(e => e.ID).Distinct().ToList();
+            var list = GetSheets(result);
+            return list;
         }
 
         /// <summary>
@@ -828,6 +871,36 @@ namespace Ztop.Todo.Manager
                 db.SaveChanges();
                 return true;
             }
+        }
+        public bool UnCheck(int id,string reason)
+        {
+            using (var db = GetDbContext())
+            {
+                var model = db.Sheets.Find(id);
+                if (model == null)
+                {
+                    return false;
+                }
+                if (model.Type != SheetType.Transfer)
+                {
+                    return false;
+                }
+                model.CheckTime = DateTime.Now;
+                model.Status = Status.Repeal;
+                model.Remarks += string.Format("已作废，作废原因：{0}", reason);
+                db.Verifys.Add(new Verify()
+                {
+                    Step=Step.Repeal,
+                    Time=DateTime.Now,
+                    Name=model.Name,
+                    Position=Position.Check,
+                    SID=model.ID,
+                    Reason=reason
+                });
+                db.SaveChanges();
+                return true;
+            }
+               
         }
 
     }

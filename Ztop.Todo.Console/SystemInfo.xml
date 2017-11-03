@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Composes>
+  <Administrators>
+    <Administrator Name="Administrators"></Administrator>
+    <Administrator Name="Domain Admins"></Administrator>
+  </Administrators>
+  <Directors>
+    <Director Name="欧阳安蛟"></Director>
+    <Director Name="陈立定"></Director>
+    <Director Name="张兴平"></Director>
+    <Director Name="申屠杜平"></Director>
+    <Director Name="袁洋"></Director>
+    <Director Name="蔡锋铭"></Director>
+    <Director Name="彭盛状"></Director>
+    <Director Name="俞海峰"></Director>
+    <Director Name="梁志卿"></Director>
+    <Director Name="蒋雷"></Director>
+    <Director Name="李旸"></Director>
+    <Manager Name="申屠杜平"></Manager>
+    <Finance Name="靳小阳"></Finance>
+    <Bank Name="袁洋"></Bank>
+    <Bank Name="申屠杜平"></Bank>
+    <Bank Name="靳小阳"></Bank>
+  </Directors>
+  <Organizations>
+    <Organization Name="000ALL"></Organization>
+  </Organizations>
+  <Compose Name="Builtin"></Compose>
+  <Compose Name="Computers"></Compose>
+  <Compose Name="Domain Controllers"></Compose>
+  <Compose Name="ForeignSecurityPrincipals"></Compose>
+  <Compose Name="LostAndFound"></Compose>
+  <Compose Name="Managed Service Accounts"></Compose>
+  <Compose Name="NTDS Quotas"></Compose>
+  <Compose Name="Program Data"></Compose>
+  <Compose Name="System"></Compose>
+  <Compose Name="Users"></Compose>
+  <Compose Name="Infrastructure"></Compose>
+  <Compose Name="a"></Compose>
+  <Compose Name="特殊帐号" ></Compose>
+  <Citys>
+    <City Name="杭州市" Code="330100"></City>
+    <City Name="宁波市" Code="330200"></City>
+    <City Name="温州市" Code="330300"></City>
+    <City Name="嘉兴市" Code="330400"></City>
+    <City Name="湖州市" Code="330500"></City>
+    <City Name="绍兴市" Code="330600"></City>
+    <City Name="金华市" Code="330700"></City>
+    <City Name="衢州市" Code="330800"></City>
+    <City Name="舟山市" Code="330900"></City>
+    <City Name="台州市" Code="331000"></City>
+    <City Name="丽水市" Code="331100"></City>
+  </Citys>
+</Composes>

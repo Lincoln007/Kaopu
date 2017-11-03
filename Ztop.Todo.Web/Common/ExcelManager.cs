@@ -33,11 +33,142 @@ namespace Ztop.Todo.Web.Common
             ISheet sheet1 = workbook.GetSheetAt(0);
             ISheet sheet2 = workbook.GetSheetAt(1);
             ISheet sheet3 = workbook.GetSheetAt(2);
-            WriteCompany(string.Format("杭州智拓{0}年{1}月收支汇总（一）", year, month), reportTypes, billList1, ref sheet1);
-            WriteCompany(string.Format("杭州智拓{0}年{1}月收支汇总（二）", year, month), reportTypes, billList2, ref sheet2);
-            WriteReport(string.Format("杭州智拓{0}年{1}月收支汇总（三）", year, month), reportTypes, sheets, ref sheet3);
+            WriteCompany(string.Format("杭州智拓{0}年{1}月收支汇总（一）", year, month), reportTypes, billList1,  sheet1);
+            WriteCompany(string.Format("杭州智拓{0}年{1}月收支汇总（二）", year, month), reportTypes, billList2,  sheet2);
+            WriteReport(string.Format("杭州智拓{0}年{1}月收支汇总（三）", year, month), reportTypes, sheets,  sheet3);
             return workbook;
         }
+        /// <summary>
+        /// 下载报销统计表格
+        /// </summary>
+        /// <param name="dict"></param>
+        /// <param name="title"></param>
+        /// <returns></returns>
+        public static IWorkbook DownloadReport(Dictionary<string, Dictionary<string, double>> dict,string title)
+        {
+            IWorkbook workbook = ExcelClass.GetAbsolutePath(System.Configuration.ConfigurationManager.AppSettings["BReport"].ToString()).OpenExcel();
+            if (workbook != null)
+            {
+                var sheet = workbook.GetSheetAt(0);
+                for(var i = 0; i <= sheet.LastRowNum; i++)
+                {
+                    var row = sheet.GetRow(i);
+                    if (row != null)
+                    {
+                        for(var j = 0; j <= row.LastCellNum; j++)
+                        {
+                            var cell = row.GetCell(j);
+                            if (cell != null)
+                            {
+                                var str = cell.ToString();
+                                if (!string.IsNullOrEmpty(str) && str.IndexOf("{") > -1 && str.IndexOf("}") > -1)
+                                {
+                                    str = str.Replace("{", "").Replace("}", "");
+                                    var value = string.Empty;
+                                    if (str.ToLower() == "head".ToLower())
+                                    {
+                                        value = title;
+                                    }else if (str.ToLower() == "ALL".ToLower())
+                                    {
+                                        value = Math.Round(dict.Sum(e => e.Value.Sum(k => k.Value)), 2).ToString();
+                                    }
+                                    else
+                                    {
+                                        var array = str.Split(',');
+                                        if (array.Length == 1)
+                                        {
+                                            if (dict.ContainsKey(str))
+                                            {
+                                                value = Math.Round(dict[str].Sum(e => e.Value), 2).ToString();
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (dict.ContainsKey(array[0]))
+                                            {
+                                                var entry = dict[array[0]];
+                                                var key = array[0] + array[1];
+                                                if (entry.ContainsKey(key))
+                                                {
+                                                    value = Math.Round(entry[key], 2).ToString();
+                                                }
+                                            }
+                                        }
+                                    }
+                                    cell.SetCellValue(value);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return workbook;
+        }
+
+        /// <summary>
+        /// 下载银行明细
+        /// </summary>
+        /// <param name="dict"></param>
+        /// <param name="title"></param>
+        /// <returns></returns>
+        public static IWorkbook DownloadBank(Dictionary<string,Dictionary<string,double>> dict,string title)
+        {
+            IWorkbook workbook = ExcelClass.GetAbsolutePath(System.Configuration.ConfigurationManager.AppSettings["BBank"].ToString()).OpenExcel();
+            if (workbook != null)
+            {
+                var sheet = workbook.GetSheetAt(0);
+                for(var i = 0; i <= sheet.LastRowNum; i++)
+                {
+                    var row = sheet.GetRow(i);
+                    if (row != null)
+                    {
+                        for(var j = 0; j <= row.LastCellNum; j++)
+                        {
+                            var cell = row.GetCell(j);
+                            if (cell != null)
+                            {
+                                var str = cell.ToString();
+                                if (str.IndexOf("{") > -1 && str.IndexOf("}") > -1)
+                                {
+                                    str = str.Replace("{", "").Replace("}", "");
+                                    var value = string.Empty;
+                                    if (str.ToLower() == "head".ToLower())
+                                    {
+                                        value = title;
+                                    }
+                                    else
+                                    {
+                                        var array = str.Split(',');
+                                        if (array.Length == 1)
+                                        {
+                                            if (dict.ContainsKey(str))
+                                            {
+                                                value = Math.Round(dict[str].Sum(e => e.Value), 2).ToString();
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (dict.ContainsKey(array[0]))
+                                            {
+                                                var entry = dict[array[0]];
+                                                if (entry.ContainsKey(array[1]))
+                                                {
+                                                    value = Math.Round(entry[array[1]], 2).ToString();
+                                                }
+                                            }
+                                        }
+                                    }
+                                    cell.SetCellValue(value);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return workbook;
+        }
+
+
        
         /// <summary>
         /// 作用：返回项目洽谈信息表
@@ -149,7 +280,7 @@ namespace Ztop.Todo.Web.Common
         /// <param name="reportTypes"></param>
         /// <param name="list"></param>
         /// <param name="sheet"></param>
-        public static void WriteReport(string head,List<ReportType> reportTypes, List<Sheet> list,ref ISheet sheet)
+        public static void WriteReport(string head,List<ReportType> reportTypes, List<Sheet> list, ISheet sheet)
         {
             if (list == null || reportTypes == null)
             {
@@ -198,7 +329,7 @@ namespace Ztop.Todo.Web.Common
         /// <param name="ReportTypes"></param>
         /// <param name="list"></param>
         /// <param name="sheet"></param>
-        public static void WriteCompany(string head,List<ReportType> ReportTypes, List<BillRecordView> list,ref ISheet sheet)
+        public static void WriteCompany(string head,List<ReportType> ReportTypes, List<BillRecordView> list, ISheet sheet)
         {
             if (list == null || sheet == null)
             {

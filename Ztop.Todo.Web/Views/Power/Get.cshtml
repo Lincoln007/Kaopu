@@ -1,0 +1,19 @@
+﻿@{ 
+    Layout = null;
+    Power power = ViewBag.Model;
+    PowerType type = ViewBag.Type;
+}
+
+@if (power != null)
+{
+    if (type == PowerType.Windows)
+    {
+        <a href="@(power.Url+ViewBag.Parameter)" class="@(power.Class)" data-toggle="modal" data-target="#Modal" name="@(ViewBag.Name)"><i class="@(power.Glyphicon)"></i>@(power.Name)</a>
+    }
+    else
+    {
+        <a href="@(power.Url+ViewBag.Parameter)" class="@(power.Class)" name="@(ViewBag.Name)"><i class="@(power.Glyphicon)"></i>@(power.Name)</a>
+    }
+
+}
+

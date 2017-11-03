@@ -37,7 +37,7 @@ namespace Ztop.Todo.Web.Controllers
 
         public ActionResult Wait()
         {
-            ViewBag.WaitForMe = Core.SheetManager.GetSheets(new SheetQueryParameter { Deleted = false, Controler = Identity.Name }).Where(e => e.Status != Status.Examined && e.Status != Status.OutLine && e.Status != Status.RollBack && e.Status != Status.Cash).ToList();
+            ViewBag.WaitForMe = Core.SheetManager.GetSheets(new SheetQueryParameter { Deleted = false, Controler = Identity.Name }).Where(e => e.Status != Status.Examined && e.Status != Status.OutLine && e.Status != Status.RollBack && e.Status != Status.Cash&&e.Status!=Status.Repeal).ToList();
             return View();
         }
 
@@ -70,6 +70,31 @@ namespace Ztop.Todo.Web.Controllers
             return SuccessJsonResult();
         }
 
+
+        public ActionResult UnCheck(int id)
+        {
+            var model = Core.SheetManager.GetModel(id);
+            ViewBag.Model = model;
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult UnCheck(int id,string reason)
+        {
+            if (!Core.SheetManager.UnCheck(id, reason))
+            {
+                return ErrorJsonResult("作废失败，未找到转账单或者当前报销单为非转账单");
+            }
+            return SuccessJsonResult();
+        }
+
+
+        public ActionResult Expenses()
+        {
+            return View();
+        }
+
+        
         /// <summary>
         /// 填写新的报销单
         /// </summary>
@@ -128,7 +153,9 @@ namespace Ztop.Todo.Web.Controllers
         public ActionResult Save(
             Sheet sheet,string DirectorVal,
             Evection evection,string[] busType,string lines,double[] CarPetty,Driver[] driver,
-            int[] rid, int[] srid,string[] detail,double[] price)
+            int[] rid, int[] srid,string[] detail,double[] price,bool[] payWay,
+            Reception reception,string[] content,double[] Coin,PayWay[] Way,double[] Average,string[] Memo
+            )
         {
             double sum = .0;
             if (sheet.Type == SheetType.Errand)//出差报销
@@ -141,11 +168,23 @@ namespace Ztop.Todo.Web.Controllers
                 evection.TCosts = Core.SubstanceManager.GetTraffic(HttpContext, busType, driver, CarPetty);
                 sheet.Evection = evection;
                 sum = evection.Traffic + evection.SubSidy + evection.Hotel + evection.Other;
+            }else if (sheet.Type == SheetType.Reception)//日常招待
+            {
+                var items = Core.ReceptionManager.GainItems(content, Coin, Way, Average, Memo);
+                if (reception == null||items==null||items.Count==0)
+                {
+                    return ErrorJsonResult("未获取相关日常招待基础信息");
+                }
+                reception.Items = items;
+                sum= items.Where(e => e.Way == PayWay.Cash).Sum(e => e.Coin);
+                sheet.Money = sum;
+                sheet.Reception = reception;
             }
             else//日常报销  转账支出
             {
-                sheet.Substances = Core.SubstanceManager.GetSubstances(rid, srid,detail,price);//获取详细清单
-                sum = sheet.Substances.Sum(e => e.Price);
+                sheet.Substances = Core.SubstanceManager.GetSubstances(rid, srid,detail,price,payWay);//获取详细清单
+                sum = sheet.Substances.Where(e=>e.EnterprisePay==false).Sum(e => e.Price);
+                sheet.Money = sum;
             }
             if (Math.Abs(sheet.Money - sum) > 0.001)
             {
@@ -161,6 +200,7 @@ namespace Ztop.Todo.Web.Controllers
             var sheet = Core.SheetManager.GetModel(id);
             if (sheet != null)
             {
+                //sheet.Reception = null;
                 Save(sheet, DirectorVal);
                 return SuccessJsonResult();
             }
@@ -174,6 +214,7 @@ namespace Ztop.Todo.Web.Controllers
         public ActionResult Detail(int id,InfoType? infoType=null,int ?verifyid=null)
         {
             var model = Core.SheetManager.GetFull(id);
+  
             if (model.Type != SheetType.Transfer)
             {
                 if (model.Status == Status.Filing || model.Status == Status.Examined)
@@ -599,6 +640,20 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
 
+        /// <summary>
+        /// 作用：只查看除了转账支出的报销单
+        /// </summary>
+        /// <param name="Coding"></param>
+        /// <param name="CheckKey"></param>
+        /// <param name="Time"></param>
+        /// <param name="MinMoney"></param>
+        /// <param name="MaxMoney"></param>
+        /// <param name="Creater"></param>
+        /// <param name="order"></param>
+        /// <param name="page"></param>
+        /// <param name="sheetType"></param>
+        /// <param name="content"></param>
+        /// <returns></returns>
         public ActionResult Review(
             string Coding=null,string CheckKey=null,
             string Time=null,
@@ -623,11 +678,46 @@ namespace Ztop.Todo.Web.Controllers
                 parameter.SheetType = EnumHelper.GetEnum<SheetType>(sheetType);
             }
             ViewBag.List = Core.VerifyViewManager.Search(parameter);
-            //ViewBag.List = Core.VerifyManager.GetSheetByVerify(parameter);
             ViewBag.Parameter = parameter;
-            //ViewBag.Page = parameter.Page;
             return View();
         }
+
+        /// <summary>
+        /// 作用：显示转账支出的报销单
+        /// </summary>
+        /// <param name="coding"></param>
+        /// <param name="checkkey"></param>
+        /// <param name="time"></param>
+        /// <param name="minMoney"></param>
+        /// <param name="maxMoney"></param>
+        /// <param name="creater"></param>
+        /// <param name="order"></param>
+        /// <param name="page"></param>
+        /// <param name="rows"></param>
+        /// <returns></returns>
+        public ActionResult Bank(
+            string coding=null,string checkkey=null,
+            string time=null,double? minMoney=null,double? maxMoney=null,
+            string creater=null,Order order=Order.Time,
+            int page=1,int rows=20)
+        {
+            var parameter = new SheetVerifyParameter
+            {
+                Coding = coding,
+                CheckKey = checkkey,
+                Time = time,
+                MinMoney = minMoney,
+                MaxMoney = maxMoney,
+                Creater = creater,
+                Order = order,
+                Checker = Identity.Name,
+                Page = new PageParameter(page, rows)
+            };
+            ViewBag.List = Core.VerifyViewManager.Search(parameter, true);
+            ViewBag.Parameter = parameter;
+            return View();
+        }
+
 
         public ActionResult DownloadExcel(
             string name=null,string coding=null,
@@ -719,6 +809,16 @@ namespace Ztop.Todo.Web.Controllers
         {
             var sheet = Core.SheetManager.GetModel(id);
             ViewBag.Sheet = sheet;
+            return View();
+        }
+
+        /// <summary>
+        /// 作用：报销系统的
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Search()
+        {
+
             return View();
         }
 

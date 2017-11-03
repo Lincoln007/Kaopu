@@ -34,6 +34,7 @@
     <thead>
         <tr>
             <th>名称</th>
+            <th>是否添加企业支付选项</th>
             <th>操作</th>
         </tr>
     </thead>
@@ -42,6 +43,7 @@
         {
             <tr>
                 <th>@(item.Name)</th>
+                <td>@(item.IsEnterprise?"是":"否")</td>
                 <td>
                     <a href="/Manager/CreateReportType?rid=@(item.ID)" data-toggle="modal" data-target="#Modal" class="btn btn-warning btn-xs"><i class="glyphicon glyphicon-plus-sign"></i>添加二级类别</a>
                     <a href="/Manager/EditReportType?id=@(item.ID)" data-toggle="modal" data-target="#Modal" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i>编辑</a>
@@ -54,6 +56,7 @@
                 {
                     <tr name="@(item.ID)">
                         <td>——@(child.Name)</td>
+                        <td>/</td>
                         <td>
                             <a href="/Manager/EditReportType?id=@(child.ID)" data-toggle="modal" data-target="#Modal" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i>编辑</a>
                             <a href="/Manager/DeleteReportType?id=@(child.ID)" name="Remove" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-remove-circle"></i>删除</a>

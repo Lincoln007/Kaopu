@@ -1,0 +1,66 @@
+﻿@model OASystem
+@{ 
+    Layout = null;
+    int serial = 1;
+}
+
+<script>
+    $(function () {
+        $("a[name='Delete']").click(function () {
+            var href = $(this).attr("href");
+            var btn = $(this);
+            btn.attr("disabled", "disabled");
+            $.request(href, null, function (json) {
+                alert(json.content);
+                if (json.result == 0) {
+                    btn.removeAttr("disabled");
+                } else {
+                    location.href = "/Manager/Index?cateory=@(SystemCategory.OASystem)";
+                }
+            });
+            return false;
+        });
+    });
+</script>
+
+<div class="page-header">
+    <h5>@(Model.Name)权限功能</h5>
+    <a href="" data-toggle="modal" data-target="#Modal"  class="btn btn-success btn-sm"><i class="glyphicon glyphicon-plus-sign"></i>添加系统组</a>
+    <a href="/OASystem/CreatePower?systemID=@(Model.ID)" data-toggle="modal" data-target="#Modal" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-plus"></i>添加权限功能</a>
+</div>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>序号</th>
+            <th>功能名称</th>
+            <th>功能地址</th>
+            <th>图标信息</th>
+            <th>类别</th>
+            <th>类型</th>
+            <th>备注</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Powers != null)
+        {
+            foreach(var item in Model.Powers)
+            {
+                <tr>
+                    <td>@(serial++)</td>
+                    <td>@(item.Name)</td>
+                    <td>@(item.Url)</td>
+                    <td>@(item.Glyphicon)</td>
+                    <td>@(item.PowerEnum.GetDescription())</td>
+                    <td>@(item.PowerType.GetDescription())</td>
+                    <td>@(item.Remark)</td>
+                    <td>
+                        <a href="/OASystem/EditPower?id=@(item.ID)" data-toggle="modal" data-target="#Modal" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i>编辑</a>
+                        <a href="/OASystem/DeletePower?id=@(item.ID)" class="btn btn-danger btn-xs" name="Delete"><i class="glyphicon glyphicon-remove-circle"></i>删除</a>
+                        <a href="/OAsystem/ViewUser?powerID=@(item.ID)" class="btn btn-success btn-xs" data-toggle="modal" data-target="#Modal"><i class="glyphicon glyphicon-eye-open"></i>查看人员</a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

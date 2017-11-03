@@ -9,7 +9,7 @@ namespace Ztop.Todo.Manager
 {
     public class VerifyViewManager:ManagerBase
     {
-        public List<VerifyView> Search(SheetVerifyParameter parameter)
+        public List<VerifyView> Search(SheetVerifyParameter parameter,bool IsTransfer=false)
         {
             using (var db = GetDbContext())
             {
@@ -67,6 +67,15 @@ namespace Ztop.Todo.Manager
                     }
                     query = query.Where(e => e.SheetTime >= currentTime);
                 }
+                if (IsTransfer == true)
+                {
+                    query = query.Where(e => e.Type == SheetType.Transfer);
+                }
+                else
+                {
+                    query = query.Where(e => e.Type != SheetType.Transfer);
+                  
+                }
                 if (parameter.SheetType.HasValue)
                 {
                     query = query.Where(e => e.Type == parameter.SheetType.Value);
@@ -83,8 +92,8 @@ namespace Ztop.Todo.Manager
                 {
                     query = query.Where(e => (!string.IsNullOrEmpty(e.Remarks) && e.Remarks.Contains(parameter.Content)) || (!string.IsNullOrEmpty(e.Place) && e.Place.Contains(parameter.Content)));
                 }
-                var list = query.ToList();
-                query = list.GroupBy(e=>e.PrintNumber).Select(e=>e.First()).AsQueryable();
+                //var list = query.ToList();
+                //query = list.GroupBy(e=>e.PrintNumber).Select(e=>e.First()).AsQueryable();
                 if (!string.IsNullOrEmpty(parameter.CheckKey))
                 {
                     query = query.Where(e => e.CheckNumber.Contains(parameter.CheckKey));

@@ -27,6 +27,7 @@ namespace Ztop.Todo.Manager
         }
 
         public UserManager UserManager { get; private set; }
+        public UserGroupManager UserGroupManager { get; private set; }
 
         public TaskManager TaskManager { get; private set; }
 
@@ -59,6 +60,10 @@ namespace Ztop.Todo.Manager
         public CityManager CityManager { get; private set; }
         public Project_TypeManager Project_TypeManager { get; private set; }
         public Bill_ViewManager Bill_ViewManager { get; private set; }
+        public ProjectManager ProjectManager { get; private set; }
+        public ProjectUserManager ProjectUserManager { get; private set; }
+        public Project_ProgressManager Project_ProgressManager { get; private set; }
+        public ProjectRecordManager ProjectRecordManager { get; private set; }
 
         #endregion
 
@@ -116,6 +121,19 @@ namespace Ztop.Todo.Manager
         public VerifyViewManager VerifyViewManager { get; private set; }
         public Report_TypeManager Report_TypeManager { get; private set; }
         public Report_ManagerManager Report_ManagerManager { get; private set; }
+        /// <summary>
+        /// 招待
+        /// </summary>
+        public ReceptionManager ReceptionManager { get; private set; }
+        #endregion
+
+
+        #region 系统配置
+
+        public OASystemManager OASystemManager { get; private set; }
+        public PowerManager PowerManager { get; private set; }
+        public Power_itemManager Power_itemManager { get; private set; }
+        public Client_MessageManager Client_MessageManager { get; private set; }
         #endregion
     }
 }

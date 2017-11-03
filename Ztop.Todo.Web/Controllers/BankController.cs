@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Ztop.Todo.Common;
+using Ztop.Todo.Manager;
 using Ztop.Todo.Model;
 using Ztop.Todo.Web.Common;
 
@@ -344,7 +345,6 @@ namespace Ztop.Todo.Web.Controllers
             if (head != null)
             {
                 var list = Core.Bill_Records_ViewManager.GetByHID(head.ID);
-                //var list = Core.Bill_RecordManager.GetByHID(head.ID);
                 ViewBag.List = list;
                 ViewBag.PN = Core.Bill_OneManager.GetNearBy(head.Year, head.Month,head.Company);
             }
@@ -369,7 +369,6 @@ namespace Ztop.Todo.Web.Controllers
             if (head != null)
             {
                 var list = Core.Bill_Records_ViewManager.GetByHID(head.ID);
-                //var list = Core.Bill_RecordManager.GetByHID(head.ID);
                 ViewBag.List = list;
                 ViewBag.PN = Core.Bill_OneManager.GetNearBy(head.Year, head.Month,head.Company);
             }
@@ -382,6 +381,26 @@ namespace Ztop.Todo.Web.Controllers
             var dict = Core.Bill_RecordManager.Collect(list);
             ViewBag.Dict = dict;
             return View();
+        }
+
+        public ActionResult DownloadBank(int id)
+        {
+            var head = Core.Bill_OneManager.GetHead(id);
+            if (head != null)
+            {
+                var list = Core.Bill_Records_ViewManager.GetByHID(head.ID);
+                var dict = Core.Bill_RecordManager.Collect(list);
+                var title = string.Format("杭州智拓{0}有限公司{1}年{2}月银行明细", head.Company.GetDescription(), head.Year, head.Month);
+                var workbook = ExcelManager.DownloadBank(dict,title);
+                if (workbook != null)
+                {
+                    byte[] fileContents = ExcelManager.Translate(workbook);
+                    return File(fileContents, "application/ms-excel", string.Format("{0}.xls", title));
+                }
+               
+
+            }
+            return Content("内部服务器错误！");
         }
         /// <summary>
         /// 作用：公司备注
@@ -460,12 +479,31 @@ namespace Ztop.Todo.Web.Controllers
         public ActionResult CollectSheet(int year,int month,string name=null)
         {
             var sheets = Core.SheetManager.GetSheets(year, month,name);
+            if (sheets != null)
+            {
+                RedisManager.Set(string.Format("{0}{1}", Identity.UserID, ParameterManager.ShentuKey), sheets, RedisManager.Client);
+            }
             ViewBag.Sheets = sheets;
             ViewBag.Name = name;
             var users = Core.UserManager.GetAllUsers();
             ViewBag.Users = users.Select(e => e.RealName).ToList();
             ViewBag.PN = GetPN(year, month);
             return View();
+        }
+        public ActionResult DownloadReport(int year,int month)
+        {
+            var sheets = Core.SheetManager.GetSheets(year, month);
+            var results = SheetStatisticHelper.Statistic(sheets);
+            var title = string.Format("杭州智拓{0}年{1}月报销表", year, month);
+            var workbook = ExcelManager.DownloadReport(results, title);
+            if (workbook != null)
+            {
+                byte[] fileContents = ExcelManager.Translate(workbook);
+                return File(fileContents, "application/ms-excel", string.Format("{0}.xls", title));
+            }
+
+            return Content("内部服务器错误！");
+
         }
         private int[][] GetPN(int year,int month)
         {
@@ -499,6 +537,10 @@ namespace Ztop.Todo.Web.Controllers
         public ActionResult StatisticSheet(int year,int ?month=null)
         {
             var sheets = Core.SheetManager.GetSheets(year, month, Identity.Name);
+            if (sheets != null)
+            {
+                RedisManager.Set(string.Format("{0}{1}", Identity.UserID, ParameterManager.ShentuKey), sheets, RedisManager.Client);
+            }
             ViewBag.Sheets = sheets;
             return View();
         }
@@ -512,33 +554,15 @@ namespace Ztop.Todo.Web.Controllers
         public ActionResult PersonlSheet()
         {
             var sheets = Core.SheetManager.GetDone(Identity.Name);
+            if (sheets != null)
+            {
+                RedisManager.Set(string.Format("{0}{1}", Identity.UserID, ParameterManager.ShentuKey), sheets, RedisManager.Client);
+            }
             ViewBag.Sheets = sheets;
             return View();
         }
 
-        private Dictionary<string,double> Statistic(List<Sheet> list,string title)
-        {
-            var SV = new List<SubstancsView>();
-            foreach (var item in list)
-            {
-                if (item.Substancs_Views != null)
-                {
-                    SV.AddRange(item.Substancs_Views);
-                }
-
-            }
-            var dict = new Dictionary<string, double>();
-            var categorys = SV.GroupBy(e => e.Name).Select(e => e.Key).ToList();
-            foreach (var name in categorys)
-            {
-                var sum = SV.Where(e => e.Name.ToLower() == name).Sum(e => e.Price);
-                if (!dict.ContainsKey(title+name))
-                {
-                    dict.Add(title+name, sum);
-                }
-            }
-            return dict;
-        }
+       
 
         /// <summary>
         /// 作用：统计各个类别报销情况
@@ -549,18 +573,12 @@ namespace Ztop.Todo.Web.Controllers
         /// <returns></returns>
         public ActionResult CollectCategory(List<Sheet> sheets)
         {
-            var result = new Dictionary<string, Dictionary<string, double>>();
+            var result = SheetStatisticHelper.Statistic(sheets);
             var dict = new Dictionary<string, double>();
-            var temp = Statistic(sheets.Where(e => e.Type == SheetType.Daily).ToList(),SheetType.Daily.GetDescription());
-            dict = dict.Union(temp).ToDictionary(e => e.Key, e => e.Value);
-            result.Add(SheetType.Daily.GetDescription(), temp);
-            temp = Statistic(sheets.Where(e => e.Type == SheetType.Transfer && e.Cost.HasValue && e.Cost.Value == Cost.RealPay).ToList(),SheetType.Transfer.GetDescription());
-            dict= dict.Union(temp).ToDictionary(e=>e.Key,e=>e.Value);
-            result.Add(SheetType.Transfer.GetDescription(), temp);
-            var errands= sheets.Where(e => e.Type == SheetType.Errand).ToList();
-            temp = new Dictionary<string, double>() { { "差旅费", errands.Sum(e => e.Money) } };
-            dict= dict.Union(temp).ToDictionary(e => e.Key, e => e.Value);
-            result.Add(SheetType.Errand.GetDescription(), temp);
+            foreach(var value in result.Values)
+            {
+                dict= dict.Union(value).ToDictionary(e=>e.Key,e=>e.Value);
+            }
             ViewBag.Result = result;
             ViewBag.Dict = dict;
             ViewBag.Sheets = sheets;
@@ -630,6 +648,44 @@ namespace Ztop.Todo.Web.Controllers
                 sheets = sheets.Where(e => e.Name.ToUpper() == name.ToUpper()).ToList();
             }
             ViewBag.Name = name;
+            ViewBag.Sheets = sheets;
+            return View();
+        }
+
+        /// <summary>
+        /// 作用：对报销单进行高级查询 （对当前系统中的所有报销单进行查询操作）
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult AdvanceSearch()
+        {
+            ViewBag.ReportType = Core.Report_TypeManager.Get();
+            var users = Core.UserManager.GetAllUsers();
+            ViewBag.Users = users.Select(e => e.RealName).ToList();
+            ViewBag.Groups = Core.UserManager.GetUserGroups();
+            return View();
+        }
+        public ActionResult GetUsers(int groupId)
+        {
+            var list = Core.UserManager.GetUsers(groupId);
+            return Json(list, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult Search(
+            DateTime? startTime,DateTime? endTime,
+            int? groupId,string name,string memo,
+            SheetType? type,string cate)
+        {
+            var parameter = new SheetQueryParameter2
+            {
+                StartTime = startTime,
+                EndTime = endTime,
+                Category = cate,
+                Name = name,
+                GroupId = groupId,
+                Type = type,
+                Memo = memo
+            };
+            var sheets = Core.SheetManager.GetSheets(parameter);
             ViewBag.Sheets = sheets;
             return View();
         }
@@ -722,5 +778,25 @@ namespace Ztop.Todo.Web.Controllers
             }
             return Content("内部服务器错误！");
         }
+
+        public ActionResult Lock(int id)
+        {
+            if (!Core.Bill_OneManager.Lock(id, true))
+            {
+                return ErrorJsonResult("未找到相关银行交易明细信息，无法进行归类锁定操作");
+            }
+            return SuccessJsonResult();
+        }
+
+        public ActionResult UnLock(int id)
+        {
+            if (!Core.Bill_OneManager.Lock(id, false))
+            {
+                return ErrorJsonResult("未找到相关银行交易明细信息，无法进行归类解锁操作");
+            }
+            return SuccessJsonResult();
+        }
+
+   
     }
 }

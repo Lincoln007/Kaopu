@@ -313,11 +313,20 @@ namespace Ztop.Todo.Manager
         /// <returns></returns>
         public Bill_Head GetHead(int id)
         {
-            using (var db = GetDbContext())
+            var entry = DB.Bill_Heads.Find(id);
+            return entry;
+        }
+
+        public bool Lock(int id,bool flag)
+        {
+            var entry = DB.Bill_Heads.Find(id);
+            if (entry == null)
             {
-                var entry = db.Bill_Heads.Find(id);
-                return entry;
+                return false;
             }
+            entry.Lock = flag;
+            DB.SaveChanges();
+            return true;
         }
         /// <summary>
         /// 作用：获取上个月和下个月信息

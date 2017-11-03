@@ -1,0 +1,52 @@
+﻿
+@{
+    ViewBag.Title = "未登记项目查询";
+    Layout = "~/Areas/Project/Views/Shared/_Layout.cshtml";
+    ProjectParameter parameter = ViewBag.Parameter;
+    List<ProjectView> list = ViewBag.List;
+}
+
+<div class="page-header">
+    <h2>未登记项目查询 </h2>
+</div>
+
+@{ 
+  //  Html.RenderPartial("SearchTitle");
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>项目编号</th>
+                    <th>等级编号</th>
+                    <th>项目名称</th>
+                    <th>所属部门</th>
+                    <th>项目负责人</th>
+                    <th>城市（县级）</th>
+                    <th>项目类型</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in list)
+            {
+                    <tr>
+                        <td><a href="/Project/Home/Detail?id=@(item.ID)">@(item.Serial)</a>  </td>
+                        <td>
+                            @(string.IsNullOrEmpty(item.Number) ? "未输入登记编号" : item.Number)
+                        </td>
+                        <td>@(item.Name)</td>
+                        <td>@(item.GroupName)</td>
+                        <td>@(item.RealName)</td>
+                        <td>@(item.CityName)</td>
+                        <td>@(item.TypeName)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        @{ 
+            Html.RenderPartial("_pagination", parameter.Page as object);
+        }
+    </div>
+</div>

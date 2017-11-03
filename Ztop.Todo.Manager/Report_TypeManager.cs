@@ -105,6 +105,7 @@ namespace Ztop.Todo.Manager
                 }
 
                 entry.Name = type.Name;
+                entry.IsEnterprise = type.IsEnterprise;
                 db.SaveChanges();
                 return true;
             }

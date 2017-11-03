@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Ztop.Todo.ActiveDirectory;
+using Ztop.Todo.Manager;
 using Ztop.Todo.Model;
 
 namespace Ztop.Todo.Web.Controllers
@@ -46,6 +47,22 @@ namespace Ztop.Todo.Web.Controllers
             }
             else
             {
+                var systems = Core.OASystemManager.Get(CurrentSystem);
+                if (systems != null)
+                {
+                    RedisManager.Set(user.Username + "System", systems, RedisManager.Client);
+                }
+                var items = Core.PowerManager.GetByUserID(user.ID);
+                if (items != null)
+                {
+                    RedisManager.Set(user.Username, items, RedisManager.Client);
+                }
+                var group = Core.UserGroupManager.Get(user.GroupID);
+                if (group != null)
+                {
+                    Group = group;
+                   // RedisManager.Set(user.Username + "group", group, RedisManager.Client);
+                }
                 HttpContext.SaveAuth(user);
                 return SuccessJsonResult(user);  
             }
@@ -55,5 +72,6 @@ namespace Ztop.Todo.Web.Controllers
             HttpContext.ClearAuth();
             return RedirectToAction("Login");
         }
+
     }
 }

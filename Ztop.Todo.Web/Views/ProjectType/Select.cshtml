@@ -1,0 +1,43 @@
+﻿@{ 
+    List<ProjectType> types = ViewBag.List;
+    Layout = null;
+}
+
+<script src="~/Scripts/ProjectType.js"></script>
+
+<div class="page-header">
+    <h3 class="text-center">选择项目类型</h3>
+</div>
+
+<div class="row">
+    <div class="col-md-12 col-xs-12 col-sm-12">
+        <form class="form-horizontal" action="" >
+            <div class="form-group">
+                <label class="control-label col-md-3">项目类型名称：</label>
+                <div class="col-md-7">
+                    <select name="FID" class="form-control input-sm">
+                        <option value="">请选择</option>
+                        @foreach(var item in types)
+                        {
+                            <option value="@(item.ID)">@(item.FullName)</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="form-group" id="Second" style="display:none;">
+                <label class="control-label col-md-3">二级类项目名称：</label>
+                <div class="col-md-7">
+                    <select name="SEID" class="form-control input-sm">
+
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-7 col-md-offset-3">
+                    <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" name="OK"><i class="glyphicon glyphicon-ok-circle"></i>确定</button>
+                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><i class="glyphicon glyphicon-remove-circle"></i>&nbsp; 取消</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

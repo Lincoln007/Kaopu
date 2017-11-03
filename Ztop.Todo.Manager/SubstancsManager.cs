@@ -10,7 +10,7 @@ namespace Ztop.Todo.Manager
 {
     public class SubstancsManager:ManagerBase
     {
-        public List<Substancs> GetSubstances(int[] rid,int[] srid,string[] details,double[] prices)
+        public List<Substancs> GetSubstances(int[] rid,int[] srid,string[] details,double[] prices,bool[] payWays)
         {
             //var details = context.Request.Form["Detail"].Split(',');
             //var prices = context.Request.Form["Price"].Split(',');
@@ -21,6 +21,7 @@ namespace Ztop.Todo.Manager
             var list = new List<Substancs>();
             //double temp = .0;
             var j = 0;
+            var k = 0;
             for(var i = 0; i < 10; i++)
             {
                 if (rid[i] == 0)
@@ -37,11 +38,16 @@ namespace Ztop.Todo.Manager
                     RID=rid[i],
                     Details = details[i],
                     Price=prices[i]
+
                     //Price = double.TryParse(prices[i], out temp) ? temp : .0
                 };
                 if (rt.Children != null&&srid!=null&&srid.Length>j&&rt.Children.FirstOrDefault(e=>e.ID==srid[j])!=null)
                 {
                     entry.SRID = srid[j++];
+                }
+                if (rt.IsEnterprise&&payWays!=null&&payWays.Length>k)
+                {
+                    entry.EnterprisePay = payWays[k++];
                 }
                 list.Add(entry);
             }

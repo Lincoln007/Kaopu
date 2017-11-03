@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Ztop.Todo.Common;
 using Ztop.Todo.Model;
 
 namespace Ztop.Todo.Manager
@@ -58,7 +59,14 @@ namespace Ztop.Todo.Manager
                                 var sender = Core.UserManager.GetUser(model.SenderID);
                                 model.Description = string.Format("{0}申请给{1}开具{2}的发票", sender.DisplayName, invoice.OtherSideCompany, invoice.Content);
                                 model.Path = "/Finance/InvoiceDetail?id=" + invoice.ID;
-                                // model.Path = "/Finance/Detail/?id=" + contract.ID + "&&notId=" + model.ID;
+                            }
+                            break;
+                        case InfoType.ProjectRegister:
+                            {
+                                var project = Core.ProjectManager.Get(model.InfoID);
+                                var sender = Core.UserManager.GetUser(model.SenderID);
+                                model.Description = string.Format("{0}录入项目：{1}，请为该项目登记", sender.DisplayName, project.Name);
+                                model.Path = "/Project/Home/Detail?id=" + project.ID;
                             }
                             break;
                     }
@@ -95,6 +103,7 @@ namespace Ztop.Todo.Manager
                 });
             }
         }
+
 
         private void AddTaskNotification(Model.Task task)
         {
@@ -149,10 +158,35 @@ namespace Ztop.Todo.Manager
                 SenderID = sender.ID
             });
         }
+        private void AddProjectNotification(Project project)
+        {
+            var charge = project.Charge;
+            if (charge != null)
+            {
+                var sender = charge.User;
+                if (sender != null)
+                {
+                    var recevier = Core.UserManager.UserGet(ProjectHelper.Register);
+                    AddNotification(new Notification()
+                    {
+                        InfoID = project.ID,
+                        InfoType = InfoType.ProjectRegister,
+                        ReceiverID = recevier.ID,
+                        SenderID = sender.ID
+                    });
+                }
+            }
+        }
 
         public void Add(object info)
         {
-            var infoType = (InfoType)Enum.Parse(typeof(InfoType), info.GetType().Name);
+            var name = info.GetType().Name;
+            var index = name.IndexOf("_");
+            if (index > 0)
+            {
+                name = name.Substring(0, index);
+            }
+            var infoType = (InfoType)Enum.Parse(typeof(InfoType), name);
 
             switch (infoType)
             {
@@ -170,6 +204,9 @@ namespace Ztop.Todo.Manager
                     break;
                 case InfoType.Invoice:
                     AddInvoiceNotification((Invoice)info);
+                    break;
+                case InfoType.ProjectRegister:
+                    AddProjectNotification((Project)info);
                     break;
             }
         }

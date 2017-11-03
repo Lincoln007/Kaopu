@@ -128,6 +128,9 @@ namespace Ztop.Todo.Model
         public List<Sheet> Similars { get; set; }
         [NotMapped]
         public int SimilarCount { get; set; }
+        public int? ReceptionId { get; set; }
+        [ForeignKey("ReceptionId")]
+        public virtual Reception Reception { get; set; }
 
     }
     public enum SheetType
@@ -137,7 +140,9 @@ namespace Ztop.Todo.Model
         [Description("出差报销")]
         Errand,
         [Description("转账支出")]
-        Transfer
+        Transfer,
+        [Description("招待报销")]
+        Reception
     }
 
     public enum Status
@@ -161,7 +166,9 @@ namespace Ztop.Todo.Model
         [Description("现金核算")]
         Cash,
         [Description("审计")]
-        Auditing
+        Auditing,
+        [Description("作废")]
+        Repeal
     }
     
 }

@@ -1,0 +1,39 @@
+﻿@{
+    Layout = null;
+    List<OASystem> list = ViewBag.List;
+}
+
+
+<div class="page-header">
+    <h4 class="text-center">OA系统权限管理</h4>
+    <div class="text-right">
+        <a href="/OASystem/CreateSystem" data-toggle="modal" data-target="#Modal" class="btn btn-success btn-sm"><i class="glyphicon glyphicon-plus-sign"></i>添加系统</a>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="col-md-2">
+            <ul class="nav nav-pills nav-stacked" role="tablist">
+                @foreach (var item in list)
+                {
+                    <li role="presentation"><a href="#@(item.ID)" role="tab" data-toggle="tab">@(item.Name)</a></li>
+                }
+            </ul>
+        </div>
+        <div class="col-md-10">
+            <div class="tab-content">
+                @foreach (var item in list)
+                {
+                    <div role="tabpanel" class="tab-pane" id="@(item.ID)">
+                        @{ Html.RenderPartial("ViewSystem", item);}
+                    </div>
+
+                            }
+            </div>
+        </div>
+
+
+    </div>
+</div>

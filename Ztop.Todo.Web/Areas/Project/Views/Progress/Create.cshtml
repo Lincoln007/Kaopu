@@ -1,0 +1,110 @@
+﻿@{ 
+    Project project = ViewBag.Project;
+    ProjectProgress progress = ViewBag.Last;
+}
+
+<script>
+    $(function () {
+        $("input[name='Percent']").blur(function () {
+            var val = parseFloat($(this).val());
+            if (val == undefined || val == NaN) {
+                $(this).val(0);
+            }
+            if (val > 100) {
+                $(this).val(100);
+            }
+        });
+
+        $("button[name='Plus']").click(function () {
+            var val = parseFloat($("input[name='Percent']").val());
+            if (val != undefined && val != NaN&&!isNaN(val)) {
+                val = val + 1;
+                if (val > 100) {
+                    val = 100;
+                }
+            } else {
+                val = 1;
+            }
+            $("input[name='Percent']").val(val);
+        });
+
+        $("button[name='Minus']").click(function () {
+            var val = parseFloat($("input[name='Percent']").val());
+            if (val != undefined && val != NaN&&!isNaN(val)) {
+                val = val - 1;
+                if (val < 0) {
+                    val = 0;
+                }
+              
+            } else {
+                val = 1;
+            }
+            $("input[name='Percent']").val(val);
+        });
+
+        $("#form-progress").submit(function () {
+            var $btn = $("#form-progress button");
+            $btn.attr("disabled", "disabled");
+            var data = $(this).serialize();
+            $.request("/Project/Progress/Save", data, function (json) {
+                if (json.result == 1) {
+                    alert("成功录入");
+                    location.href = "/Project/Home/Detail?id=@(project.ID)";
+                } else {
+                    alert(json.content);
+                    $btn.removeAttr("disabled");
+                }
+
+            });
+            return false;
+        });
+
+    });
+</script>
+
+
+<div class="page-header">
+    <h3 class="text-center">录入工作进度</h3>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-warning" role="alert">
+            <strong>Warning!</strong> 录入工作进度为100%时，项目自动转为完成状态！
+        </div>
+        <form class="form-horizontal" action="" method="post" id="form-progress">
+            <div class="form-group">
+                <label class="control-label col-md-3">工作进度：</label>
+                <div class="col-md-7">
+                    <div class="input-group  input-group-sm">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button" style="background-color:white;color:black;" name="Minus">-</button>
+                        </span>
+                        <input type="hidden" name="Min" value="@(progress!=null?progress.Percent:0)" />
+                        <input type="number" class="form-control" name="Percent" max="100" value="@(progress!=null?progress.Percent:0)"/>
+                        <span class="input-group-addon">%</span>
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button" style="background-color:white;color:black;" name="Plus">+</button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">工作情况：</label>
+                <div class="col-md-7">
+                    <input type="hidden" name="UserId" value="@(Identity.UserID)" />
+                    <input type="hidden" name="ProjectId" value="@(project.ID)" />
+                    <textarea class="form-control" rows="3" name="Remark"></textarea>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-7 col-md-offset-3">
+                    <button type="submit" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-ok"></i>&nbsp;确定</button>
+                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><i class="glyphicon glyphicon-remove-circle"></i>&nbsp;取消</button>
+                </div>
+            </div>
+           
+        </form>
+    </div>
+</div>

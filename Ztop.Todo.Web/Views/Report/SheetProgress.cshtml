@@ -128,6 +128,12 @@
             确认
         </div>
     }
+    else if (sheet.Status == Status.Repeal)
+    {
+        <div class="progress-bar progress-bar-danger progress-bar-striped active" style="width:100%;min-width:2em;">
+            作废
+        </div>
+    }
     else
     {
         <div class="progress-bar progress-bar-danger progress-bar-striped active" style="width:100%;min-width:2em;">
@@ -142,6 +148,10 @@
         <i class="icon-spinner icon-spin icon-large"></i>
         <span>恭喜您报销审核通过，静待现金支付给您！</span>
     </div>
+}
+else if (sheet.Status == Status.Repeal)
+{
+
 }
 else
 {

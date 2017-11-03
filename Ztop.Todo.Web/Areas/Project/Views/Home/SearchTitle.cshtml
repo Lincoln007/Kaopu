@@ -1,0 +1,184 @@
+﻿@{ 
+    List<UserGroup> groups = ViewBag.Group;
+    List<int> years = ViewBag.Year;
+    List<City> Provinces = ViewBag.Provinces;
+    List<ProjectType> types = ViewBag.Types;
+    List<ProjectType> stypes = ViewBag.STypes;
+    ProjectParameter parameter = ViewBag.Parameter;
+    List<User> charges = ViewBag.Charges;
+}
+
+<script src="~/Scripts/ProjectType.js"></script>
+<script>
+    $(function () {
+
+        $("#Project-Search").submit(function () {
+            var btn = $("#Project-Search button[type='submit']");
+            btn.attr("disabled", "disabled");
+            ShowMessage("正在查询，请稍等......");
+        });
+    });
+</script>
+
+<div class="col-md-12 col-xs-12 well" style="padding:0px;">
+    <fieldset><legend>项目-查询设置</legend></fieldset>
+    <form method="get" id="Project-Search">
+        <input type="hidden" name="GroupName" value="@(parameter.GroupName)" />
+        <div class="row">
+            <div class="col-md-12 col-xs-12 col-sm-12">
+                @{
+                    Html.RenderPartial("_Message");
+                }
+            </div>
+            <div class="col-md-6 col-xs-6 col-sm-6">
+                <div class="form-group">
+                    <label class="control-label">项目名称：</label>
+                    <div class="col-md-12">
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-btn">
+                                <button type="button" class="btn  btn-@(string.IsNullOrEmpty(parameter.Name)?"success":"default")" name="Name">全部</button>
+                            </div>
+                            <input type="text" class="form-control" placeholder="项目名称关键字" name="Name" value="@(parameter.Name)" />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">乡镇(主体):</label>
+                    <div class="col-md-12">
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-@(string.IsNullOrEmpty(parameter.Town)?"success":"default")" name="Town">全部</button>
+                            </div>
+                            <input type="text" class="form-control" placeholder="乡镇（主体）关键字" name="Town" value="@(parameter.Town)" />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">登记编号：</label>
+                    <div class="col-md-12">
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-success" name="Number">全部</button>
+                            </div>
+                            <input type="text" name="Number" class="form-control" placeholder="登记编号" />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">项目类型：</label>
+                    <div class="col-md-12">
+                        <div class="col-md-6">
+                            <select name="FID" class="form-control input-sm">
+                                <option value="" @(parameter.FID.HasValue? "" : "selected=selected")>全部</option>
+                                @foreach (var type in types)
+                                {
+                                    <option value="@(type.ID)" @(parameter.FID == type.ID ? "selected=selected" : "")>@(type.FullName)</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <select name="SEID" class="form-control input-sm">
+                                @if (stypes != null)
+                                {
+                                    <option value="" @(parameter.SEID.HasValue?"":"selected=selected")>全部</option>
+                                    foreach(var type in stypes)
+                                    {
+                                        <option value="@(type.ID)" @(parameter.SEID==type.ID?"selected=selected":"")>@(type.FullName)</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                      
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xs-6 col-sm-6">
+                <div class="form-group">
+                    <label class="control-label">年份：</label>
+                    <div class="col-md-12">
+                        <select name="Year" class="form-control input-sm">
+                            <option value="" @(parameter.Year.HasValue ? "" : "selected=selected")>请选择</option>
+                            @foreach (var year in years)
+                            {
+                                <option value="@(year)" @(parameter.Year.HasValue && parameter.Year.Value == year ? "selected=selected" : "")>@(year)</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">城市：</label>
+                    <div class="col-md-12">
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-@(string.IsNullOrEmpty(parameter.CityName)?"success":"default")" name="CityName">全部</button>
+                            </div>
+                            <input type="text" class="form-control" placeholder="城市（县级）关键字" name="CityName" value="@(parameter.CityName)" />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">排序方式：</label>
+                    <div class="col-md-12">
+                        <select name="Order" class="form-control input-sm">
+                            @foreach (ProjectOrder order in Enum.GetValues(typeof(ProjectOrder)))
+                            {
+                                <option value="@(order)" @(parameter.Order == order ? "selected=selected" : "")>@(order.GetDescription())</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                @if (charges != null)
+                {
+                    <div class="form-group">
+                        <label class="control-label">项目负责人：</label>
+                        <div class="col-md-12">
+                            <select name="ChargeId" class="form-control input-sm">
+
+                                @if (charges.Count == 0)
+                                {
+                                    <option value="">当前部门不存在相关负责人</option>
+                                }
+                                else
+                                {
+                                    <option value="" @(parameter.ChargeID.HasValue ? "" : "selected=selected")>全部</option>
+                                    foreach (User item in charges)
+                                    {
+                                        <option value="@(item.ID)" @(parameter.ChargeID.HasValue && parameter.ChargeID.Value == item.ID ? "selected=selected" : "")>@(item.DisplayName)</option>
+                                    }
+                                }
+
+                            </select>
+                        </div>
+                    </div>
+                }
+                
+             
+            </div>
+            <div class="col-md-12 col-xs-12 col-sm-12">
+                @if (groups != null)
+                {
+                    <div class="form-group">
+                        <label class="control-label">所属部门：</label>
+                        <div class="col-md-12">
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button type="button" class="btn btn-@(string.IsNullOrEmpty(parameter.GroupName)?"success":"default")" name="GroupName">全部</button>
+                                @foreach (var group in groups)
+                                {
+                                    <button type="button" class="btn btn-@(parameter.GroupName==group.Name?"success":"default")" name="GroupName">@(group.Name)</button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+          
+
+                <div class="form-group">
+                    <label class="control-label">查询:</label>
+                    <div class="col-md-12">
+                        <button type="submit" class="btn btn-sm btn-primary" name="Search"><i class="glyphicon glyphicon-search"></i>立即查询</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

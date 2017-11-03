@@ -7,6 +7,8 @@
     var end = list.OrderByDescending(e => e.SerialNumber).FirstOrDefault();
 }
 
+
+
 <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true" id="Modal">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -20,6 +22,41 @@
         $("#Modal").on("hidden.bs.modal", function () {
             $(this).removeData("bs.modal");
         })
+
+        $("a[name='lock']").click(function () {
+            var node = $(this);
+            node.attr("disabled", "disabled");
+            var href = node.attr("href");
+            ShowMessage("正在锁定归类,请稍等......");
+            $.request(href, null, function (json) {
+                if (json.result == 0) {
+                    ShowErrorMessage(json.content);
+                } else {
+                    ShowSuccessMessage(json.content);
+                    location.href = "/bank/viewProjection?id=@(head.ID)";
+                }
+            });
+            node.removeAttr("disabled");
+            return false;
+        });
+
+        $("a[name='Unlock']").click(function () {
+            var node = $(this);
+            node.attr("disabled", "disabled");
+            var href = node.attr("href");
+            ShowMessage("正在解锁，请稍等......");
+            $.request(href, null, function (json) {
+                if (json.result == 0) {
+                    ShowErrorMessage(json.content);
+                } else {
+                    ShowSuccessMessage(json.content);
+                    location.href = "/bank/viewProjection?id=@(head.ID)";
+                }
+            });
+            node.removeAttr("disabled");
+            return false;
+        });
+        
     });
 </script>
 
@@ -30,9 +67,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="col-md-12">
-                @{ 
-                    Html.RenderAction("CollectBills", new { list = list });
-                }
+              
             </div>
             @Html.Partial("Nav_Head","/Bank/ViewProjection" as string)
             <div class="col-md-3">
@@ -40,151 +75,193 @@
                 <strong>交易笔数：@(list.Count)</strong><hr />
                 <strong>月初余额【元】：@(start != null ? (start.Budget == Budget.Income ? (start.Balance - start.Money).ToString() : (start.Balance + start.Money).ToString()) : "未读取到月初余额信息")</strong><hr />
                 <strong>月末余额【元】：@(end != null ? end.Balance.ToString() : "未读取到月末余额信息")</strong><hr />
-                <div class="input-group-btn">
+                <div class="btn-group">
                     <a href="/Bank/Index" class="btn btn-default"><i class="glyphicon glyphicon-home"></i>银行对账主页</a>
+                    @if (Identity.Name=="申屠杜平")
+                    {
+                        if (head.Lock)
+                        {
+                            <a href="/Bank/UnLock?id=@(head.ID)" class="btn btn-warning" name="Unlock"><i class="glyphicon glyphicon-unchecked"></i>解锁归类</a>
+                        }
+                        else
+                        {
+                            <a href="/Bank/Lock?id=@(head.ID)" class="btn btn-success" name="lock"><i class="glyphicon glyphicon-lock"></i>锁定归类</a>
+                        }
+                        <a href="/Bank/DownloadBank?id=@(head.ID)" class="btn btn-danger"><i class="glyphicon glyphicon-download-alt"></i>下载统计表格</a>
+                    }
+                 
                 </div>
             </div>
 
-            <div class="col-md-9">
-
-            </div>
             <div class="col-md-12 table-responsive">
-                <table class="table table-striped table-condensed table-hover">
-                    <thead>
-                        <tr>
-                            <th>序号</th>
-                            <th>交易日期</th>
-                            <th>交易时间戳</th>
-                            <th>收入金额【元】</th>
-                            <th>支出金额【元】</th>
-                            <th>本次余额【元】</th>
-                            <th>手续费总额【元】</th>
-                            <th>交易方式</th>
-                            <th>交易行名</th>
-                            <th>交易类别</th>
-                            <th>对方省市</th>
-                            <th>对方账号</th>
-                            <th>对方户名</th>
-                            <th>交易说明</th>
-                            <th>交易摘要</th>
-                            <th>交易附言</th>
-                            <th>备注</th>
-                            <th>归类</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach(var item in list)
-                        {
-                            <tr>
-                                <td>@(item.SerialNumber)</td>
-                                <td>@(item.Time.HasValue?item.Time.Value.ToLongDateString():item.Date)</td>
-                                <td>
-                                    @if (!string.IsNullOrEmpty(item.TimeStamp) && item.TimeStamp.Length > 8)
-                                    {
-                                        <abbr title="@(item.TimeStamp)">@(item.TimeStamp.Substring(0, 8))</abbr>
-                                    }
-                                    else
-                                    {
-                                        @(item.TimeStamp)
-                                    }
-                                </td>
-                                <td>@(item.Budget==Budget.Income?item.Money.ToString():"")</td>
-                                <td>@(item.Budget==Budget.Expense?item.Money.ToString():"")</td>
-                                <td>@(item.Balance)</td>
-                                <td>@(item.CommissionCharge)</td>
-                                <td>@(item.Way)</td>
-                                <td>@(item.Bank)</td>
-                                <td>@(item.Type)</td>
-                                <td>@(item.Address)</td>
-                                <td>
-                                    @(item.Account)
-                                </td>
-                                <td>
-                                    @if (!string.IsNullOrEmpty(item.Name)&&item.Name.Length > 8)
-                                    {
-                                        <abbr title="@(item.Name)">@(item.Name.Substring(0,8))</abbr>
-                                    }
-                                    else
-                                    {
-                                        @item.Name
-                                    }
-                                    
-                                </td>
-                                <td>
-                                    @if (!string.IsNullOrEmpty(item.Remark)&&item.Remark.Length > 8)
-                                    {
-                                        <abbr title="@(item.Remark)">@(item.Remark.Substring(0,8))</abbr>
-                                    }
-                                    else
-                                    {
-                                        @(item.Remark)
-                                    }
-                                
-                                
-                                </td>
-                                <td>
-                                    @if (!string.IsNullOrEmpty(item.Summary)&&item.Summary.Length > 8)
-                                    {
-                                        <abbr title="@(item.Summary)">@(item.Summary.Substring(0,8))</abbr>
-                                    }
-                                    else
-                                    {
-                                        @(item.Summary)
-                                    }
-                                   
-                                </td>
-                                <td>
-                                    @if (!string.IsNullOrEmpty(item.PostScript)&& item.PostScript.Length > 8)
-                                    {
-                                        <abbr title="@(item.PostScript)">@(item.PostScript.Substring(0,8))</abbr>
-                                    }
-                                    else
-                                    {
-                                        @(item.PostScript)
-                                    }
-                                   
-                                </td>
-                                <td>
-                                    @if (string.IsNullOrEmpty(item.Remark2))
-                                    {
-                                        <a data-toggle="modal" data-target="#Modal" href="/Bank/Remark?id=@(item.ID)&&company=@(head.Company)" class="btn btn-warning btn-xs"><i class="glyphicon glyphicon-flag"></i>备注</a>
-                                    }
-                                    else
-                                    {
-                                        if (item.Remark2.Length > 8)
-                                        {
-                                            <abbr title="@(item.Remark2)">@(item.Remark2.Substring(0,8))</abbr>
-                                        }
-                                        else
-                                        {
-                                            @(item.Remark2)
-                                        }
-                                        <a data-toggle="modal" data-target="#Modal" href="/Bank/Remark?id=@(item.ID)&&company=@(head.Company)" class="btn btn-success btn-xs"><i class="glyphicon glyphicon-edit"></i>编辑备注</a>
-                                    }
-                                </td>
-                                <td>
-                                    @if (item.Cost.HasValue)
-                                    {
-                                        if (!string.IsNullOrEmpty(item.TName))
-                                        {
-                                            <label class="label label-@(item.Budget==Budget.Income?"danger":"success")">@string.Format("{0}-{1}", item.Cost.Value.GetDescription(), item.TName)</label>
-                                        }
-                                        else
-                                        {
-                                            <label class="label label-@(item.Budget==Budget.Income?"danger":"success")">@(item.Cost.Value.GetDescription())</label>
-                                        }
-                                        <a data-toggle="modal" data-target="#Modal" href="/Bank/Classify?id=@(item.ID)&&company=@(head.Company)" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i>修改类型</a>
-                                    }
-                                    else
-                                    {
-                                        <a data-toggle="modal" data-target="#Modal" href="/Bank/Classify?id=@(item.ID)&&company=@(head.Company)" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-tags"></i>归类</a>
-                                    }
+                <h3>详情</h3>
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#List" role="tab" data-toggle="tab">账单明细</a></li>
+                    <li role="presentation"><a href="#Pan" role="tab" data-toggle="tab">统计图表</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="List">
+                        <table class="table table-striped table-condensed table-hover">
+                            <thead>
+                                <tr>
+                                    <th>序号</th>
+                                    <th>交易日期</th>
+                                    <th>交易时间戳</th>
+                                    <th>收入金额【元】</th>
+                                    <th>支出金额【元】</th>
+                                    <th>本次余额【元】</th>
+                                    <th>手续费总额【元】</th>
+                                    <th>交易方式</th>
+                                    <th>交易行名</th>
+                                    <th>交易类别</th>
+                                    <th>对方省市</th>
+                                    <th>对方账号</th>
+                                    <th>对方户名</th>
+                                    <th>交易说明</th>
+                                    <th>交易摘要</th>
+                                    <th>交易附言</th>
+                                    <th>备注</th>
+                                    <th>归类</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in list)
+                                {
+                                    <tr>
+                                        <td>@(item.SerialNumber)</td>
+                                        <td>@(item.Time.HasValue ? item.Time.Value.ToLongDateString() : item.Date)</td>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(item.TimeStamp) && item.TimeStamp.Length > 8)
+                                            {
+                                                <abbr title="@(item.TimeStamp)">@(item.TimeStamp.Substring(0, 8))</abbr>
+                                            }
+                                            else
+                                            {
+                                                @(item.TimeStamp)
+                                            }
+                                        </td>
+                                        <td>@(item.Budget == Budget.Income ? item.Money.ToString() : "")</td>
+                                        <td>@(item.Budget == Budget.Expense ? item.Money.ToString() : "")</td>
+                                        <td>@(item.Balance)</td>
+                                        <td>@(item.CommissionCharge)</td>
+                                        <td>@(item.Way)</td>
+                                        <td>@(item.Bank)</td>
+                                        <td>@(item.Type)</td>
+                                        <td>@(item.Address)</td>
+                                        <td>
+                                            @(item.Account)
+                                        </td>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(item.Name) && item.Name.Length > 8)
+                                            {
+                                                <abbr title="@(item.Name)">@(item.Name.Substring(0, 8))</abbr>
+                                            }
+                                            else
+                                            {
+                                                @item.Name
+                                            }
 
-                                </td>
-                            </tr>
+                                        </td>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(item.Remark) && item.Remark.Length > 8)
+                                            {
+                                                <abbr title="@(item.Remark)">@(item.Remark.Substring(0, 8))</abbr>
+                                            }
+                                            else
+                                            {
+                                                @(item.Remark)
+                                            }
+
+
+                                        </td>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(item.Summary) && item.Summary.Length > 8)
+                                            {
+                                                <abbr title="@(item.Summary)">@(item.Summary.Substring(0, 8))</abbr>
+                                            }
+                                            else
+                                            {
+                                                @(item.Summary)
+                                            }
+
+                                        </td>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(item.PostScript) && item.PostScript.Length > 8)
+                                            {
+                                                <abbr title="@(item.PostScript)">@(item.PostScript.Substring(0, 8))</abbr>
+                                            }
+                                            else
+                                            {
+                                                @(item.PostScript)
+                                            }
+
+                                        </td>
+                                        <td>
+                                            @if (string.IsNullOrEmpty(item.Remark2))
+                                            {
+                                                if (head.Lock == false)
+                                                {
+                                                    <a data-toggle="modal" data-target="#Modal" href="/Bank/Remark?id=@(item.ID)&&company=@(head.Company)" class="btn btn-warning btn-xs"><i class="glyphicon glyphicon-flag"></i>备注</a>
+                                                }
+
+                                            }
+                                            else
+                                            {
+                                                if (item.Remark2.Length > 8)
+                                                {
+                                                    <abbr title="@(item.Remark2)">@(item.Remark2.Substring(0, 8))</abbr>
+                                                }
+                                                else
+                                                {
+                                                    @(item.Remark2)
+                                                }
+                                                if (head.Lock == false)
+                                                {
+                                                    <a data-toggle="modal" data-target="#Modal" href="/Bank/Remark?id=@(item.ID)&&company=@(head.Company)" class="btn btn-success btn-xs"><i class="glyphicon glyphicon-edit"></i>编辑备注</a>
+                                                }
+
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (item.Cost.HasValue)
+                                            {
+                                                if (!string.IsNullOrEmpty(item.TName))
+                                                {
+                                                    <label class="label label-@(item.Budget==Budget.Income?"danger":"success")">@string.Format("{0}-{1}", item.Cost.Value.GetDescription(), item.TName)</label>
+                                                }
+                                                else
+                                                {
+                                                    <label class="label label-@(item.Budget==Budget.Income?"danger":"success")">@(item.Cost.Value.GetDescription())</label>
+                                                }
+
+                                                if (head.Lock == false)
+                                                {
+                                                    <a data-toggle="modal" data-target="#Modal" href="/Bank/Classify?id=@(item.ID)&&company=@(head.Company)" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-edit"></i>修改类型</a>
+                                                }
+
+                                            }
+                                            else
+                                            {
+                                                if (head.Lock == false)
+                                                {
+                                                    <a data-toggle="modal" data-target="#Modal" href="/Bank/Classify?id=@(item.ID)&&company=@(head.Company)" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-tags"></i>归类</a>
+                                                }
+
+                                            }
+
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="Pan">
+                        @{
+                            Html.RenderAction("CollectBills", new { list = list });
                         }
-                    </tbody>
-                </table>
+                    </div>
+                </div>
+                
             </div>
         </div>
     </div>

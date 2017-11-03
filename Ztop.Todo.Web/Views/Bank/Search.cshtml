@@ -1,0 +1,29 @@
+﻿@{ 
+    List<Sheet> sheets = ViewBag.Sheets;
+    Layout = null;
+}
+
+<script src="~/Scripts/2/Chart.js"></script>
+
+<div class="row">
+    <div class="col-md-12">
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#Kind" role="tab" data-toggle="tab">各类报销统计</a></li>
+            <li role="presentation"><a href="#Human" role="tab" data-toggle="tab">人员报销</a></li>
+            <li role="presentation"><a href="#List" role="tab" data-toggle="tab">详细列表</a></li>
+        </ul>
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="Kind">
+                @{ Html.RenderAction("CollectCategory", new { Sheets = sheets });}
+            </div>
+            <div role="tabpanel" class="tab-pane" id="Human">
+                @{ Html.RenderAction("CollectUser", new { Sheets = sheets });}
+            </div>
+            <div role="tabpanel" class="tab-pane" id="List">
+                @{
+                    Html.RenderPartial("ViewSheets", sheets as object);
+                }
+            </div>
+        </div>
+    </div>
+</div>

@@ -44,7 +44,7 @@
                 <form method="get" class="form-inline" role="form" id="Name-form">
                     <input type="hidden" name="Year" value="@(Request.QueryString["year"])" />
                     <input type="hidden" name="Month" value="@(Request.QueryString["month"])" />
-                    <div class="col-md-6 col-xs-6">
+                    <div class="col-md-8 col-xs-8">
                         <div class="form-group">
                             <label class="control-label">用户：</label>
                             <select name="Name" class="form-control">
@@ -67,6 +67,7 @@
                             {
                                 <a href="/Bank/CollectSheet?year=@(PN[1][0])&&month=@(PN[1][1])" class="btn btn-success"><i class="glyphicon glyphicon-arrow-right"></i>@string.Format("下个月{0}年{1}月", PN[1][0], PN[1][1])</a>
                             }
+                            <a href="/Bank/DownloadReport?year=@(Request.QueryString["year"])&&month=@(Request.QueryString["month"])" class="btn btn-danger"><i class="glyphicon glyphicon-download-alt"></i>&nbsp;下载本月报销统计表格</a>
                         </div>
                        
                     </div>

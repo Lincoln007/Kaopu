@@ -1,0 +1,59 @@
+﻿@{ 
+    Layout = null;
+    Sheet sheet = ViewBag.Model;
+}
+<script>
+    $(function () {
+        $("#UnCheck").submit(function () {
+            if (confirm("您确定作废吗？")) {
+                var btn = $("#UnCheck button[type='submit']");
+                btn.attr("disabled", "disabled");
+                var data = $(this).serialize();
+                $.request("/report/Uncheck", data, function (json) {
+                    if (json.result == 0) {
+                        alert(json.content);
+                        btn.removeAttr("disabled");
+                    } else {
+                        alert("成功作废");
+                        location.href = "/Report/Director";
+                    }
+                });
+            }
+            return false;
+        });
+    });
+</script>
+
+<div class="page-header">
+    <h3 class="text-center">作废原因</h3>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        @if (sheet.Type == SheetType.Transfer)
+        {
+            <form class="form-horizontal" action="" method="post" id="UnCheck">
+                <div class="form-group">
+                    <label class="control-label col-md-3">作废原因：</label>
+                    <div class="col-md-7">
+                        <input type="hidden" name="ID" value="@(sheet.ID)" />
+                        <textarea class="form-control" name="Reason" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-7 col-md-offset-3">
+                        <button type="submit" class="btn btn-danger btn-sm"><i class="glyphicon glyphicon-ok-circle"></i>&nbsp;确认作废</button>
+                        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><i class="glyphicon glyphicon-remove-circle"></i>&nbsp; 取消</button>
+                    </div>
+                </div>
+            </form>
+        }
+        else
+        {
+            <div class="alert alert-danger" role="alert">
+                <span>当前报销单不是转账支出</span>
+            </div>
+        }
+        
+    </div>
+</div>
+

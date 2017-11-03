@@ -1,0 +1,62 @@
+﻿@{ 
+    Layout = null;
+    List<UserGroup> groups = ViewBag.Groups;
+    List<User> allUsers = ViewBag.Users;
+    string[] checks = ViewBag.Checks;
+}
+
+<div class="page-header">
+    <h3 class="text-center">人员选择</h3>
+</div>
+<div style="padding:10px;">
+    @foreach (var group in groups.OrderByDescending(e => e.Order))
+    {
+        <table class="table" style="margin:0px;">
+            <tr>
+                <th>@(group.Name)</th>
+            </tr>
+            @{
+                var table = allUsers.Where(e => e.GroupID == group.ID).OrderByDescending(e => e.Order).ToList().ListToTable(5);
+                foreach (var item in table)
+                {
+                    <tr>
+                        @foreach (var entry in item)
+                    {
+                        if (entry != null)
+                        {
+                                <td style="padding:0px;">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" value="@(entry.DisplayName)" name="Person" @(checks.Contains(entry.DisplayName) ? "checked=checked" : "") />@(entry.DisplayName)
+                                    </label>
+                                </td>
+                            }
+                        }
+                    </tr>
+                }
+            }
+        </table>
+    }
+    <div class="row">
+        <div class="text-right col-md-6 col-md-offset-6">
+            <button type="button" class="btn btn-sm btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove-sign"></i>取消</button>
+            <button type="button" class="btn btn-sm btn-primary" name="Person-OK" data-dismiss="modal"><i class="glyphicon glyphicon-ok-sign"></i>确定</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function GainPersons() {
+        var mans = [];
+        $("input[name='Person']:checked").each(function () {
+            mans.push($(this).val());
+        });
+        return mans;
+    }
+
+    $(function () {
+        $("button[name='Person-OK']").click(function () {
+            var mans = GainPersons();
+            $("input[name='Persons']").val(mans.join(";"));
+        });
+    });
+</script>

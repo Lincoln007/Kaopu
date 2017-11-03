@@ -46,10 +46,10 @@ namespace Ztop.Todo.Manager
                 {
                     query = query.Where(e => e.Money <= parameter.maxMoney.Value);
                 }
-                if (parameter.RID.HasValue)
-                {
-                    query = query.Where(e => e.RID == parameter.RID.Value);
-                }
+                //if (parameter.RID.HasValue)
+                //{
+                //    query = query.Where(e => e.RID == parameter.RID.Value);
+                //}
                 if (!string.IsNullOrEmpty(parameter.Content))
                 {
                     query = query.Where(e => (!string.IsNullOrEmpty(e.Place) && e.Place.ToLower().Contains(parameter.Content.ToLower()) || (!string.IsNullOrEmpty(e.Reason) && e.Reason.ToLower().Contains(parameter.Content.ToLower()))));
@@ -113,10 +113,10 @@ namespace Ztop.Todo.Manager
                 {
                     query = query.Where(e => e.Money <= parameter.maxMoney.Value);
                 }
-                if (parameter.RID.HasValue)
-                {
-                    query = query.Where(e => e.RID == parameter.RID.Value);
-                }
+                //if (parameter.RID.HasValue)
+                //{
+                //    query = query.Where(e => e.RID == parameter.RID.Value);
+                //}
                 if (!string.IsNullOrEmpty(parameter.Content))
                 {
                     query = query.Where(e => (!string.IsNullOrEmpty(e.Place) && e.Place.ToLower().Contains(parameter.Content.ToLower()) || (!string.IsNullOrEmpty(e.Reason) && e.Reason.ToLower().Contains(parameter.Content.ToLower()))));

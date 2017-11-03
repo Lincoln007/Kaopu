@@ -27,6 +27,7 @@ namespace Ztop.Todo.Model
         /// </summary>
         [Column(TypeName ="int")]
         public Company Company { get; set; }
+        public bool Lock { get; set; }
         /// <summary>
         /// 评估公司
         /// </summary>

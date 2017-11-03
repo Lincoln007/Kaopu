@@ -22,5 +22,12 @@ namespace Ztop.Todo.Manager
         {
             return new DataContext();
         }
+        protected DataContext DB
+        {
+            get
+            {
+                return HttpDbContextContainer.GetDbContext<DataContext>() ?? GetDbContext();
+            }
+        }
     }
 }

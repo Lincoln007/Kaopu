@@ -72,6 +72,8 @@ namespace Ztop.Todo.Model
         Verify=4,
 
         [Description("开票")]
-        Invoice=5
+        Invoice=5,
+        [Description("项目登记")]
+        ProjectRegister=6
     }
 }

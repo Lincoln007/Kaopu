@@ -8,6 +8,7 @@
     var dialy = list.Where(e => e.Type == SheetType.Daily).ToList();
     var errand = list.Where(e => e.Type == SheetType.Errand).ToList();
     var transfer = list.Where(e => e.Type == SheetType.Transfer).ToList();
+    var reception = list.Where(e => e.Type == SheetType.Reception).ToList();
     var last = list.OrderBy(e => e.Money).FirstOrDefault();
     var first = list.OrderByDescending(e => e.Money).FirstOrDefault();
 }
@@ -22,14 +23,17 @@
         <li role="presentation" class=""><a href="#Sheet-Daily" role="tab" data-toggle="tab">日常报销<span class="badge">@(dialy.Count)</span></a></li>
         <li role="presentation" class=""><a href="#Sheet-Errand" role="tab" data-toggle="tab">出差报销<span class="badge">@(errand.Count)</span></a></li>
         <li role="presentation" class=""><a href="#Sheet-Transfer" role="tab" data-toggle="tab">转账支出<span class="badge">@(transfer.Count)</span></a></li>
+        <li role="presentation" class=""><a href="#Sheet-Reception" role="tab" data-toggle="tab">日常招待<span class="badge">@(reception.Count)</span></a></li>
+        <li role="presentation" class=""><a href="#Sheet-Download" role="tab" data-toggle="tab">下载列表<span class="badge"></span></a></li>
     </ul>
     <div class="tab-content">
+        
         <div class="tab-pane active" role="tabpanel" id="All">
             <table class="table table-striped">
                 <tbody>
                     <tr>
-                        <th rowspan="3">成功报销：</th>
-                        <td rowspan="3">@(list.Count)笔</td>
+                        <th rowspan="4">成功报销：</th>
+                        <td rowspan="4">@(list.Count)笔</td>
                         <th>日常报销：</th>
                         <td>@(dialy.Count)笔</td>
                     </tr>
@@ -40,6 +44,10 @@
                     <tr>
                         <th>转账支出：</th>
                         <td>@(transfer.Count)笔</td>
+                    </tr>
+                    <tr>
+                        <th>日常招待：</th>
+                        <td>@(reception.Count)笔</td>
                     </tr>
                     <tr>
                         <th>单笔报销金额最多[元]：</th>
@@ -91,6 +99,10 @@
                                 {
                                     <label class="label label-default">@(item.Type.GetDescription())</label>
                                 }
+                                else if (item.Type == SheetType.Reception)
+                                {
+                                    <label class="label label-danger">@(item.Type.GetDescription())</label>
+                                }
                                 else
                                 {
                                     <label class="label label-success">@(item.Type.GetDescription())</label>
@@ -134,7 +146,7 @@
                             foreach (var sub in item.Substancs_Views)
                             {
                                 <tr>
-                                    <td>@(string.IsNullOrEmpty(sub.SName)?sub.Name:sub.Name+"-"+sub.SName)</td>
+                                    <td>@(sub.Title)</td>
                                     <td>@(sub.Details)</td>
                                     <td>@(sub.Price)</td>
                                 </tr>
@@ -259,6 +271,104 @@
                             }
                         }
                     }
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-pane" role="tabpanel" id="Sheet-Reception">
+            <table class="table table-bordered table-condensed table-hover">
+                <thead>
+                    <tr>
+                        <th rowspan="2">单据编号</th>
+                        <th rowspan="2">填写时间</th>
+                        <th rowspan="2">报销金额【元】</th>
+                        <th rowspan="2">报销人</th>
+                        <th colspan="9" class="text-center">招待详情</th>
+                    </tr>
+                    <tr>
+                        <th>招待时间</th>
+                        <th>地方</th>
+                        <th>人数</th>
+                        <th>人员</th>
+                        <th>内容</th>
+                        <th>金额【元】</th>
+                        <th>支付方式</th>
+                        <td>人均【元】</td>
+                        <th>备注</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var item in reception)
+                    {
+                        var count = item.Reception.Items != null ? item.Reception.Items.Count+1 : 1;
+                        <tr>
+                            <td rowspan="@(count)"><a href="/Report/Detail?id=@(item.ID)">@(item.CheckNumber)</a></td>
+                            <td rowspan="@(count)">@(item.Time.ToString("yyyy-MM-dd"))</td>
+                            <td rowspan="@(count)">@(item.Money)</td>
+                            <td rowspan="@(count)">@(item.Name)</td>
+                            <td rowspan="@(count)">@(item.Reception.RTime.ToShortDateString())</td>
+                            <td rowspan="@(count)">@(item.Reception.CityName)</td>
+                            <td rowspan="@(count)">@(item.Reception.Amount)</td>
+                            <td rowspan="@(count)">@(item.Reception.Persons)</td>
+                            
+                        </tr>
+                        foreach(var entry in item.Reception.Items)
+                        {
+                            <tr>
+                                <td>@(entry.Content)</td>
+                                <td>@(entry.Coin)</td>
+                                <td>@(entry.Way.GetDescription())</td>
+                                <td>@(entry.Average)</td>
+                                <td>@(entry.Memo)</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="tab-pane" role="tabpanel" id="Sheet-Download">
+            <table class="table table-bordered table-condensed ">
+                <thead>
+                    <tr>
+                        <th>表名</th>
+                        <th>下载</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (dialy.Count > 0)
+                    {
+                        <tr>
+                            <td>日常报销.xls</td>
+                            <td><a href="/Download/Sheet?download=@(DownloadEnum.Daily_Sheet)" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-download-alt"></i>下载</a></td>
+                        </tr>
+                    }
+                   @if (errand.Count > 0)
+                   {
+                    <tr>
+                        <td>出差报销.xls</td>
+                        <td><a href="/Download/Sheet?download=@(DownloadEnum.Errand_Sheet)" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-download-alt"></i>下载</a></td>
+                    </tr>
+                   }
+                  @if (transfer.Count > 0)
+                  {
+                    <tr>
+                        <td>转账支出.xls</td>
+                        <td><a href="/Download/Sheet?download=@(DownloadEnum.Transfer_Sheet)" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-download-alt"></i>下载</a></td>
+                    </tr>
+                  }
+                    
+                    @if (reception.Count > 0)
+                    {
+                        <tr>
+                            <td>日常招待.xls</td>
+                            <td><a href="/Download/Sheet?download=@(DownloadEnum.Reception_Sheet)" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-download-alt"></i>下载</a></td>
+                        </tr>
+                    }
+                    <tr>
+                        <td>汇总表格.xls</td>
+                        <td><a href="/Download/Sheet?download=@(DownloadEnum.Sheet)" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-download-alt"></i>下载</a></td>
+                    </tr>
+                   
                 </tbody>
             </table>
         </div>

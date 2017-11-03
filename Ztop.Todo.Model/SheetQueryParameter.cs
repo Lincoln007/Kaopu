@@ -94,6 +94,9 @@ namespace Ztop.Todo.Model
         public DateTime? EndTime { get; set; }
 
         public string Category { get; set; }
+        public int ? GroupId { get; set; }
+        public SheetType? Type { get; set; }
+        public string Memo { get; set; }
 
     }
 

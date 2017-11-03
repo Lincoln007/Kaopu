@@ -1,0 +1,120 @@
+﻿
+@{
+    ViewBag.Title = "转账支出";
+    Layout = "~/Areas/Project/Views/Shared/_Layout.cshtml";
+    List<VerifyView> list = ViewBag.List;
+    SheetVerifyParameter parameter = ViewBag.Parameter;
+}
+
+<div class="page-header">
+    <h2>转账支出</h2>
+</div>
+<div class="row">
+    <div class="col-md-12 col-xs-12 well">
+        <fieldset><legend>转账支出-查询设置</legend></fieldset>
+        <form method="get">
+            <input type="hidden" name="Time" value="@(parameter.Time)" />
+            <div class="col-md-12 col-xs-12 col-sm-12">
+                @{ 
+                    Html.RenderPartial("_Message");
+                }
+            </div>
+            <div class="col-md-6 col-xs-6 col-sm-6">
+                <div class="form-group">
+                    <label class="control-label">系统流水编号：</label>
+                    <div class="col-md-12">
+                        <div class="input-group input-group-sm" role="group">
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-@(string.IsNullOrEmpty(parameter.Coding)?"success":"default")" name="Coding">全部</button>
+                            </div>
+                            <input type="text" class="form-control" name="Coding" placeholder="系统流水编号关键字" value="@(parameter.Coding)" />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">单据编号：</label>
+                    <div class="col-md-12">
+                        <div class="input-group input-group-sm" role="group">
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-@(string.IsNullOrEmpty(parameter.CheckKey)?"success":"default")" name="CheckKey">全部</button>
+                            </div>
+                            <input type="text" class="form-control" name="CheckKey" placeholder="单据编号关键字" value="@(parameter.CheckKey)" />
+                        </div>
+                    </div>
+                </div>
+
+                <br />
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <button type="submit" class="btn btn-sm btn-success"><i class="glyphicon glyphicon-search"></i> 立即查询</button>
+                        <button type="button" class="btn btn-sm btn-default" onclick="history.back();"><i class="glyphicon glyphicon-arrow-left"></i>返回</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xs-6 col-sm-6">
+                <div class="form-group">
+                    <label class="control-label">时间：</label>
+                    <div class="col-md-12">
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button type="button" class="btn btn-@(string.IsNullOrEmpty(parameter.Time)?"success":"default")" name="Time">全部</button>
+                            <button type="button" class="btn btn-@(parameter.Time=="一周内"?"success":"default")" name="Time">一周内</button>
+                            <button type="button" class="btn btn-@(parameter.Time=="一个月内"?"success":"default")" name="Time">一个月内</button>
+                            <button type="button" class="btn btn-@(parameter.Time=="半年内"?"success":"default")" name="Time">半年内</button>
+                            <button type="button" class="btn btn-@(parameter.Time=="一年内"?"success":"default")" name="Time">一年内</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">金额：</label>
+                    <div class="col-md-12">
+                        <div class="input-group input-group-sm" role="group">
+                            <input type="text" class="form-control" name="MinMoney" placeholder="最小值" value="@(parameter.MinMoney)" />
+                            <span class="input-group-addon">至</span>
+                            <input type="text" class="form-control" name="MaxMoney" placeholder="最大值" value="@(parameter.MaxMoney)" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="col-md-12">
+        <table class="table table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th>系统流水编号</th>
+                    <th>填报日期</th>
+                    <th>报销金额【元】</th>
+                    <th>报销人</th>
+                    <th>详情</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var sheet in list)
+                {
+                    <tr>
+                        <td><a href="/Report/Detail?id=@(sheet.SID)">@(sheet.PrintNumber)</a></td>
+                        <td>@(sheet.Time.ToLongDateString())</td>
+                        <td>@(sheet.Money)</td>
+                        <td>@(sheet.SheetName)</td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(sheet.Details) && sheet.Details.Length > 20)
+                            {
+                                <abbr title="@(sheet.Details)">@(sheet.Details.Substring(20))</abbr>
+                            }
+                            else
+                            {
+                                <text>@(sheet.Details)</text>
+}
+                           
+                        
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        @Html.Partial("_pagination", parameter.Page as object)
+    </div>
+</div>
+
+

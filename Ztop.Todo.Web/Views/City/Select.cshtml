@@ -1,0 +1,52 @@
+﻿@{ 
+    List<City> provinces = ViewBag.Provinces;
+    Layout = null;
+}
+
+<script src="~/Scripts/City.js"></script>
+
+<div class="page-header">
+    <h3 class="text-center">城市选择</h3>
+</div>
+
+<div class="row">
+    <div class="col-md-12 col-xs-12 col-sm-12">
+        <form class="form-horizontal" action="" name="Select-City">
+            <div class="form-group">
+                <label class="control-label col-md-3">省级：</label>
+                <div class="col-md-7">
+                    <select name="PID" class="form-control input-sm">
+                        <option value="">请选择</option>
+                        @foreach (var province in provinces)
+                        {
+                            <option value="@(province.ID)">@(province.Name)</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="form-group" id="City" style="display:none">
+                <label class="control-label col-md-3">市级：</label>
+                <div class="col-md-7">
+                    <select name="CID" class="form-control input-sm"></select>
+                </div>
+            </div>
+
+            <div class="form-group" id="District" style="display:none;">
+                <label class="control-label col-md-3">区县级：</label>
+                <div class="col-md-7">
+                    <select name="DID" class="form-control input-sm"></select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-7 col-md-offset-3">
+                    <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" name="OK"><i class="glyphicon glyphicon-ok-circle"></i>确定</button>
+                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><i class="glyphicon glyphicon-remove-circle"></i>&nbsp; 取消</button>
+                </div>
+            </div>
+        </form>
+      
+    </div>
+</div>
+
+

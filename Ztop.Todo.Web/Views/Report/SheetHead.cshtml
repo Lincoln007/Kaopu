@@ -106,7 +106,7 @@
                             if (sheet.Name == Identity.Name)
                             {
                                 <a href="/Report/CheckTime?id=@(sheet.ID)" class="btn btn-success btn-sm" data-toggle="modal" data-target="#Modal"><i class="glyphicon glyphicon-ok-circle"></i>&nbsp;确认到账</a>
-
+                                <a href="/Report/UnCheck?id=@(sheet.ID)" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#Modal"><i class="glyphicon glyphicon-remove-circle"></i>&nbsp;作废</a>
                             }
                         }
                         else if (sheet.Status == Status.Examined)
@@ -126,6 +126,9 @@
                                     }
                                 }
 
+                            }else if (sheet.Status == Status.Repeal)
+                            {
+                                <label class="label label-danger">作废</label>
                             }
 
 

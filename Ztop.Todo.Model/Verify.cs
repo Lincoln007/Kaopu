@@ -66,7 +66,9 @@ namespace Ztop.Todo.Model
         [Description("现金核算")]
         Cash,
         [Description("确认到账")]
-        Affirm
+        Affirm,
+        [Description("转账作废")]
+        Repeal
     }
 
     public enum Position

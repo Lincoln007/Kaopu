@@ -40,31 +40,35 @@ namespace Ztop.Todo.Model
         public string Controler { get; set; }
         public string Number { get; set; }
         public int NumberExt { get; set; }
-        [NotMapped]
-        public string PrintNumber
-        {
-            get
-            {
-                return string.Format("{0}{1}", Number, NumberExt.ToString("0000"));
-            }
-        }
+        public string PrintNumber { get; set; }
+
+        //[NotMapped]
+        //public string PrintNumber
+        //{
+        //    get
+        //    {
+        //        return string.Format("{0}{1}", Number, NumberExt.ToString("0000"));
+        //    }
+        //}
         public DateTime? CheckTime { get; set; }
         public int ? CheckExt { get; set; }
-        [NotMapped]
-        public string CheckNumber
-        {
-            get
-            {
-                if (Status == Status.Filing || Status == Status.Examined || Status == Status.Cash)
-                {
-                    if (CheckTime.HasValue && CheckExt.HasValue)
-                    {
-                        return string.Format("{0}{1}{2}", CheckTime.Value.Year, CheckTime.Value.Month.ToString("00"), CheckExt.Value.ToString("0000"));
-                    }
-                }
-                return "未生成单据编号";
-            }
-        }
+        public string CheckNumber { get; set; }
+
+        //[NotMapped]
+        //public string CheckNumber
+        //{
+        //    get
+        //    {
+        //        if (Status == Status.Filing || Status == Status.Examined || Status == Status.Cash)
+        //        {
+        //            if (CheckTime.HasValue && CheckExt.HasValue)
+        //            {
+        //                return string.Format("{0}{1}{2}", CheckTime.Value.Year, CheckTime.Value.Month.ToString("00"), CheckExt.Value.ToString("0000"));
+        //            }
+        //        }
+        //        return "未生成单据编号";
+        //    }
+        //}
         public bool Deleted { get; set; }
         public DateTime SheetTime { get; set; }
         public SheetType Type { get; set; }

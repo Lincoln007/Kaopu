@@ -1,0 +1,36 @@
+﻿@{ 
+    Layout = null;
+    List<ClientMessage> list = ViewBag.List;
+}
+
+
+<div class="page-header">
+    <h3 class="text-center">客户端消息类型管理</h3>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <a href="/Manager/CreateClient" data-toggle="modal" data-traget="#Modal" class="btn btn-primary btn-sm" ><i class="glyphicon glyphicon-plus-sign"></i>添加消息类型</a>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>名称</th>
+                    <th>标题</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var item in list)
+                {
+                    <tr>
+                        <td>@(item.ID)</td>
+                        <td>@(item.Name)</td>
+                        <td>@(item.Title)</td>
+                        <td></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

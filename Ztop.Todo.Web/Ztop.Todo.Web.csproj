@@ -80,6 +80,15 @@
       <HintPath>..\packages\NPOI.2.2.1\lib\net40\NPOI.OpenXmlFormats.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="ServiceStack">
+      <HintPath>C:\360安全浏览器下载\Redis\RedisClient\ServiceStack.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Interfaces">
+      <HintPath>C:\360安全浏览器下载\Redis\RedisClient\ServiceStack.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.ServiceInterface">
+      <HintPath>C:\360安全浏览器下载\Redis\RedisClient\ServiceStack.ServiceInterface.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.DirectoryServices" />
@@ -141,6 +150,10 @@
     <Compile Include="Areas\Jurisdiction\Controllers\AdminController.cs" />
     <Compile Include="Areas\Jurisdiction\JurisdictionAreaRegistration.cs" />
     <Compile Include="Areas\Jurisdiction\JurisdictionControllerBase.cs" />
+    <Compile Include="Areas\Project\Controllers\HomeController.cs" />
+    <Compile Include="Areas\Project\Controllers\ProgressController.cs" />
+    <Compile Include="Areas\Project\ProjectAreaRegistration.cs" />
+    <Compile Include="Areas\Project\ProjectControllerBase.cs" />
     <Compile Include="Common\AuthenticateModule.cs" />
     <Compile Include="Common\AuthUtils.cs">
       <SubType>Code</SubType>
@@ -156,7 +169,9 @@
     <Compile Include="Common\WebUtility.cs" />
     <Compile Include="Controllers\AttachmentController.cs" />
     <Compile Include="Controllers\BankController.cs" />
+    <Compile Include="Controllers\CityController.cs" />
     <Compile Include="Controllers\CommentController.cs" />
+    <Compile Include="Controllers\DownloadController.cs" />
     <Compile Include="Controllers\FileController.cs" />
     <Compile Include="Controllers\FinanceController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -164,10 +179,14 @@
     <Compile Include="Controllers\iPadController.cs" />
     <Compile Include="Controllers\ManagerController.cs" />
     <Compile Include="Controllers\NotificationController.cs" />
+    <Compile Include="Controllers\OASystemController.cs" />
+    <Compile Include="Controllers\PowerController.cs" />
+    <Compile Include="Controllers\ProjectTypeController.cs" />
     <Compile Include="Controllers\QueryController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\TaskController.cs" />
     <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Controllers\UserGroupController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -210,7 +229,9 @@
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="Content\bootstrap.min.css.map" />
     <Content Include="Content\bootstrap.css.map" />
-    <Content Include="Areas\Jurisdiction\Views\web.config" />
+    <Content Include="Areas\Jurisdiction\Views\web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Areas\Jurisdiction\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Jurisdiction\Views\Admin\_Layout.cshtml" />
     <Content Include="Areas\Jurisdiction\Views\Admin\AddUser.cshtml" />
@@ -235,6 +256,26 @@
     <Content Include="Excels\Contract.xls" />
     <Content Include="Excels\Article.xls" />
     <Content Include="Excels\Collect.xls" />
+    <Content Include="Excels\BBank.xls" />
+    <Content Include="Excels\BReport.xls" />
+    <Content Include="Areas\Project\Views\web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Areas\Project\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\Project\Views\Home\Create.cshtml" />
+    <Content Include="Areas\Project\Views\Home\Index.cshtml" />
+    <Content Include="Areas\Project\Views\Home\Detail.cshtml" />
+    <Content Include="Areas\Project\Views\Home\Number.cshtml" />
+    <Content Include="Areas\Project\Views\Home\Charge.cshtml" />
+    <Content Include="Areas\Project\Views\Progress\Create.cshtml" />
+    <Content Include="Areas\Project\Views\Home\Search.cshtml" />
+    <Content Include="Areas\Project\Views\Home\SearchTitle.cshtml" />
+    <Content Include="Excels\20170930SHENTU.xls" />
+    <Content Include="Excels\20170930Daily.xls" />
+    <Content Include="Excels\20170930Errand.xls" />
+    <Content Include="Excels\20170930Transfer.xls" />
+    <Content Include="Excels\20170930Reception.xls" />
+    <Content Include="Areas\Project\Views\Home\Manager.cshtml" />
     <None Include="Properties\PublishProfiles\TODO.pubxml" />
     <None Include="Scripts\jquery-1.9.1.intellisense.js" />
     <Content Include="ProjectInfo.xml" />
@@ -247,6 +288,7 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\Chart.js" />
+    <Content Include="Scripts\City.js" />
     <Content Include="Scripts\CLodopfuncs.js" />
     <Content Include="Scripts\common.js" />
     <Content Include="Scripts\Contract.js" />
@@ -255,7 +297,10 @@
     <Content Include="Scripts\jquery-1.9.1.min.js" />
     <Content Include="Scripts\jquery.autocomplete.js" />
     <Content Include="Scripts\jquery.datetimepicker.js" />
+    <Content Include="Scripts\Manager.js" />
     <Content Include="Scripts\metisMenu.min.js" />
+    <Content Include="Scripts\Project.js" />
+    <Content Include="Scripts\ProjectType.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\sb-admin-2.js" />
@@ -429,15 +474,42 @@
     <Content Include="Views\Report\CheckTime.cshtml" />
     <Content Include="Views\Report\AdvanceSearch.cshtml" />
     <Content Include="Views\Finance\Cashdeposit.cshtml" />
+    <Content Include="Views\Report\UnCheck.cshtml" />
+    <Content Include="Views\Report\Reception.cshtml" />
+    <Content Include="Views\Manager\SelectCity.cshtml" />
+    <Content Include="Views\Manager\SelectUser.cshtml" />
+    <Content Include="Views\Report\ReceptionItem.cshtml" />
+    <Content Include="Views\Report\Expenses.cshtml" />
+    <Content Include="Views\Report\Search.cshtml" />
+    <Content Include="Views\OASystem\ViewSystem.cshtml" />
+    <Content Include="Views\Manager\ManagerUser.cshtml" />
+    <Content Include="Views\Bank\AdvanceSearch.cshtml" />
+    <Content Include="Views\Bank\Search.cshtml" />
+    <Content Include="Views\OASystem\Index.cshtml" />
+    <Content Include="Views\OASystem\CreatePower.cshtml" />
+    <Content Include="Views\OASystem\EditPower.cshtml" />
+    <Content Include="Views\OASystem\ViewUser.cshtml" />
+    <Content Include="Views\City\Select.cshtml" />
+    <Content Include="Views\ProjectType\Select.cshtml" />
+    <Content Include="Views\UserGroup\Select.cshtml" />
+    <Content Include="Views\UserGroup\SelectGroup.cshtml" />
+    <Content Include="Views\Manager\ManagerClientMessage.cshtml" />
+    <Content Include="Views\Manager\CreateClient.cshtml" />
+    <Content Include="Views\OASystem\CreateSystem.cshtml" />
+    <Content Include="Views\Power\Get.cshtml" />
+    <Content Include="Views\Report\Bank.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Jurisdiction\Models\" />
     <Folder Include="Areas\Jurisdiction\Views\JurisdictionControllerBase\" />
+    <Folder Include="Areas\Project\Models\" />
+    <Folder Include="Areas\Project\Views\ProjectControllerBase\" />
     <Folder Include="BarCodes\" />
     <Folder Include="Models\" />
     <Folder Include="Views\Attachment\" />
     <Folder Include="Views\Comment\" />
+    <Folder Include="Views\Download\" />
     <Folder Include="Views\File\" />
     <Folder Include="Views\Notification\" />
     <Folder Include="Views\Query\" />

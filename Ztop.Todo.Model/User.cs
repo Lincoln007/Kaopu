@@ -45,6 +45,7 @@ namespace Ztop.Todo.Model
         public DateTime? LastLoginTime { get; set; }
 
         public int Order { get; set; }
+        public bool Delete { get; set; }
     }
 
     [Serializable]

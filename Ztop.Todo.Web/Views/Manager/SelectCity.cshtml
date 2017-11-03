@@ -1,0 +1,33 @@
+﻿@{ 
+    Layout = null;
+    List<City> Provinces = ViewBag.Provinces;
+}
+
+<div class="page-header">
+    <h3 class="text-center">所属城市</h3>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label class="control-label col-md-4">省份：</label>
+            <div class="col-md-7">
+                <select class="form-control" name="">
+                    @foreach (var city in Provinces)
+                    {
+                        <option value="@(city.ID)">@(city.Name)</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <hr />
+        <div class="form-group">
+            <div class="col-md-7 col-md-offset-4">
+                <button type="button" class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-ok"></i>选择</button>
+                <button type="button" class="btn btn-sm btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove-sign"></i>取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

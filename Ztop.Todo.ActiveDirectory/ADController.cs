@@ -176,7 +176,7 @@ namespace Ztop.Todo.ActiveDirectory
         private static List<string> GetAllProperty(this DirectoryEntry Entry, string PropertyName)
         {
             var list = new List<string>();
-            if (Entry.Properties.Contains(PropertyName))
+            if (Entry!=null&& Entry.Properties.Contains(PropertyName))
             {
 
                 foreach (var m in Entry.Properties[PropertyName])

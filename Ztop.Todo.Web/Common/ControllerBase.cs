@@ -24,6 +24,22 @@ namespace Ztop.Todo.Web.Controllers
                 return (UserIdentity)HttpContext.User.Identity;
             }
         }
+        
+        private static UserGroup _group { get; set; }
+        protected UserGroup Group
+        {
+            get { return _group; }
+            set { _group = value; }
+            //get
+            //{
+            //    return _group == null ? _group = RedisManager.Get<UserGroup>(Identity.sAMAccountName + "group", RedisManager.Client) : _group;
+            //}
+        }
+
+        //protected OASystemClass CurrentSystem = OASystemClass.TaskSystem;//部署10.22.102.3 任务系统
+
+        protected OASystemClass CurrentSystem = OASystemClass.ReimburseSystem;//部署10.22.102.4 报销系统
+
 
         protected ActionResult SuccessJsonResult(object data = null)
         {

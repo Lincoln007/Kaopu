@@ -4,7 +4,8 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     Sheet sheet = ViewBag.Sheet;
     List<ReportType> types = ViewBag.Types;
-    var parents = types.Where(e => e.Children != null && e.Children.Count > 0).ToList();
+    var parents = types.Where(e => (e.Children != null && e.Children.Count > 0)||e.IsEnterprise==true).ToList();
+    //var pays = types.Where(e => e.IsEnterprise == true).ToList();
 }
 
 <div class="col-md-12">
@@ -74,9 +75,13 @@
                     </tr>
                 </tbody>
             </table>
-            @if (sheet.Type == SheetType.Errand)
+            @if (sheet.Type == SheetType.Errand)//出差
             {
                 Html.RenderPartial("Errand", sheet.Evection);
+            }
+            else if (sheet.Type == SheetType.Reception)//招待
+            {
+                Html.RenderPartial("Reception",sheet.Reception);
             }
             else
             {
@@ -107,14 +112,58 @@
     @foreach (var parent in parents)
     {
         <div id="@(parent.ID)">
-            <select name="SRID" class="form-control input-sm">
-                @foreach (var child in parent.Children)
-                {
-                    <option value="@(child.ID)">@(child.Name)</option>
-                }
-            </select>
+            @if (parent.Children != null && parent.Children.Count > 0)
+            {
+                <div class="col-md-6">
+                    <select name="SRID" class="form-control input-sm">
+                        @foreach (var child in parent.Children)
+                        {
+                            <option value="@(child.ID)">@(child.Name)</option>
+                        }
+                    </select>
+                </div>
+            }
+           @if (parent.IsEnterprise)
+           {
+               <div class="col-md-6">
+                   <select name="PayWay" class="form-control input-sm">
+                       <option value="false">个人支付</option>
+                       <option value="true">企业支付</option>
+                   </select>
+               </div>
+           }
         </div>
     }
+    <table class="hidden">
+        <tbody id="Add">
+            <tr>
+                <td>
+                    <input type="text" name="Content" class="form-control input-sm" placeholder="招待内容" required />
+                </td>
+                <td>
+                    <input type="text" name="Coin" class="form-control input-sm" placeholder="金额【元】" required />
+                </td>
+                <td>
+                    <select name="Way" class="form-control input-sm">
+                        @foreach (PayWay way in Enum.GetValues(typeof(PayWay)))
+                        {
+                            <option value="@(way)">@(way.GetDescription())</option>
+                        }
+                    </select>
+                </td>
+                <td>
+                    <input type="text" name="Average" class="form-control input-sm" placeholder="人均消费额" required />
+                </td>
+                <td>
+                    <input type="text" name="Memo" class="form-control input-sm" placeholder="备注" />
+                </td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-xs" name="Remove"><i class="glyphicon glyphicon-remove-sign"></i></button>
+                </td>
+            </tr>
+        </tbody>
+
+    </table>
 </div>
 
 <table id="template" style="display:none">

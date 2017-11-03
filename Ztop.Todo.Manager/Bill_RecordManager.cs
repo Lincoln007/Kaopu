@@ -25,6 +25,11 @@ namespace Ztop.Todo.Manager
                 if (entry != null)
                 {
                     record.ID = entry.ID;
+                    if (record.Budget == entry.Budget)//假如当前记录是收入或者支出统一时，一级类和二级类不做修改
+                    {
+                        record.Cost = entry.Cost;
+                        record.RID = entry.RID;
+                    }
                     record.Sync = entry.Sync;
                     db.Entry(entry).CurrentValues.SetValues(record);
                 }
@@ -132,7 +137,7 @@ namespace Ztop.Todo.Manager
                     {
                         if (cost == Cost.RealPay)
                         {
-                            var rnone = list.Where(e => e.RID == null).ToList();
+                            var rnone = list.Where(e => e.Cost==cost&& e.RID == null).ToList();
                             if (rnone.Count > 0)
                             {
                                 dict.Add(cost.GetDescription()+"无二级类", rnone.Sum(e => e.Money));

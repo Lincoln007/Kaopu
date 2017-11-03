@@ -44,6 +44,10 @@ namespace Ztop.Todo.Model
         /// 金额
         /// </summary>
         public double Price { get; set; }
+        /// <summary>
+        /// 是否企业支付
+        /// </summary>
+        public bool EnterprisePay { get; set; }
         public int SID { get; set; }
     }
 
@@ -58,6 +62,24 @@ namespace Ztop.Todo.Model
         public int SID { get; set; }
         public string Name { get; set; }
         public string SName { get; set; }
+        public bool EnterprisePay { get; set; }
+        [NotMapped]
+        public string Title
+        {
+            get
+            {
+                var sb = new StringBuilder(Name);
+                if (!string.IsNullOrEmpty(SName))
+                {
+                    sb.Append("-" + SName);
+                }
+                if (EnterprisePay)
+                {
+                    sb.Append("(企业支付)");
+                }
+                return sb.ToString();
+            }
+        }
     }
 
     public enum Category

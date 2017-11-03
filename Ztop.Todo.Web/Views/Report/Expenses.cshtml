@@ -1,0 +1,21 @@
+﻿
+@{
+    ViewBag.Title = "日常招待";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-header">
+    <h2>日常招待填写</h2>
+</div>
+
+<div class="row">
+    <div class="col-md-6 col-xs-12 col-sm-12">
+        <a href="/Report/Create?type=@(SheetType.Reception)" class="btn btn-lg btn-block btn-primary"><i class="fa fa-coffee"></i>招待报销填写</a>
+    </div>
+    <div class="col-md-6 col-xs-12 col-sm-12">
+        <a href="/Report/Create?type=@(SheetType.Daily)" class="btn btn-lg btn-block btn-success"><i class="fa fa-map-o"></i>其他报销填写</a>
+    </div>
+  
+</div>
+
+

@@ -1,0 +1,161 @@
+﻿
+@{
+    ViewBag.Title = "报销单查询";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<string> users = ViewBag.Users;
+    List<ReportType> reportTypes = ViewBag.ReportType;
+    List<UserGroup> groups = ViewBag.Groups;
+}
+
+<script src="~/Scripts/Manager.js"></script>
+<script>
+    $(function () {
+        $("a[name='Time']").click(function () {
+            var currentStr = "@(DateTime.Now.ToString("yyyy-MM-dd"))";
+            var days = parseInt($(this).attr("data"));
+            var val = "";
+            switch (days) {
+                case 7:
+                    val = "@(DateTime.Now.AddDays(-6).ToString("yyyy-MM-dd"))";
+                    break;
+                case 30:
+                    val = "@(DateTime.Now.AddMonths(-1).ToString("yyyy-MM-dd"))";
+                    break;
+                case 90:
+                    val = "@(DateTime.Now.AddMonths(-6).ToString("yyyy-MM-dd"))";
+                    break;
+                case 365:
+                    val = "@(DateTime.Now.AddYears(-1).ToString("yyyy-MM-dd"))";
+                    break;
+            }
+            $("input[name='StartTime']").val(val);
+            $("input[name='EndTime']").val(currentStr);
+        });
+
+        $("a[name='Search']").click(function () {
+            var data = $("#Sheets-form").serialize();
+            ShowMessage("正在查询，请稍等......");
+            $("#Content").load("/Bank/Search", data, function () {
+                HideMessage();
+            });
+            return false;
+        });
+       
+
+        
+    });
+
+</script>
+<div class="page-header">
+    <h3 class="text-center">报销单高级查询</h3>
+</div>
+
+<div class="col-md-12 col-xs-12 well">
+    <fieldset><legend>查询条件设置</legend></fieldset>
+    <form  class="form-horizontal" id="Sheets-form">
+        <div class="row">
+            <div class="col-md-12 col-xs-12 col-sm-12">
+                <div class="form-group">
+                    <label class="control-label">时间范围：</label>
+                    <div class="col-md-12 col-xs-12 col-sm-12">
+                        <div class="input-group">
+                            <input type="text" name="StartTime" placeholder="起始时间" class="form-control datetimepicker input-sm" />
+                            <span class="input-group-addon input-sm">至</span>
+                            <input type="text" name="EndTime" placeholder="截至时间" class="form-control datetimepicker input-sm" />
+                            <span class="input-group-btn btn-group-sm">
+                                <a href="javascript:void()" class="btn btn-primary" name="Time" data="7">本周</a>
+                                <a href="javascript:void()" class="btn btn-success" name="Time" data="30">本月</a>
+                                <a href="javascript:void()" class="btn btn-warning" name="Time" data="90">半年</a>
+                                <a href="javascript:void()" class="btn btn-danger" name="Time" data="365">一年</a>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xs-6 col-sm-6">
+                <div class="form-group">
+                    <label class="control-label" for="">用户：</label>
+                    <div class="col-md-12 col-xs-12 col-sm-12">
+                        <div class="col-md-6 col-xs-12 col-sm-12">
+                            <select name="GroupId" class="form-control input-sm">
+                                <option value="">请选择部门</option>
+                                @foreach (var group in groups)
+                                {
+                                    <option value="@(group.ID)">@(group.Name)</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-6 col-xs-12 col-sm-12" style="display:none;" id="User">
+                            <select name="Name" class="form-control input-sm">
+                                <option value="">所有用户</option>
+                                @foreach (var item in users)
+                                {
+                                    <option value="@(item)">@(item)</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">内容关键字查询：</label>
+                    <div class="col-md-12 col-xs-12 col-sm-12">
+                        <div class="input-group">
+                            <div class="input-group-btn" role="group">
+                                <button type="button" class="btn btn-sm btn-success" name="Memo">全部</button>
+                            </div>
+                            <input type="text" class="form-control input-sm" placeholder="内容关键字" name="Memo"  />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xs-6 col-sm-6">
+                <div class="form-group">
+                    <label class="control-label">报销类型：</label>
+                    <div class="col-md-12 col-xs-12 col-sm-12">
+                        <select name="Type" class="form-control input-sm">
+                            <option value="">所有报销</option>
+                            @foreach (SheetType type in Enum.GetValues(typeof(SheetType)))
+                            {
+                                <option value="@(type)">@(type.GetDescription())</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group" id="Cate" style="display:none">
+                    <label class="control-label" for="">类别：</label>
+                    <div class="col-md-12">
+                        <select name="Cate" class="form-control input-sm">
+                            <option value="">所有类别</option>
+                            @foreach (var item in reportTypes)
+                            {
+                                <option value="@(item.Name)">@(item.Name)</option>
+                            }
+                        </select>
+                    </div>
+
+                </div>
+            </div>
+          
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-12 col-xs-12 col-sm-12">
+                <div class="btn-group btn-group-sm">
+                    <a href="/Bank/Search" class="btn btn-primary" name="Search"><i class="glyphicon glyphicon-refresh"></i>统计分析</a>
+                    <a href="/Bank/Index" class="btn btn-success"><i class="glyphicon glyphicon-home"></i>银行对账主页</a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="col-md-12 col-xs-12 col-sm-12">
+    @{ 
+        Html.RenderPartial("_Message");
+    }
+    <div id="Content">
+
+    </div>
+</div>
+
+

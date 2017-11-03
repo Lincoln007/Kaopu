@@ -1,0 +1,68 @@
+﻿@{ 
+    Dictionary<string, List<UserGroupView>> dict = ViewBag.Dict;
+    Layout = null;
+    string[] selectes = ViewBag.Array ; 
+}
+
+<script>
+    $(function () {
+        $("button[name='OK']").click(function () {
+            var values = [];
+            var texts = [];
+            $("input[name='User']:checked").each(function () {
+                var a = $(this).parent().text().trim();
+                var b = $(this).val();
+                texts.push(a);
+                values.push(b);
+             
+            });
+            if (values.length == 0) {
+                alert("未获取选择人员");
+                return;
+            }
+            $("input[name='Persons']").val(texts.join(";"));
+            $("input[name='UserIDs']").val(values.join(";"));
+        });
+    });
+</script>
+
+<div class="page-header">
+    <h3 class="text-center">人员选择</h3>
+</div>
+
+<div class="row">
+    <div class="col-md-12 col-xs-12 col-sm-12">
+        <table class="table">
+            @foreach(var entry in dict)
+            {
+                <tr>
+                    <th>@(entry.Key)</th>
+                </tr>
+                var array = entry.Value.ListToTable(4);
+                foreach(var arr in array)
+                {
+                    <tr>
+                        @foreach(var item in arr)
+                        {
+                            if (item != null)
+                            {
+                                <td>
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" name="User"  value="@(item.ID)" @(selectes!=null&& selectes.Contains(item.RealName)?"checked=checked":"") />@(item.RealName)
+                                    </label>
+                                </td>
+                            }
+                        }
+                    </tr>
+                }
+
+            }
+        </table>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" name="OK"><i class="glyphicon glyphicon-ok-circle"></i>确定</button>
+            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><i class="glyphicon glyphicon-remove-circle"></i>&nbsp; 取消</button>
+          
+        </div>
+      
+    </div>
+</div>

@@ -172,6 +172,18 @@ namespace Ztop.Todo.Web.Controllers
         }
 
         /// <summary>
+        /// 作用：选择城市
+        /// 作者：汪建龙
+        /// 编写时间：
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult SelectCity()
+        {
+            GetCitys();
+            return View();
+        }
+
+        /// <summary>
         /// 作用：获取相关项目类型信息
         /// 作者：汪建龙
         /// 编写时间：2016年12月6日14:50:18
@@ -388,6 +400,64 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
         
+        public ActionResult SelectUser(string persons)
+        {
+            ViewBag.Groups = Core.UserManager.GetUserGroups();
+            ViewBag.Users = Core.UserManager.GetAllUsers();
+            ViewBag.Checks = string.IsNullOrEmpty(persons) ? new string[1] : persons.Split(';');
+            return View();
+        }
+
+
+        public ActionResult ManagerClientMessage()
+        {
+            var list = Core.Client_MessageManager.GetList();
+            ViewBag.List = list;
+            return View();
+        }
+
+        public ActionResult CreateClient()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult SaveClientMessage(ClientMessage client)
+        {
+            if (client.ID > 0)
+            {
+                if (Core.Client_MessageManager.Edit(client))
+                {
+                    return SuccessJsonResult();
+                }
+            }
+            else
+            {
+                var id = Core.Client_MessageManager.Add(client);
+                if (id > 0)
+                {
+                    return SuccessJsonResult();
+                }
+            }
+            return ErrorJsonResult("保存失败");
+        }
+
+        
+
+
+
+
+
+
+
+
+
+        public ActionResult ManagerUser()
+        {
+            var dict = Core.UserManager.GetDict();
+            ViewBag.Dict = dict;
+            return View();
+        }
 
     }
 }

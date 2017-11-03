@@ -18,16 +18,15 @@ namespace Ztop.Todo.Manager
         {
             if (!Cache.Exists(_userCacheKey))
             {
-                using (var db = GetDbContext())
+                var list = DB.Users.Where(e=>e.Delete==false).ToList();
+                foreach (var user in list)
                 {
-                    var list = db.Users.ToList();
-                    foreach (var user in list)
-                    {
-                        Cache.HSet(_userCacheKey, user.ID.ToString(), user);
-                    }
+                    Cache.HSet(_userCacheKey, user.ID.ToString(), user);
                 }
             }
             return Cache.HGetAll<User>(_userCacheKey);
+
+
         }
 
         public User GetUser(int id)
@@ -80,6 +79,12 @@ namespace Ztop.Todo.Manager
             //}
             return user;
         }
+        public List<User> GetUsers(int groupId)
+        {
+            return DB.Users.Where(e => e.GroupID == groupId).ToList();
+        }
+
+    
 
         /// <summary>
         /// 如果更新密码，请在调用方法前【不要】对password属性进行md5
@@ -114,17 +119,14 @@ namespace Ztop.Todo.Manager
         public UserGroup GetOrSetUserGroup(string groupName)
         {
             if (string.IsNullOrEmpty(groupName)) return null;
-            using (var db = GetDbContext())
+            var group = DB.UserGroups.FirstOrDefault(e => e.Name == groupName);
+            if (group == null)
             {
-                var group = db.UserGroups.FirstOrDefault(e => e.Name == groupName);
-                if (group == null)
-                {
-                    group = new UserGroup { Name = groupName };
-                    db.UserGroups.Add(group);
-                }
-                db.SaveChanges();
-                return group;
+                group = new UserGroup { Name = groupName };
+                DB.UserGroups.Add(group);
             }
+            DB.SaveChanges();
+            return group;
         }
 
         public List<UserGroup> GetUserGroups()
@@ -211,11 +213,16 @@ namespace Ztop.Todo.Manager
         }
         public string GetGroupName(string userName)
         {
-            using (var db = GetDbContext())
-            {
-                var entry = db.UserGroupViews.FirstOrDefault(e => e.RealName == userName);
-                return entry == null ? null : entry.Name;
-            }
+            var entry = DB.UserGroupViews.FirstOrDefault(e => e.RealName == userName);
+            return entry == null ? null : entry.GroupName;
         }
+
+
+
+        public Dictionary<string,List<UserGroupView>> GetDict()
+        {
+            return DB.UserGroupViews.OrderByDescending(e=>e.Order).GroupBy(e => e.GroupName).ToDictionary(e => e.Key, e => e.ToList());
+        }
+        
     }
 }

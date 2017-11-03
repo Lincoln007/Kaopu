@@ -1,5 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Composes>
+  <Systems>
+    <System Name="任务系统" ID="1"></System>
+    <!--<System Name="报销系统" ID="2"></System>-->
+  </Systems>
   <Administrators>
     <Administrator Name="Administrators"></Administrator>
     <Administrator Name="Domain Admins"></Administrator>
@@ -11,10 +15,10 @@
     <Director Name="申屠杜平"></Director>
     <Director Name="袁洋"></Director>
     <Director Name="蔡锋铭"></Director>
-    <Director Name="彭盛状"></Director>
     <Director Name="俞海峰"></Director>
     <Director Name="梁志卿"></Director>
     <Director Name="蒋雷"></Director>
+    <Director Name="李旸"></Director>
     <Manager Name="申屠杜平"></Manager>
     <Finance Name="靳小阳"></Finance>
     <Bank Name="袁洋"></Bank>

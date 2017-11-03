@@ -96,6 +96,12 @@
             {
                 Html.RenderPartial("Errand", sheet.Evection);
             }
+        }else if (sheet.Type == SheetType.Reception)
+        {
+            if (sheet.Reception != null)
+            {
+                Html.RenderPartial("Reception", sheet.Reception);
+            }
         }
         else
         {
@@ -111,18 +117,18 @@
                 </thead>
                 <tbody>
                     @if (sheet.Substancs_Views != null)
+                {
+                    Serial = 1;
+                    foreach (var subView in sheet.Substancs_Views)
                     {
-                        Serial = 1;
-                        foreach (var subView in sheet.Substancs_Views)
-                        {
                             <tr>
                                 <td>@(Serial++)</td>
-                                <td>@(subView.Name) @(!string.IsNullOrEmpty(subView.SName) ? "-" + subView.SName : "") </td>
+                                <td>@(subView.Title)</td>
                                 <td class="text-center">@(subView.Details)</td>
                                 <td>@(subView.Price)</td>
                             </tr>
                         }
-                    }
+        }
                 </tbody>
             </table>
         }

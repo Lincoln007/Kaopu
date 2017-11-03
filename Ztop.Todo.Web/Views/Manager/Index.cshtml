@@ -25,16 +25,19 @@
     <div class="col-md-12">
         <h2 class="text-center">系统配置</h2>
         <hr />
-        <div class="col-md-3">
+        <div class="col-md-2">
             <ul class="nav nav-pills nav-stacked" role="tablist">
                 <li role="presentation" class="@(category.ToString()=="City"?"active":"")"><a href="#City" role="tab" data-toggle="tab">城市管理</a></li>
                 <li role="presentation" class="@(category.ToString()=="ProjectType"?"active":"")"><a href="#Project" role="tab" data-toggle="tab">项目类型管理</a></li>
                 <li role="presentation" class="@(category.ToString()==SystemCategory.ReportSystem.ToString()?"active":"")"><a href="#Report" role="tab" data-toggle="tab">日常报销类型管理</a></li>
                 <li role="presentation" class="@(category==SystemCategory.ReportManager?"active":"")"><a href="#ReportManager" role="tab" data-toggle="tab">报销人员管理</a></li>
                 <li role="presentation"><a href="#Authority" role="tab" data-toggle="tab">权限管理</a></li>
+                <li role="presentation" class="@(category==SystemCategory.OASystem?"active":"")"><a href="#System" role="tab" data-toggle="tab">系统权限管理</a></li>
+                <li role="presentation" class="@(category.ToString()==SystemCategory.User.ToString()?"active":"")" ><a href="#User" role="tab" data-toggle="tab">系统人员管理</a></li>
+                <li role="presentation" class="@(category==SystemCategory.ClientMessage?"active":"")"><a href="#ClientMessage" role="tab" data-toggle="tab">客户端消息类型管理</a></li>
             </ul>
         </div>
-        <div class="col-md-9">
+        <div class="col-md-10">
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane @(category.ToString()=="City"?"active":"")" id="City">
                     @{ Html.RenderAction("ManagerCity");}
@@ -50,6 +53,15 @@
                 </div>
                 <div role="tabpanel" class="tab-pane" id="Authority">
 
+                </div>
+                <div role="tabpanel" class="tab-pane" id="System">
+                    @{ Html.RenderAction("Index","OASystem");}
+                </div>
+                <div role="tabpanel" class="tab-pane" id="User">
+                    @{ Html.RenderAction("ManagerUser");}
+                </div>
+                <div role="tabpanel" class="tab-pane" id="ClientMessage">
+                    @{ Html.RenderAction("ManagerClientMessage");}
                 </div>
             </div>
         </div>

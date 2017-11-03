@@ -168,7 +168,7 @@
             {
                 <tr>
                     <td><a href="/Report/Detail?id=@(sheet.SID)">@(sheet.PrintNumber)</a></td>
-                    <td>@(sheet.CheckNumber)</td>
+                    <td>@(sheet.CheckNumber??"未生成单据编号")</td>
                     <td>@(sheet.Time.ToLongDateString())</td>
                     <td>@(sheet.Money)</td>
                     <td>@(sheet.Remarks)</td>

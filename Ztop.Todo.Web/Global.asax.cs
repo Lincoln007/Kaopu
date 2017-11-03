@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using Ztop.Todo.Manager;
 
 namespace Ztop.Todo.Web
 {
@@ -17,6 +18,15 @@ namespace Ztop.Todo.Web
             //BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             Environment.CurrentDirectory = AppDomain.CurrentDomain.BaseDirectory;
+        }
+
+        protected virtual void Application_BeginRequest()
+        {
+            HttpDbContextContainer.OnBeginRequest(Context, new DataContext());
+        }
+        protected virtual void Application_EndRequest()
+        {
+            HttpDbContextContainer.OnEndRequest(Context);
         }
     }
 }

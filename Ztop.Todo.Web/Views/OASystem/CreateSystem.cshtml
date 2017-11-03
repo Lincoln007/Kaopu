@@ -1,0 +1,41 @@
+﻿@{ 
+    Layout = null;
+    OASystem system = ViewBag.Model;
+}
+
+
+<div class="page-header">
+    <h3 class="text-center">添加系统</h3>
+</div>
+
+<form class="form-horizontal" action="/OASystem/SaveSystem" method="post">
+    <input type="hidden" name="ID" value="@(system==null?0:system.ID)" />
+    <div class="form-group">
+        <label class="control-label col-md-3">系统名称：</label>
+        <div class="col-md-7">
+            <input type="text" name="Name" class="form-control" placeholder="系统名称" value="@(system==null?"":system.Name)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-3">系统图标类：</label>
+        <div class="col-md-7">
+            <input type="text" name="Class" class="form-control" placeholder="系统图标类" value="@(system==null?"":system.Class)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-3">所属系统类别：</label>
+        <div class="col-md-7">
+            @foreach(OASystemClass oo in Enum.GetValues(typeof(OASystemClass)))
+            {
+                <label class="radio-inline">
+                    <input type="radio" name="OASystemClass" value="@(oo)" />@(oo.GetDescription())
+                </label>
+            }
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-7 col-md-offset-3">
+            <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i>确定</button>
+        </div>
+    </div>
+</form>

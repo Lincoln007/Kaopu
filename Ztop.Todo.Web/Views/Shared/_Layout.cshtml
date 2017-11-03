@@ -64,8 +64,8 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a href="/" class="navbar-brand logo">智拓TODO</a>
-                    <a href="/"class="navbar-brand">任务系统</a>
+                    <a href="/" class="navbar-brand logo">智拓OA</a>
+                    <a href="/"class="navbar-brand">报销系统</a>
                 </div>
                 <ul class="navbar-right nav navbar-nav">
                     @if (identity!=null&&!string.IsNullOrEmpty(identity.Name))
@@ -92,7 +92,7 @@
                     <div class="navbar-default sidebar" role="navigation">
                         <div class="sidebar-nav navbar-collapse">
                             <ul class="nav" id="side-menu">
-                                <li>
+                                @*<li>
                                     <a href="#"><i class="glyphicon glyphicon-leaf"></i> 任务系统<span class="fa arrow"></span></a>
                                     <ul class="nav nav-second-level">
                                         <li><a href="/Home/Index"><i class="fa fa-desktop"></i> 欢迎页</a></li>
@@ -114,37 +114,40 @@
                                     <li><a href="/Home/Daily"><i class="glyphicon glyphicon-eye-open"></i>更新日志</a></li>
                                     <li><a href="/Manager/Index"><i class="glyphicon glyphicon-cog"></i>系统配置</a></li>
                                 }
-                                @if (identity.Project || identity.Finance || identity.Admin || identity.Market)
+
+
+
+
+                                @if (Systems != null && Items != null)
                                 {
-                                    <li>
-                                        <a href="#"><i class="glyphicon glyphicon-usd"></i>项目管理系统<span class="fa arrow"></span></a>
-                                        <ul class="nav nav-second-level">
-                                            <li><a href="/Finance/CreateContract"><i class="glyphicon glyphicon-new-window"></i>录入合同</a></li>
-                                            <li><a href="/Finance/CreateArticle"><i class="glyphicon glyphicon-book"></i>录入项目洽谈</a></li>
-                                            <li><a href="/Finance/ArticleSearch"><i class="glyphicon glyphicon-search"></i>项目洽谈查询</a></li>
-                                            <li><a href="/Finance/CreateInvoice"><i class="glyphicon glyphicon-piggy-bank"></i>申请开票</a></li>
-                                            <li><a href="/Finance/ContractSearch"><i class="glyphicon glyphicon-search"></i>合同查询</a></li>
-                                            @if (identity.Name == "袁洋")
-                                            {
-                                                <li><a href="/Finance/BillSearch"><i class="glyphicon glyphicon-search"></i>到账查询</a></li>
-                                            }
-                                           @if (identity.Market)
-                                           {
-                                            <li><a href="/Finance/BillSearchMarket"><i class="glyphicon glyphicon-log-in"></i>&nbsp;到账列表</a></li>
-                                            <li><a href="/Finance/Cashdeposit"><i class="glyphicon glyphicon-usd"></i>&nbsp;保证金查询</a></li>
-                                           }
-                                            
-                                            <li><a href="/Finance/InvoiceSearch"><i class="glyphicon glyphicon-search"></i>发票查询</a></li>
-                                        </ul>
-                                    </li>
-                                }
+                                    foreach (var system in Systems)
+                                    {
+                                        if (Items.ContainsKey(system.Name))
+                                        {
+                                            var list = Items[system.Name];
+                                            <li>
+                                                <a href="#"><i class="@(system.Class)"></i>&nbsp;@(system.Name)&nbsp;<span class="fa arrow"></span></a>
+                                                <ul class="nav nav-second-level">
+                                                    @foreach (var item in list.OrderBy(e => e.Order))
+                                                    {
+                                                        <li><a href="@(item.Url)"><i class="@(item.Glyphicon)"></i>&nbsp;@(item.Name)</a></li>
+                                                    }
+                                                </ul>
+                                            </li>
+                                        }
+                                    }
+                                }*@
+
+
+
+       
 
 
 
 
 
-                                @*<li><a href="/Report/Index"><i class="fa fa-desktop"></i>&nbsp;欢迎页</a></li>
-                                <li><a href="/Report/Create?type=@(SheetType.Daily)"><i class="fa fa-map-o"></i>&nbsp;日常报销填写</a></li>
+                                <li><a href="/Report/Index"><i class="fa fa-desktop"></i>&nbsp;欢迎页</a></li>
+                                <li><a href="/Report/Expenses"><i class="fa fa-map-o"></i>&nbsp;日常报销填写</a></li>
                                 <li><a href="/Report/Create?type=@(SheetType.Errand)"><i class="fa fa-plane"></i>&nbsp;出差报销填写</a></li>
                                 @if (identity.Finance)
                                 {
@@ -163,6 +166,7 @@
                                 }
                                 @if (identity.Name == "申屠杜平"|| identity.Name == "汪建龙")
                                 {
+                                    <li><a href="/Report/Bank"><i class="fa fa-bank"></i>&nbsp;转账支出</a></li>
                                     <li><a href="/Report/Filing"><i class="fa fa-anchor"></i>报销归档</a></li>
                                 }
                                 <li>
@@ -183,16 +187,13 @@
                                         <a href="#"><i class="glyphicon glyphicon-calendar"></i>银行对账<span class="fa arrow"></span></a>
                                         <ul class="nav nav-second-level">
                                             <li><a href="/Bank/Index"><i class="fa fa-desktop"></i>账单</a></li>
-                                          
                                         </ul>
                                     </li>
                                 }
                                 @if(identity.Name== "靳小阳")
                                 {
                                     <li><a href="/Report/CashCheck"><i class="glyphicon glyphicon-usd"></i>现金核算</a></li>
-                                }*@
-
-                                @*<li><a href="/Report/AdvanceSearch"><i class="glyphicon glyphicon-search"></i>&nbsp;报销单查询</a></li>*@
+                                }
                             </ul>
                         </div>
                     </div>

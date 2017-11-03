@@ -10,20 +10,20 @@
             format: 'Y-m-d'
         });
         $("#CheckTime").submit(function () {
-            var btn = $("#CheckTime button[type='submit']");
-            btn.attr("disabled", "disabled");
-            var data = $(this).serialize();
-            $.request("/Report/CheckTime", data, function (json) {
-                if (json.result == 0) {
-                    alert(json.content);
-                    btn.removeAttr("disabled");
-                } else {
-                    alert("确认到账成功");
-                    location.href = "/Report/Director";
-                }
-
-
-            });
+            if (confirm("您确定到账了吗？")) {
+                var btn = $("#CheckTime button[type='submit']");
+                btn.attr("disabled", "disabled");
+                var data = $(this).serialize();
+                $.request("/Report/CheckTime", data, function (json) {
+                    if (json.result == 0) {
+                        alert(json.content);
+                        btn.removeAttr("disabled");
+                    } else {
+                        alert("确认到账成功");
+                        location.href = "/Report/Director";
+                    }
+                });
+            }
             return false;
         });
     });

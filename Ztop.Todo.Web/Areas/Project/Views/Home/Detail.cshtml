@@ -1,0 +1,157 @@
+﻿@{ 
+    Layout = null;
+    Project project = ViewBag.Model;
+    List<ProjectProgress> progress = ViewBag.Progress;
+    List<ProjectRecord> Records = ViewBag.Records;
+    ViewBag.Title = "项目查看";
+    Layout = "~/Areas/Project/Views/Shared/_Layout.cshtml";
+    int serial = 1;
+}
+
+<script>
+    $(function () {
+        $("a[name='Delete']").click(function () {
+            if (confirm("您确定要删除吗?")) {
+                var btn = $(this);
+                btn.attr("disabled", "disabled");
+                var href = btn.attr("href");
+                $.request(href, null, function (json) {
+                    alert(json.content);
+                    if (json.result == 0) {
+                        btn.removeAttr("disabled");
+                    } else {
+                        location.href = "/Project/Home/Indx";
+                    }
+                });
+            }
+           
+
+            return false;
+        });
+    });
+</script>
+<div class="page-header">
+    <h3 class="text-center">@(project.Name)</h3>
+    <div class="btn-group btn-group-sm">
+        @if (project.IsDone == false)//项目状态为未完成的时候，可进行编辑和删除  更改负责人
+        {
+            if (Identity.UserID == project.Charge.UserId)//项目负责人
+            {
+                <a href="/Project/Progress/Create?projectID=@(project.ID)" class="btn btn-success" data-toggle="modal" data-target="#Modal"><i class="glyphicon glyphicon-plus-sign"></i>录入工作进度信息</a>
+                <a href="/Project/Home/Create?id=@(project.ID)" class="btn btn-primary"><i class="glyphicon glyphicon-edit"></i>编辑</a>
+                <a href="/Project/Home/Delete?id=@(project.ID)" class="btn btn-danger" name="Delete"><i class="glyphicon glyphicon-remove-sign"></i>删除</a>
+            }
+            else
+            {
+                Html.RenderAction("Get", "Power", new { area = "", id = 19, Parameter = string.Format("projectID={0}", project.ID),Type=PowerType.Windows });
+                Html.RenderAction("Get", "Power", new { area = "", id = 16, Parameter = string.Format("id={0}", project.ID) });
+                Html.RenderAction("Get", "Power", new { area = "", id = 17, Parameter = string.Format("id={0}", project.ID),name="Delete" });
+                Html.RenderAction("Get", "Power", new { area = "", id = 18, Parameter = string.Format("id={0}", project.ID),Type=PowerType.Windows });
+            }
+        }
+        <button type="button" class="btn btn-default"onclick="history.back()"><i class="glyphicon glyphicon-arrow-left"></i>返回</button>
+    </div>
+</div>
+
+
+<div class="row">
+
+    <div class="col-md-12">
+        @if (project.IsDone)
+        {
+            <div class="alert alert-success">
+                <span>当前项目已完成！</span>
+            </div>
+        }
+        <div class="panel panel-info">
+            <div class="panel-heading">项目信息</div>
+            <table class="table table-bordered table-striped">
+                <tr>
+                    <th>项目名称</th>
+                    <td>@(project.Name)</td>
+                    <th>项目编号</th>
+                    <td>@(project.Serial)</td>
+                </tr>
+                <tr>
+                    <th>登记编号</th>
+                    <td>
+                        @(project.Number)
+                        @if (string.IsNullOrEmpty(project.Number))
+                        {
+                            Html.RenderAction("Get", "Power", new { area = "", id = 3, Parameter = string.Format("id={0}", project.ID),Type=PowerType.Windows });
+                        }
+                        else
+                        {
+                            Html.RenderAction("Get", "Power", new { area = "", id = 4, Parameter = string.Format("id={0}", project.ID),Type=PowerType.Windows });
+                        }
+
+                    </td>
+                    <th>城市（县级）</th>
+                    <td>@(project.CityName)</td>
+                </tr>
+                <tr>
+                    <th>所属乡镇（主体）</th>
+                    <td>@(project.Town)</td>
+                    <th>项目类型</th>
+                    <td>@(project.Type.FullName)</td>
+                </tr>
+                <tr>
+                    <th>项目负责人</th>
+                    <td>@(project.Charge != null ? project.Charge.User.RealName : "未获取负责人信息")</td>
+                    <th>项目参与人员</th>
+                    <td>@(project.Participations != null && project.Participations.Count > 0 ? string.Join(";", project.Participations.Select(e => e.User.RealName).ToArray()) : "")</td>
+                </tr>
+                <tr>
+                    <th>备注</th>
+                    <td colspan="3">@(project.Mark)</td>
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+    <div class="col-md-12">
+        <div class="panel panel-warning">
+            <div class="panel-heading">工作进度信息</div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>录入时间</th>
+                        <th>录入人</th>
+                        <th>录入进度%</th>
+                        <th>工作情况</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (progress != null)
+                    {
+                        foreach (var item in progress)
+                        {
+                            <tr>
+                                <td>@(serial++)</td>
+                                <td>@(item.Time.ToString("yyyy-MM-dd HH:mm:ss"))</td>
+                                <td>@(item.User.DisplayName)</td>
+                                <td>@(item.Percent)</td>
+                                <td>@(item.Remark)</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="panel panel-success">
+            <div class="panel-heading">项目情况</div>
+            <ul class="list-group">
+                @foreach(var item in Records)
+                {
+                    <li class="list-group-item"><strong>时间</strong>：【@(item.Time.ToString("yyyy-MM-dd HH:mm:ss"))】<strong>信息</strong>： @(item.Content)</li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+
