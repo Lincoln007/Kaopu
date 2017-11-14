@@ -102,6 +102,7 @@ namespace Ztop.Todo.Manager
         public DbSet<ProjectProgress> Project_Progress { get; set; }
         public DbSet<ProjectView> Project_Views { get; set; }
         public DbSet<ProjectRecord> Project_Records { get; set; }
+        public DbSet<WorkLoad> WorkLoads { get; set; }
         #endregion
 
         #region 平板管理系统

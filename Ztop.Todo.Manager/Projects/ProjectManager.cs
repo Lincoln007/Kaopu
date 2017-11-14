@@ -53,12 +53,13 @@ namespace Ztop.Todo.Manager
        /// <param name="id"></param>
        /// <param name="isDone"></param>
        /// <returns></returns>
-        public bool Done(int id,bool isDone)
+        public bool Done(int id,bool isDone,string replyPath)
         {
             var model = DB.Projects.Find(id);
             if (model != null)
             {
                 model.IsDone = isDone;
+                model.ReplyFile = replyPath;
                 DB.SaveChanges();
                 return true;
             }

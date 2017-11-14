@@ -10,10 +10,10 @@ namespace Ztop.Todo.Manager
 {
     public class ReceptionManager:ManagerBase
     {
-        public List<ReceptionItem> GainItems(string[] content,double[] coin,PayWay[] way,double[] average,string[] memo)
+        public List<ReceptionItem> GainItems(string[] content,double[] coin,PayWay[] way,string[] memo)
         {
-            if (content == null || coin == null || way == null || average == null || memo == null
-                ||content.Length!=coin.Length||coin.Length!=way.Length||way.Length!=average.Length||average.Length!=memo.Length
+            if (content == null || coin == null || way == null || memo == null
+                ||content.Length!=coin.Length||coin.Length!=way.Length||way.Length!=memo.Length
                 )
             {
                 return null;
@@ -27,7 +27,7 @@ namespace Ztop.Todo.Manager
                     Content = content[i],
                     Coin = coin[i],
                     Way = way[i],
-                    Average = average[i],
+                    //Average = average[i],
                     Memo = memo[i]
                 });
             }

@@ -15,8 +15,7 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
 
-     
-        public ActionResult Get(int id,string Parameter,PowerType type=PowerType.Address,string name=null)
+        private Power GetPower(int id)
         {
             var power = Core.PowerManager.Get(id);
             if (power != null)
@@ -24,13 +23,30 @@ namespace Ztop.Todo.Web.Controllers
                 var power_Item = power.Items.FirstOrDefault(e => e.UserId == Identity.UserID);
                 if (power_Item != null)
                 {
-                    ViewBag.Model = power;
+                    return power;
+                    //ViewBag.Model = power;
                 }
             }
+            return null;
+        }
+     
+        public ActionResult Get(int id,string Parameter,PowerType type=PowerType.Address,string name=null)
+        {
+            ViewBag.Model= GetPower(id);
             ViewBag.Type = type;
             ViewBag.Name = name;
             ViewBag.Parameter = Parameter;
             return View();
+        }
+
+        public ActionResult GetPartialView(int id,string viewName,object Parameters)
+        {
+            var power= GetPower(id);
+            if (power == null)
+            {
+                return null;
+            }
+            return PartialView(viewName,Parameters);
         }
     }
 }

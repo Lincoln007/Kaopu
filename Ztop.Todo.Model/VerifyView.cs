@@ -78,6 +78,7 @@ namespace Ztop.Todo.Model
         public string sName { get; set; }
         public string Details { get; set; }
         public string subName { get; set; }
+        public double? Price { get; set; }
         public string Remarks { get; set; }
         public string Place { get; set; }
     }

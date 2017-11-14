@@ -39,5 +39,30 @@ namespace Ztop.Todo.Web.Controllers
             byte[] fileContents = ms.ToArray();
             return File(fileContents, ParameterManager.ExcelContentType, string.Format("{0} {1}.xls", download.GetDescription(), DateTime.Now.ToString(ParameterManager.TimeContentType)));
         }
+
+        public ActionResult Verify(DownloadEnum download)
+        {
+            var parameter = RedisManager.Get<SheetVerifyParameter>(Identity.UserID + ParameterManager.ParameterKey, RedisManager.Client);
+            if (parameter == null)
+            {
+                return Content("未获取查询条件！");
+            }
+            var list = Core.VerifyViewManager.Search(parameter, true);
+            if (list == null)
+            {
+                return Content("未读取到报销单信息");
+            }
+            IWorkbook workbook = ExcelManager.WriteVerify(list, download);
+            if (workbook == null)
+            {
+                return Content("创建表格失败!");
+            }
+
+            var ms = new MemoryStream();
+            workbook.Write(ms);
+            ms.Flush();
+            byte[] fileContents = ms.ToArray();
+            return File(fileContents, ParameterManager.ExcelContentType, string.Format("{0} {1}.xls", download.GetDescription(), DateTime.Now.ToString(ParameterManager.TimeContentType)));
+        }
     }
 }

@@ -42,11 +42,35 @@
                         </div>
                     </div>
                 </div>
+                <div class="form-group">
+                    <label class="control-label">填报时间:</label>
+                    <div class="col-md-12">
+                        <div class="input-group input-group-sm">
+                            <select name="Year" class="form-control">
+                                <option value="" @(parameter.Year.HasValue?"":"selected=selected")>全部</option>
+                                @for (var i = 2016; i <= DateTime.Now.Year; i++)
+                                {
+                                    <option value="@(i)" @(parameter.Year.HasValue&&parameter.Year.Value==i?"selected=selected":"")>@(i)</option>
+                                }
+                            </select>
+                            <span class="input-group-addon">年</span>
+                            <select name="Month" class="form-control">
+                                <option value="" @(parameter.Month.HasValue?"":"selected=selected")>全部</option>
+                                @for (var i = 1; i <= 12; i++)
+                                {
+                                    <option value="@(i)" @(parameter.Month.HasValue&&parameter.Month.Value==i?"selected=selected":"")>@(i)</option>
+                                }
+                            </select>
+                            <span class="input-group-addon">月</span>
+                        </div>
+                    </div>
+                </div>
 
                 <br />
                 <div class="form-group">
                     <div class="col-md-12">
-                        <button type="submit" class="btn btn-sm btn-success"><i class="glyphicon glyphicon-search"></i> 立即查询</button>
+                        <button type="submit" class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-search"></i> 立即查询</button>
+                        <a href="/Download/Verify?download=@(DownloadEnum.Transfer_Sheet)" class="btn btn-sm btn-success"><i class="glyphicon glyphicon-download-alt"></i>下载表格</a>
                         <button type="button" class="btn btn-sm btn-default" onclick="history.back();"><i class="glyphicon glyphicon-arrow-left"></i>返回</button>
                     </div>
                 </div>
@@ -94,13 +118,13 @@
                 {
                     <tr>
                         <td><a href="/Report/Detail?id=@(sheet.SID)">@(sheet.PrintNumber)</a></td>
-                        <td>@(sheet.Time.ToLongDateString())</td>
+                        <td>@(sheet.SheetTime.ToLongDateString())</td>
                         <td>@(sheet.Money)</td>
                         <td>@(sheet.SheetName)</td>
                         <td>
                             @if (!string.IsNullOrEmpty(sheet.Details) && sheet.Details.Length > 20)
                             {
-                                <abbr title="@(sheet.Details)">@(sheet.Details.Substring(20))</abbr>
+                                <abbr title="@(sheet.Details)">@(sheet.Details.Substring(0,20))</abbr>
                             }
                             else
                             {

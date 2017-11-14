@@ -29,6 +29,17 @@ namespace Ztop.Todo.Manager.Excels
 
             return null;
         }
+        public static IWorkbook WriteVerify(List<VerifyView> list,DownloadEnum download)
+        {
+            switch (download)
+            {
+                case DownloadEnum.Transfer_Sheet:
+                    return WriteTransfer(list);
+                //default:
+                //    return null;
+            }
+            return null;
+        }
 
         private static IWorkbook WriteAllSheet(List<Sheet> list)
         {
@@ -100,6 +111,20 @@ namespace Ztop.Todo.Manager.Excels
             }
             return workbook;
         }
+        private static IWorkbook WriteTransfer(List<VerifyView> list)
+        {
+            IWorkbook workbook = ParameterManager.ShentuTransfer.OpenExcel();
+            if (workbook != null)
+            {
+                var sheet = workbook.GetSheetAt(0);
+                if (sheet != null)
+                {
+                    WriteTransfer(list, sheet);
+                }
+            }
+
+            return workbook;
+        }
         private static IWorkbook WriteReception(List<Sheet> list)
         {
             IWorkbook workbook = ParameterManager.ShentuReception.OpenExcel();
@@ -148,7 +173,7 @@ namespace Ztop.Todo.Manager.Excels
                             ExcelClass.GetCell(row, 11, modelrow).SetCellValue(entry.Content);
                             ExcelClass.GetCell(row, 12, modelrow).SetCellValue(entry.Coin);
                             ExcelClass.GetCell(row, 13, modelrow).SetCellValue(entry.Way.GetDescription());
-                            ExcelClass.GetCell(row, 14, modelrow).SetCellValue(entry.Average);
+                           // ExcelClass.GetCell(row, 14, modelrow).SetCellValue(entry.Average);
                             ExcelClass.GetCell(row, 15, modelrow).SetCellValue(entry.Memo);
                         }
                         if (rline > line)
@@ -245,6 +270,30 @@ namespace Ztop.Todo.Manager.Excels
                 {
                     line++;
                 }
+            }
+        }
+        private static void WriteTransfer(List<VerifyView> list,ISheet sheet)
+        {
+            var serial = 1;
+            var line = 1;
+            var modelRow = sheet.GetRow(serial);
+            ExcelClass.GetCell(sheet.GetRow(0), 1).SetCellValue("流水编号");
+            foreach(var item in list)
+            {
+                var row = sheet.GetRow(line) ?? sheet.CreateRow(line);
+                line++;
+                row.Height = modelRow.Height;
+                var cell = ExcelClass.GetCell(row, 0, modelRow);
+                cell.SetCellValue(serial++);
+                ExcelClass.GetCell(row, 1, modelRow).SetCellValue(item.PrintNumber);
+                ExcelClass.GetCell(row, 2, modelRow).SetCellValue(item.SheetName);
+                ExcelClass.GetCell(row, 3, modelRow).SetCellValue(item.SheetTime.ToLongDateString());
+                ExcelClass.GetCell(row, 4, modelRow).SetCellValue(item.Money);
+                ExcelClass.GetCell(row, 5, modelRow).SetCellValue(item.Count);
+                ExcelClass.GetCell(row, 6, modelRow).SetCellValue(item.Remarks);
+                ExcelClass.GetCell(row, 7, modelRow).SetCellValue(item.subName + "-" + item.sName);
+                ExcelClass.GetCell(row, 8, modelRow).SetCellValue(item.Details);
+                ExcelClass.GetCell(row, 9, modelRow).SetCellValue(item.Price.HasValue?item.Price.Value:.0);
             }
         }
 

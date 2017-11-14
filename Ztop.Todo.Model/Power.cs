@@ -79,6 +79,8 @@ namespace Ztop.Todo.Model
         Button,
         [Description("链接")]
         Link,
+        [Description("视图")]
+        View
     }
     public enum PowerType
     {

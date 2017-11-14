@@ -1,0 +1,124 @@
+﻿@{ 
+    Layout = null;
+    Project project = ViewBag.Project;
+}
+
+<script>
+    $(function () {
+        function checkPercent() {
+            var sum = sumPercent();
+            if (sum > 100) {
+                alert("工作量超过100%，请重新填写！");
+                $("input[name='Percent']").each(function () {
+                    $(this).val(0);
+                });
+            }
+        }
+
+        function sumPercent() {
+            var sum = .0;
+            $("input[name='Percent']").each(function () {
+                var val = parseFloat($(this).val());
+                if (val != undefined && val != NaN && !isNaN(val)) {
+                    sum += val;
+                }
+            });
+            return sum;
+           
+        }
+
+        $("input[name='Percent']").blur(function () {
+            checkPercent();
+        }).change(function () {
+            checkPercent();
+        });
+
+        $("#form-workload").submit(function () {
+            var $btn = $("#form-workload button");
+            $btn.attr("disabled", "disabled");
+            var sum = sumPercent();
+            if (sum === 100) {
+                var data = $(this).serialize();
+                $.request("/Project/Workload/Save", data, function (json) {
+                    if (json.result == 1) {
+                        alert("成功登记");
+                        location.href = "/Project/Home/Detail?id=@(project.ID)";
+                    } else {
+                        alert(json.content);
+                        $btn.removeAttr("disabled");
+                    }
+                });
+
+            } else {
+                alert("工作量合计不等于100，请核对！");
+                $btn.removeAttr("disabled");
+            }
+            return false;
+        });
+    });
+</script>
+
+<div class="page-header">
+    <h3 class="text-center">登记项目工作量</h3>
+</div>
+
+<form class="form-horizontal" method="post" id="form-workload">
+    @if (project != null)
+    {
+        <div class="alert alert-warning" role="alert">
+            <span>项目工作量合计100%，请注意工作量填写！</span>
+        </div>
+        if (project.Workloads != null&&project.Workloads.Count>0)
+        {
+            foreach(var item in project.Workloads)
+            {
+                <div class="form-group">
+                    <label class="control-label col-md-3">@(item.User.RealName)</label>
+                    <div class="col-md-7">
+                        <div class="input-group input-group-sm">
+                            <input type="hidden" name="UserId" value="@(item.UserId)" />
+                            <input type="number" name="Percent" class="form-control" value="@(item.Percent)" />
+                            <span class="input-group-addon">%</span>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            if (project.ProjectUser != null)
+            {
+                foreach (var item in project.ProjectUser)
+                {
+                    <div class="form-group">
+                        <label class="control-label col-md-3">@(item.User.RealName):</label>
+                        <div class="col-md-7">
+                            <div class="input-group input-group-sm">
+                                <input type="hidden" name="UserId" value="@(item.UserId)" />
+                                <input type="number" name="Percent" class="form-control" />
+                                <span class="input-group-addon">%</span>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        }
+
+
+
+        <input type="hidden" name="ProjectId" value="@(project.ID)" />
+
+        <div class="form-group">
+            <div class="col-md-7 col-md-offset-3">
+                <button type="submit" class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-ok"></i>确定</button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><i class="glyphicon glyphicon-remove-circle"></i>&nbsp;取消</button>
+            </div>
+        </div>
+    }else
+    {
+        <div class="alert alert-danger" role="alert">
+            <span>发生异常，请重新尝试！</span>
+        </div>
+    }
+
+</form>

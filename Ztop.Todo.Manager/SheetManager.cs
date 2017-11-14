@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Data.Entity;
 using System.Text;
 using System.Threading.Tasks;
 using Ztop.Todo.ActiveDirectory;
@@ -392,6 +393,7 @@ namespace Ztop.Todo.Manager
         {
             using (var db = GetDbContext())
             {
+                
                 return db.Sheets.ToList();
             }
         }
@@ -589,7 +591,16 @@ namespace Ztop.Todo.Manager
         {
             if (string.IsNullOrEmpty(key))
                 return null;
-            return GetSheets(new SheetQueryParameter() { Status = Status.Filing }).Where(e => e.PrintNumber.Contains(key)).ToList();
+            var list= GetSheets(new SheetQueryParameter() { Status = Status.Filing }).Where(e => e.PrintNumber.Contains(key)).ToList();
+            //以下操作主要对应报销归档时候，返回日常招待时候，忽略外键实体
+            foreach (var item in list)
+            {
+                if (item.Type == SheetType.Reception)
+                {
+                    item.ReceptionId = null;
+                }
+            }
+            return list;
            // return GetSheets(new SheetQueryParameter() { Status = Status.Filing }).Where(e => e.SerialNumber.Coding.Contains(key)).ToList();
         }
         public List<Sheet> GetSheets(QueryParameter parameter,string name)

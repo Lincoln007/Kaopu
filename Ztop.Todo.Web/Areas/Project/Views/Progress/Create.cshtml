@@ -5,6 +5,8 @@
 
 <script>
     $(function () {
+        var $fileNode = $("#Progress-file");
+
         $("input[name='Percent']").blur(function () {
             var val = parseFloat($(this).val());
             if (val == undefined || val == NaN) {
@@ -42,7 +44,7 @@
             $("input[name='Percent']").val(val);
         });
 
-        $("#form-progress").submit(function () {
+        @*$("#form-progress").submit(function () {
             var $btn = $("#form-progress button");
             $btn.attr("disabled", "disabled");
             var data = $(this).serialize();
@@ -57,8 +59,7 @@
 
             });
             return false;
-        });
-
+        });*@
     });
 </script>
 
@@ -70,9 +71,12 @@
 <div class="row">
     <div class="col-md-12">
         <div class="alert alert-warning" role="alert">
-            <strong>Warning!</strong> 录入工作进度为100%时，项目自动转为完成状态！
+            <p><strong>Warning!</strong> 录入工作进度为100%时:</p>
+            <p>1:项目自动转为完成状态！</p>
+            <p>2:同时需上传项目批复文件！如没有批复文件，可在备注中说明</p>
+            <p>3:没有批复文件，可以不用上传文件；请确认是否有项目批复文件，一旦没有上传批复文件，不再开放上传；</p>
         </div>
-        <form class="form-horizontal" action="" method="post" id="form-progress">
+        <form class="form-horizontal" action="/Progress/Save" method="post" id="form-progress" enctype="multipart/form-data">
             <div class="form-group">
                 <label class="control-label col-md-3">工作进度：</label>
                 <div class="col-md-7">
@@ -87,6 +91,13 @@
                             <button class="btn btn-default" type="button" style="background-color:white;color:black;" name="Plus">+</button>
                         </span>
                     </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">批复文件：</label>
+                <div class="col-md-7">
+                    <input type="hidden" name="ProjectName" value="@(project.Name)" />
+                    <input type="file" name="file" class="form-control" />
                 </div>
             </div>
             <div class="form-group">

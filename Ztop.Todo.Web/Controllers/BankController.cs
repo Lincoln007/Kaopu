@@ -690,14 +690,15 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
 
-        public ActionResult AdvanceCollect(DateTime ?startTime,DateTime? endTime,string cate,string name)
+        public ActionResult AdvanceCollect(DateTime ?startTime,DateTime? endTime,string cate,string name,SheetType? type=null)
         {
             var parameter = new SheetQueryParameter2
             {
                 StartTime = startTime,
                 EndTime = endTime,
                 Category = cate,
-                Name = name
+                Name = name,
+                Type=type
             };
             var sheets = Core.SheetManager.GetSheets(parameter);
             ViewBag.Sheets = sheets;

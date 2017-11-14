@@ -50,7 +50,8 @@ namespace Ztop.Todo.Model
         public int ID { get; set; }
         public string Content { get; set; }
         public double Coin { get; set; }
-        public double Average { get; set; }
+        //[NotMapped]
+        //public double Average { get { return } }
         /// <summary>
         /// 备注
         /// </summary>

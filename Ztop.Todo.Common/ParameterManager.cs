@@ -7,6 +7,7 @@
         public const string TimeContentType = "yyyy-MM-dd HH-mm-ss";
 
         public const string ShentuKey = "shentuSheet";
+        public const string ParameterKey = "Parameter";
 
         private static string _shentuFilePath { get; set; }
         /// <summary>

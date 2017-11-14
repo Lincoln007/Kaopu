@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Web.Script.Serialization;
 
 namespace Ztop.Todo.Model
 {
@@ -10,6 +12,7 @@ namespace Ztop.Todo.Model
     /// 报销单
     /// </summary>
     [Table("sheets")]
+    [Serializable]
     public class Sheet
     {
         public Sheet()
@@ -128,8 +131,10 @@ namespace Ztop.Todo.Model
         public List<Sheet> Similars { get; set; }
         [NotMapped]
         public int SimilarCount { get; set; }
+        [ScriptIgnore]
         public int? ReceptionId { get; set; }
         [ForeignKey("ReceptionId")]
+        [ScriptIgnore]
         public virtual Reception Reception { get; set; }
 
     }

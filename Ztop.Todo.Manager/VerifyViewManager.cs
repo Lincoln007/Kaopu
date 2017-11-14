@@ -14,10 +14,21 @@ namespace Ztop.Todo.Manager
             using (var db = GetDbContext())
             {
                 var query = db.VerifyViews.Where(e => e.Deleted == false&&e.Step!=Step.Create).AsQueryable();
+                
+                if (parameter.Year.HasValue)
+                {
+                    query = query.Where(e => e.SheetTime.Year == parameter.Year.Value);
+                }
+
+                if (parameter.Month.HasValue)
+                {
+                    query = query.Where(e => e.SheetTime.Month == parameter.Month.Value);
+                }
                 if (parameter.Position.HasValue)
                 {
                     query = query.Where(e => e.Position == parameter.Position.Value);
                 }
+
                 if (!string.IsNullOrEmpty(parameter.Checker))
                 {
                     query = query.Where(e => e.Name == parameter.Checker);
@@ -33,8 +44,12 @@ namespace Ztop.Todo.Manager
 
                 if (!string.IsNullOrEmpty(parameter.Coding))
                 {
-                    query = query.Where(e => e.Coding.ToLower().Contains(parameter.Coding.ToLower()));
+                    query = query.Where(e => e.PrintNumber.Contains(parameter.Coding));
                 }
+                //if (!string.IsNullOrEmpty(parameter.Coding))
+                //{
+                //    query = query.Where(e => e.Coding.ToLower().Contains(parameter.Coding.ToLower()));
+                //}
                 if (parameter.MinMoney.HasValue)
                 {
                     query = query.Where(e => e.Money >= parameter.MinMoney.Value);
@@ -98,7 +113,8 @@ namespace Ztop.Todo.Manager
                 {
                     query = query.Where(e => e.CheckNumber.Contains(parameter.CheckKey));
                 }
-                
+                var list = query.ToList();
+                query = list.OrderBy(e=>e.ID).GroupBy(e => e.PrintNumber).Select(e => e.First()).AsQueryable(); 
                 switch (parameter.Order)
                 {
                     case Order.Time:

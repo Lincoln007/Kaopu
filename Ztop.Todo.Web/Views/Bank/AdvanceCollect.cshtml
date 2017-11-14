@@ -64,11 +64,11 @@
             </div>
             <div class="form-group">
                 <label class="control-label">报销类型：</label>
-                <select name="" class="form-control">
-                    <option value="">所有报销</option>
+                <select name="Type" class="form-control">
+                    <option value="" @(parameter.Type.HasValue?"":"selected=selected")>所有报销</option>
                     @foreach(SheetType type in Enum.GetValues(typeof(SheetType)))
                     {
-                        <option value="@(type)">@(type.GetDescription())</option>
+                        <option value="@(type)" @(parameter.Type.HasValue&&parameter.Type.Value==type?"selected=selected":"")>@(type.GetDescription())</option>
                     }
                 </select>
             </div>

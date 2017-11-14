@@ -6,7 +6,7 @@
 
 @if (power != null)
 {
-    if (type == PowerType.Windows)
+    if (power.PowerType == PowerType.Windows)
     {
         <a href="@(power.Url+ViewBag.Parameter)" class="@(power.Class)" data-toggle="modal" data-target="#Modal" name="@(ViewBag.Name)"><i class="@(power.Glyphicon)"></i>@(power.Name)</a>
     }

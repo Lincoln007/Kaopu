@@ -12,12 +12,58 @@
                 var node = $(this).parent().parent();
                 node.remove();
             });
+            $("select[name='Way']").unbind("change").bind("change", function () {
+                sumReception();
+            });
+
+            $("input[name='Coin']").unbind("blur").bind("blur", function () {
+                sumReception();
+            });
         });
+
+        $("select[name='Way']").change(function () {
+            sumReception();
+        });
+
+        $("input[name='Coin']").blur(function () {
+            sumReception();
+        });
+
+        function sumReception() {
+            var coins = [];
+            var ways = [];
+            $("input[name='Coin']").each(function () {
+                coins.push($(this).val());
+            });
+            $("select[name='Way']").each(function () {
+                ways.push($(this).val());
+            });
+
+            if (coins.length != ways.length) {
+                alert("获取的金额与支付方式不一致，无法进行计算！");
+                return;
+            }
+            var sum = 0;
+            for (x in ways) {
+                if (ways[x] == "Cash") {
+                    if (coins[x] != "") {
+                        sum += parseFloat(coins[x]);
+                    }
+                }
+            }
+            $("input[name='Money']").val(sum);
+        }
+
+        //$("button[name='Calendar']").click(function () {
+        //    sumReception();
+
+        //});
+
     });
 </script>
 
 <h3 style="margin-top:10px;">
-    招待项目
+    招待项目 
 </h3>
 
 <table class="table table-bordered table-condensed">
@@ -26,7 +72,6 @@
             <th>招待内容</th>
             <th>金额【元】</th>
             <th>支付方式</th>
-            <th>人均消费【元】</th>
             <th>备注</th>
             <th>
                 <button type="button" class="btn btn-success btn-xs" name="Add"><i class="glyphicon glyphicon-plus-sign"></i></button>
@@ -54,9 +99,6 @@
                         </select>
                     </td>
                     <td>
-                        <input type="text" name="Average" class="form-control input-sm" placeholder="人均消费额" required value="@(item.Average)" />
-                    </td>
-                    <td>
                         <input type="text" name="Memo" class="form-control input-sm" placeholder="备注" value="@(item.Memo)" />
                     </td>
                     <td>
@@ -81,9 +123,6 @@
                             <option value="@(way)">@(way.GetDescription())</option>
                         }
                     </select>
-                </td>
-                <td>
-                    <input type="text" name="Average" class="form-control input-sm" placeholder="人均消费额" required />
                 </td>
                 <td>
                     <input type="text" name="Memo" class="form-control input-sm" placeholder="备注" />

@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using Ztop.Todo.ActiveDirectory;
 using Ztop.Todo.Common;
+using Ztop.Todo.Manager;
 using Ztop.Todo.Model;
 
 namespace Ztop.Todo.Web.Controllers
@@ -170,7 +171,7 @@ namespace Ztop.Todo.Web.Controllers
                 sum = evection.Traffic + evection.SubSidy + evection.Hotel + evection.Other;
             }else if (sheet.Type == SheetType.Reception)//日常招待
             {
-                var items = Core.ReceptionManager.GainItems(content, Coin, Way, Average, Memo);
+                var items = Core.ReceptionManager.GainItems(content, Coin, Way, Memo);
                 if (reception == null||items==null||items.Count==0)
                 {
                     return ErrorJsonResult("未获取相关日常招待基础信息");
@@ -698,7 +699,7 @@ namespace Ztop.Todo.Web.Controllers
         public ActionResult Bank(
             string coding=null,string checkkey=null,
             string time=null,double? minMoney=null,double? maxMoney=null,
-            string creater=null,Order order=Order.Time,
+            string creater=null,Order order=Order.Time,int ?year=null,int? month=null,
             int page=1,int rows=20)
         {
             var parameter = new SheetVerifyParameter
@@ -706,14 +707,20 @@ namespace Ztop.Todo.Web.Controllers
                 Coding = coding,
                 CheckKey = checkkey,
                 Time = time,
+                Year=year,
+                Month=month,
                 MinMoney = minMoney,
                 MaxMoney = maxMoney,
                 Creater = creater,
                 Order = order,
                 Checker = Identity.Name,
-                Page = new PageParameter(page, rows)
+                //Page = new PageParameter(page, rows)
             };
-            ViewBag.List = Core.VerifyViewManager.Search(parameter, true);
+            RedisManager.Set(Identity.UserID + ParameterManager.ParameterKey, parameter, RedisManager.Client);
+            parameter.Page = new PageParameter(page, rows);
+            var list= Core.VerifyViewManager.Search(parameter, true);
+
+            ViewBag.List = list;
             ViewBag.Parameter = parameter;
             return View();
         }

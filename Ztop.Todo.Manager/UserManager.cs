@@ -18,7 +18,7 @@ namespace Ztop.Todo.Manager
         {
             if (!Cache.Exists(_userCacheKey))
             {
-                var list = DB.Users.Where(e=>e.Delete==false).ToList();
+                var list = DB.Users.ToList();
                 foreach (var user in list)
                 {
                     Cache.HSet(_userCacheKey, user.ID.ToString(), user);

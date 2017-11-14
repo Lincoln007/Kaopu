@@ -43,10 +43,35 @@
             }
             else
             {
-                Html.RenderAction("Get", "Power", new { area = "", id = 19, Parameter = string.Format("projectID={0}", project.ID),Type=PowerType.Windows });
+                Html.RenderAction("Get", "Power", new { area = "", id = 19, Parameter = string.Format("projectID={0}", project.ID), Type = PowerType.Windows });
                 Html.RenderAction("Get", "Power", new { area = "", id = 16, Parameter = string.Format("id={0}", project.ID) });
-                Html.RenderAction("Get", "Power", new { area = "", id = 17, Parameter = string.Format("id={0}", project.ID),name="Delete" });
-                Html.RenderAction("Get", "Power", new { area = "", id = 18, Parameter = string.Format("id={0}", project.ID),Type=PowerType.Windows });
+                Html.RenderAction("Get", "Power", new { area = "", id = 17, Parameter = string.Format("id={0}", project.ID), name = "Delete" });
+                Html.RenderAction("Get", "Power", new { area = "", id = 18, Parameter = string.Format("id={0}", project.ID), Type = PowerType.Windows });
+            }
+        }
+        else
+        {
+            if (Identity.UserID == project.Charge.UserId)//项目已完成 项目负责人
+            {
+                if (project.Workloads != null&&project.Workloads.Count>0)
+                {
+                    <a href="/Project/Workload/Create?projectId=@(project.ID)" class="btn btn-primary" data-toggle="modal" data-target="#Modal"><i class="glyphicon glyphicon-edit"></i>编辑项目工作量</a>
+                }
+                else
+                {
+                    <a href="/Project/Workload/Create?projectId=@(project.ID)" class="btn btn-success" data-toggle="modal" data-target="#Modal"><i class="glyphicon glyphicon-star"></i>登记项目工作量</a>
+                }
+            }
+            else
+            {
+                if (project.Workloads != null&&project.Workloads.Count>0)
+                {
+                    Html.RenderAction("Get", "Power", new { area = "", id = 22, Parameter = string.Format("projectId={0}", project.ID) });
+                }
+                else
+                {
+                    Html.RenderAction("Get", "Power", new { area = "", id = 21, Parameter = string.Format("projectId={0}", project.ID) });
+                }
             }
         }
         <button type="button" class="btn btn-default"onclick="history.back()"><i class="glyphicon glyphicon-arrow-left"></i>返回</button>
@@ -62,6 +87,18 @@
             <div class="alert alert-success">
                 <span>当前项目已完成！</span>
             </div>
+            if (project.Workloads != null&&project.Workloads.Count>0)
+            {
+                if (project.ProjectUser.Any(e => e.UserId == Identity.UserID))
+                {
+                    Html.RenderPartial("Workloads",project.Workloads as object);
+                }
+                else
+                {
+                    Html.RenderAction("GetPartialView", "Power", new { area = "", id = 23, viewName = "Workloads",Parameters=project.Workloads });
+                }
+
+            }
         }
         <div class="panel panel-info">
             <div class="panel-heading">项目信息</div>
@@ -103,8 +140,15 @@
                 </tr>
                 <tr>
                     <th>备注</th>
-                    <td colspan="3">@(project.Mark)</td>
+                    <td colspan="3">
+                        @(project.Mark)
+                        @if (!string.IsNullOrEmpty(project.ReplyFile))
+                        {
+                            <a href="/@(project.ReplyFile)" class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-download-alt"></i>下载项目批复文件</a>
+                        }
+                    </td>
                 </tr>
+             
             </table>
         </div>
         

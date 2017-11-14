@@ -32,7 +32,6 @@
                     <th>招待内容</th>
                     <th>金额【元】</th>
                     <th>支付方式</th>
-                    <th>人均消费【元】</th>
                     <th>备注</th>
                 </tr>
             </thead>
@@ -43,7 +42,6 @@
                         <td>@(item.Content)</td>
                         <td>@(item.Coin)</td>
                         <td>@(item.Way.GetDescription())</td>
-                        <td>@(item.Average)</td>
                         <td>@(item.Memo)</td>
                     </tr>
                 }
@@ -66,18 +64,18 @@
             <tr>
                 <th>招待人数</th>
                 <td>
-                    <div class="input-group">
-                        <input type="text" class="form-control input-sm" placeholder="" name="Amount" required value="@(Model!=null?Model.Amount.ToString():"")" />
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control" placeholder="" name="Amount" required value="@(Model!=null?Model.Amount.ToString():"")" />
                         <span class="input-group-addon">人</span>
                     </div>
                    
                 </td>
                 <th>接待人员</th>
                 <td>
-                    <div class="input-group">
-                        <input type="text" class="form-control input-sm" placeholder="接待人员" name="Persons" value="@(Model!=null?Model.Persons:"")" readonly="readonly" required />
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control" placeholder="接待人员" name="Persons" value="@(Model!=null?Model.Persons:"")" readonly="readonly" required />
                         <span class="input-group-btn">
-                            <a href="/Manager/SelectUser?persons=" name="SelectUser" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#Modal"><i class="glyphicon glyphicon-zoom-in"></i>选择人员</a>
+                            <a href="/Manager/SelectUser?persons=" name="SelectUser" class="btn btn-primary" data-toggle="modal" data-target="#Modal"><i class="glyphicon glyphicon-zoom-in"></i>选择人员</a>
                         </span> 
                     </div>
                 </td>

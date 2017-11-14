@@ -17,15 +17,19 @@ namespace Ztop.Todo.Common
         private static string _iPadDir { get; set; }
         private static string _contractFolder { get; set; }
         private static string _contractDir { get; set; }
+        private static string _projectFolder { get; set; }
+        private static string _projectDir { get; set; }
         static FileManager()
         {
             _folder = ConfigurationManager.AppSettings["upload_floder"] ?? "upload_files";
             _iPadFolder = ConfigurationManager.AppSettings["iPad_folder"] ?? "iPad_files";
             _contractFolder = ConfigurationManager.AppSettings["Contract_folder"] ?? "Contract_files";
+            _projectFolder = ConfigurationManager.AppSettings["Project_folder"] ?? "Project_files";
 
             _uploadDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, _folder);
             _iPadDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, _iPadFolder);
             _contractDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, _contractFolder);
+            _projectDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, _projectFolder);
         }
 
         public static  string Upload(HttpPostedFileBase file)
@@ -76,6 +80,11 @@ namespace Ztop.Todo.Common
         public static string UploadiPadContract(HttpPostedFileBase file,string addFolder)
         {
             return UploadBase(file, Path.Combine(_iPadFolder, addFolder), Path.Combine(_iPadDir, addFolder));
+        }
+
+        public static string UploadProject(HttpPostedFileBase file,string addFolder)
+        {
+            return UploadBase(file, Path.Combine(_projectFolder, addFolder), Path.Combine(_projectDir, addFolder));
         }
 
         private static string UploadBase(HttpPostedFileBase file,string folder,string dir)

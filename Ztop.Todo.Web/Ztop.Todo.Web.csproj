@@ -152,6 +152,7 @@
     <Compile Include="Areas\Jurisdiction\JurisdictionControllerBase.cs" />
     <Compile Include="Areas\Project\Controllers\HomeController.cs" />
     <Compile Include="Areas\Project\Controllers\ProgressController.cs" />
+    <Compile Include="Areas\Project\Controllers\WorkloadController.cs" />
     <Compile Include="Areas\Project\ProjectAreaRegistration.cs" />
     <Compile Include="Areas\Project\ProjectControllerBase.cs" />
     <Compile Include="Common\AuthenticateModule.cs" />
@@ -276,6 +277,7 @@
     <Content Include="Excels\20170930Transfer.xls" />
     <Content Include="Excels\20170930Reception.xls" />
     <Content Include="Areas\Project\Views\Home\Manager.cshtml" />
+    <Content Include="Areas\Project\Views\Workload\Create.cshtml" />
     <None Include="Properties\PublishProfiles\TODO.pubxml" />
     <None Include="Scripts\jquery-1.9.1.intellisense.js" />
     <Content Include="ProjectInfo.xml" />
@@ -498,6 +500,7 @@
     <Content Include="Views\OASystem\CreateSystem.cshtml" />
     <Content Include="Views\Power\Get.cshtml" />
     <Content Include="Views\Report\Bank.cshtml" />
+    <Content Include="Views\Shared\Workloads.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

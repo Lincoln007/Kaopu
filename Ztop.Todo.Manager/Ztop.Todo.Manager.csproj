@@ -164,6 +164,7 @@
     <Compile Include="NotificationManager.cs" />
     <Compile Include="Projects\ProjectRecordManager.cs" />
     <Compile Include="Projects\Project_ProgressManager.cs" />
+    <Compile Include="Projects\WorkloadManager.cs" />
     <Compile Include="System\Client_MessageManager.cs" />
     <Compile Include="System\OASystemManager.cs" />
     <Compile Include="PowerManager.cs" />
