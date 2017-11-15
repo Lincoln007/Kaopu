@@ -32,6 +32,8 @@ namespace Ztop.Todo.Model
         public bool Deleted { get; set; }
         public string TypeName { get; set; }
         public string TypeChars { get; set; }
+        public string UserIds { get; set; }
+        public string Participation { get; set; }
         [NotMapped]
         public string Serial
         {

@@ -5,17 +5,30 @@
 
 <script>
     $(function () {
-        var $fileNode = $("#Progress-file");
+        var $fileNode = $("#Reply");
 
-        $("input[name='Percent']").blur(function () {
-            var val = parseFloat($(this).val());
+        function CheckPercent() {
+            var val = parseFloat($("input[name='Percent']").val());
             if (val == undefined || val == NaN) {
                 $(this).val(0);
             }
             if (val > 100) {
                 $(this).val(100);
+                $fileNode.show(500);
+            } else if (val == 100) {
+                $fileNode.show(500);
+            } else {
+                $fileNode.hide(500);
             }
+        }
+
+        $("input[name='Percent']").blur(function () {
+            CheckPercent();
+        }).change(function () {
+            CheckPercent();
         });
+
+        
 
         $("button[name='Plus']").click(function () {
             var val = parseFloat($("input[name='Percent']").val());
@@ -28,6 +41,7 @@
                 val = 1;
             }
             $("input[name='Percent']").val(val);
+            CheckPercent();
         });
 
         $("button[name='Minus']").click(function () {
@@ -42,12 +56,31 @@
                 val = 1;
             }
             $("input[name='Percent']").val(val);
+            CheckPercent();
         });
 
-        @*$("#form-progress").submit(function () {
+        $("#form-progress").submit(function () {
             var $btn = $("#form-progress button");
             $btn.attr("disabled", "disabled");
-            var data = $(this).serialize();
+            var percent = parseFloat($("input[name='Percent']").val());
+            if (percent == undefined || percent == NaN) {
+                percent = 0;
+            }
+            if (percent === 100) {
+                var flag = true;
+                $("input[type=checkbox][name='UserId']").each(function () {
+                    if ($(this).is(':checked')==false) {
+                      
+                        flag = false;
+                    }
+                });
+                if (flag == false) {
+                    alert("请确认好每一位项目参与人员！如果不是，请编辑项目项目进行项目参与人员的添加、删除操作！");
+                    $btn.removeAttr("disabled");
+                    return false;
+                }
+            }
+            @*var data = $(this).serialize();
             $.request("/Project/Progress/Save", data, function (json) {
                 if (json.result == 1) {
                     alert("成功录入");
@@ -58,8 +91,8 @@
                 }
 
             });
-            return false;
-        });*@
+            return false;*@
+        });
     });
 </script>
 
@@ -93,13 +126,7 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label class="control-label col-md-3">批复文件：</label>
-                <div class="col-md-7">
-                    <input type="hidden" name="ProjectName" value="@(project.Name)" />
-                    <input type="file" name="file" class="form-control" />
-                </div>
-            </div>
+           
             <div class="form-group">
                 <label class="control-label col-md-3">工作情况：</label>
                 <div class="col-md-7">
@@ -108,7 +135,42 @@
                     <textarea class="form-control" rows="3" name="Remark"></textarea>
                 </div>
             </div>
+            <div style="display:none;" id="Reply">
+                <div class="form-group">
+                    <label class="control-label col-md-3">批复文件：</label>
+                    <div class="col-md-7">
+                        <input type="hidden" name="ProjectName" value="@(project.Name)" />
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-addon">
+                                <input type="radio" name="isReply" value="false" />无批复文件
+                            </span>
+                            <input type="text" name="ReplyRemark" class="form-control" placeholder="说明" />
+                        </div>
+                        <p><ins><strong>无批复文件，请备注说明！</strong> </ins></p>
+                       
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-addon">
+                                <input type="radio" name="IsReply" value="true" />批复文件
+                            </span>
+                            <input type="file" name="file" class="form-control" />
+                        </div>
+                    </div>
+                </div>
 
+                <div class="form-group">
+                    <label class="control-label col-md-3">确认参与人员：</label>
+                    <div class="col-md-7">
+                        @foreach(var item in project.ProjectUser)
+                        {
+                            <label class="checkbox-inline">
+                                <input type="checkbox" value="@(item.UserId)" name="UserId" />@(item.User.RealName)
+                            </label>
+                        }
+                        <p><ins><strong>请务必确认勾选每一位参与人员！一旦确认，不再开放添加项目参与人员！</strong> </ins></p>
+                    </div>
+                </div>
+            </div>
+            
             <div class="form-group">
                 <div class="col-md-7 col-md-offset-3">
                     <button type="submit" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-ok"></i>&nbsp;确定</button>

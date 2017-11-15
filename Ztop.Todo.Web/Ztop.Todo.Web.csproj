@@ -278,6 +278,8 @@
     <Content Include="Excels\20170930Reception.xls" />
     <Content Include="Areas\Project\Views\Home\Manager.cshtml" />
     <Content Include="Areas\Project\Views\Workload\Create.cshtml" />
+    <Content Include="Areas\Project\Views\Home\ChargeSearch.cshtml" />
+    <Content Include="Areas\Project\Views\Home\PartSearch.cshtml" />
     <None Include="Properties\PublishProfiles\TODO.pubxml" />
     <None Include="Scripts\jquery-1.9.1.intellisense.js" />
     <Content Include="ProjectInfo.xml" />

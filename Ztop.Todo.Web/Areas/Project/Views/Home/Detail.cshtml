@@ -142,13 +142,28 @@
                     <th>备注</th>
                     <td colspan="3">
                         @(project.Mark)
-                        @if (!string.IsNullOrEmpty(project.ReplyFile))
-                        {
-                            <a href="/@(project.ReplyFile)" class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-download-alt"></i>下载项目批复文件</a>
-                        }
+                      
                     </td>
                 </tr>
-             
+                @if (project.IsDone)
+                {
+                    <tr>
+                        <th>批复文件</th>
+                        <td>
+                            @if (!string.IsNullOrEmpty(project.ReplyFile))
+                            {
+                                <a href="/@(project.ReplyFile)" class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-download-alt"></i>下载项目批复文件</a>
+                            }
+                            else
+                            {
+                                <ins>无批复文件</ins>
+                            }
+                        </td>
+                        <th>批复说明</th>
+                        <td>@(project.ReplyRemark)</td>
+                    </tr>
+                }
+
             </table>
         </div>
         

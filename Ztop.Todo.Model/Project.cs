@@ -75,6 +75,10 @@ namespace Ztop.Todo.Model
         /// 批复文件路径
         /// </summary>
         public string ReplyFile { get; set; }
+        /// <summary>
+        /// 批复说明
+        /// </summary>
+        public string ReplyRemark { get; set; }
 
         public virtual List<ProjectUser> ProjectUser { get; set; }
         /// <summary>

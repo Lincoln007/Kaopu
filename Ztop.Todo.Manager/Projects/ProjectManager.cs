@@ -53,13 +53,14 @@ namespace Ztop.Todo.Manager
        /// <param name="id"></param>
        /// <param name="isDone"></param>
        /// <returns></returns>
-        public bool Done(int id,bool isDone,string replyPath)
+        public bool Done(int id,bool isDone,string replyPath,string remark)
         {
             var model = DB.Projects.Find(id);
             if (model != null)
             {
                 model.IsDone = isDone;
                 model.ReplyFile = replyPath;
+                model.ReplyRemark = remark;
                 DB.SaveChanges();
                 return true;
             }
@@ -123,6 +124,19 @@ namespace Ztop.Todo.Manager
                 //}
                 query = query.Where(e => (string.IsNullOrEmpty(e.Number) ^ parameter.IsRecord.Value));
             }
+            if (!string.IsNullOrEmpty(parameter.Participation))
+            {
+                query = query.Where(e => !string.IsNullOrEmpty(e.Participation));
+
+                query = query.Where(e => e.Participation.ToLower().Contains(parameter.Participation.ToLower()));
+            }
+
+            //if (parameter.PartId.HasValue)
+            //{
+            //    var str = parameter.PartId.Value.ToString();
+            //    query = query.Where(e => !string.IsNullOrEmpty(e.UserIds) && e.UserIds.Split(',').Contains(str));
+               
+            //}
             switch (parameter.Order)
             {
                 case ProjectOrder.ID:

@@ -36,6 +36,8 @@ namespace Ztop.Todo.Model
         public ProjectOrder Order { get; set; }
         public int ? ChargeID { get; set; }
         public bool? IsRecord { get; set; }
+        public int? PartId { get; set; }
+        public string Participation { get; set; }
 
     }
 }

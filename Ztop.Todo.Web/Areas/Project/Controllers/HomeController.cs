@@ -131,6 +131,49 @@ namespace Ztop.Todo.Web.Areas.Project.Controllers
             return View();
         }
 
+        public ActionResult ChargeSearch(
+            string name=null,string town=null,
+            int? year=null,string cityName=null,
+            int? fid=null,ProjectOrder order=ProjectOrder.ID,
+            int page=1,int rows=20)
+        {
+            var parameter = new ProjectParameter
+            {
+                Name = name,
+                Town = town,
+                Year = year,
+                CityName = cityName,
+                FID = fid,
+                Order = order,
+                ChargeID = Identity.UserID,
+                IsRecord = true,
+                Page = new PageParameter(page, rows)
+            };
+            SearchBase(parameter);
+            return View();
+        }
+
+        public ActionResult PartSearch(string name = null, string town = null,
+            int? year = null, string cityName = null,
+            int? fid = null, ProjectOrder order = ProjectOrder.ID,
+            int page = 1, int rows = 20)
+        {
+            var parameter = new ProjectParameter
+            {
+                Name = name,
+                Town = town,
+                Year = year,
+                CityName = cityName,
+                FID = fid,
+                Order = order,
+                Participation=Identity.Name,
+                IsRecord = true,
+                Page = new PageParameter(page, rows)
+            };
+            SearchBase(parameter);
+            return View();
+        }
+
         public ActionResult Create(int id=0)
         {
             ViewBag.Project = Core.ProjectManager.Get(id);
