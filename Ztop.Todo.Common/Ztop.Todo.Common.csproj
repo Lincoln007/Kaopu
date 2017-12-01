@@ -102,6 +102,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArrayQueue.cs" />
     <Compile Include="EncryptExtensions.cs" />
     <Compile Include="EnumHelper.cs" />
     <Compile Include="ExcelClass.cs" />

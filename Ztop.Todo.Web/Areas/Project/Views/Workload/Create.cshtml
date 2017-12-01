@@ -1,124 +1,280 @@
 ﻿@{ 
-    Layout = null;
-    Project project = ViewBag.Project;
+    Layout = "~/Areas/Project/Views/Shared/_Layout.cshtml";
+    ProjectProgress progress = ViewBag.Progress;
+    ViewBag.Title = "项目工作量";
 }
 
 <script>
     $(function () {
-        function checkPercent() {
-            var sum = sumPercent();
-            if (sum > 100) {
-                alert("工作量超过100%，请重新填写！");
-                $("input[name='Percent']").each(function () {
-                    $(this).val(0);
-                });
-            }
-        }
+        //function checkPercent() {
+        //    var sum = sumPercent();
+        //    if (sum > 100) {
+        //        alert("工作量超过100%，请重新填写！");
+        //        $("input[name='Percent']").each(function () {
+        //            $(this).val(0);
+        //        });
+        //    }
+        //}
 
-        function sumPercent() {
+        //function sumPercent() {
+        //    var sum = .0;
+        //    $("input[name='Percent']").each(function () {
+        //        var val = parseFloat($(this).val());
+        //        if (val != undefined && val != NaN && !isNaN(val)) {
+        //            sum += val;
+        //        }
+        //    });
+        //    return sum;
+           
+        //}
+
+        //$("input[name='Percent']").blur(function () {
+        //    checkPercent();
+        //}).change(function () {
+        //    checkPercent();
+        //});
+
+        var mm = $("#mm").html();
+        $("button[name='Plus']").click(function () {
+            $("#Content").append(mm);
+            $("button[name='Close']").unbind("click").bind("click", function () {
+                $(this).parent().parent().remove();
+            })
+        });
+
+        function SumPerecent() {
             var sum = .0;
-            $("input[name='Percent']").each(function () {
+            $("#Content input[name='Percent']").each(function () {
                 var val = parseFloat($(this).val());
                 if (val != undefined && val != NaN && !isNaN(val)) {
                     sum += val;
                 }
             });
             return sum;
-           
         }
 
-        $("input[name='Percent']").blur(function () {
-            checkPercent();
-        }).change(function () {
-            checkPercent();
-        });
-
-        $("#form-workload").submit(function () {
-            var $btn = $("#form-workload button");
-            $btn.attr("disabled", "disabled");
-            var sum = sumPercent();
-            if (sum === 100) {
-                var data = $(this).serialize();
-                $.request("/Project/Workload/Save", data, function (json) {
-                    if (json.result == 1) {
-                        alert("成功登记");
-                        location.href = "/Project/Home/Detail?id=@(project.ID)";
-                    } else {
-                        alert(json.content);
-                        $btn.removeAttr("disabled");
+        function CheckPPercent() {
+            $("#Content .thumbnail").each(function () {
+                var year = $(this).find("select[name='Year']").val();
+                var sum = .0;
+                $(this).find("input:checkbox[name='UserId']:checked").each(function () {
+                    var userId = $(this).val();
+                    var percent = parseFloat($(this).parent().next().val());
+                    if (percent != undefined && percent != NaN) {
+                        sum += percent;
                     }
                 });
+                if (sum === 100) {
 
-            } else {
-                alert("工作量合计不等于100，请核对！");
-                $btn.removeAttr("disabled");
+                } else {
+                    alert(year + "年份，工作量合计未满足100%；");
+                    return false;
+                }
+            });
+            return true;
+        }
+
+        $("button[name='Check']").click(function () {
+            if (CheckPPercent()) {
+                alert("工作量合计无误！");
             }
+        });
+
+        $("#form-table").submit(function () {
+            
+            if (CheckPPercent()) {
+                var current = SumPerecent();
+                var url = $(this).attr("Url");
+                var sum = parseFloat($("input[name='Sum']").val());
+                if (current === sum) {
+                    var $btn = $("#form-table button");
+                    $btn.attr("disabled", "disabled");
+                    var data = $(this).serialize();
+                    $.request("/Project/Workload/Save", data, function (json) {
+                        if (json.result === 1) {
+                            alert("完成操作，点击确定完成保存");
+                            location.href = url;
+
+                        } else {
+                            alert(json.content);
+                            $btn.removeAttr("disabled");
+                        }
+                    })
+
+                } else {
+                    alert("当前项目阶段百分比合计不等于项目进度百分比，无法进行保存，请核对！");
+                }
+            }
+
+
             return false;
         });
+ 
     });
 </script>
 
 <div class="page-header">
     <h3 class="text-center">登记项目工作量</h3>
 </div>
-
-<form class="form-horizontal" method="post" id="form-workload">
-    @if (project != null)
-    {
+<div class="row">
+    <div class="col-sm-12">
         <div class="alert alert-warning" role="alert">
-            <span>项目工作量合计100%，请注意工作量填写！</span>
+            <p class="lead"><strong>填写说明</strong></p>
+            <p>1、点击“添加”即可创建一个项目阶段，项目阶段不限制数量,点击右上角<span aria-hidden="true">&times;</span>即可删除当前项目阶段；</p>
+            <p>2、每个项目阶段中参与人员自定义选择，勾选的项目阶段参与人员的工作量合计等于100%；</p>
+            <p>3、所有项目阶段的百分比合计等于当前工作进度的百分比；</p>
         </div>
-        if (project.Workloads != null&&project.Workloads.Count>0)
-        {
-            foreach(var item in project.Workloads)
-            {
+        <form class="form-horizontal" method="post" action="/Project/" id="form-table" Url="/Project/Workload/Detail?progressId=@(progress.ID)" >
+            <div class="row">
+                
                 <div class="form-group">
-                    <label class="control-label col-md-3">@(item.User.RealName)</label>
-                    <div class="col-md-7">
-                        <div class="input-group input-group-sm">
-                            <input type="hidden" name="UserId" value="@(item.UserId)" />
-                            <input type="number" name="Percent" class="form-control" value="@(item.Percent)" />
-                            <span class="input-group-addon">%</span>
-                        </div>
+                    <label class="control-label col-sm-1">按钮：</label>
+                    <div class="col-sm-11">
+                        <button type="button" class="btn btn-success" name="Plus"><i class="fa fa-plus-circle"></i>添加</button>
+                        <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i>确定</button>
+                        <button type="button" class="btn btn-warning" name="Check"><i class="fa fa-calculator"></i>验证工作量</button>
+                        <button type="button" class="btn btn-default" onclick="history.back()"><i class="fa fa-arrow-left"></i>返回</button>
                     </div>
                 </div>
-            }
-        }
-        else
-        {
-            if (project.ProjectUser != null)
-            {
-                foreach (var item in project.ProjectUser)
+                <div class="form-group">
+                    <label class="control-label col-sm-1">进度：</label>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <input type="hidden" name="ProgressId" value="@(progress.ID)" />
+                            <input type="text" name="Sum" class="form-control" value="@(progress.Percent)" readonly />
+                            <span class="input-group-addon">%</span>
+                        </div> 
+                    </div>
+                </div>
+            </div>
+            <div class="row" id="Content">
+                @if (progress.Tables != null)
                 {
+                    foreach (var entry in progress.Tables)
+                    {
+                        <div class="col-sm-6 col-xs-6 col-md-6">
+                            <div class="thumbnail">
+                                <button type="button" class="close" name="Close"><span aria-hidden="true">&times;</span></button>
+                                <div class="caption">
+                                    <h4>项目阶段</h4>
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-3">年份：</label>
+                                        <div class="col-sm-8">
+                                            <div class="input-group input-group-sm">
+                                                <select class="form-control" name="Year" required>
+                                                    <option value="">请选择</option>
+                                                    @for (var i = DateTime.Now.Year; i > 2009; i--)
+                                                    {
+                                                        <option value="@(i)" @(entry.Year==i?"selected=selected":"")>@(i)</option>
+                                                    }
+                                                </select>
+                                                <span class="input-group-addon">年</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-3">百分比：</label>
+                                        <div class="col-sm-8">
+                                            <div class="input-group input-group-sm">
+                                                <input type="text" name="Percent" class="form-control col-sm-12" required value="@(entry.Percent)" />
+                                                <span class="input-group-addon">%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-3">工作量：</label>
+                                        <div class="col-sm-8">
+                                            @if (progress != null && progress.Project != null && progress.Project.ProjectUser != null)
+                                            {
+                                                foreach (var item in progress.Project.ProjectUser.OrderBy(e => e.UserId))
+                                                {
+                                                    var ee = entry.WorkLoads.FirstOrDefault(e => e.UserId == item.UserId);
+                                                    <div class="input-group input-group-sm" style="margin-bottom:5px;">
+                                                        <span class="input-group-addon">
+                                                            <input type="checkbox" name="UserId" value="@(item.UserId)" @(ee==null?"":"checked=checked")/>@(item.User.DisplayName)
+                                                        </span>
+                                                        <input type="text" class="form-control" name="PPercent" value="@(ee==null?0:ee.Percent)" />
+                                                        <span class="input-group-addon">%</span>
+                                                    </div>
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-3">备注：</label>
+                                        <div class="col-sm-8">
+                                            <textarea class="form-control" rows="3" name="Content">@(entry.Content)</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+            
+        </form>
+    </div>
+</div>
+
+<div class="hidden">
+    <div id="mm">
+        <div class="col-sm-6 col-xs-6 col-md-6">
+            <div class="thumbnail">
+                <button type="button" class="close" name="Close"><span aria-hidden="true">&times;</span></button>
+                <div class="caption">
+                    <h4>项目阶段</h4>
                     <div class="form-group">
-                        <label class="control-label col-md-3">@(item.User.RealName):</label>
-                        <div class="col-md-7">
+                        <label class="control-label col-sm-3">年份：</label>
+                        <div class="col-sm-8">
                             <div class="input-group input-group-sm">
-                                <input type="hidden" name="UserId" value="@(item.UserId)" />
-                                <input type="number" name="Percent" class="form-control" />
+                                <select class="form-control" name="Year" required>
+                                    <option value="">请选择</option>
+                                    @for (var i = DateTime.Now.Year; i > 2009; i--)
+                                    {
+                                        <option value="@(i)">@(i)</option>
+                                    }
+                                </select>
+                                <span class="input-group-addon">年</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">百分比：</label>
+                        <div class="col-sm-8">
+                            <div class="input-group input-group-sm">
+                                <input type="text" name="Percent" class="form-control col-sm-12" required />
                                 <span class="input-group-addon">%</span>
                             </div>
                         </div>
                     </div>
-                }
-            }
-        }
-
-
-
-        <input type="hidden" name="ProjectId" value="@(project.ID)" />
-
-        <div class="form-group">
-            <div class="col-md-7 col-md-offset-3">
-                <button type="submit" class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-ok"></i>确定</button>
-                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><i class="glyphicon glyphicon-remove-circle"></i>&nbsp;取消</button>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">工作量：</label>
+                        <div class="col-sm-8">
+                            @if (progress != null && progress.Project != null && progress.Project.ProjectUser != null)
+                            {
+                                foreach (var item in progress.Project.ProjectUser.OrderBy(e=>e.UserId))
+                                {
+                                    <div class="input-group input-group-sm" style="margin-bottom:5px;">
+                                        <span class="input-group-addon">
+                                            <input type="checkbox" name="UserId" value="@(item.UserId)" />@(item.User.DisplayName)
+                                        </span>
+                                        <input type="text" class="form-control" name="PPercent" value="0" />
+                                        <span class="input-group-addon">%</span>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">备注：</label>
+                        <div class="col-sm-8">
+                            <textarea class="form-control" rows="3" name="Content"></textarea>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    }else
-    {
-        <div class="alert alert-danger" role="alert">
-            <span>发生异常，请重新尝试！</span>
-        </div>
-    }
 
-</form>
+    </div>
+</div>

@@ -162,6 +162,7 @@
     <Compile Include="ManagerCore.cs" />
     <Compile Include="MessageManager.cs" />
     <Compile Include="NotificationManager.cs" />
+    <Compile Include="Projects\ProgressTableManager.cs" />
     <Compile Include="Projects\ProjectRecordManager.cs" />
     <Compile Include="Projects\Project_ProgressManager.cs" />
     <Compile Include="Projects\WorkloadManager.cs" />

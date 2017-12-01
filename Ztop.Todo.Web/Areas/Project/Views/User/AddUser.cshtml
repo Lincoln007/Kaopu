@@ -1,0 +1,90 @@
+﻿@{
+    Project project = ViewBag.Project;
+    Dictionary<string, List<UserGroupView>> dict = ViewBag.Dict;
+    Layout = null;
+    string[] ignores = ViewBag.Array;
+}
+
+<script>
+    $(function () {
+       
+        $("#form-addUser").submit(function () {
+            var $btn = $("#form-addUser button");
+            $btn.attr("disabled", "disabled");
+            var href = $(this).attr("action");
+            var url = $(this).attr("Url");
+            var data = $(this).serialize();
+            $.request(href, data, function (json) {
+                if (json.result === 1) {
+                    alert("操作成功，点击确定完成操作！");
+                    location.href = url;
+                } else {
+                    $btn.removeAttr("disabled");
+                    alert(json.content);
+                }
+
+            });
+            return false;
+        });
+    });
+</script>
+
+<div class="page-header">
+    <h3 class="text-center">@string.Format("{0}项目参与人员添加",project.Name)</h3>
+</div>
+<form class="form-horizontal" action="/Project/User/Save" method="post" id="form-addUser" Url="/Project/Home/Detail?id=@(project.ID)">
+    <input type="hidden" name="ProjectId" value="@(project.ID)" />
+    <div class="row">
+        <div class="col-md-12 col-xs-12 col-sm-12">
+            <table class="table">
+                @foreach (var entry in dict)
+            {
+                    <tr>
+                        <th>@(entry.Key)</th>
+                    </tr>
+                    var array = entry.Value.ListToTable(4);
+                    foreach (var arr in array)
+                    {
+                        <tr>
+                            @foreach (var item in arr)
+                            {
+                                if (item != null)
+                                {
+                                    if (ignores != null)
+                                    {
+                                        if (!ignores.Contains(item.RealName))
+                                        {
+                                            <td>
+                                                <label class="checkbox-inline">
+                                                    <input type="checkbox" name="UserId" value="@(item.ID)" />@(item.RealName)
+                                                </label>
+                                            </td>
+                                        }
+
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            <label class="checkbox-inline">
+                                                <input type="checkbox" name="UserId" value="@(item.ID)" />@(item.RealName)
+                                            </label>
+                                        </td>
+                                    }
+
+                                }
+                            }
+                        </tr>
+                    }
+
+                }
+            </table>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-ok-circle"></i>确定</button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><i class="glyphicon glyphicon-remove-circle"></i>&nbsp; 取消</button>
+            </div>
+
+        </div>
+    </div>
+</form>
+
+

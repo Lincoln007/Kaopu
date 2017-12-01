@@ -130,17 +130,29 @@
                         </div>
                     </div>
                 </div>
+      
                 <div class="form-group">
                     <label class="control-label col-md-4">项目参与人员：</label>
                     <div class="col-md-8">
-                        <div class="input-group input-group-sm">
-                            <input type="hidden" name="UserIDs" value="@(participation!=null?string.Join(";",participation.Select(e=>e.UserId).ToArray()):"")" />
-                            <input type="text" name="Persons" class="form-control" value="@(participation!=null?string.Join(";",participation.Select(e=>e.User.RealName).ToArray()):"")" readonly />
-                            <div class="input-group-btn">
-                                <a href="/UserGroup/Select" class="btn btn-primary" name="Select" data-toggle="modal" data-target="#Modal"><i class="glyphicon glyphicon-search"></i></a>
+                        @if (project == null)
+                        {
+                            <div class="input-group input-group-sm">
+                                <input type="hidden" name="UserIDs" value="@(participation!=null?string.Join(";",participation.Select(e=>e.UserId).ToArray()):"")" />
+                                <input type="text" name="Persons" class="form-control" value="@(participation!=null?string.Join(";",participation.Select(e=>e.User.RealName).ToArray()):"")" readonly />
+                                <div class="input-group-btn">
+                                    <a href="/UserGroup/Select" class="btn btn-primary" name="Select" data-toggle="modal" data-target="#Modal"><i class="glyphicon glyphicon-search"></i></a>
+                                </div>
                             </div>
-                        </div>
+                            <p><ins><strong>请务必确认每一位参与人员！一旦确认，只能追加，不能删减！</strong> </ins></p>
+                        }
+                        else
+                        {
+                            <input type="hidden" name="UserIDs" value="@(participation!=null?string.Join(";",participation.Select(e=>e.UserId).ToArray()):"")" />
+                            <input type="text" name="Persons" class="form-control input-sm" value="@(participation!=null?string.Join(";",participation.Select(e=>e.User.RealName).ToArray()):"")" readonly />
+                        }
+                  
                     </div>
+                 
                 </div>
             </div>
           

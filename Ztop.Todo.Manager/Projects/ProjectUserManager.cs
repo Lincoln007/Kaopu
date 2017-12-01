@@ -57,7 +57,8 @@ namespace Ztop.Todo.Manager
             {
                 return false;
             }
-            DB.Project_Users.Remove(current);
+            current.Relation = ProjectRelation.Participation;//更改项目负责人，原始项目负责人成为项目参与人员
+            //DB.Project_Users.Remove(current);
             DB.Project_Users.Add(new ProjectUser { UserId = userId, ProjectId = id, Relation = ProjectRelation.InCharge });
             DB.SaveChanges();
             return true;
@@ -75,6 +76,12 @@ namespace Ztop.Todo.Manager
                 }
             }
             return list;
+        }
+
+        public void Add(List<ProjectUser> list)
+        {
+            DB.Project_Users.AddRange(list);
+            DB.SaveChanges();
         }
 
     }

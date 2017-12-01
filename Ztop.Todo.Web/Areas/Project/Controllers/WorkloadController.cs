@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Ztop.Todo.Common;
 using Ztop.Todo.Model;
 
 namespace Ztop.Todo.Web.Areas.Project.Controllers
@@ -10,32 +11,50 @@ namespace Ztop.Todo.Web.Areas.Project.Controllers
     public class WorkloadController : ProjectControllerBase
     {
 
-        public ActionResult Create(int projectId)
+
+        public ActionResult Create(int progressId)
         {
-            var project = Core.ProjectManager.Get(projectId);
-            ViewBag.Project = project;
+            var project_progress = Core.Project_ProgressManager.GetEntry(progressId);
+            ViewBag.Progress = project_progress;
             return View();
         }
 
         [HttpPost]
-        public ActionResult Save(int projectId,int[] userId,double[] percent)
+        public ActionResult Save(int progressId, int[] year,double[] percent,string[] content,int[] userId,double[] ppercent)
         {
-            if (userId == null || percent == null || userId.Length != percent.Length)
+            if (year == null || year.Length == 0 || percent == null || content == null || year.Length != percent.Length || percent.Length != content.Length)
             {
-                return ErrorJsonResult("未获取工作量信息！");
+                return ErrorJsonResult("获取参数失败！请创新重试");
             }
-            if (Math.Abs(percent.Sum() - 100) > 0.01)
+            var progress = Core.Project_ProgressManager.GetEntry(progressId);
+            if (progress == null)
             {
-                return ErrorJsonResult("工作量未达到100%");
+                return ErrorJsonResult("工作进度信息获取失败！");
             }
-            var list = new List<WorkLoad>();
-            for(var i = 0; i < userId.Length; i++)
+            var currentUsers = progress.Project.ProjectUser.OrderBy(e => e.UserId).Select(e => e.UserId).ToArray();
+            if (currentUsers == null)
             {
-                list.Add(new WorkLoad { ProjectId = projectId, UserId = userId[i], Percent = percent[i] });
+                return ErrorJsonResult("读取参数失败!");
             }
-            Core.WorkloadManager.Update(list);
-            var recordId = Core.ProjectRecordManager.Save(new ProjectRecord { ProjectId = projectId, Content = string.Format("{0}登记项目工作量", Identity.Name) });
+            var queue = userId.Tranlate();
+            var list = ProgressTable.Generate(progressId,currentUsers, year, percent, content,queue,ppercent);
+            if (list == null)
+            {
+                return ErrorJsonResult("生成工作量表格失败！");
+            }
+            if (Math.Abs(list.Sum(e => e.Percent) - progress.Percent) > 0.01)
+            {
+                return ErrorJsonResult("分析参数错误（项目阶段百分比合计不等于工作进度百分比），请刷新重试！");
+            }
+            Core.ProgressTableManager.Update(list);
             return SuccessJsonResult();
+        }
+
+        public ActionResult Detail(int progressId)
+        {
+            var progress = Core.Project_ProgressManager.GetEntry(progressId);
+            ViewBag.Progress = progress;
+            return View();
         }
     }
 }

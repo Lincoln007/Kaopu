@@ -99,7 +99,7 @@ namespace Ztop.Todo.Model
             get { return ProjectUser.Where(e => e.Relation == ProjectRelation.Participation).ToList(); }
         }
 
-        public virtual List<WorkLoad> Workloads { get; set; }
+        //public virtual List<WorkLoad> Workloads { get; set; }
 
         //public virtual List<ProjectRecord> Records { get; set; }
         //public virtual List<ProjectProgress> Progress { get; set; } 

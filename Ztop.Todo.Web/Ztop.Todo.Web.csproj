@@ -152,6 +152,7 @@
     <Compile Include="Areas\Jurisdiction\JurisdictionControllerBase.cs" />
     <Compile Include="Areas\Project\Controllers\HomeController.cs" />
     <Compile Include="Areas\Project\Controllers\ProgressController.cs" />
+    <Compile Include="Areas\Project\Controllers\UserController.cs" />
     <Compile Include="Areas\Project\Controllers\WorkloadController.cs" />
     <Compile Include="Areas\Project\ProjectAreaRegistration.cs" />
     <Compile Include="Areas\Project\ProjectControllerBase.cs" />
@@ -280,6 +281,8 @@
     <Content Include="Areas\Project\Views\Workload\Create.cshtml" />
     <Content Include="Areas\Project\Views\Home\ChargeSearch.cshtml" />
     <Content Include="Areas\Project\Views\Home\PartSearch.cshtml" />
+    <Content Include="Areas\Project\Views\User\Select.cshtml" />
+    <Content Include="Areas\Project\Views\Workload\Detail.cshtml" />
     <None Include="Properties\PublishProfiles\TODO.pubxml" />
     <None Include="Scripts\jquery-1.9.1.intellisense.js" />
     <Content Include="ProjectInfo.xml" />
@@ -503,6 +506,7 @@
     <Content Include="Views\Power\Get.cshtml" />
     <Content Include="Views\Report\Bank.cshtml" />
     <Content Include="Views\Shared\Workloads.cshtml" />
+    <Content Include="Areas\Project\Views\User\AddUser.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

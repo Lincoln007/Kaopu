@@ -1,0 +1,110 @@
+﻿
+@{
+    ViewBag.Title = "查看项目工作量";
+    Layout = "~/Areas/Project/Views/Shared/_Layout.cshtml";
+    ProjectProgress progress = ViewBag.Progress;
+}
+
+<script src="~/Scripts/2/Chart.js"></script>
+<script src="~/Scripts/2/TodoChart.js"></script>
+
+<div class="page-header">
+    <h3>工作进度相关工作量查看</h3>
+    <div class="btn-group btn-group-sm">
+        @if (progress.Project.Charge.UserId == Identity.UserID)
+        {
+            if (progress.Tables != null && progress.Tables.Count > 0)
+            {
+                <a href="/Project/WorkLoad/Create?progressId=@(progress.ID)" class="btn btn-primary"><i class="fa fa-edit"></i>编辑工作量</a>
+            }
+            else
+            {
+                <a href="/Project/WorkLoad/Create?progressId=@(progress.ID)" class="btn btn-primary"><i class="fa fa-star"></i>录入工作量</a>
+            }
+        }
+        else
+        {
+            if (progress.Tables != null && progress.Tables.Count > 0)
+            {
+                Html.RenderAction("Get", "Power", new { area = "", id = 28, Parameter = string.Format("progressId={0}",progress.ID), Type = PowerType.Windows });
+            }
+            else
+            {
+                Html.RenderAction("Get", "Power", new { area = "", id = 29, Parameter = string.Format("progressId={0}",progress.ID), Type = PowerType.Windows });
+            }
+        }
+
+
+        <a href="/Project/Home/Detail?id=@(progress.ProjectID)" class="btn btn-success"><i class="fa fa-desktop"></i>项目详情</a>
+        <button type="button" class="btn btn-default" onclick="history.back()"><i class="fa fa-arrow-left"></i>返回</button>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="well">
+            <h4>工作进度详情</h4>
+            <dl class="dl-horizontal">
+                <dt>录入人：</dt>
+                <dd>@(progress.User.DisplayName)</dd>
+                <dt>录入时间：</dt>
+                <dd>@(progress.Time.ToString("yyyy-MM-dd HH:mm:ss"))</dd>
+                <dt>工作进度%：</dt>
+                <dd>@(progress.Percent)</dd>
+                <dt>工作情况：</dt>
+                <dd>@(progress.Remark)</dd>
+            </dl>
+        </div>
+        @if (progress.Tables != null&&progress.Tables.Count>0)
+        {
+            foreach (var item in progress.Tables.OrderByDescending(e => e.Year))
+            {
+                <div class="col-md-6">
+                    <div class="thumbnail">
+                        <div class="caption">
+                            <div class="row">
+                                <div class="col-sm-12 col-xs-12 col-md-12">
+                                    <dl class="dl-horizontal">
+                                        <dt>年份：</dt>
+                                        <dd>@(item.Year)</dd>
+                                        <dt>百分比：</dt>
+                                        <dd>@(item.Percent)</dd>
+                                        <dt>备注：</dt>
+                                        <dd>@(item.Content)</dd>
+                                        <dt>录入时间:</dt>
+                                        <dd>@(item.Time.ToString())</dd>
+                                        @if (item.WorkLoads != null)
+                                        {
+                                            item.WorkLoads = item.WorkLoads.OrderByDescending(e => e.Percent).ToList();
+                                            foreach (var entry in item.WorkLoads)
+                                            {
+                                                <dt>@(entry.User.DisplayName):</dt>
+                                                <dd>@(entry.Percent)%</dd>
+                                            }
+                                        }
+                                    </dl>
+                                </div>
+                                <div class="col-sm-12 col-xs-12 col-md-12">
+                                    <h5>统计图</h5>
+                                    @{
+                                        Html.RenderPartial("Workloads", item as object);
+                                    }
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            }
+        }else
+        {
+            <div class="alert alert-warning" role="alert">
+                <span>当前未录入工作量！</span>
+            </div>                                
+        }
+
+    </div>
+</div>
+

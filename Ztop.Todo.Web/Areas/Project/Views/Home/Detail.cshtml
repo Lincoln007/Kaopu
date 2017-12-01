@@ -51,7 +51,7 @@
         }
         else
         {
-            if (Identity.UserID == project.Charge.UserId)//项目已完成 项目负责人
+            @*if (Identity.UserID == project.Charge.UserId)//项目已完成 项目负责人
             {
                 if (project.Workloads != null&&project.Workloads.Count>0)
                 {
@@ -72,7 +72,7 @@
                 {
                     Html.RenderAction("Get", "Power", new { area = "", id = 21, Parameter = string.Format("projectId={0}", project.ID) });
                 }
-            }
+            }*@
         }
         <button type="button" class="btn btn-default"onclick="history.back()"><i class="glyphicon glyphicon-arrow-left"></i>返回</button>
     </div>
@@ -87,18 +87,18 @@
             <div class="alert alert-success">
                 <span>当前项目已完成！</span>
             </div>
-            if (project.Workloads != null&&project.Workloads.Count>0)
-            {
-                if (project.ProjectUser.Any(e => e.UserId == Identity.UserID))
-                {
-                    Html.RenderPartial("Workloads",project.Workloads as object);
-                }
-                else
-                {
-                    Html.RenderAction("GetPartialView", "Power", new { area = "", id = 23, viewName = "Workloads",Parameters=project.Workloads });
-                }
+            //if (project.Workloads != null&&project.Workloads.Count>0)
+            //{
+            //    if (project.ProjectUser.Any(e => e.UserId == Identity.UserID))
+            //    {
+            //        Html.RenderPartial("Workloads",project.Workloads as object);
+            //    }
+            //    else
+            //    {
+            //        Html.RenderAction("GetPartialView", "Power", new { area = "", id = 23, viewName = "Workloads",Parameters=project.Workloads });
+            //    }
 
-            }
+            //}
         }
         <div class="panel panel-info">
             <div class="panel-heading">项目信息</div>
@@ -136,7 +136,27 @@
                     <th>项目负责人</th>
                     <td>@(project.Charge != null ? project.Charge.User.RealName : "未获取负责人信息")</td>
                     <th>项目参与人员</th>
-                    <td>@(project.Participations != null && project.Participations.Count > 0 ? string.Join(";", project.Participations.Select(e => e.User.RealName).ToArray()) : "")</td>
+                    <td>
+                        @{ 
+                            var message = project.Participations != null && project.Participations.Count > 0 ? string.Join(";", project.Participations.Select(e => e.User.RealName).ToArray()) : "";
+                            <text>@(message)</text>
+                            if (project.IsDone == false)
+                            {
+                                if (project.Charge.UserId == Identity.UserID)
+                                {
+                                    <a href="/Project/User/AddUser?projectId=@(project.ID)&&ignoreString=@(message)" class="btn btn-sm btn-success" data-toggle="modal" data-target="#Modal"><i class="fa fa-plus"></i>添加参与人员</a>
+
+                                }
+                                else
+                                {
+                                    Html.RenderAction("Get", "Power", new { area = "", id = 26, Parameter = string.Format("projectId={0}&&ignoreString={1}", project.ID, message), Type = PowerType.Windows });
+                                }
+                            }
+
+                        }
+                 
+                       
+                    </td>
                 </tr>
                 <tr>
                     <th>备注</th>
@@ -179,6 +199,7 @@
                         <th>录入人</th>
                         <th>录入进度%</th>
                         <th>工作情况</th>
+                        <th>工作量</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -192,6 +213,16 @@
                                 <td>@(item.User.DisplayName)</td>
                                 <td>@(item.Percent)</td>
                                 <td>@(item.Remark)</td>
+                                <td>
+                                    @if (project.ProjectUser.Any(e => e.UserId == Identity.UserID))
+                                    {
+                                        <a href="/Project/Workload/Detail?progressId=@(item.ID)" class="btn btn-success btn-xs"><i class="fa fa-envelope"></i>查看工作量</a>
+                                    }
+                                    else
+                                    {
+                                        Html.RenderAction("Get", "Power", new { area = "", id = 27, Parameter = string.Format("progressId={0}",item.ID), Type = PowerType.Windows });
+                                    }
+                                </td>
                             </tr>
                         }
                     }

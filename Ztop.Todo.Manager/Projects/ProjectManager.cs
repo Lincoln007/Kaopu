@@ -16,6 +16,7 @@ namespace Ztop.Todo.Manager
 
         public int Add(Project project)
         {
+            //DB.Entry(project).State = System.Data.Entity.EntityState.Added;
             DB.Projects.Add(project);
             DB.SaveChanges();
             return project.ID;

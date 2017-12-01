@@ -65,7 +65,7 @@
                         <span class="icon-bar"></span>
                     </button>
                     <a href="/" class="navbar-brand logo">智拓OA</a>
-                    <a href="/"class="navbar-brand">任务系统</a>
+                    <a href="/"class="navbar-brand">报销系统</a>
                 </div>
                 <ul class="navbar-right nav navbar-nav">
                     @if (identity!=null&&!string.IsNullOrEmpty(identity.Name))
@@ -92,7 +92,7 @@
                     <div class="navbar-default sidebar" role="navigation">
                         <div class="sidebar-nav navbar-collapse">
                             <ul class="nav" id="side-menu">
-                                <li>
+                                @*<li>
                                     <a href="#"><i class="glyphicon glyphicon-leaf"></i> 任务系统<span class="fa arrow"></span></a>
                                     <ul class="nav nav-second-level">
                                         <li><a href="/Home/Index"><i class="fa fa-desktop"></i> 欢迎页</a></li>
@@ -136,7 +136,7 @@
                                             </li>
                                         }
                                     }
-                                }
+                                }*@
 
 
 
@@ -146,7 +146,7 @@
 
 
 
-                                @*<li><a href="/Report/Index"><i class="fa fa-desktop"></i>&nbsp;欢迎页</a></li>
+                                <li><a href="/Report/Index"><i class="fa fa-desktop"></i>&nbsp;欢迎页</a></li>
                                 <li><a href="/Report/Expenses"><i class="fa fa-map-o"></i>&nbsp;日常报销填写</a></li>
                                 <li><a href="/Report/Create?type=@(SheetType.Errand)"><i class="fa fa-plane"></i>&nbsp;出差报销填写</a></li>
                                 @if (identity.Finance)
@@ -193,7 +193,7 @@
                                 @if(identity.Name== "靳小阳")
                                 {
                                     <li><a href="/Report/CashCheck"><i class="glyphicon glyphicon-usd"></i>现金核算</a></li>
-                                }*@
+                                }
                             </ul>
                         </div>
                     </div>

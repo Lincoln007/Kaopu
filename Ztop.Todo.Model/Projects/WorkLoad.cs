@@ -18,6 +18,6 @@ namespace Ztop.Todo.Model
         public int UserId { get; set; }
         [ForeignKey("UserId")]
         public virtual User User { get; set; }
-        public int ProjectId { get; set; }
+        public int ProgressTableId { get; set; }
     }
 }

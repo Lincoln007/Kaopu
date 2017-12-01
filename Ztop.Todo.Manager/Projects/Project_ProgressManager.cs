@@ -37,5 +37,10 @@ namespace Ztop.Todo.Manager
             }
             return false;
         }
+
+        public ProjectProgress GetEntry(int id)
+        {
+            return DB.Project_Progress.Find(id);
+        }
     }
 }

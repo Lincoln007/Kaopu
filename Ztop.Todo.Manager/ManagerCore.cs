@@ -65,6 +65,7 @@ namespace Ztop.Todo.Manager
         public Project_ProgressManager Project_ProgressManager { get; private set; }
         public ProjectRecordManager ProjectRecordManager { get; private set; }
         public WorkloadManager WorkloadManager { get; private set; }
+        public ProgressTableManager ProgressTableManager { get; private set; }
 
         #endregion
 

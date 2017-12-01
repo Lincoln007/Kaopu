@@ -1,21 +1,22 @@
-﻿@model List<WorkLoad>
+﻿@model ProgressTable
 @{
     Layout = null;
-    if (Model == null)
+    if (Model == null||Model.WorkLoads==null)
     {
         return;
     }
-    
-    var labels = Model.Select(e => e.User.RealName).ToArray();
-    var values = Model.Select(e =>Math.Round(e.Percent,2)).ToArray();
+    Model.WorkLoads = Model.WorkLoads.OrderByDescending(e => e.Percent).ToList();
+    var labels = Model.WorkLoads.Select(e => e.User.RealName).ToArray();
+    var values = Model.WorkLoads.Select(e =>Math.Round(e.Percent,2)).ToArray();
 }
-<script src="~/Scripts/2/Chart.js"></script>
-<script src="~/Scripts/2/TodoChart.js"></script>
+
 <script>
     $(function () {
         var labels=@Html.Raw(labels.ToJson())||[];
         var values=@Html.Raw(values.ToJson())||[];
-        var ctx=document.getElementById("Chart-Workload");
+        var year=@Html.Raw(Model.Year);
+        var ctx=document.getElementsByName("Chart-"+year);
+        //var ctx=document.getElementById("Chart-Workload");
         var myChart=new Chart(ctx,{
             type:'pie',
             data:{
@@ -28,12 +29,12 @@
         });
     });
 </script>
-
-<div class="panel panel-primary">
+<canvas name="Chart-@(Model.Year)"></canvas>
+@*<div class="panel panel-primary">
     <div class="panel-heading">项目工作量</div>
     <div class="panel-body">
         <div class="col-md-6">
-            <canvas id="Chart-Workload"></canvas>
+           
         </div>
         <div class="col-md-6">
             <table class="table table-bordered">
@@ -44,7 +45,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model)
+                    @foreach (var item in Model.WorkLoads)
                     {
                         <tr>
                             <td>@(item.User.RealName)</td>
@@ -55,5 +56,5 @@
             </table>
         </div>
     </div>
-</div>
+</div>*@
 
