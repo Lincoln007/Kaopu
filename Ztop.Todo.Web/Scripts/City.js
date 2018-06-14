@@ -37,7 +37,7 @@
         $.getJSON("/City/Get?Rank=District&&CityID=" + val, null, function (data) {
             districtSelect.empty().append("<option value=''>请选择</option>")
             $.each(data, function (key, val) {
-                districtSelect.append("<option value='" + val.Name + "'>" + val.Name + "</option>");
+                districtSelect.append("<option value='" + val.ID + "'>" + val.Name + "</option>");
             });
             districtNode.show(500);
         });
@@ -47,11 +47,13 @@
     $("button[name='OK']").click(function () {
         var province = $("Select[name='PID']").find("option:selected").text();
         var city = $("Select[name='CID']").find("option:selected").text();
-        var name = $("Select[name='DID']").val();
+        var name = $("Select[name='DID']").find("option:selected").text();
+        var cityId = $("Select[name='DID']").val();
         if (name == undefined || name == "") {
             alert("未获取城市信息,请重新尝试");
             return;
         }
+        $("input[name='CityId']").val(cityId);
         $("input[name='CityName']").val(province + "-" + city + "-" + name);
     });
 });

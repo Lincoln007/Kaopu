@@ -481,7 +481,9 @@ namespace Ztop.Todo.Web.Controllers
             var sheets = Core.SheetManager.GetSheets(year, month,name);
             if (sheets != null)
             {
-                RedisManager.Set(string.Format("{0}{1}", Identity.UserID, ParameterManager.ShentuKey), sheets, RedisManager.Client);
+                var stringkey = string.Format("{0}{1}", Identity.UserID, ParameterManager.ShentuKey);
+                SessionHelper.SetSession(stringkey, sheets);
+               // RedisManager.Set(string.Format("{0}{1}", Identity.UserID, ParameterManager.ShentuKey), sheets, RedisManager.Client);
             }
             ViewBag.Sheets = sheets;
             ViewBag.Name = name;
@@ -539,7 +541,9 @@ namespace Ztop.Todo.Web.Controllers
             var sheets = Core.SheetManager.GetSheets(year, month, Identity.Name);
             if (sheets != null)
             {
-                RedisManager.Set(string.Format("{0}{1}", Identity.UserID, ParameterManager.ShentuKey), sheets, RedisManager.Client);
+                var stringkey = string.Format("{0}{1}", Identity.UserID, ParameterManager.ShentuKey);
+                SessionHelper.SetSession(stringkey, sheets);
+                //RedisManager.Set(stringkey, sheets, RedisManager.Client);
             }
             ViewBag.Sheets = sheets;
             return View();
@@ -556,7 +560,9 @@ namespace Ztop.Todo.Web.Controllers
             var sheets = Core.SheetManager.GetDone(Identity.Name);
             if (sheets != null)
             {
-                RedisManager.Set(string.Format("{0}{1}", Identity.UserID, ParameterManager.ShentuKey), sheets, RedisManager.Client);
+                var stringkey = string.Format("{0}{1}", Identity.UserID, ParameterManager.ShentuKey);
+                SessionHelper.SetSession(stringkey, sheets);
+                //RedisManager.Set(string.Format("{0}{1}", Identity.UserID, ParameterManager.ShentuKey), sheets, RedisManager.Client);
             }
             ViewBag.Sheets = sheets;
             return View();

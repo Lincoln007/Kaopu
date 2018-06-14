@@ -12,37 +12,37 @@ namespace Ztop.Todo.Web.Areas.Project.Controllers
     {
 
 
-        public ActionResult Create(int progressId)
+        public ActionResult Create(int projectId)
         {
-            var project_progress = Core.Project_ProgressManager.GetEntry(progressId);
-            ViewBag.Progress = project_progress;
+            var project = Core.ProjectManager.Get(projectId);
+            ViewBag.Project = project;
             return View();
         }
 
         [HttpPost]
-        public ActionResult Save(int progressId, int[] year,double[] percent,string[] content,int[] userId,double[] ppercent)
+        public ActionResult Save(int projectId, int[] year,double[] percent,string[] content,int[] userId,double[] ppercent,string[] pContent)
         {
             if (year == null || year.Length == 0 || percent == null || content == null || year.Length != percent.Length || percent.Length != content.Length)
             {
                 return ErrorJsonResult("获取参数失败！请创新重试");
             }
-            var progress = Core.Project_ProgressManager.GetEntry(progressId);
-            if (progress == null)
+            var project = Core.ProjectManager.Get(projectId);
+            if (project == null)
             {
-                return ErrorJsonResult("工作进度信息获取失败！");
+                return ErrorJsonResult("项目信息获取失败！");
             }
-            var currentUsers = progress.Project.ProjectUser.OrderBy(e => e.UserId).Select(e => e.UserId).ToArray();
+            var currentUsers = project.ProjectUser.OrderBy(e => e.UserId).Select(e => e.UserId).ToArray();
             if (currentUsers == null)
             {
                 return ErrorJsonResult("读取参数失败!");
             }
             var queue = userId.Tranlate();
-            var list = ProgressTable.Generate(progressId,currentUsers, year, percent, content,queue,ppercent);
+            var list = ProgressTable.Generate(projectId,currentUsers, year, percent, content,queue,ppercent,pContent);
             if (list == null)
             {
                 return ErrorJsonResult("生成工作量表格失败！");
             }
-            if (Math.Abs(list.Sum(e => e.Percent) - progress.Percent) > 0.01)
+            if (Math.Abs(list.Sum(e => e.Percent) - project.RecentProgress.Percent) > 0.01)
             {
                 return ErrorJsonResult("分析参数错误（项目阶段百分比合计不等于工作进度百分比），请刷新重试！");
             }
@@ -50,10 +50,10 @@ namespace Ztop.Todo.Web.Areas.Project.Controllers
             return SuccessJsonResult();
         }
 
-        public ActionResult Detail(int progressId)
+        public ActionResult Detail(int projectId)
         {
-            var progress = Core.Project_ProgressManager.GetEntry(progressId);
-            ViewBag.Progress = progress;
+            var project = Core.ProjectManager.Get(projectId);
+            ViewBag.Project = project;
             return View();
         }
     }

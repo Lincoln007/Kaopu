@@ -9,12 +9,12 @@
         page.PageSize = 10;
     }
 
-    var pageCount = page.RecordCount / page.PageSize;
+    var pageCount = page.PageCount;
 
-    if (pageCount < 2)
-    {
-        return;
-    }
+    //if (pageCount < 2)
+    //{
+    //    return;
+    //}
 
     var pageRegex = new System.Text.RegularExpressions.Regex(@"page=(\d+)", System.Text.RegularExpressions.RegexOptions.Compiled | System.Text.RegularExpressions.RegexOptions.IgnoreCase);
 
@@ -35,16 +35,21 @@
 }
 
 <ul class="pagination">
-    <li><a href="@(GetPageLink(1))">首页</a></li>
-    @if (page.PageIndex > 1)
+    @if (pageCount >= 2)
     {
-        <li><a href="@(GetPageLink(page.PageIndex - 1))">上一页</a></li>
+        <li class="page-item"><a class="page-link" href="@(GetPageLink(1))">首页</a></li>
+        if (page.PageIndex > 1)
+        {
+            <li class="page-item"><a class="page-link" href="@(GetPageLink(page.PageIndex - 1))">上一页</a></li>
+        }
+        if (page.PageIndex < pageCount - 1)
+        {
+            <li class="page-item"><a class="page-link" href="@(GetPageLink(page.PageIndex + 1))">下一页</a></li>
+        }
+        <li class="page-item"><a class="page-link" href="@(GetPageLink(pageCount))">尾页</a></li>
+            <li class="page-item disabled"><a class="page-link" href="">@(page.PageIndex)/@(pageCount)</a></li>
     }
-    @if (page.PageIndex < pageCount)
-    {
-        <li><a href="@(GetPageLink(page.PageIndex + 1))">下一页</a></li>
-    }
-    <li><a href="@(GetPageLink(pageCount+1))">尾页</a></li>
-    <li class="disabled"><a href="">@(page.PageIndex)/@(pageCount+1)</a></li>
-    <li class="disabled"><a href="">@string.Format("当前查询数量：{0}", page.RecordCount)</a></li>
+
+    <li class="page-item disabled"><a class="page-link" href="">@string.Format("当前查询数量：{0}", page.RecordCount)</a></li>
 </ul>
+

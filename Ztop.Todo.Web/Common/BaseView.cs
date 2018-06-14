@@ -14,8 +14,7 @@ namespace Ztop.Todo.Web
     {
         public UserIdentity Identity { get; private set; }
         public List<OASystemBase> Systems { get; private set; }
-        public Dictionary<string,List<PowerBase>> Items { get; set; }
-        //public UserGroup Group { get; private set; }
+        public Dictionary<string, List<PowerBase>> Items { get; set; }
 
         public BaseView()
         {
@@ -23,10 +22,10 @@ namespace Ztop.Todo.Web
             if (!string.IsNullOrEmpty(Identity.sAMAccountName))
             {
                 Items = RedisManager.Get<Dictionary<string, List<PowerBase>>>(Identity.sAMAccountName, RedisManager.Client);
-                //Group = RedisManager.Get<UserGroup>(Identity.sAMAccountName + "group", RedisManager.Client);
+
                 Systems = RedisManager.Get<List<OASystemBase>>(Identity.sAMAccountName + "System", RedisManager.Client);
             }
-         
+
         }
 
         public override void Execute()

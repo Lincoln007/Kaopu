@@ -46,8 +46,11 @@ namespace Ztop.Todo.Web.Areas.Project.Controllers
                 Order=order,
                 ChargeID=chargeId,
                 IsRecord=true,
-                Page = new PageParameter(page, rows)
+                //Page = new PageParameter(page, rows)
             };
+            var stringkey = Identity.UserID + ParameterManager.ParameterKey;
+            SessionHelper.SetSession(stringkey, parameter);
+            parameter.Page = new PageParameter(page, rows);
             SearchBase(parameter);
             ViewBag.Group = Core.UserGroupManager.Get();
             ViewBag.Charges = Core.ProjectUserManager.GetChargeList(groupName);
@@ -147,8 +150,11 @@ namespace Ztop.Todo.Web.Areas.Project.Controllers
                 Order = order,
                 ChargeID = Identity.UserID,
                 IsRecord = true,
-                Page = new PageParameter(page, rows)
+               // Page = new PageParameter(page, rows)
             };
+            var stringkey = Identity.UserID + ParameterManager.ParameterKey;
+            SessionHelper.SetSession(stringkey, parameter);
+            parameter.Page = new PageParameter(page, rows);
             SearchBase(parameter);
             return View();
         }
@@ -184,7 +190,8 @@ namespace Ztop.Todo.Web.Areas.Project.Controllers
         [HttpPost]
         public ActionResult Save(Ztop.Todo.Model.Project project,int chargeID,string UserIDs)
         {
-            if (string.IsNullOrEmpty(project.CityName))
+            var city = Core.CityManager.Get(project.CityId);
+            if (city == null)
             {
                 return ErrorJsonResult("请填写城市（县级）信息！");
             }
@@ -205,10 +212,13 @@ namespace Ztop.Todo.Web.Areas.Project.Controllers
                 }
             }
             relations.Add(new ProjectUser { UserId = chargeID, Relation = ProjectRelation.InCharge,ProjectId=project.ID } );
-         
+
+            var last = Core.ProjectManager.GetLast(project.Year);
+            var serialNumber= last == null ? 1 : last.SerialNumber + 1;
             if (project.ID > 0)//编辑项目
             {
-                if (!Core.ProjectManager.Edit(project))
+                
+                if (!Core.ProjectManager.Edit(project,serialNumber))
                 {
                     return ErrorJsonResult("编辑项目失败,未找到相关编辑项目信息");
                 }
@@ -221,13 +231,18 @@ namespace Ztop.Todo.Web.Areas.Project.Controllers
             else//录入项目 
             {
                 project.ProjectUser = relations;
-                var last = Core.ProjectManager.GetLast(project.Year);
-                project.SerialNumber = last == null ? 1 : last.SerialNumber + 1;
+
+                project.SerialNumber = serialNumber;
                 var id = Core.ProjectManager.Add(project);
                 if (id > 0)
                 {
                     //Core.NotificationManager.Add(project);
                     var recordId = Core.ProjectRecordManager.Save(new ProjectRecord { ProjectId = id, Content = string.Format("{0}录入项目{1}", Identity.Name, project.Name) });
+                    var flowwData = Core.FlowwDataManager.Save(new FlowwData
+                    {
+                        InfoId = id,
+                        FlowwId = Floww.ID
+                    });
                     return SuccessJsonResult(id);
                 }
                 return ErrorJsonResult("保存失败");
@@ -239,6 +254,7 @@ namespace Ztop.Todo.Web.Areas.Project.Controllers
         {
             var model = Core.ProjectManager.Get(id);
             ViewBag.Model = model;
+            ViewBag.FlowwData = Core.FlowwDataManager.Get(id, Floww.ID);
             var progress = Core.Project_ProgressManager.Get(id);
             ViewBag.Progress = progress;
             var records = Core.ProjectRecordManager.Get(id);
@@ -306,5 +322,19 @@ namespace Ztop.Todo.Web.Areas.Project.Controllers
         }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Groups(int page=1,int rows=20)
+        {
+            var parameter = new ProjectParameter
+            {
+                GroupId = Group.ID,
+                Page = new PageParameter(page, rows)
+            };
+            SearchBase(parameter);
+            return View();
+        }
     }
 }

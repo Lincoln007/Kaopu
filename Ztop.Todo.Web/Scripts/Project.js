@@ -20,5 +20,22 @@
     });
 
    
+    $("a[name='Post']").click(function () {
+        var $btn = $(this);
+        $btn.attr("disabled", "disabled");
+        var url = $(this).attr("Url");
+        var href = $(this).attr("href");
+        $.request(href, null, function (json) {
+            if (json.result === 1) {
+                alert("成功提交");
+                location.href = url;
+            } else {
+                alert(json.content);
+                $btn.removeAttr("disabled");
+            }
+        });
+
+        return false;
+    });
 
 });

@@ -1,6 +1,8 @@
 ﻿@{ 
     Layout = "~/Areas/Project/Views/Shared/_Layout.cshtml";
-    ProjectProgress progress = ViewBag.Progress;
+    Project project = ViewBag.Project;
+    ProjectProgress recent = project.RecentProgress;
+    //ProjectProgress progress = ViewBag.Progress;
     ViewBag.Title = "项目工作量";
 }
 
@@ -34,12 +36,17 @@
         //    checkPercent();
         //});
 
+        $("button[name='Close']").click(function () {
+            $(this).parent().parent().remove();
+        });
+
         var mm = $("#mm").html();
         $("button[name='Plus']").click(function () {
-            $("#Content").append(mm);
+            //$("#Content").append(mm);
+            $("#Content").prepend(mm);
             $("button[name='Close']").unbind("click").bind("click", function () {
                 $(this).parent().parent().remove();
-            })
+            });
         });
 
         function SumPerecent() {
@@ -74,6 +81,24 @@
             return true;
         }
 
+        function CheckYear() {
+            var values = [];
+            $("select[name='Year']").each(function () {
+                var val = parseInt($(this).val());
+                if (val != undefined && !isNaN(val)) {
+                    values.push(val);
+                }
+            });
+            var nary = values.sort();
+            for (var i = 0; i < nary.length - 1; i++) {
+                if (nary[i] == nary[i + 1]) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         $("button[name='Check']").click(function () {
             if (CheckPPercent()) {
                 alert("工作量合计无误！");
@@ -81,9 +106,8 @@
         });
 
         $("#form-table").submit(function () {
-            
-            if (CheckPPercent()) {
-                var current = SumPerecent();
+            if (CheckYear()) {
+                var current = SumPerecent();//计算所有阶段的百分比合计
                 var url = $(this).attr("Url");
                 var sum = parseFloat($("input[name='Sum']").val());
                 if (current === sum) {
@@ -104,8 +128,10 @@
                 } else {
                     alert("当前项目阶段百分比合计不等于项目进度百分比，无法进行保存，请核对！");
                 }
+            } else {
+                alert("年份存在重复，请核对！");
             }
-
+          
 
             return false;
         });
@@ -123,8 +149,9 @@
             <p>1、点击“添加”即可创建一个项目阶段，项目阶段不限制数量,点击右上角<span aria-hidden="true">&times;</span>即可删除当前项目阶段；</p>
             <p>2、每个项目阶段中参与人员自定义选择，勾选的项目阶段参与人员的工作量合计等于100%；</p>
             <p>3、所有项目阶段的百分比合计等于当前工作进度的百分比；</p>
+            <p>4、年份选择为唯一性，如果重复，系统默认随机读取保存其中一个；</p>
         </div>
-        <form class="form-horizontal" method="post" action="/Project/" id="form-table" Url="/Project/Workload/Detail?progressId=@(progress.ID)" >
+        <form class="form-horizontal" method="post" action="/Project/Workload/Save" id="form-table" Url="/Project/Workload/Detail?projectid=@(project.ID)" >
             <div class="row">
                 
                 <div class="form-group">
@@ -140,17 +167,17 @@
                     <label class="control-label col-sm-1">进度：</label>
                     <div class="col-sm-4">
                         <div class="input-group">
-                            <input type="hidden" name="ProgressId" value="@(progress.ID)" />
-                            <input type="text" name="Sum" class="form-control" value="@(progress.Percent)" readonly />
+                            <input type="hidden" name="ProjectId" value="@(project==null?0:project.ID)" />
+                            <input type="text" name="Sum" class="form-control" value="@(recent==null?0:recent.Percent)" readonly />
                             <span class="input-group-addon">%</span>
                         </div> 
                     </div>
                 </div>
             </div>
             <div class="row" id="Content">
-                @if (progress.Tables != null)
+                @if (project.Tables != null)
                 {
-                    foreach (var entry in progress.Tables)
+                    foreach (var entry in project.Tables.OrderByDescending(e=>e.Year))
                     {
                         <div class="col-sm-6 col-xs-6 col-md-6">
                             <div class="thumbnail">
@@ -184,9 +211,9 @@
                                     <div class="form-group">
                                         <label class="control-label col-sm-3">工作量：</label>
                                         <div class="col-sm-8">
-                                            @if (progress != null && progress.Project != null && progress.Project.ProjectUser != null)
+                                            @if (project!=null&&project.ProjectUser!=null)
                                             {
-                                                foreach (var item in progress.Project.ProjectUser.OrderBy(e => e.UserId))
+                                                foreach (var item in project.ProjectUser.OrderBy(e => e.UserId))
                                                 {
                                                     var ee = entry.WorkLoads.FirstOrDefault(e => e.UserId == item.UserId);
                                                     <div class="input-group input-group-sm" style="margin-bottom:5px;">
@@ -195,6 +222,8 @@
                                                         </span>
                                                         <input type="text" class="form-control" name="PPercent" value="@(ee==null?0:ee.Percent)" />
                                                         <span class="input-group-addon">%</span>
+                                                        <span class="input-group-addon">备注：</span>
+                                                        <input type="text" class="form-control" name="PContent" placeholder="说明" value="@(ee==null?" ":ee.Content)" />
                                                     </div>
                                                 }
                                             }
@@ -251,9 +280,9 @@
                     <div class="form-group">
                         <label class="control-label col-sm-3">工作量：</label>
                         <div class="col-sm-8">
-                            @if (progress != null && progress.Project != null && progress.Project.ProjectUser != null)
+                            @if (project!=null&&project.ProjectUser!=null)
                             {
-                                foreach (var item in progress.Project.ProjectUser.OrderBy(e=>e.UserId))
+                                foreach (var item in project.ProjectUser.OrderBy(e=>e.UserId))
                                 {
                                     <div class="input-group input-group-sm" style="margin-bottom:5px;">
                                         <span class="input-group-addon">
@@ -261,6 +290,8 @@
                                         </span>
                                         <input type="text" class="form-control" name="PPercent" value="0" />
                                         <span class="input-group-addon">%</span>
+                                        <span class="input-group-addon">备注：</span>
+                                        <input type="text" class="form-control" name="PContent" placeholder="说明" value=" "/>
                                     </div>
                                 }
                             }

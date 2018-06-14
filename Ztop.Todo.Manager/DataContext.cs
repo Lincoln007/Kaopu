@@ -104,6 +104,7 @@ namespace Ztop.Todo.Manager
         public DbSet<ProjectRecord> Project_Records { get; set; }
         public DbSet<WorkLoad> WorkLoads { get; set; }
         public DbSet<ProgressTable> ProgressTables { get; set; }
+        public DbSet<ProjectSituation> ProjectSituation { get; set; }
         #endregion
 
         #region 平板管理系统
@@ -164,6 +165,11 @@ namespace Ztop.Todo.Manager
         /// 客户端消息类型列表
         /// </summary>
         public DbSet<ClientMessage> Client_Messages { get; set; }
+        public DbSet<Floww> Flowws { get; set; }
+        public DbSet<FlowwNode> Floww_Nodes { get; set; }
+        public DbSet<FlowwData> Floww_Datas { get; set; }
+        public DbSet<FlowwNodeData> Floww_Node_Datas { get; set; }
+
         #endregion
 
 

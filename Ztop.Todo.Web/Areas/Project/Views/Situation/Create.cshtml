@@ -1,0 +1,52 @@
+﻿@{ 
+    ProjectSituation situation = ViewBag.Situation;
+    Project project = ViewBag.Project;
+}
+
+<script>
+    $(function () {
+        $("#form-situation").submit(function () {
+            var btn = $("#form-situation button");
+            btn.attr("disabled", "disabled");
+            var data = $(this).serialize();
+            $.request("/Project/Situation/Save", data, function (json) {
+                if (json.result == 1) {
+                    alert("成功录入");
+                    location.href = "/Project/Home/Detail?id=@(project.ID)";
+                } else {
+                    alert(json.content);
+                    btn.removeAttr("disabled");
+                }
+            });
+            return false;
+        });
+
+    });
+</script>
+
+<div class="page-header">
+    <h3 class="text-center">工作情况</h3>
+</div>
+
+
+<div class="row">
+    <div class="col-xs-12">
+        <form class="form-horizontal" action="/Situation/Save" method="post" id="form-situation">
+            <div class="form-group">
+                <label class="control-label col-xs-3">工作情况说明：</label>
+                <div class="col-xs-7">
+                    <input type="hidden" name="ID" value="@(situation==null?0:situation.ID)" />
+                    <input type="hidden" name="UserId" value="@(situation==null?Identity.UserID:situation.UserId)" />
+                    <input type="hidden" name="ProjectId" value="@(situation==null?(project==null?0:project.ID):situation.ProjectId)" />
+                    <textarea class="form-control" name="Content" rows="3">@(situation==null?"":situation.Content)</textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-xs-7 col-xs-offset-3">
+                    <button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-check"></i>确定</button>
+                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><i class="glyphicon glyphicon-remove-circle"></i>&nbsp;取消</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

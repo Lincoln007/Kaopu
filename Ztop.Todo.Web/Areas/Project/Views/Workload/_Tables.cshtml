@@ -1,0 +1,69 @@
+﻿@model List<ProgressTable>
+
+@{ 
+    if (Model == null)
+    {
+        return;
+    }
+    var tables = Model.OrderBy(e => e.Year).ToList();
+    var labels = tables.Select(e => e.Year).ToArray();
+    var values = tables.Select(e => e.Percent).ToArray();
+}
+
+<script>
+    $(function () {
+        window.chartColors = {
+            red: 'rgb(255, 99, 132)',
+            orange: 'rgb(255, 159, 64)',
+            yellow: 'rgb(255, 205, 86)',
+            green: 'rgb(75, 192, 192)',
+            blue: 'rgb(54, 162, 235)',
+            purple: 'rgb(153, 102, 255)',
+            grey: 'rgb(201, 203, 207)'
+        };
+        var labels=@Html.Raw(labels.ToJson())||[];
+        var values=@Html.Raw(values.ToJson())||[];
+        var ctx=document.getElementsByName("Chart-History");
+        var myChart=new Chart(ctx,{
+            type:'line',
+            data:{
+                labels:labels,
+                datasets:[{
+                    label:'历年工作量',
+                    data:values,
+                    fill:false,
+                    backgroundColor:window.chartColors.red,
+                    borderColor:window.chartColors.red
+                }]
+            }
+        });
+    });
+</script>
+<div class="thumbnail">
+    <div class="caption">
+        <div class="panel panel-success">
+            <div class="panel-heading">工作量各个年份信息</div>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>年份</th>
+                        <th>百分比%</th>
+                        <th>备注</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var entry in tables)
+                    {
+                        <tr>
+                            <td>@(entry.Year)</td>
+                            <td>@(entry.Percent)</td>
+                            <td>@(entry.Content)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        
+        <canvas name="Chart-History"></canvas>
+    </div>
+</div>

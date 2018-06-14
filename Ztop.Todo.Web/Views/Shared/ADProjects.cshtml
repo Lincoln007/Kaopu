@@ -1,0 +1,26 @@
+﻿
+
+<script>
+    $(function () {
+        $("a[name='AD']").click(function () {
+            var year = $("select[name='AYear']").val();
+            $(this).attr("href", "/Download/ADProjects?year=" + year);
+        });
+    });
+</script>
+<div class="form-group">
+    <label class="control-label">工作量下载：</label>
+    <div class="col-xs-12">
+        <div class="input-group input-group-sm">
+            <select name="AYear" class="form-control">
+                @for(var i = DateTime.Now.Year; i >= 2016; i--)
+                {
+                    <option value="@(i)">@(i)</option>
+                }
+            </select>
+            <div class="input-group-btn">
+                <a href="/Download/ADProjects" class="btn btn-success" name="AD"><i class="fa fa-download"></i>下载</a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -37,6 +37,5 @@ namespace Ztop.Todo.Model
         [ForeignKey("ProjectID")]
         public virtual Project Project { get; set; }
         public bool Delete { get; set; }
-        public virtual List<ProgressTable> Tables { get; set; }
     }
 }

@@ -28,6 +28,15 @@ namespace Ztop.Todo.Manager
 
 
         }
+        public List<User> GetUsers(int[] Ids)
+        {
+            var list = new List<User>();
+            foreach(var id in Ids)
+            {
+                list.Add(GetUser(id));
+            }
+            return list;
+        }
 
         public User GetUser(int id)
         {

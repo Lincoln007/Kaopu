@@ -145,18 +145,13 @@
     }
     else
     {
+
         <table class="table table-bordered table-condensed" style="margin:0px;">
             <tr>
                 <th class="col-md-1 col-xs-1">出差地点</th>
                 <td class="col-md-5 col-xs-5">
                     <input type="text" class="form-control input-sm" name="Place" value="@(Model.Place)" placeholder="出差地点" />
                 </td>
-                <th  class="col-md-1 col-xs-1">事由/项目</th>
-                <td class="col-md-5 col-xs-5">
-                    <input type="text" class="form-control input-sm" name="Reason" value="@(Model.Reason)" placeholder="事由/项目" />
-                </td>
-            </tr>
-            <tr>
                 <th class="col-md-1 col-xs-1">出差人员</th>
                 <td class="col-md-5 col-xs-5">
                     <div class="input-group">
@@ -213,6 +208,150 @@
                         </div>
                     </div>
                 </td>
+            </tr>
+            <tr>
+                <th class="col-md-1 col-xs-1">事由/项目</th>
+                <td class="col-md-5 col-xs-5">
+                    <input type="text" class="form-control input-sm" name="Reason" value="@(Model.Reason)" placeholder="事由/项目" />
+                </td>
+                <th>交通费用</th>
+                <td>
+                    <div class="input-group">
+                        <input type="text" class="form-control input-sm" placeholder="交通费用" readonly="readonly" name="Traffic" value="@(Model.Traffic)" />
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#Traffic"><i class="glyphicon glyphicon-zoom-in"></i>费用详情</button>
+                        </span>
+                    </div>
+                    <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" id="Traffic">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title">交通费用详情</h4>
+                                </div>
+                                <div class="modal-body container-fluid">
+                                    <ul class="nav nav-tabs" role="tablist">
+                                        <li role="presentation" class="active"><a href="#Bus" aria-controls="Bus" data-toggle="tab" role="tab">公共交通</a></li>
+                                        <li role="presentation"><a href="#Car" aria-controls="Car" data-toggle="tab" role="tab">自驾车</a></li>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <div class="tab-pane fade in active" id="Bus" role="tabpanel">
+                                            @foreach (BusType type in Enum.GetValues(typeof(BusType)))
+                                            {
+
+                                                if (type == BusType.Company || type == BusType.Personal)
+                                                {
+                                                    continue;
+                                                }
+                                                var exist = costtypes.ContainsKey(type);
+                                                <div class="col-md-6 col-xs-6" style="padding:5px;margin-bottom:5px;margin-top:5px;">
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon input-sm">
+                                                            <input type="checkbox" name="BusType" value="@(type)" @(exist ? "checked=checked" : "") />@(type.GetDescription())
+                                                        </span>
+                                                        <input type="text" class="form-control input-sm" name="Cost@(type)" placeholder="金额" value="@(exist?costtypes[type].Cost.ToString():"")" />
+                                                        <span class="input-group-addon input-sm">元</span>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                        <div class="tab-pane fade" id="Car" role="tabpanel">
+                                            <div class="col-md-12 col-xs-12" style="padding:10px;margin-top:5px;margin-bottom:5px;">
+                                                @{
+                                                    var traffic = costtypes.ContainsKey(BusType.Company) ? costtypes[BusType.Company] : null;
+                                                }
+                                                <div class="input-group" style="margin-top:10px;">
+                                                    <span class="input-group-addon input-sm">
+                                                        <input type="checkbox" name="BusType" value="@(BusType.Company)" @(traffic != null ? "checked=checked" : "") />@(BusType.Company.GetDescription())
+                                                    </span>
+                                                    <input type="text" class="form-control input-sm" name="Cost@(BusType.Company)" placeholder="金额" readonly="readonly" value="@(traffic!=null?traffic.Cost.ToString():"")" />
+                                                    <span class="input-group-addon input-sm">元</span>
+                                                    <span class="input-group-addon input-sm">里程</span>
+                                                    <input type="text" class="form-control input-sm" name="KiloMeters" placeholder="公里数" targetType="@(BusType.Company)" value="@(traffic!=null?traffic.KiloMeters.ToString():"")" />
+                                                    <span class="input-group-addon input-sm">公里</span>
+                                                </div>
+                                                <div class="input-group" style="margin-top:10px;">
+                                                    <span class="input-group-addon input-sm">过路费</span>
+                                                    <input type="text" class="form-control input-sm" name="Toll" placeholder="过路费" targetType="Company" value="@(traffic!=null?traffic.Toll.ToString():"")" />
+                                                    <span class="input-group-addon input-sm">元</span>
+                                                    <span class="input-group-addon input-sm">车牌</span>
+                                                    <select name="Plate" class="form-control input-sm">
+                                                        <option value="" @(traffic == null ? "selected=selected" : "")>请选择车牌</option>
+                                                        <option value="浙AZN022" @(traffic != null && traffic.Plate == "浙AZN022" ? "selected=selected" : "")>浙AZN022</option>
+                                                        <option value="浙A4RS85" @(traffic != null && traffic.Plate == "浙A4RS85" ? "selected=selected" : "")>浙A4RS85</option>
+                                                        <option value="浙A879Q9" @(traffic != null && traffic.Plate == "浙A879Q9" ? "selected=selected" : "")>浙A879Q9</option>
+                                                    </select>
+                                                </div>
+                                                <div class="input-group" style="margin-top:10px;">
+                                                    <span class="input-group-addon input-sm">油费</span>
+                                                    <input type="text" name="Petrol" class="form-control input-sm" placeholder="油费" value="@(traffic!=null?traffic.Petrol.ToString():"")" />
+                                                    <span class="input-group-addon input-sm">元</span>
+                                                    <span class="input-group-addon input-sm">司机</span>
+                                                    <select name="Driver" class="form-control input-sm" targetIndex="0">
+                                                        @foreach (Driver driver in Enum.GetValues(typeof(Driver)))
+                                                        {
+                                                            <option value="@(driver)" @(traffic != null && traffic.Driver == driver ? "selected=selected" : "")>@(driver)</option>
+                                                        }
+                                                    </select>
+                                                    <span class="input-group-addon input-sm">车补</span>
+                                                    <input type="text" class="form-control input-sm" name="CarPetty" id="CarPetty0" placeholder="车补" readonly="readonly" value="@(traffic!=null?traffic.CarPetty.ToString():"")" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12 col-xs-12" style="padding:10px;margin-top:5px;margin-bottom:5px;">
+                                                @{
+                                                    var personl = costtypes.ContainsKey(BusType.Personal) ? costtypes[BusType.Personal] : null;
+                                                }
+                                                <div class="input-group" style="margin-top:10px;">
+                                                    <span class="input-group-addon input-sm">
+                                                        <input type="checkbox" name="BusType" value="@(BusType.Personal)" @(personl != null ? "checked=checked" : "") />@(BusType.Personal.GetDescription())
+                                                    </span>
+                                                    <input type="text" class="form-control input-sm" name="Cost@(BusType.Personal)" placeholder="金额" readonly="readonly" value="@(personl!=null?personl.Cost.ToString():"")" />
+                                                    <span class="input-group-addon input-sm">元</span>
+                                                    <span class="input-group-addon input-sm">里程</span>
+                                                    <input type="text" class="form-control input-sm" name="KiloMeters" placeholder="公里数" targetType="@(BusType.Personal)" value="@(personl!=null?personl.KiloMeters.ToString():"")" />
+                                                    <span class="input-group-addon input-sm">公里</span>
+                                                </div>
+                                                <div class="input-group" style="margin-top:10px;">
+                                                    <span class="input-group-addon input-sm">过路费</span>
+                                                    <input type="text" class="form-control input-sm" name="Toll" placeholder="过路费" targetType="Personal" value="@(personl!=null?personl.Toll.ToString():"")" />
+                                                    <span class="input-group-addon input-sm">元</span>
+                                                    <span class="input-group-addon input-sm">车牌</span>
+                                                    <input type="text" class="form-control input-sm" name="Plate" placeholder="车牌" value="@(personl!=null?personl.Plate.ToString():"")" />
+                                                </div>
+                                                <div class="input-group" style="margin-top:10px;">
+                                                    <span class="input-group-addon input-sm">司机</span>
+                                                    <select name="Driver" class="form-control input-sm" targetIndex="1">
+                                                        @foreach (Driver driver in Enum.GetValues(typeof(Driver)))
+                                                        {
+                                                            <option value="@(driver)" @(personl != null && personl.Driver == driver ? "selected=selected" : "")>@(driver)</option>
+                                                        }
+                                                    </select>
+                                                    <span class="input-group-addon input-sm">车补</span>
+                                                    <input type="text" class="form-control input-sm" name="CarPetty" placeholder="车补" id="CarPetty1" readonly="readonly" value="@(personl!=null?personl.CarPetty.ToString():"")" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-sm btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove-sign"></i>取消</button>
+                                    <button type="button" class="btn btn-sm btn-primary" name="Traffic-OK" data-dismiss="modal"><i class="glyphicon glyphicon-ok-sign"></i>确定</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+              
+            </tr>
+            <tr>
+             
+                <th>出差住宿</th>
+                <td>
+                    <div class="input-group">
+                        <input type="text" class="form-control input-sm" name="Hotel" value="@(Model.Hotel)" />
+                        <span class="input-group-addon input-sm">元</span>
+                    </div>
+                </td>
                 <th>出差补贴</th>
                 <td>
                     <duv class="input-group">
@@ -230,6 +369,18 @@
                                     <h4 class="modal-title">补贴详情</h4>
                                 </div>
                                 <div class="modal-body">
+                                    <div class="alert alert-warning" role="alert">
+                                        <span>差补费用由交通决定。有自驾车时，出差补贴是60元每人；无自驾车时，出差补贴为80元每人；</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-xs-2">差补：</label>
+                                        <div class="col-xs-10">
+                                            <div class="input-group input-group-sm">
+                                                <input type="text" name="UnitPrice" class="form-control" value="" readonly />
+                                                <span class="input-group-addon">元/人</span>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="form-group">
                                         <label class="control-label col-md-2 col-xs-2">人员：</label>
                                         <div class="col-md-7 col-xs-7" id="ViewSubSide">
@@ -289,141 +440,6 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <th>交通费用</th>
-                <td>
-                    <div class="input-group">
-                        <input type="text" class="form-control input-sm" placeholder="交通费用" readonly="readonly" name="Traffic" value="@(Model.Traffic)" />
-                        <span class="input-group-btn">
-                            <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#Traffic"><i class="glyphicon glyphicon-zoom-in"></i>费用详情</button>
-                        </span>
-                    </div>
-                    <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" id="Traffic">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    <h4 class="modal-title">交通费用详情</h4>
-                                </div>
-                                <div class="modal-body container-fluid">
-                                    <ul class="nav nav-tabs" role="tablist">
-                                        <li role="presentation" class="active"><a href="#Bus" aria-controls="Bus" data-toggle="tab" role="tab">公共交通</a></li>
-                                        <li role="presentation"><a href="#Car" aria-controls="Car" data-toggle="tab" role="tab">自驾车</a></li>
-                                    </ul>
-                                    <div class="tab-content">
-                                        <div class="tab-pane fade in active" id="Bus" role="tabpanel">
-                                            @foreach (BusType type in Enum.GetValues(typeof(BusType)))
-                                            {
-
-                                                if (type == BusType.Company||type==BusType.Personal)
-                                                {
-                                                    continue;
-                                                }
-                                                var exist = costtypes.ContainsKey(type);
-                                                <div class="col-md-6 col-xs-6" style="padding:5px;margin-bottom:5px;margin-top:5px;">
-                                                    <div class="input-group">
-                                                        <span class="input-group-addon input-sm">
-                                                            <input type="checkbox" name="BusType" value="@(type)" @(exist?"checked=checked":"") />@(type.GetDescription())
-                                                        </span>
-                                                        <input type="text" class="form-control input-sm" name="Cost@(type)" placeholder="金额" value="@(exist?costtypes[type].Cost.ToString():"")" />
-                                                        <span class="input-group-addon input-sm">元</span>
-                                                    </div>
-                                                </div>
-                                            }
-                                        </div>
-                                        <div class="tab-pane fade" id="Car"role="tabpanel">
-                                            <div class="col-md-12 col-xs-12" style="padding:10px;margin-top:5px;margin-bottom:5px;">
-                                                @{ 
-                                                    var traffic = costtypes.ContainsKey(BusType.Company) ? costtypes[BusType.Company] : null;
-                                                }
-                                                <div class="input-group" style="margin-top:10px;">
-                                                    <span class="input-group-addon input-sm">
-                                                        <input type="checkbox" name="BusType" value="@(BusType.Company)" @(traffic!=null?"checked=checked":"") />@(BusType.Company.GetDescription())
-                                                    </span>
-                                                    <input type="text" class="form-control input-sm" name="Cost@(BusType.Company)" placeholder="金额" readonly="readonly" value="@(traffic!=null?traffic.Cost.ToString():"")" />
-                                                    <span class="input-group-addon input-sm">元</span>
-                                                    <span class="input-group-addon input-sm">里程</span>
-                                                    <input type="text" class="form-control input-sm" name="KiloMeters" placeholder="公里数" targetType="@(BusType.Company)" value="@(traffic!=null?traffic.KiloMeters.ToString():"")"/>
-                                                    <span class="input-group-addon input-sm">公里</span>
-                                                </div>
-                                                <div class="input-group" style="margin-top:10px;">
-                                                    <span class="input-group-addon input-sm">过路费</span>
-                                                    <input type="text" class="form-control input-sm" name="Toll" placeholder="过路费" targetType="Company" value="@(traffic!=null?traffic.Toll.ToString():"")" />
-                                                    <span class="input-group-addon input-sm">元</span>
-                                                    <span class="input-group-addon input-sm">车牌</span>
-                                                    <select name="Plate" class="form-control input-sm">
-                                                        <option value="" @(traffic==null?"selected=selected":"")>请选择车牌</option>
-                                                        <option value="浙AZN022" @(traffic!=null&&traffic.Plate=="浙AZN022"?"selected=selected":"")>浙AZN022</option>
-                                                        <option value="浙A4RS85"@(traffic!=null&&traffic.Plate=="浙A4RS85"?"selected=selected":"")>浙A4RS85</option>
-                                                    </select>
-                                                </div>
-                                                <div class="input-group" style="margin-top:10px;">
-                                                    <span class="input-group-addon input-sm">油费</span>
-                                                    <input type="text" name="Petrol" class="form-control input-sm" placeholder="油费" value="@(traffic!=null?traffic.Petrol.ToString():"")"/>
-                                                    <span class="input-group-addon input-sm">元</span>
-                                                    <span class="input-group-addon input-sm">司机</span>
-                                                    <select name="Driver" class="form-control input-sm" targetIndex="0">
-                                                        @foreach (Driver driver in Enum.GetValues(typeof(Driver)))
-                                                        {
-                                                            <option value="@(driver)" @(traffic!=null&&traffic.Driver==driver?"selected=selected":"")>@(driver)</option>
-                                                        }
-                                                    </select>
-                                                    <span class="input-group-addon input-sm">车补</span>
-                                                    <input type="text" class="form-control input-sm" name="CarPetty" id="CarPetty0" placeholder="车补"  readonly="readonly" value="@(traffic!=null?traffic.CarPetty.ToString():"")" />
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12 col-xs-12" style="padding:10px;margin-top:5px;margin-bottom:5px;">
-                                                @{ 
-                                                    var personl = costtypes.ContainsKey(BusType.Personal) ? costtypes[BusType.Personal] : null;
-                                                }
-                                                <div class="input-group" style="margin-top:10px;">
-                                                    <span class="input-group-addon input-sm">
-                                                        <input type="checkbox" name="BusType" value="@(BusType.Personal)" @(personl!=null?"checked=checked":"")/>@(BusType.Personal.GetDescription())
-                                                    </span>
-                                                    <input type="text" class="form-control input-sm" name="Cost@(BusType.Personal)" placeholder="金额" readonly="readonly" value="@(personl!=null?personl.Cost.ToString():"")" />
-                                                    <span class="input-group-addon input-sm">元</span>
-                                                    <span class="input-group-addon input-sm">里程</span>
-                                                    <input type="text" class="form-control input-sm" name="KiloMeters" placeholder="公里数" targetType="@(BusType.Personal)" value="@(personl!=null?personl.KiloMeters.ToString():"")" />
-                                                    <span class="input-group-addon input-sm">公里</span>
-                                                </div>
-                                                <div class="input-group" style="margin-top:10px;">
-                                                    <span class="input-group-addon input-sm">过路费</span>
-                                                    <input type="text" class="form-control input-sm" name="Toll" placeholder="过路费" targetType="Personal"  value="@(personl!=null?personl.Toll.ToString():"")"/>
-                                                    <span class="input-group-addon input-sm">元</span>
-                                                    <span class="input-group-addon input-sm">车牌</span>
-                                                    <input type="text" class="form-control input-sm" name="Plate" placeholder="车牌" value="@(personl!=null?personl.Plate.ToString():"")"/>
-                                                </div>
-                                                <div class="input-group" style="margin-top:10px;">
-                                                    <span class="input-group-addon input-sm">司机</span>
-                                                    <select name="Driver" class="form-control input-sm" targetIndex="1">
-                                                        @foreach (Driver driver in Enum.GetValues(typeof(Driver)))
-                                                        {
-                                                            <option value="@(driver)" @(personl != null && personl.Driver == driver ? "selected=selected" : "")>@(driver)</option>
-                                                        }
-                                                    </select>
-                                                    <span class="input-group-addon input-sm">车补</span>
-                                                    <input type="text" class="form-control input-sm" name="CarPetty"  placeholder="车补" id="CarPetty1" readonly="readonly" value="@(personl!=null?personl.CarPetty.ToString():"")" />
-                                                </div>
-                                            </div>
-                                        </div> 
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-sm btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove-sign"></i>取消</button>
-                                    <button type="button" class="btn btn-sm btn-primary" name="Traffic-OK" data-dismiss="modal"><i class="glyphicon glyphicon-ok-sign"></i>确定</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </td>
-                <th>出差住宿</th>
-                <td>
-                    <div class="input-group">
-                        <input type="text" class="form-control input-sm" name="Hotel" value="@(Model.Hotel)" />
-                        <span class="input-group-addon input-sm">元</span>
                     </div>
                 </td>
             </tr>
@@ -495,6 +511,7 @@
                 var appendhtml = "<label class='checkbok-inline'><input type='checkbox' name='mans' value='" + value + "' />"+value+"</label>";
                 $("#ViewSubSide").append(appendhtml);
             });
+          
         });
 
         $("select[name='Way']").change(function () {
@@ -515,7 +532,7 @@
                         } else if (driver == "孙海杰") {
                             money = kilo * 0.5;
                         } else {
-                            money = kilo * 0.2;
+                            money = kilo * 0.3;
                         }
                         $("#ViewTraffic input[name='CarPetty']").val(money);
                         StatisticCompany();
@@ -566,15 +583,17 @@
                 return false;
             } else {
                 var users = userString.split(';');
-                if (users.length > 0) {
-                    return true;
-                } else {
+                if (users.length == 0) {
                     alert("请选择出差人员再录入出差补贴详情！");
                     return false;
                 }
             }
+
+
+            
           
         });
+
 
         $("button[name='Keyin']").click(function () {
             var checkPerson = [];
@@ -639,66 +658,7 @@
             $(this).parent().parent().remove();
         });
 
-        $("button[name='SubSide-OK']").click(function () {
-            if (CheckUsers()) {
-                if (StatisticSubSide()) {
-                    return true;
-                } else {
-                    return false;
-                }
-            } else {
-                alert("目前尚有用户未制定时间");
-                return false;
-            }
-           
-        });
-        //核对是否所有用户都填写时间了
-        function CheckUsers() {
-            var persons = $("input[name='Persons']").val().split(';');
-            var checks = [];
-            $("#ViewSubSide input[name='mans']:checked:disabled").each(function () {
-                checks.push($(this).val());
-            });
-            if (checks.length != persons.length) {
-                return false;
-            } else {
-                return true;
-            }
-        }
 
-        //统计出差补贴金额
-        function StatisticSubSide() {
-            var lines = [];
-            var subSide = 0;
-            $("#ViewTime input[name*='Users']").each(function () {
-                var users = $(this).val();
-                var targetIndex = $(this).attr("targetIndex");
-                var start = $("#ViewTime input[name='StartTime" + targetIndex + "']").val();
-                var end = $("#ViewTime input[name='EndTime" + targetIndex + "']").val();
-                var d1 = new Date(start);
-                var d2 = new Date(end);
-                if (d1 == undefined || d2 == undefined) {
-                    alert(users + "的时间信息获取失败！");
-                    return false;
-                }
-                if (d2 < d1) {
-                    alert(users + "的结束时间小于开始时间，请检查核对！");
-                    return false;
-                }
-                var day_d1 = d1.getTime() / 1000 / 3600 / 24;
-                var day_d2 = d2.getTime() / 1000 / 3600 / 24;
-                var peoples = users.split(';').length;
-                var days = day_d2 - day_d1 + 1;
-                $("#ViewTime input[name='Peoples" + targetIndex + "']").val(peoples);
-                $("#ViewTime input[name='Days" + targetIndex + "']").val(days);
-                subSide += peoples * days * 40;
-                lines.push(targetIndex);
-            });
-            $("input[name='SubSidy']").val(subSide);
-            $("input[name='Lines']").val(lines.join(';'));
-            SumErrand();
-            return true;
-        }
         //出差住宿金额发生改变自动统计总金额
         $("input[name='Hotel']").change(function () {
             SumErrand();
@@ -828,34 +788,7 @@
             return val;
         }
 
-        //在公司派车中选择司机 自动计算车补
-        //$("select[name='Driver']").change(function () {
-        //    var val = $(this).val();
-        //    var money = .0;
-        //    var kile = GetKile();
-        //    if (isNaN(kile)) {
-        //        alert("未获取公里数！");
-        //        return;
-        //    }
-        //    if (val == "无") {
-        //        money = 0;
-        //    } else if (val == "孙海杰") {
-        //        money = kile * 0.5;
-        //    } else {
-        //        money = kile * 0.2;
-        //    }
-        //    $("input[name='CarPetty']").val(money);
-        //    StatisticCompany();
-        //});
-        //修改公司车过路费栏  自动统计计算金额
-        //$("input[name='Toll']").change(function () {
-        //    var targetType = $(this).attr("targetType");
-        //    if (targetType == "Company") {
-        //        StatisticCompany();
-        //    }
-        //});
 
-        //$("input[name='Petrol']").change(StatisticCompany);
 
 
         //用户点击公司车和自备车  自动计算金额
@@ -869,8 +802,11 @@
                 }
                 StatisticCompany();
             } else if (bustype == "Personal") {
+                btVal = 60;
                 StatisticPersonal();
             }
+
+
         });
 
       

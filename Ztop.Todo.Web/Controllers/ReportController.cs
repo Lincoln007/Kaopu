@@ -716,7 +716,9 @@ namespace Ztop.Todo.Web.Controllers
                 Checker = Identity.Name,
                 //Page = new PageParameter(page, rows)
             };
-            RedisManager.Set(Identity.UserID + ParameterManager.ParameterKey, parameter, RedisManager.Client);
+            var stringKey = Identity.UserID + ParameterManager.ParameterKey;
+            SessionHelper.SetSession(stringKey, parameter);
+            //RedisManager.Set(, parameter, RedisManager.Client);
             parameter.Page = new PageParameter(page, rows);
             var list= Core.VerifyViewManager.Search(parameter, true);
 

@@ -22,15 +22,24 @@ namespace Ztop.Todo.Manager
             return project.ID;
         }
 
-        public bool Edit(Project project)
+        public bool Edit(Project project,int serialNumber)
         {
             var entry = DB.Projects.Find(project.ID);
             if (entry == null)
             {
                 return false;
             }
+
             project.Number = entry.Number;
-            project.SerialNumber = entry.SerialNumber;
+            if (project.Year != entry.Year)
+            {
+                project.SerialNumber = serialNumber;
+            }
+            else
+            {
+                project.SerialNumber = entry.SerialNumber;
+            }
+           
             DB.Entry(entry).CurrentValues.SetValues(project);
             DB.SaveChanges();
             return true;
@@ -82,6 +91,10 @@ namespace Ztop.Todo.Manager
             if (parameter.Year.HasValue)
             {
                 query = query.Where(e => e.Year == parameter.Year.Value);
+            }
+            if (parameter.CityId.HasValue)
+            {
+                query = query.Where(e => e.CityId == parameter.CityId.Value);
             }
             if (!string.IsNullOrEmpty(parameter.CityName))
             {

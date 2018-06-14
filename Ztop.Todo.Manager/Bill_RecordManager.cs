@@ -250,7 +250,12 @@ namespace Ztop.Todo.Manager
                     if (current != null && current.Budget == Budget.Income)
                     {
                         current.Sync = true;
-                        db.Bills.Add(ad);
+                        var entry = db.Bills.FirstOrDefault(e => e.HID == ad.HID && e.BBID == ad.BBID);
+                        if (entry == null)
+                        {
+                            db.Bills.Add(ad);
+                        }
+                     
                         db.SaveChanges();
                     }
                 }

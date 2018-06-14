@@ -105,6 +105,10 @@ namespace Ztop.Todo.Manager
                         model.Evection.Errands = DB.Errands.Where(e => e.EID == model.Evection.ID).ToList();//获取出差人数列表
                         model.Evection.TCosts = DB.Traffics.Where(e => e.EID == model.Evection.ID).ToList();//获取用车类型列表
                     }
+                }else if (model.Type == SheetType.Reception)
+                {
+                    DB.Entry(model).Reference(e => e.Reception).Load();
+                    DB.Entry(model.Reception).Collection(e => e.Items).Load();
                 }
                 else
                 {
@@ -462,6 +466,10 @@ namespace Ztop.Todo.Manager
                             item.Evection.Errands = db.Errands.Where(e => e.EID == item.Evection.ID).ToList();//获取出差人数列表
                             item.Evection.TCosts = db.Traffics.Where(e => e.EID == item.Evection.ID).ToList();//获取用车类型列表
                         }
+                    }else if (item.Type == SheetType.Reception)
+                    {
+                        db.Entry(item).Reference(e => e.Reception).Load();
+                        db.Entry(item.Reception).Collection(e => e.Items).Load();
                     }
                     else
                     {

@@ -19,6 +19,9 @@ namespace Ztop.Todo.Manager
 
         private static TimeSpan _expiresIn { get; set; }
         private static IRedisClient _client { get; set; }
+        /// <summary>
+        /// 可能获取的Client还是NULL
+        /// </summary>
         public static IRedisClient Client { get { return _client == null ? _client = _prcm.GetClient() : _client; } }
         static RedisManager()
         {

@@ -62,7 +62,9 @@ namespace Ztop.Todo.Model
         [Description("现金")]
         Cash,
         [Description("合计")]
-        Sum
+        Sum,
+        [Description("浙江大学")]
+        ZheJiangUniversity
     }
     public enum Budget
     {

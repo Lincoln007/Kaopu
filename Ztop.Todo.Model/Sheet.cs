@@ -135,7 +135,7 @@ namespace Ztop.Todo.Model
         public int? ReceptionId { get; set; }
         [ForeignKey("ReceptionId")]
         [ScriptIgnore]
-        public virtual Reception Reception { get; set; }
+        public  Reception Reception { get; set; }
 
     }
     public enum SheetType

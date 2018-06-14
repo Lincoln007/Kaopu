@@ -18,12 +18,12 @@ namespace Ztop.Todo.Model
         public int Year { get; set; }
         public double Percent { get; set; }
         public string Content { get; set; }
-        public int ProgressId { get; set; }
-        [ForeignKey("ProgressId")]
-        public virtual ProjectProgress Progress { get; set; }
+        public int ProjectId { get; set; }
+        [ForeignKey("ProjectId")]
+        public virtual Project Project { get; set; }
         public virtual List<WorkLoad> WorkLoads { get; set; }
 
-        public static List<ProgressTable> Generate(int progressId,int[] users, int[] year, double[] percent, string[] content,Queue<int> userIds,double[] ppercent)
+        public static List<ProgressTable> Generate(int projectId,int[] users, int[] year, double[] percent, string[] content,Queue<int> userIds,double[] ppercent,string[] pContent)
         {
             var list = new List<ProgressTable>();
             var l = userIds.Dequeue();
@@ -34,14 +34,14 @@ namespace Ztop.Todo.Model
                     Year = year[i],
                     Percent = percent[i],
                     Content = content[i],
-                    ProgressId = progressId,
+                    ProjectId=projectId,
                     WorkLoads=new List<WorkLoad>()
                 };
                 for(var j = 0; j < users.Length; j++)
                 {
                     if (l == users[j])
                     {
-                        entry.WorkLoads.Add(new WorkLoad { UserId = users[j], Percent = ppercent[i * users.Length + j] });
+                        entry.WorkLoads.Add(new WorkLoad { UserId = users[j], Percent = ppercent[i * users.Length + j],Content=pContent[i*users.Length+j] });
                         if (userIds.Count == 0)
                         {
                             break;
@@ -53,10 +53,8 @@ namespace Ztop.Todo.Model
                        
                     }
                 }
-                if (Math.Abs(entry.WorkLoads.Sum(e => e.Percent) - 100) < 0.01)
-                {
-                    list.Add(entry);
-                }
+
+                list.Add(entry);
                
             }
             return list;

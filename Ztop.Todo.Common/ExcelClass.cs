@@ -41,6 +41,24 @@ namespace Ztop.Todo.Common
             return cell;
         }
 
+        public static ICell GetCell2(IRow row,int line,ICell modelCell = null)
+        {
+            ICell cell = row.GetCell(line);
+            if (cell == null)
+            {
+                if (modelCell != null)
+                {
+                    cell = row.CreateCell(line, modelCell.CellType);
+                    cell.CellStyle = modelCell.CellStyle;
+                }
+                else
+                {
+                    cell = row.CreateCell(line);
+                }
+            }
+            return cell;
+        }
+
 
         public static int WriteBase<T>(T data, IRow row, int startLine, IRow moldRow)
         {

@@ -176,9 +176,33 @@
                     <label class="control-label">查询:</label>
                     <div class="col-md-12">
                         <button type="submit" class="btn btn-sm btn-primary" name="Search"><i class="glyphicon glyphicon-search"></i>立即查询</button>
+                       
                     </div>
                 </div>
             </div>
         </div>
     </form>
+    <div class="row">
+        <div class="col-xs-6">
+            @if (ViewBag.Action.ToLower() == "ChargeSearch".ToLower())
+            {
+                <div class="form-group">
+                    <label class="control-label">下载：</label>
+                    <div class="col-xs-12">
+                        <a href="/Download/Projects" class="btn btn-sm btn-success"><i class="fa fa-download"></i>下载项目清单</a>
+                    </div>
+                </div>
+
+            }
+            
+
+            @if(ViewBag.Action.ToLower() == "Index".ToLower())
+            {
+                Html.RenderAction("GetPartialView", "Power", new { area = "", id = 30, viewName = "ADProjects" });
+            }
+        </div>
+    </div>
+
+
+    
 </div>

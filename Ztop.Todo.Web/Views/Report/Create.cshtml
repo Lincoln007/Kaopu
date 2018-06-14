@@ -197,6 +197,11 @@
 
     //出差报销金额合计
     function SumErrand() {
+        var price=$("input[name='UnitPrice']").val();
+        if(price==="60"||price==="80"){
+            //StatisticSubSide();
+           
+        }
         var fields=["Traffic","SubSidy","Hotel","Other"];
         var sum = 0;
         for(var field in fields){

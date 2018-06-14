@@ -139,10 +139,134 @@ namespace Ztop.Todo.Manager.Excels
             return workbook;
         }
 
+        public static IWorkbook WriteCoProjects(List<ProjectView> list)
+        {
+            IWorkbook workbook = ParameterManager.COProject.OpenExcel();
+            if (workbook != null)
+            {
+                var sheet = workbook.GetSheetAt(0);
+                if (sheet != null)
+                {
+                    var modelrow = sheet.GetRow(1);
+                    IRow row = null;
+                    var serial = 1;
+                    foreach(var item in list)
+                    {
+                        row = sheet.GetRow(serial) ?? sheet.CreateRow(serial);
+                        serial++;
+                        var cell = ExcelClass.GetCell(row, 0, modelrow);
+                        if (cell != null)
+                        {
+                            cell.SetCellValue(item.ID);
+                        }
+                        ExcelClass.GetCell(row, 1, modelrow).SetCellValue(item.Year);
+                        ExcelClass.GetCell(row, 2, modelrow).SetCellValue(item.GroupName);
+                        ExcelClass.GetCell(row, 3, modelrow).SetCellValue(item.Serial);
+                        ExcelClass.GetCell(row, 4, modelrow).SetCellValue(item.Number);
+                        ExcelClass.GetCell(row, 5, modelrow).SetCellValue(item.CityName);
+                        ExcelClass.GetCell(row, 6, modelrow).SetCellValue(item.Town);
+                        ExcelClass.GetCell(row, 7, modelrow).SetCellValue(item.Name);
+                        ExcelClass.GetCell(row, 8, modelrow).SetCellValue(item.TypeChars.Substring(0, 1));
+                        ExcelClass.GetCell(row, 9, modelrow).SetCellValue(item.TypeChars + item.TypeName);
+                        ExcelClass.GetCell(row, 10, modelrow).SetCellValue(item.RealName);
+                        ExcelClass.GetCell(row, 11, modelrow).SetCellValue(item.Participation);
+                        ExcelClass.GetCell(row, 12, modelrow).SetCellValue(item.Mark);
+                        ExcelClass.GetCell(row, 13, modelrow).SetCellValue(item.Percent.HasValue ? item.Percent.Value : 0);
+                    }
+                }
+            }
+
+            return workbook;
+        }
+        
+        public static IWorkbook WriteAdProjects(List<ProjectView> list,int year, List<ProgressTable> tables,List<User> users)
+        {
+            IWorkbook workbook = ParameterManager.ADProject.OpenExcel();
+            if (workbook != null)
+            {
+                var sheet = workbook.GetSheetAt(0);
+                if (sheet != null)
+                {
+                    #region 表头
+                    var headRow = sheet.GetRow(0);
+                    var modelCell = ExcelClass.GetCell(headRow, 14);
+                    modelCell.SetCellValue(string.Format("{0}年度比例", year));
+                    var line = 15;
+                    foreach(var user in users)
+                    {
+                        ExcelClass.GetCell2(headRow, line++,modelCell).SetCellValue(user.RealName + "比例");
+                        ExcelClass.GetCell2(headRow, line++,modelCell).SetCellValue(user.RealName + "说明");
+                    }
+                    #endregion
+
+                    var modelrow = sheet.GetRow(1);
+                    IRow row = null;
+                    var serial = 1;
+                    foreach (var item in list)
+                    {
+                        row = sheet.GetRow(serial) ?? sheet.CreateRow(serial);
+                        serial++;
+                        var cell = ExcelClass.GetCell(row, 0, modelrow);
+                        if (cell != null)
+                        {
+                            cell.SetCellValue(item.ID);
+                        }
+                        ExcelClass.GetCell(row, 1, modelrow).SetCellValue(item.Year);
+                        ExcelClass.GetCell(row, 2, modelrow).SetCellValue(item.GroupName);
+                        ExcelClass.GetCell(row, 3, modelrow).SetCellValue(item.Serial);
+                        ExcelClass.GetCell(row, 4, modelrow).SetCellValue(item.Number);
+                        ExcelClass.GetCell(row, 5, modelrow).SetCellValue(item.CityName);
+                        ExcelClass.GetCell(row, 6, modelrow).SetCellValue(item.Town);
+                        ExcelClass.GetCell(row, 7, modelrow).SetCellValue(item.Name);
+                        ExcelClass.GetCell(row, 8, modelrow).SetCellValue(item.TypeChars.Substring(0, 1));
+                        ExcelClass.GetCell(row, 9, modelrow).SetCellValue(item.TypeChars + item.TypeName);
+                        ExcelClass.GetCell(row, 10, modelrow).SetCellValue(item.RealName);
+                        ExcelClass.GetCell(row, 11, modelrow).SetCellValue(item.Participation);
+                        ExcelClass.GetCell(row, 12, modelrow).SetCellValue(item.Mark);
+                        ExcelClass.GetCell(row, 13, modelrow).SetCellValue(item.Percent.HasValue ? item.Percent.Value : 0);
+
+                        var table = tables.FirstOrDefault(e => e.ProjectId == item.ID);
+                        if (table != null)
+                        {
+                            ExcelClass.GetCell2(row, 14, modelCell).SetCellValue(table.Percent);
+                            if (table.WorkLoads != null)
+                            {
+                                line = 15;
+                                foreach(var user in users)
+                                {
+                                    var workload = table.WorkLoads.FirstOrDefault(e => e.UserId == user.ID);
+                                    if (workload != null)
+                                    {
+                                        ExcelClass.GetCell2(row, line++, modelCell).SetCellValue(workload.Percent);
+                                        ExcelClass.GetCell2(row, line++, modelCell).SetCellValue(workload.Content);
+                                    }
+                                    else
+                                    {
+                                        ExcelClass.GetCell2(row, line++, modelCell);
+                                        ExcelClass.GetCell2(row, line++, modelCell);
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            for(var i = 0; i <= users.Count*2; i++)
+                            {
+                                ExcelClass.GetCell2(row, i+14, modelCell);
+                            }
+                        }
+
+
+                    }
+                }
+            }
+            return workbook;
+        }
+
         private static void WriteReception(List<Sheet> list,ISheet sheet)
         {
             var serial = 1;
-            var line = 1;
+            var line = 2;
             var modelrow = sheet.GetRow(serial);
             foreach(var item in list)
             {

@@ -296,30 +296,34 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach(var item in reception)
+                    @foreach (var item in reception)
                     {
-                        var count = item.Reception.Items != null ? item.Reception.Items.Count+1 : 1;
-                        <tr>
-                            <td rowspan="@(count)"><a href="/Report/Detail?id=@(item.ID)">@(item.CheckNumber)</a></td>
-                            <td rowspan="@(count)">@(item.Time.ToString("yyyy-MM-dd"))</td>
-                            <td rowspan="@(count)">@(item.Money)</td>
-                            <td rowspan="@(count)">@(item.Name)</td>
-                            <td rowspan="@(count)">@(item.Reception.RTime.ToShortDateString())</td>
-                            <td rowspan="@(count)">@(item.Reception.CityName)</td>
-                            <td rowspan="@(count)">@(item.Reception.Amount)</td>
-                            <td rowspan="@(count)">@(item.Reception.Persons)</td>
-                            
-                        </tr>
-                        foreach(var entry in item.Reception.Items)
+                        if (item.Reception != null)
                         {
+                            var count = item.Reception.Items != null ? item.Reception.Items.Count + 1 : 1;
                             <tr>
-                                <td>@(entry.Content)</td>
-                                <td>@(entry.Coin)</td>
-                                <td>@(entry.Way.GetDescription())</td>
-                         
-                                <td>@(entry.Memo)</td>
+                                <td rowspan="@(count)"><a href="/Report/Detail?id=@(item.ID)">@(item.CheckNumber)</a></td>
+                                <td rowspan="@(count)">@(item.Time.ToString("yyyy-MM-dd"))</td>
+                                <td rowspan="@(count)">@(item.Money)</td>
+                                <td rowspan="@(count)">@(item.Name)</td>
+                                <td rowspan="@(count)">@(item.Reception.RTime.ToShortDateString())</td>
+                                <td rowspan="@(count)">@(item.Reception.CityName)</td>
+                                <td rowspan="@(count)">@(item.Reception.Amount)</td>
+                                <td rowspan="@(count)">@(item.Reception.Persons)</td>
+
                             </tr>
+                            foreach (var entry in item.Reception.Items)
+                            {
+                                <tr>
+                                    <td>@(entry.Content)</td>
+                                    <td>@(entry.Coin)</td>
+                                    <td>@(entry.Way.GetDescription())</td>
+
+                                    <td>@(entry.Memo)</td>
+                                </tr>
+                            }
                         }
+
                     }
                 </tbody>
             </table>

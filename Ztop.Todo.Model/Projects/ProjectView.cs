@@ -20,6 +20,7 @@ namespace Ztop.Todo.Model
         public int GroupId { get; set; }
         public int SerialNumber { get; set; }
         public string Number { get; set; }
+        public int CityId { get; set; }
         public string CityName { get; set; }
         public string Town { get; set; }
         public string Mark { get; set; }
@@ -34,6 +35,7 @@ namespace Ztop.Todo.Model
         public string TypeChars { get; set; }
         public string UserIds { get; set; }
         public string Participation { get; set; }
+        public double? Percent { get; set; }
         [NotMapped]
         public string Serial
         {

@@ -164,9 +164,14 @@
     <Compile Include="NotificationManager.cs" />
     <Compile Include="Projects\ProgressTableManager.cs" />
     <Compile Include="Projects\ProjectRecordManager.cs" />
+    <Compile Include="Projects\ProjectSituationManager.cs" />
     <Compile Include="Projects\Project_ProgressManager.cs" />
     <Compile Include="Projects\WorkloadManager.cs" />
     <Compile Include="System\Client_MessageManager.cs" />
+    <Compile Include="System\FlowwDataManager.cs" />
+    <Compile Include="System\FlowwManager.cs" />
+    <Compile Include="System\FlowwNodeDataManager.cs" />
+    <Compile Include="System\FlowwNodeManager.cs" />
     <Compile Include="System\OASystemManager.cs" />
     <Compile Include="PowerManager.cs" />
     <Compile Include="Power_itemManager.cs" />

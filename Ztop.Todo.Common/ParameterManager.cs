@@ -34,5 +34,15 @@
         /// 日常招待单文件
         /// </summary>
         public static string ShentuReception { get { return string.IsNullOrEmpty(_shentuReception) ? _shentuReception = ExcelClass.GetAbsolutePath(System.Configuration.ConfigurationManager.AppSettings["20170930RECEPTION"]) : _shentuReception; } }
+        private static string _adProject { get; set; }
+        /// <summary>
+        /// 项目管理系统 部门经理以及以上用户下载
+        /// </summary>
+        public static string ADProject { get { return string.IsNullOrEmpty(_adProject) ? _adProject = ExcelClass.GetAbsolutePath(System.Configuration.ConfigurationManager.AppSettings["ADProject"]) : _adProject; } }
+        private static string _coProject { get; set; }
+        /// <summary>
+        /// 普通用户下载项目文件
+        /// </summary>
+        public static string COProject { get { return string.IsNullOrEmpty(_coProject) ? _coProject = ExcelClass.GetAbsolutePath(System.Configuration.ConfigurationManager.AppSettings["COProject"]) : _coProject; } }
     }
 }

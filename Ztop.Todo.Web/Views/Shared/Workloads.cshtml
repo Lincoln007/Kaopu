@@ -16,7 +16,6 @@
         var values=@Html.Raw(values.ToJson())||[];
         var year=@Html.Raw(Model.Year);
         var ctx=document.getElementsByName("Chart-"+year);
-        //var ctx=document.getElementById("Chart-Workload");
         var myChart=new Chart(ctx,{
             type:'pie',
             data:{
@@ -30,31 +29,4 @@
     });
 </script>
 <canvas name="Chart-@(Model.Year)"></canvas>
-@*<div class="panel panel-primary">
-    <div class="panel-heading">项目工作量</div>
-    <div class="panel-body">
-        <div class="col-md-6">
-           
-        </div>
-        <div class="col-md-6">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>参与人员</th>
-                        <th>工作量</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model.WorkLoads)
-                    {
-                        <tr>
-                            <td>@(item.User.RealName)</td>
-                            <td>@(item.Percent)%</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>*@
 

@@ -34,6 +34,7 @@
         <a data-toggle="modal" data-target="#Modal" href="/Bank/InputEvaluation" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-plus"></i>录入评估银行账单</a>
         <a data-toggle="modal" data-target="#Modal" href="/Bank/InputProjection" class="btn btn-success btn-sm"><i class="glyphicon glyphicon-plus"></i>录入规划玉泉支行账单</a>
         <a data-toggle="modal" data-target="#Modal" href="/Bank/InputProjection?company=@(Company.Projection2)" class="btn btn-warning btn-sm"><i class="glyphicon glyphicon-plus"></i>录入规划文化广场支行账单</a>
+        <a data-toggle="modal" data-target="#Modal" href="/Bank/InputProjection?company=@(Company.ZheJiangUniversity)" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus"></i>录入规划文化广场支行账单</a>
     </div>
 }
 
@@ -53,7 +54,8 @@
     $(function () {
         $("#Modal").on("hidden.bs.modal", function () {
             $(this).removeData("bs.modal");
-        })
+        });
+
     });
 </script>
 

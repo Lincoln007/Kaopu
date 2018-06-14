@@ -47,7 +47,21 @@ namespace Ztop.Todo.Model
         /// <summary>
         /// 城市（县级）
         /// </summary>
-        public string CityName { get; set; }
+        [NotMapped]
+        public string CityName
+        {
+            get
+            {
+                if (City != null)
+                {
+                    return City.Name;
+                }
+
+                return string.Empty;
+            }
+        }
+        public int CityId { get; set; }
+        public virtual City City { get; set; }
         /// <summary>
         /// 乡镇主体
         /// </summary>
@@ -99,10 +113,23 @@ namespace Ztop.Todo.Model
             get { return ProjectUser.Where(e => e.Relation == ProjectRelation.Participation).ToList(); }
         }
 
+        public virtual List<ProjectProgress> Progress { get; set; } 
+        public virtual List<ProgressTable> Tables { get; set; }
+        [NotMapped]
+        public ProjectProgress RecentProgress
+        {
+            get
+            {
+                return Progress == null ? null : Progress.Where(e => e.Delete==false).OrderByDescending(e => e.Percent).FirstOrDefault();
+            }
+        }
+        public virtual List<ProjectSituation> Situations { get; set; }
+
+
         //public virtual List<WorkLoad> Workloads { get; set; }
 
         //public virtual List<ProjectRecord> Records { get; set; }
-        //public virtual List<ProjectProgress> Progress { get; set; } 
+      
 
 
     }

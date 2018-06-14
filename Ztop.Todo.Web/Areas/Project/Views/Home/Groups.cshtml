@@ -1,0 +1,40 @@
+﻿
+@{
+    ViewBag.Title = "当前部门审核项目";
+    Layout = "~/Areas/Project/Views/Shared/_Layout.cshtml";
+    List<ProjectView> list = ViewBag.List;
+}
+
+@{
+    Html.RenderPartial("SearchTitle");
+}
+
+
+<div class="row">
+    <div class="col-xs-12">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>项目编号</th>
+                    <th>项目名称</th>
+                    <th>负责人</th>
+                    <th>城市（县级）</th>
+                    <th>项目类型</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var item in list)
+                {
+                    <tr>
+                        <td>@(item.Serial)</td>
+                        <td>@(item.Name)</td>
+                        <td>@(item.RealName)</td>
+                        <td>@(item.CityName)</td>
+                        <td>@string.Format("{0}{1}",item.TypeChars,item.TypeName)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

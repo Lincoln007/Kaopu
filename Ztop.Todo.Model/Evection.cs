@@ -121,6 +121,8 @@ namespace Ztop.Todo.Model
         [Description("自备车")]
         Personal,
         [Description("互联网用车（个人支付）")]
-        InternetCarPersonal
+        InternetCarPersonal,
+        [Description("轮渡/船")]
+        Boat
     }
 }

@@ -141,7 +141,7 @@
 
                                         </td>
                                         <td>
-                                            @if (item.Summary.Length > 8)
+                                            @if (!string.IsNullOrEmpty(item.Summary)&&item.Summary.Length > 8)
                                             {
                                                 <abbr title="@(item.Summary)">@(item.Summary.Substring(0, 8))</abbr>
                                             }
@@ -152,7 +152,7 @@
 
                                         </td>
                                         <td>
-                                            @if (item.Remark.Length > 8)
+                                            @if (!string.IsNullOrEmpty(item.Remark)&&item.Remark.Length > 8)
                                             {
                                                 <abbr title="@(item.Remark)">@(item.Remark.Substring(0, 8))</abbr>
                                             }

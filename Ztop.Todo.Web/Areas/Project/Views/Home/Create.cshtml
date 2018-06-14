@@ -78,6 +78,7 @@
                     <label class="control-label col-md-4">城市（县级）：</label>
                     <div class="col-md-8">
                         <div class="input-group input-group-sm">
+                            <input type="hidden" name="CityId" value="@(project!=null?project.CityId:0)" />
                             <input type="text" name="CityName" class="form-control" value="@(project!=null?project.CityName:"")"  readonly required/>
                             <div class="input-group-btn">
                                 <a href="/City/Select" class="btn btn-primary" data-toggle="modal" data-target="#Modal" ><i class="glyphicon glyphicon-search"></i></a>

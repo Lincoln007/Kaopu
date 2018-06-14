@@ -1,6 +1,7 @@
 ﻿@{ 
     Layout = null;
     Project project = ViewBag.Model;
+   // FlowwData data = ViewBag.FlowwData;
     List<ProjectProgress> progress = ViewBag.Progress;
     List<ProjectRecord> Records = ViewBag.Records;
     ViewBag.Title = "项目查看";
@@ -32,49 +33,86 @@
 </script>
 <div class="page-header">
     <h3 class="text-center">@(project.Name)</h3>
-    <div class="btn-group btn-group-sm">
+    <div class="btn-toolbar" role="toolbar" >
         @if (project.IsDone == false)//项目状态为未完成的时候，可进行编辑和删除  更改负责人
         {
             if (Identity.UserID == project.Charge.UserId)//项目负责人
             {
-                <a href="/Project/Progress/Create?projectID=@(project.ID)" class="btn btn-success" data-toggle="modal" data-target="#Modal"><i class="glyphicon glyphicon-plus-sign"></i>录入工作进度信息</a>
-                <a href="/Project/Home/Create?id=@(project.ID)" class="btn btn-primary"><i class="glyphicon glyphicon-edit"></i>编辑</a>
-                <a href="/Project/Home/Delete?id=@(project.ID)" class="btn btn-danger" name="Delete"><i class="glyphicon glyphicon-remove-sign"></i>删除</a>
+                <div class="btn-group btn-group-sm">
+                    <a href="/Project/Home/Create?id=@(project.ID)" class="btn btn-primary"><i class="glyphicon glyphicon-edit"></i>编辑</a>
+                    @*<a href="/Project/Home/Delete?id=@(project.ID)" class="btn btn-danger" name="Delete"><i class="glyphicon glyphicon-remove-sign"></i>删除</a>*@
+                </div>
+                <div class="btn-group btn-group-sm">
+                    <a href="/Project/Progress/Create?projectID=@(project.ID)" class="btn btn-success" data-toggle="modal" data-target="#Modal"><i class="glyphicon glyphicon-plus-sign"></i>录入工作进度信息</a>
+                </div>
+        
             }
             else
             {
-                Html.RenderAction("Get", "Power", new { area = "", id = 19, Parameter = string.Format("projectID={0}", project.ID), Type = PowerType.Windows });
-                Html.RenderAction("Get", "Power", new { area = "", id = 16, Parameter = string.Format("id={0}", project.ID) });
-                Html.RenderAction("Get", "Power", new { area = "", id = 17, Parameter = string.Format("id={0}", project.ID), name = "Delete" });
-                Html.RenderAction("Get", "Power", new { area = "", id = 18, Parameter = string.Format("id={0}", project.ID), Type = PowerType.Windows });
-            }
+                <div class="btn-group btn-group-sm">
+                    @{ 
+                        Html.RenderAction("Get", "Power", new { area = "", id = 16, Parameter = string.Format("id={0}", project.ID) });//项目编辑
+                      
+                    }
+                </div>
+                <div class="btn-group btn-group-sm">
+                    @{ 
+                         Html.RenderAction("Get", "Power", new { area = "", id = 19, Parameter = string.Format("projectID={0}", project.ID), Type = PowerType.Windows });//录入项目进度
+                    }
+                </div>
+
+                        }
+
+                        <div class="btn-group btn-group-sm">
+                            @{ 
+                                Html.RenderAction("Get", "Power", new { area = "", id = 17, Parameter = string.Format("id={0}", project.ID), name = "Delete" });//项目删除
+                            }
+                        </div>
+
+
+                        @*if (data.FlowwDataState == FlowwDataState.None)
+                        {
+                            if (Identity.UserID == project.Charge.UserId)//项目负责人
+                            {
+                                <div class="btn-group btn-group-sm">
+                                    <a href="/Floww/Post?flowDataId=@(data.ID)" class="btn btn-primary" name="Post" Url="/Project/Home/Detail?id=@(project.ID)"><i class="fa fa-arrow-up"></i>提交审核</a>
+                                </div>
+                            }
+
+                        }else if (data.FlowwDataState == FlowwDataState.Checking)
+                        {
+                            if (data.CanCheck(Identity.UserID))
+                            {
+
+                            }
+
+                        }*@
+
+                <div class="btn-group btn-group-sm">
+                    @{ 
+                        Html.RenderAction("Get", "Power", new { area = "", id = 18, Parameter = string.Format("id={0}", project.ID), Type = PowerType.Windows });//更改项目负责人
+                    }
+                </div>
+        }
+        @if (project.ProjectUser.Any(e => e.UserId == Identity.UserID))
+        {
+            <div class="btn-group btn-group-sm">
+                <a href="/Project/Workload/Detail?projectId=@(project.ID)" class="btn btn-warning"><i class="fa fa-star"></i>查看工作量</a>
+                <a href="/Project/Situation/Create?projectId=@(project.ID)" class="btn btn-primary" data-toggle="modal" data-target="#Modal"><i class="fa fa-plus"></i>录入工作情况</a>
+            </div>
         }
         else
         {
-            @*if (Identity.UserID == project.Charge.UserId)//项目已完成 项目负责人
-            {
-                if (project.Workloads != null&&project.Workloads.Count>0)
-                {
-                    <a href="/Project/Workload/Create?projectId=@(project.ID)" class="btn btn-primary" data-toggle="modal" data-target="#Modal"><i class="glyphicon glyphicon-edit"></i>编辑项目工作量</a>
+            <div class="btn-group btn-group-sm">
+                @{
+                    Html.RenderAction("Get", "Power", new { area = "", id = 27, Parameter = string.Format("projectId={0}", project.ID) });//查看工作量  项目参与人员可查看
                 }
-                else
-                {
-                    <a href="/Project/Workload/Create?projectId=@(project.ID)" class="btn btn-success" data-toggle="modal" data-target="#Modal"><i class="glyphicon glyphicon-star"></i>登记项目工作量</a>
-                }
-            }
-            else
-            {
-                if (project.Workloads != null&&project.Workloads.Count>0)
-                {
-                    Html.RenderAction("Get", "Power", new { area = "", id = 22, Parameter = string.Format("projectId={0}", project.ID) });
-                }
-                else
-                {
-                    Html.RenderAction("Get", "Power", new { area = "", id = 21, Parameter = string.Format("projectId={0}", project.ID) });
-                }
-            }*@
-        }
-        <button type="button" class="btn btn-default"onclick="history.back()"><i class="glyphicon glyphicon-arrow-left"></i>返回</button>
+            </div>
+                    }
+   
+         <div class="btn-group btn-group-sm">
+             <button type="button" class="btn btn-default" onclick="history.back()"><i class="glyphicon glyphicon-arrow-left"></i>返回</button>
+         </div>
     </div>
 </div>
 
@@ -82,24 +120,16 @@
 <div class="row">
 
     <div class="col-md-12">
+        <div class="alert alert-warning">
+            <span>项目删除主要对部门经理及其以上用户开放，其他用户不做开放使用</span>
+        </div>
         @if (project.IsDone)
         {
             <div class="alert alert-success">
                 <span>当前项目已完成！</span>
             </div>
-            //if (project.Workloads != null&&project.Workloads.Count>0)
-            //{
-            //    if (project.ProjectUser.Any(e => e.UserId == Identity.UserID))
-            //    {
-            //        Html.RenderPartial("Workloads",project.Workloads as object);
-            //    }
-            //    else
-            //    {
-            //        Html.RenderAction("GetPartialView", "Power", new { area = "", id = 23, viewName = "Workloads",Parameters=project.Workloads });
-            //    }
-
-            //}
         }
+
         <div class="panel panel-info">
             <div class="panel-heading">项目信息</div>
             <table class="table table-bordered table-striped">
@@ -188,9 +218,11 @@
         </div>
         
     </div>
-    <div class="col-md-12">
+    <div class="col-xs-12">
         <div class="panel panel-warning">
-            <div class="panel-heading">工作进度信息</div>
+            <div class="panel-heading">
+                工作进度信息
+            </div>
             <table class="table">
                 <thead>
                     <tr>
@@ -198,8 +230,8 @@
                         <th>录入时间</th>
                         <th>录入人</th>
                         <th>录入进度%</th>
-                        <th>工作情况</th>
-                        <th>工作量</th>
+                        <th>进度信息</th>
+                        <th>操作</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -214,13 +246,13 @@
                                 <td>@(item.Percent)</td>
                                 <td>@(item.Remark)</td>
                                 <td>
-                                    @if (project.ProjectUser.Any(e => e.UserId == Identity.UserID))
+                                    @if (item.UserID == Identity.UserID)
                                     {
-                                        <a href="/Project/Workload/Detail?progressId=@(item.ID)" class="btn btn-success btn-xs"><i class="fa fa-envelope"></i>查看工作量</a>
+                                        <a href="/Progress/" class="btn btn-xs btn-primary"><i class="fa fa-edit"></i>编辑</a>
                                     }
                                     else
                                     {
-                                        Html.RenderAction("Get", "Power", new { area = "", id = 27, Parameter = string.Format("progressId={0}",item.ID), Type = PowerType.Windows });
+
                                     }
                                 </td>
                             </tr>
@@ -230,7 +262,39 @@
             </table>
         </div>
     </div>
-    <div class="col-md-12">
+    <div class="col-xs-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                工作情况信息
+            </div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>录入时间</th>
+                        <th>录入人</th>
+                        <th>工作情况</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var item in project.Situations)
+                    {
+                        <tr>
+                            <td>@(item.ID)</td>
+                            <td>@(item.Time.ToString("yyyy-MM-dd"))</td>
+                            <td>@(item.User.RealName)</td>
+                            <td>@(item.Content)</td>
+                            <td>
+
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-xs-6">
         <div class="panel panel-success">
             <div class="panel-heading">项目情况</div>
             <ul class="list-group">
@@ -241,6 +305,53 @@
             </ul>
         </div>
     </div>
+    @*<div class="col-xs-6">
+        <div class="panel panel-danger">
+            <div class="panel-heading">审核信息</div>
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>提交时间</th>
+                        <th>提交人</th>
+                        <th>审核人</th>
+                        <th>审核时间</th>
+                        <th>审核结果</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (data != null && data.FlowwNodeDatas != null)
+                    {
+                        foreach(var item in data.FlowwNodeDatas.OrderBy(e => e.ID))
+                        {
+                            <tr>
+                                <td>@(item.Time.ToString())</td>
+                                <td>@(item.PostUser!=null?item.PostUser.RealName:"未获取")</td>
+                                <td>@(item.User!=null?item.User.RealName:"未审核")</td>
+                                <td>@(item.CheckTime.HasValue?item.CheckTime.ToString():"/")</td>
+                                <td>@(item.State.GetDescription())</td>
+                                <td>
+
+                                    @if (item.State == FlowwNodeState.Checking)
+                                    {
+                                        if (item.PostUserId == Identity.UserID)//
+                                        {
+                                            <a href="/Floww/RollBack?" class="btn btn-xs btn-danger"><i class="fa fa-arrow-left"></i>撤回</a>
+                                        }
+
+                                        if (item.FlowwNode.UserIds.Any(e => e == Identity.UserID))//审核人
+                                        {
+                                            <a href="" class="btn btn-xs btn-primary"><i class="fa fa-arrows-alt"></i>审核</a>
+                                        }
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>*@
 </div>
 
 

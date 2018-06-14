@@ -152,6 +152,7 @@
     <Compile Include="Areas\Jurisdiction\JurisdictionControllerBase.cs" />
     <Compile Include="Areas\Project\Controllers\HomeController.cs" />
     <Compile Include="Areas\Project\Controllers\ProgressController.cs" />
+    <Compile Include="Areas\Project\Controllers\SituationController.cs" />
     <Compile Include="Areas\Project\Controllers\UserController.cs" />
     <Compile Include="Areas\Project\Controllers\WorkloadController.cs" />
     <Compile Include="Areas\Project\ProjectAreaRegistration.cs" />
@@ -176,6 +177,7 @@
     <Compile Include="Controllers\DownloadController.cs" />
     <Compile Include="Controllers\FileController.cs" />
     <Compile Include="Controllers\FinanceController.cs" />
+    <Compile Include="Controllers\FlowwController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\AuthorityController.cs" />
     <Compile Include="Controllers\iPadController.cs" />
@@ -283,6 +285,12 @@
     <Content Include="Areas\Project\Views\Home\PartSearch.cshtml" />
     <Content Include="Areas\Project\Views\User\Select.cshtml" />
     <Content Include="Areas\Project\Views\Workload\Detail.cshtml" />
+    <Content Include="Areas\Project\Views\Workload\_Tables.cshtml" />
+    <Content Include="Excels\Project.xls" />
+    <Content Include="Excels\Project.xlsx" />
+    <Content Include="Areas\Project\Views\Situation\Create.cshtml" />
+    <Content Include="Areas\Project\Views\Progress\Edit.cshtml" />
+    <Content Include="Areas\Project\Views\Home\Groups.cshtml" />
     <None Include="Properties\PublishProfiles\TODO.pubxml" />
     <None Include="Scripts\jquery-1.9.1.intellisense.js" />
     <Content Include="ProjectInfo.xml" />
@@ -507,6 +515,7 @@
     <Content Include="Views\Report\Bank.cshtml" />
     <Content Include="Views\Shared\Workloads.cshtml" />
     <Content Include="Areas\Project\Views\User\AddUser.cshtml" />
+    <Content Include="Views\Shared\ADProjects.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -520,6 +529,7 @@
     <Folder Include="Views\Comment\" />
     <Folder Include="Views\Download\" />
     <Folder Include="Views\File\" />
+    <Folder Include="Views\Floww\" />
     <Folder Include="Views\Notification\" />
     <Folder Include="Views\Query\" />
   </ItemGroup>

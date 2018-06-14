@@ -63,6 +63,7 @@ namespace Ztop.Todo.Manager
         public ProjectManager ProjectManager { get; private set; }
         public ProjectUserManager ProjectUserManager { get; private set; }
         public Project_ProgressManager Project_ProgressManager { get; private set; }
+        public ProjectSituationManager ProjectSituationManager { get; private set; }
         public ProjectRecordManager ProjectRecordManager { get; private set; }
         public WorkloadManager WorkloadManager { get; private set; }
         public ProgressTableManager ProgressTableManager { get; private set; }
@@ -136,6 +137,10 @@ namespace Ztop.Todo.Manager
         public PowerManager PowerManager { get; private set; }
         public Power_itemManager Power_itemManager { get; private set; }
         public Client_MessageManager Client_MessageManager { get; private set; }
+        public FlowwManager FlowwManager { get; private set; }
+        public FlowwNodeManager FlowwNodeManager { get; private set; }
+        public FlowwDataManager FlowwDataManager { get; private set; }
+        public FlowwNodeDataManager FlowwNodeDataManager { get; private set; }
         #endregion
     }
 }

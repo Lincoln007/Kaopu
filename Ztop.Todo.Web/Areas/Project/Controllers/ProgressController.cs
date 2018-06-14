@@ -29,6 +29,7 @@ namespace Ztop.Todo.Web.Areas.Project.Controllers
         [HttpPost]
         public ActionResult Save(ProjectProgress progress,double Min,string projectName,string replyRemark,int[] userId, bool? isReply=null)
         {
+            //应袁总要求，工作进度可以随便填写，不需要验证
             if (progress.Percent <= Min)
             {
                 throw new ArgumentException("录入的项目进度百分比不能低于之前的百分比，请核对！");
@@ -111,6 +112,11 @@ namespace Ztop.Todo.Web.Areas.Project.Controllers
             var id = Core.Project_ProgressManager.Save(progress);
             if (id > 0)
             {
+                Core.ProjectRecordManager.Save(new ProjectRecord
+                {
+                    Content = string.Format("{0}录入工作进度", Identity.Name),
+                    ProjectId = progress.ProjectID
+                });
                 if (flag)//一旦录入项目进度为100%；并通过校验
                 {
                     if (Core.ProjectManager.Done(progress.ProjectID,true,replyPath,replyRemark))
@@ -126,6 +132,20 @@ namespace Ztop.Todo.Web.Areas.Project.Controllers
                 return Redirect("/Project/Home/Detail?id=" + progress.ProjectID);
             }
             throw new ArgumentException("录入公告进度失败！");
+        }
+
+
+        public ActionResult Edit(int id)
+        {
+            var progress = Core.Project_ProgressManager.Get(id);
+            ViewBag.Progress = progress;
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Edit(ProjectProgress progress)
+        {
+            return SuccessJsonResult();
         }
     }
 }

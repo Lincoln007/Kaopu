@@ -13,7 +13,7 @@ namespace Ztop.Todo.Manager
         {
             foreach(var item in list)
             {
-                var entry = DB.ProgressTables.FirstOrDefault(e => e.Year == item.Year && e.ProgressId == item.ProgressId);
+                var entry = DB.ProgressTables.FirstOrDefault(e => e.Year == item.Year && e.ProjectId==item.ProjectId);
                 if (entry == null)
                 {
                     DB.ProgressTables.Add(item);
@@ -36,6 +36,10 @@ namespace Ztop.Todo.Manager
             }
             DB.SaveChanges();
             return true;
+        }
+        public List<ProgressTable> Search(int year)
+        {
+            return DB.ProgressTables.Where(e => e.Year == year).ToList();
         }
     }
 }

@@ -25,6 +25,7 @@ namespace Ztop.Todo.Model
         /// 城市关键字
         /// </summary>
         public string CityName { get; set; }
+        public int? CityId { get; set; }
         /// <summary>
         /// 部门
         /// </summary>
