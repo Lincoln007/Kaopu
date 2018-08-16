@@ -1,0 +1,178 @@
+﻿@{ 
+    Layout = null;
+    FlowwData flowData = ViewBag.FlowData;
+    var current = flowData.GetCurrentNode();
+    string Url = ViewBag.Url;
+}
+
+<script>
+    $(function () {
+        $("a[name='Commit']").click(function () {
+            var href = $(this).attr("href");
+            var url = $(this).attr("Url");
+            var $btn = $(this);
+            $btn.attr("disabled", "disabled");
+            $.request(href, null, function (json) {
+                if (json.result === 1) {
+                    location.href = url;
+                } else {
+                    alert(json.content);
+                    $btn.removeAttr("disabled");
+                }
+            });
+            return false;
+        });
+
+        $("#form-flowNode").submit(function () {
+            ZtopSubmit("#form-flowNode");
+            return false;
+        });
+    });
+</script>
+
+<div class="col-xs-6">
+    <div class="panel panel-warning">
+        <div class="panel-heading">
+            <h4 class="panel-title">审核</h4>
+        </div>
+        <div class="panel-body">
+            @if (flowData.FlowwDataState == FlowwDataState.None)
+            {
+                if (Identity.UserID == ViewBag.OwnerId)
+                {
+                    <a href="/Floww/Commit?id=@(flowData.ID)" class="btn btn-sm btn-primary" name="Commit" Url="@(Url)"><i class="fa fa-arrow-up"></i>提交审核</a>
+                }
+                else
+                {
+                    <div class="alert alert-warning" role="alert">
+                        <span>未做提交审核</span>
+                    </div>
+                }
+            }
+            else
+            {
+
+
+                if (flowData.FlowwDataState == FlowwDataState.Checking)
+                {
+                    if (current != null && current.State == FlowwNodeState.Checking && current.FlowwNode.UserIds.Contains(Identity.UserID))
+                    {
+                        if ((current.FlowwNode.IsCheckGroup == true && Identity.GroupId == current.PostUser.GroupID) || current.FlowwNode.IsCheckGroup == false)
+                        {
+                            <form class="form-horizontal" method="post" action="/Floww/Post" Url="@(Url)" id="form-flowNode">
+                                <div class="form-group">
+                                    <label class="control-label col-xs-3">提交人：</label>
+                                    <div class="col-xs-7">
+                                        <input type="hidden" name="ID" value="@(current.ID)" />
+                                        <input type="text" value="@(current.PostUser.DisplayName)" class="form-control" readonly />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-xs-3">审核环节：</label>
+                                    <div class="col-xs-7">
+                                        <input type="text" name="" value="@(current.FlowwNode.Name)" class="form-control" readonly />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-xs-3">审核结果：</label>
+                                    <div class="col-xs-7">
+                                        <label class="radio-inline">
+                                            <input type="radio" class="" name="State" value="@(FlowwNodeState.Success)" />@(FlowwNodeState.Success.GetDescription())
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" class="" name="State" value="@(FlowwNodeState.Fail)" />@(FlowwNodeState.Fail.GetDescription())
+                                        </label>
+                                    </div>
+
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-xs-3">审核信息：</label>
+                                    <div class="col-xs-7">
+                                        <textarea class="form-control" rows="3" name="Content"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-xs-7 col-xs-offset-3">
+                                        <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i>确定</button>
+                                    </div>
+                                </div>
+                            </form>
+                        }
+                        else
+                        {
+                            <div class="alert alert-warning" role="alert">
+                                <span>正在审核中！</span>
+                            </div>
+                        }
+                    }
+
+
+
+                }
+                else if (flowData.FlowwDataState == FlowwDataState.Done)
+                {
+                    <div class="alert alert-warning" role="alert">
+                        <span>通过审核流程！</span>
+                    </div>
+                }
+
+
+            }
+        </div>
+    </div>
+</div>
+
+
+
+
+ @if (flowData.FlowwNodeDatas != null)
+ {
+    <div class="col-xs-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">审核信息</h4>
+            </div>
+            @if (flowData.Floww.CanBack == true && current != null && current.PostUserId == Identity.UserID && current.State == FlowwNodeState.Checking)//流程设置可以退回 并且当前流程节点提交人为本人
+            {
+                <div class="panel-body">
+                    <a href="/Floww/RollBack?flowwNodeDataId=@(current.ID)" class="btn btn-sm btn-danger" name="Commit" Url="@(Url)"><i class="fa fa-arrow-left"></i>撤回</a>
+                </div>
+
+            }
+
+            <ul class="list-group">
+                @foreach (var node in flowData.FlowwNodeDatas)
+                {
+                    <li class="list-group-item @(node.State==FlowwNodeState.Roll?"text-danger":"")">
+                        提交时间：<strong>@(node.Time.ToLongDateString())</strong>
+                        提交人：<label class="label label-primary">@(node.PostUser.DisplayName)</label>
+                        审核环节：<label class="label label-success">@(node.FlowwNode.Name)</label>
+                        审核状态：@(node.State.GetDescription())
+                        @if (node.State != FlowwNodeState.Checking && node.CheckTime.HasValue && node.UserId.HasValue)
+                        {
+                            if (node.State == FlowwNodeState.Roll)
+                            {
+                                <text>
+                                    撤回时间：<strong>@(node.CheckTime.Value.ToLongDateString())</strong>
+                                    撤回人：<label class="label label-info">@(node.User.DisplayName)</label>
+                                </text>
+                            }
+                            else
+                            {
+                                <text>
+                                    审核时间：<strong>@(node.CheckTime.Value.ToLongDateString())</strong>
+                                    审核人：<label class="label label-info">@(node.User.DisplayName)</label>
+                                </text>
+                            }
+
+                        }
+
+
+                    </li>
+                }
+            </ul>
+        </div>
+
+    </div>
+
+ }  

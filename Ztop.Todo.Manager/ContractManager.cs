@@ -193,6 +193,10 @@ namespace Ztop.Todo.Manager
                 {
                     query = query.Where(e => e.Money <= parameter.MaxMoney.Value);
                 }
+                if (parameter.Money.HasValue)
+                {
+                    query = query.Where(e => Math.Abs(e.Money - parameter.Money.Value) < 0.01);
+                }
                 if (!string.IsNullOrEmpty(parameter.Department))//合同部门
                 {
                     query = query.Where(e => e.Department.Contains(parameter.Department));
@@ -209,7 +213,10 @@ namespace Ztop.Todo.Manager
                 return query.ToList();
             }
         }
-
+        public List<Contract> Simliar(string comany, double money)
+        {
+            return DB.Contracts.Where(e => e.Deleted==false&& e.Company.ToLower() == comany.ToLower() && Math.Abs(e.Money - money) < 0.01).ToList();
+        }
         public List<string> Validate()
         {
             var list = new List<string>();

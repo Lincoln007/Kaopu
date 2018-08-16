@@ -9,7 +9,7 @@ namespace Ztop.Todo.Web.Controllers
 {
     public class TaskController : ControllerBase
     {
-        public ActionResult Index(string keyword, bool isCreator = true, int days = 0, UserTaskOrder order = UserTaskOrder.CreateTime, bool? isCompleted = null, int queryId = -1, int page = 1, int rows = 20)
+        public ActionResult Index(string keyword,string TitleKey,string ContentKey,int? creatorId2=null,int? receiverId2=null, bool isCreator = true, int days = 0, UserTaskOrder order = UserTaskOrder.CreateTime, bool? isCompleted = null, int queryId = -1, int page = 1, int rows = 20)
         {
             TaskQueryParameter parameter = null;
             //说明是立即查询
@@ -18,6 +18,10 @@ namespace Ztop.Todo.Web.Controllers
                 parameter = new TaskQueryParameter
                 {
                     SearchKey = keyword,
+                    TitleKey = TitleKey,
+                    ContentKey = ContentKey,
+                    CreatorId2 = creatorId2,
+                    ReceiverId2 = receiverId2,
                     IsCompleted = isCompleted,
                     Order = order,
                     IsCreator = isCreator,
@@ -57,6 +61,7 @@ namespace Ztop.Todo.Web.Controllers
                 ViewBag.Parameter = parameter;
                 ViewBag.List = Core.TaskManager.GetUserTasks(parameter);
                 ViewBag.Page = parameter.Page;
+                ViewBag.Users = Core.UserManager.GetAllUsers();
             }
             return View();
         }

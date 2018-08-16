@@ -72,6 +72,17 @@
                 </div>
             </div>
             <div class="form-group">
+                <label class="control-label col-xs-3">指向：</label>
+                <div class="col-xs-7">
+                    @foreach(PowerType type in Enum.GetValues(typeof(PowerType)))
+                    {
+                        <label class="radio-inline">
+                            <input type="radio" name="PowerType" value="@(type)" @(Model!=null&&Model.PowerType==type?"checked=checked":"") />@(type.GetDescription())
+                        </label>
+                    }
+                </div>
+            </div>
+            <div class="form-group">
                 <label class="control-label col-md-3">备注：</label>
                 <div class="col-md-7">
                     <textarea class="form-control" rows="3" name="Remark">@(Model!=null?Model.Remark:"")</textarea>

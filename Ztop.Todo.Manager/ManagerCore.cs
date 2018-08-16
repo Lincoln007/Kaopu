@@ -135,6 +135,7 @@ namespace Ztop.Todo.Manager
 
         public OASystemManager OASystemManager { get; private set; }
         public PowerManager PowerManager { get; private set; }
+        public PowerGroupManager PowerGroupManager { get; private set; }
         public Power_itemManager Power_itemManager { get; private set; }
         public Client_MessageManager Client_MessageManager { get; private set; }
         public FlowwManager FlowwManager { get; private set; }

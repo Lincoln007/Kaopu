@@ -252,6 +252,32 @@
 
 })();
 
+
+function ZtopSubmit(form) {
+    var $btn = $(form + " button");
+    console.log("button");
+    $btn.attr("disabled", "disabled");
+    var data = $(form).serialize();
+    console.log("serialize");
+    var href = $(form).attr("action");
+    console.log("action");
+    var url = $(form).attr("Url");
+    console.log("url");
+    $.request(href, data, function (json) {
+        if (json.result == 1) {
+            if (json.data != null) {
+                url = url + json.data;
+            }
+            alert("操作成功！");
+            location.href = url;
+        } else {
+            alert(json.content);
+            $btn.removeAttr("disabled");
+        }
+    });
+    return false;
+}
+
 $.ajaxSetup({
     beforeSend: function (xhr) {
         xhr.setRequestHeader("submit-type", "ajax");

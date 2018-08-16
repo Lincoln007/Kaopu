@@ -5,6 +5,7 @@
     ProjectParameter parameter = ViewBag.Parameter;
     List<ProjectView> list = ViewBag.List;
 
+
 }
 
 @{ 
@@ -39,7 +40,7 @@
                         <td>@(item.GroupName)</td>
                         <td>@(item.RealName)</td>
                         <td>@(item.CityName)</td>
-                        <td>@(item.TypeName)</td>
+                        <td>@(item.TypeChars)@(item.TypeName)</td>
                     </tr>
                 }
             </tbody>

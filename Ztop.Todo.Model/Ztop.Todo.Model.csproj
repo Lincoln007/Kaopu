@@ -122,6 +122,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Article.cs" />
+    <Compile Include="Base\UserGroupManager.cs" />
     <Compile Include="BillRecord.cs" />
     <Compile Include="BillView.cs" />
     <Compile Include="Bill_Head.cs" />
@@ -168,11 +169,13 @@
     <Compile Include="ParameterBase.cs" />
     <Compile Include="PieData.cs" />
     <Compile Include="Power.cs" />
+    <Compile Include="PowerGroup.cs" />
     <Compile Include="Projects\ProgressTable.cs" />
     <Compile Include="Projects\Project.cs" />
     <Compile Include="Projects\ProjectParameter.cs" />
     <Compile Include="Projects\ProjectProgress.cs" />
     <Compile Include="Projects\ProjectRecord.cs" />
+    <Compile Include="Projects\ProjectRecordParameter.cs" />
     <Compile Include="Projects\ProjectSituation.cs" />
     <Compile Include="Projects\ProjectType.cs" />
     <Compile Include="Projects\ProjectView.cs" />

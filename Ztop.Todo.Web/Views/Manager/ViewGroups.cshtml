@@ -1,0 +1,72 @@
+﻿@{ 
+    Layout = null;
+    User user = ViewBag.User;
+    List<PowerGroup> groups = ViewBag.Groups;
+}
+
+<script>
+    $(function () {
+        
+
+        $("#power-group").submit(function () {
+            ZTSubmit("#power-group");
+            return false;
+        });
+
+
+        function ZTSubmit(form) {
+            var $btn = $(form + " button");
+            console.log("button");
+            $btn.attr("disabled", "disabled");
+            var data = $(form).serialize();
+            console.log("serialize");
+            var href = $(form).attr("action");
+            console.log("action");
+            var url = $(form).attr("Url");
+            console.log("url");
+            $.request(href, data, function (json) {
+                if (json.result === 1) {
+                    alert(json.content);
+                    if (json.data != null) {
+                        url = url + json.data;
+                    }
+                    location.href = url;
+                } else {
+                    alert(json.content);
+                    $btn.removeAttr("disabled");
+                }
+            });
+
+
+            return false;
+        }
+    });
+</script>
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+    <i class="fa  modal-icon"></i>
+    <h4 class="modal-title">系统权限组</h4>
+</div>
+
+
+<form class="form-horizontal" action="/Manager/SaveGroups" method="post" id="power-group" Url="/Manager/Index?category=@(SystemCategory.User)">
+    <div class="modal-body">
+        <input type="hidden" name="UserId" value="@(user.ID)" />
+        @foreach (var item in groups)
+        {
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" name="GroupId" value="@(item.ID)" @(user.GroupIds != null && user.GroupIds.Any(e => e == item.ID) ? "checked=checked" : "") />@string.Format("{0}({1})", item.Name, item.Description)
+                    </label>
+                </div>
+               
+            </div>
+        }        
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i>确定</button>
+        <button type="button" class="btn btn-white" data-dismiss="modal"><i class="fa fa-times"></i> 取消</button>
+    </div>
+</form>

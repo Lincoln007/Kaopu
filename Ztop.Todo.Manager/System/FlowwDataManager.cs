@@ -20,20 +20,20 @@ namespace Ztop.Todo.Manager
             DB.SaveChanges();
             return data.ID;
         }
-        public FlowwData Get(int infoId,int flowwId)
-        {
-            var model= DB.Floww_Datas.FirstOrDefault(e => e.InfoId == infoId && e.FlowwId == flowwId);
-            if (model == null)
-            {
-                model = new FlowwData
-                {
-                    InfoId = infoId,
-                    FlowwId = flowwId
-                };
-                var id = Save(model);
-            }
-            return model; 
-        }
+        //public FlowwData Get(int infoId,int flowwId)
+        //{
+        //    var model= DB.Floww_Datas.FirstOrDefault(e => e.InfoId == infoId && e.FlowwId == flowwId);
+        //    if (model == null)
+        //    {
+        //        model = new FlowwData
+        //        {
+        //            InfoId = infoId,
+        //            FlowwId = flowwId
+        //        };
+        //        var id = Save(model);
+        //    }
+        //    return model; 
+        //}
         public bool ChangeState(int id,FlowwDataState state)
         {
             var model = DB.Floww_Datas.Find(id);
@@ -44,6 +44,17 @@ namespace Ztop.Todo.Manager
             model.FlowwDataState = state;
             DB.SaveChanges();
             return true;
+        }
+
+        public FlowwData CreateData(int flowId,string content=null)
+        {
+            var entry = new FlowwData
+            {
+                FlowwId = flowId,
+                Content = content
+            };
+            DB.Floww_Datas.Add(entry);
+            return entry;
         }
     }
 }

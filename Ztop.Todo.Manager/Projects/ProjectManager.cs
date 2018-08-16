@@ -77,16 +77,42 @@ namespace Ztop.Todo.Manager
             return false;
         }
 
+        public bool ChangeFile(int projectId,string filePath)
+        {
+            var model = DB.Projects.Find(projectId);
+            if (model == null)
+            {
+                return false;
+            }
+            model.ReplyFile = filePath;
+            DB.SaveChanges();
+
+            return true;
+        }
+
+
         public List<ProjectView> Search(ProjectParameter parameter)
         {
             var query = DB.Project_Views.Where(e=>e.Deleted==false).AsQueryable();
+            if (parameter.FlowDataState.HasValue)
+            {
+                query = query.Where(e => e.FlowwDataState == parameter.FlowDataState.Value);
+            }
             if (!string.IsNullOrEmpty(parameter.Name))
             {
                 query = query.Where(e => e.Name.Contains(parameter.Name));
             }
+            if (parameter.NumberIsNull.HasValue)
+            {
+                query = query.Where(e => parameter.NumberIsNull.Value ^ !string.IsNullOrEmpty(e.Number));
+            }
             if (!string.IsNullOrEmpty(parameter.Town))
             {
                 query = query.Where(e => e.Town.Contains(parameter.Town));
+            }
+            if (!string.IsNullOrEmpty(parameter.Number))
+            {
+                query = query.Where(e => e.Number.Contains(parameter.Number.Trim()));
             }
             if (parameter.Year.HasValue)
             {
@@ -117,25 +143,14 @@ namespace Ztop.Todo.Manager
             {
                 query = query.Where(e => e.ProjectTypeId == parameter.SEID.Value);
             }
-            //if (!string.IsNullOrEmpty(parameter.FID))
-            //{
-            //    query = query.Where(e => e.TypeChars.Contains(parameter.FID));
-            //}
+
             if (parameter.ChargeID.HasValue)
             {
                 query = query.Where(e => e.UserId == parameter.ChargeID.Value);
-                //query = query.Where(e => e.ProjectUser.Any(i => i.Relation == ProjectRelation.InCharge && i.UserId == parameter.ChargeID.Value));
             }
             if (parameter.IsRecord.HasValue)
             {
-                //if (parameter.IsRecord.Value == true)
-                //{
-                //    query = query.Where(e => !string.IsNullOrEmpty(e.Number));
-                //}
-                //else
-                //{
-                //    query = query.Where(e => string.IsNullOrEmpty(e.Number));
-                //}
+
                 query = query.Where(e => (string.IsNullOrEmpty(e.Number) ^ parameter.IsRecord.Value));
             }
             if (!string.IsNullOrEmpty(parameter.Participation))
@@ -145,12 +160,6 @@ namespace Ztop.Todo.Manager
                 query = query.Where(e => e.Participation.ToLower().Contains(parameter.Participation.ToLower()));
             }
 
-            //if (parameter.PartId.HasValue)
-            //{
-            //    var str = parameter.PartId.Value.ToString();
-            //    query = query.Where(e => !string.IsNullOrEmpty(e.UserIds) && e.UserIds.Split(',').Contains(str));
-               
-            //}
             switch (parameter.Order)
             {
                 case ProjectOrder.ID:

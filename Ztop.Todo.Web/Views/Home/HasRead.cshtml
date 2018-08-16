@@ -1,0 +1,10 @@
+﻿@{
+    Layout = null;
+    int count = ViewBag.Count;
+}
+
+
+<div class="alert alert-warning alert-dismissible" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <span>@string.Format("成功设置{0}条消息已读", count)</span>
+</div>

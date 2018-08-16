@@ -18,6 +18,7 @@ namespace Ztop.Todo.Manager
                 var query = db.UserTaskViews.AsQueryable();
                 if (!string.IsNullOrEmpty(parameter.SearchKey))
                 {
+                   
                     var user = db.Users.FirstOrDefault(e => e.Username.Contains(parameter.SearchKey) || e.RealName.Contains(parameter.SearchKey));
                     if (user != null)
                     {
@@ -34,6 +35,23 @@ namespace Ztop.Todo.Manager
                     {
                         query = query.Where(e => e.Title.Contains(parameter.SearchKey.Trim()));
                     }
+                }
+                if (!string.IsNullOrEmpty(parameter.TitleKey))
+                {
+                    query = query.Where(e => e.Title.Contains(parameter.TitleKey.Trim()));
+                }
+
+                if (!string.IsNullOrEmpty(parameter.ContentKey))
+                {
+                    query = query.Where(e => e.Content.Contains(parameter.ContentKey.Trim()));
+                }
+                if (parameter.CreatorId2.HasValue)
+                {
+                    query = query.Where(e => e.CreatorID == parameter.CreatorId2.Value);
+                }
+                if (parameter.ReceiverId2.HasValue)
+                {
+                    query = query.Where(e => e.UserID == parameter.ReceiverId2.Value);
                 }
 
                 if (parameter.CreatorID > 0)

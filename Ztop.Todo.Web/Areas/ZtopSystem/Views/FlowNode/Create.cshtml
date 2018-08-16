@@ -1,0 +1,91 @@
+﻿@{ 
+    Layout = null;
+    Floww Floww = ViewBag.Flow;
+    var last = Floww.GetLastNode();
+    FlowwNode Node = ViewBag.FlowNode;
+    List<User> users = ViewBag.Users;
+}
+
+<script>
+    $(function () {
+
+        $("#form-node").submit(function () {
+            ZtopSubmit("#form-node");
+            return false;
+        });
+    });
+</script>
+
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+    <h3 class="modal-title">流程节点</h3>
+</div>
+
+
+<form class="form-horizontal" method="post" id="form-node" action="/ZtopSystem/FlowNode/Save" Url="/ZtopSystem/Flow/Index">
+    <div class="modal-body">
+        <div class="form-group">
+            <label class="control-label col-xs-3">所属流程：</label>
+            <div class="col-xs-7">
+                <input type="hidden" name="FlowwId" value="@(Floww==null?0:Floww.ID)" />
+                <input type="hidden" name="Previd" value="@(Node==null?(last==null?0:last.ID):Node.PrevId)" />
+                <input type="text" class="form-control" value="@(Floww==null?"":Floww.Name)" readonly />
+            </div>
+        </div>
+        @if (last != null&&(Node==null||Node.ID!=last.ID))
+        {
+            <div class="form-group">
+                <label class="control-label col-xs-3">上一节点：</label>
+                <div class="col-xs-7">
+                    <input type="text" class="form-control" readonly value="@(last.Name)" />
+                </div>
+            </div>
+        }
+
+        <div class="form-group">
+            <label class="control-label col-xs-3">节点名称：</label>
+            <div class="col-xs-7">
+                <input type="hidden" name="ID" value="@(Node==null?0:Node.ID)" />
+                <input type="text" name="Name" class="form-control" placeholder="节点名称" required value="@(Node==null?"":Node.Name)" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-xs-3">节点审核人：</label>
+            <div class="col-xs-7">
+                <select multiple="multiple" class="form-control" size="10" name="UserIds">
+                    @foreach(var user in users)
+                    {
+                        <option value="@(user.ID)" @(Node!=null&&Node.UserIds.Any(e=>e==user.ID)?"selected=selected":"")>@(user.DisplayName)</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-xs-3">分组审核：</label>
+            <div class="col-xs-7">
+                <label class="radio-inline">
+                    <input type="radio" name="IsCheckGroup" value="true" @(Node!=null&&Node.IsCheckGroup?"checked=checked":"") />支持
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="IsCheckGroup" value="false" @(Node!=null&&Node.IsCheckGroup==false?"checked=checked":"")/>不支持
+                </label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-xs-3">备注：</label>
+            <div class="col-xs-7">
+                <textarea class="form-control" rows="3" name="Remark">@(Node!=null?Node.Remark:"")</textarea>
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i>确定</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> 取消</button>
+    </div>
+</form>
+
+
+
+

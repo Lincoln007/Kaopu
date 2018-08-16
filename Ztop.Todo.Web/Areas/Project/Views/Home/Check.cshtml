@@ -1,0 +1,139 @@
+﻿
+@{
+    ViewBag.Title = "项目审核";
+    Layout = "~/Areas/Project/Views/Shared/_Layout.cshtml";
+    List<ProjectView> list = ViewBag.List;
+}
+
+<script>
+    $(function () {
+        $("button[name='All']").click(function () {
+            $("input:checkbox[name='ProjectId']").prop('checked', true);
+        });
+
+        $("button[name='Not']").click(function () {
+            $("input:checkbox[name='ProjectId']").prop('checked', false);
+        });
+
+        $("button[name='Anti']").click(function () {
+            $("input:checkbox[name='ProjectId']").each(function () {
+                if ($(this).is(':checked')) {
+                    $(this).prop('checked', false);
+                } else {
+                    $(this).prop('checked', true);
+                }
+            });
+        });
+
+        $("#form-check").submit(function () {
+            var $btn = $("#form-check button");
+            $btn.attr("disabled", "disabled");
+            var data = $(this).serialize();
+            $.request("/Project/Home/SaveCheck", data, function (json) {
+                if (json.result == 1) {
+                    alert("成功审核");
+                    location.href = "/Project/Home/Check";
+                } else {
+                    alert(json.content);
+                    $btn.removeAttr("disabled");
+                }
+            });
+
+            return false;
+
+        });
+        
+    });
+</script>
+
+<div class="page-header">
+    <h2>部门项目审核</h2>
+</div>
+
+
+<div class="row">
+    <div class="col-xs-12">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>项目编号</th>
+                    <th>项目名称</th>
+                    <th>部门</th>
+                    <th>项目负责人</th>
+                    <th>城市（县级）</th>
+                    <th>项目类型</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (list != null)
+                {
+                    foreach (var item in list)
+                    {
+                        <tr>
+                            <td>
+                                <a href="/Project/Home/Detail?id=@(item.ID)">@(item.Serial)</a>
+                            </td>
+                            <td>
+                                <a href="/Project/Home/Detail?id=@(item.ID)">@(item.Name)</a>
+                            </td>
+                            <td>@(item.GroupName)</td>
+                            <td>@(item.RealName)</td>
+                            <td>@(item.CityName)</td>
+                            <td>@(item.TypeChars + item.TypeName)</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+
+
+
+
+
+        @*<button type="button" class="btn btn-primary" name="All"><i class="fa fa-check"></i>全选</button>
+        <button type="button" class="btn btn-success" name="Not"><i class="fa fa-remove"></i>全不选</button>
+        <button type="button" class="btn btn-default" name="Anti"><i class="fa fa-circle-o-notch"></i>反选</button>
+        <hr />
+        <form class="form-horizontal" method="post" id="form-check">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>项目编号</th>
+                        <th>登记编号</th>
+                        <th>项目名称</th>
+                        <th>部门</th>
+                        <th>项目负责人</th>
+                        <th>城市（县级）</th>
+                        <th>项目类型</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (list != null)
+                    {
+                        foreach (var item in list)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="checkbox" style="margin:0px;">
+                                        <label>
+                                            <input type="checkbox" name="ProjectId" value="@(item.ID)" />@(item.Serial)
+                                        </label>
+                                    </div>
+                                </td>
+                                <td>@(item.Number)</td>
+                                <td>
+                                    <a href="/Project/Home/Detail?id=@(item.ID)">@(item.Name)</a>
+                                </td>
+                                <td>@(item.GroupName)</td>
+                                <td>@(item.RealName)</td>
+                                <td>@(item.CityName)</td>
+                                <td>@(item.TypeChars + item.TypeName)</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+            <button type="submit" class="btn btn-primary" name="Submit"><i class="fa fa-check"></i>通过审核</button>
+        </form>*@
+    </div>
+</div>

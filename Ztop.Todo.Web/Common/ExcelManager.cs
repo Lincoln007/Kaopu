@@ -252,7 +252,7 @@ namespace Ztop.Todo.Web.Common
                 ExcelClass.GetCell(row, 6, modelrow).SetCellValue(item.EndTime.HasValue ? item.EndTime.Value.ToLongDateString() : "/");
                 ExcelClass.GetCell(row, 7, modelrow).SetCellValue(item.Money);
                 ExcelClass.GetCell(row, 8, modelrow).SetCellValue(item.PerformanceBond);
-                ExcelClass.GetCell(row, 9, modelrow).SetCellValue(item.Invoices != null ? item.Invoices.Sum(e => e.Money):.0);
+                ExcelClass.GetCell(row, 9, modelrow).SetCellValue(item.Invoices != null ? item.Invoices.Where(e=>e.State==InvoiceState.Have).Sum(e => e.Money):.0);
                 ExcelClass.GetCell(row, 10, modelrow).SetCellValue(item.BillContracts != null ? item.BillContracts.Sum(e => e.Price) : .0);
             }
             return workbook;

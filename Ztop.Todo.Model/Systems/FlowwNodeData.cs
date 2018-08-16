@@ -53,7 +53,7 @@ namespace Ztop.Todo.Model
         Checking,
         [Description("通过")]
         Success,
-        [Description("失败")]
+        [Description("不通过")]
         Fail,
         [Description("撤回")]
         Roll

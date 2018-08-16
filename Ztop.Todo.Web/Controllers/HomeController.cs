@@ -103,5 +103,12 @@ namespace Ztop.Todo.Web.Controllers
         {
             return View();
         }
+
+        public ActionResult HasRead()
+        {
+            var count = Core.NotificationManager.HasAllRead(Identity.UserID);
+            ViewBag.Count = count;
+            return View();
+        }
     }
 }

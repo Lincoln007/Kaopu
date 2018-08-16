@@ -29,7 +29,9 @@ namespace Ztop.Todo.Model
         /// 部门
         /// </summary>
         //public string GroupName { get; set; }
-        //public int GroupId { get; set; }
+
+        ////项目部门
+        //public int? GroupId { get; set; }
         
         //public virtual UserGroup Group { get; set; }
 
@@ -125,10 +127,11 @@ namespace Ztop.Todo.Model
         }
         public virtual List<ProjectSituation> Situations { get; set; }
 
+  
 
-        //public virtual List<WorkLoad> Workloads { get; set; }
-
-        //public virtual List<ProjectRecord> Records { get; set; }
+        public int? FlowDataId { get; set; }
+        [ForeignKey("FlowDataId")]
+        public virtual FlowwData FlowData { get; set; }
       
 
 

@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace Ztop.Todo.Model
 {
+    /// <summary>
+    /// 工作进度
+    /// </summary>
     [Table("Project_Progress")]
     public class ProjectProgress
     {

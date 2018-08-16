@@ -21,7 +21,7 @@ namespace Ztop.Todo.Web.Controllers
         {
             if (ADController.TryLogin(username, password))
             {
-                var user = Core.UserManager.GetUser(username);
+                var user = Core.UserManager.GetUser2(username);
                 if (user == null)
                 {
                     user = new User

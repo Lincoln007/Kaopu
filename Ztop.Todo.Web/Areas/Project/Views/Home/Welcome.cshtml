@@ -1,0 +1,73 @@
+﻿
+@{
+    ViewBag.Title = "欢迎页";
+    Layout = "~/Areas/Project/Views/Shared/_Layout.cshtml";
+    List<ProjectRecord> list = ViewBag.List;
+    ProjectRecordParameter Parameter = ViewBag.Parameter;
+    List<User> users = ViewBag.Users;
+    List<ProjectView> projects = ViewBag.Projects;
+}
+
+<div class="page-header">
+    <h3>欢迎页</h3>
+</div>
+
+
+<div class="row">
+    <div class="col-xs-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">搜索设置</h4>
+            </div>
+            <div class="panel-body">
+                <form class="form-inline">
+                    <div class="form-group">
+                        <label>用户：</label>
+                        <select class="form-control" name="UserId">
+                            <option value="">--请选择--</option>
+                            @foreach(var item in users)
+                            {
+                                <option value="@(item.ID)" @(Parameter.UserId.HasValue&&Parameter.UserId.Value==item.ID?"selected=selected":"")>@(item.DisplayName)</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label >项目：</label>
+                        <select class="form-control" name="ProjectId">
+                            <option value="">--请选择--</option>
+                            @foreach(var item in projects)
+                            {
+                                <option value="@(item.ID)" @(Parameter.ProjectId.HasValue&&Parameter.ProjectId.Value==item.ID?"selected=selected":"")>@(item.Name)</option>
+                            }
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i>立即查询</button>
+                    <button type="button" class="btn btn-default" onclick="history.back()"><i class="fa fa-arrow-left"></i>返回</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">项目信息</h3>
+            </div>
+            <ul class="list-group">
+                @foreach (var item in list)
+                {
+                    <li class="list-group-item">
+                        @(item.Time.ToLongDateString() + " " + item.Time.ToLongTimeString())
+                        &nbsp;&nbsp; <label class="label label-primary">@(item.User != null ? item.User.DisplayName : "历史")</label>
+                        录入 &nbsp;&nbsp; <strong>@(item.Project.Name)</strong> 项目 &nbsp;&nbsp;
+                        <ins>@(item.Content)</ins>
+                    </li>
+                }
+            </ul>
+            @{ 
+                Html.RenderPartial("_pagination", Parameter.Page as object);
+            }
+        </div>
+       
+    </div>
+</div>
+

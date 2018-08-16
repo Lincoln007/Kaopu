@@ -3,6 +3,7 @@
     List<TaskQuery> queries = ViewBag.Queries;
     TaskQuery currentQuery = ViewBag.Query;
     List<UserTaskView> list = ViewBag.List;
+    List<User> users = ViewBag.Users;
     TaskQueryParameter parameter = ViewBag.Parameter ?? new TaskQueryParameter();
     var queryId = -1;
     int.TryParse(Request.QueryString["queryId"], out queryId);
@@ -131,6 +132,34 @@ else
                         <div class="form-group">
                             <label>关键词</label>
                             <input type="text" class="form-control input-sm" placeholder="任务名称或接收人姓名" name="keyword" value="@(parameter.SearchKey)">
+                        </div>
+                        <div class="form-group">
+                            <label>标题关键词</label>
+                            <input type="text" class="form-control input-sm" placeholder="标题关键词" name="TitleKey" value="@(parameter.TitleKey)" />
+                        </div>
+                        <div class="form-group">
+                            <label>内容关键词</label>
+                            <input type="text" class="form-control input-sm" placeholder="内容关键词" name="ContentKey" value="@(parameter.ContentKey)" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">下达人</label>
+                            <select class="form-control input-sm" name="CreatorId2">
+                                <option value="">--请选择--</option>
+                                @foreach(var user in users)
+                                {
+                                    <option value="@(user.ID)" @(parameter.CreatorId2.HasValue&&parameter.CreatorId2.Value==user.ID?"selected=selected":"")>@(user.RealName)</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">接受人</label>
+                            <select class="form-control input-sm" name="ReceiverId2">
+                                <option value="">--请选择--</option>
+                                @foreach (var user in users)
+                                {
+                                    <option value="@(user.ID)" @(parameter.ReceiverId2.HasValue&&parameter.ReceiverId2.Value==user.ID?"selected=selected":"")>@(user.RealName)</option>
+                                }
+                            </select>
                         </div>
                         <div class="form-group">
                             <label class="control-label">下达人</label>

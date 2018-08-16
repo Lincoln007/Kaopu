@@ -179,7 +179,7 @@
                 {
                     foreach (var entry in project.Tables.OrderByDescending(e=>e.Year))
                     {
-                        <div class="col-sm-6 col-xs-6 col-md-6">
+                        <div class="col-sm-12 col-xs-12 col-md-6">
                             <div class="thumbnail">
                                 <button type="button" class="close" name="Close"><span aria-hidden="true">&times;</span></button>
                                 <div class="caption">
@@ -213,19 +213,39 @@
                                         <div class="col-sm-8">
                                             @if (project!=null&&project.ProjectUser!=null)
                                             {
-                                                foreach (var item in project.ProjectUser.OrderBy(e => e.UserId))
-                                                {
-                                                    var ee = entry.WorkLoads.FirstOrDefault(e => e.UserId == item.UserId);
-                                                    <div class="input-group input-group-sm" style="margin-bottom:5px;">
-                                                        <span class="input-group-addon">
-                                                            <input type="checkbox" name="UserId" value="@(item.UserId)" @(ee==null?"":"checked=checked")/>@(item.User.DisplayName)
-                                                        </span>
-                                                        <input type="text" class="form-control" name="PPercent" value="@(ee==null?0:ee.Percent)" />
-                                                        <span class="input-group-addon">%</span>
-                                                        <span class="input-group-addon">备注：</span>
-                                                        <input type="text" class="form-control" name="PContent" placeholder="说明" value="@(ee==null?" ":ee.Content)" />
-                                                    </div>
-                                                }
+                                                <div class="row">
+                                                    @foreach(var item in project.ProjectUser.OrderBy(e => e.UserId))
+                                                    {
+                                                        var ee = entry.WorkLoads.FirstOrDefault(e => e.UserId == item.UserId);
+                                                        <div class="col-xs-12">
+                                                            <div class="thumbnail well">
+                                                                <div class="caption">
+                                                                    <div class="form-group">
+                                                                        <label class="col-xs-3">人员：</label>
+                                                                        <div class="col-xs-9">
+                                                                            <input type="checkbox" name="UserId" value="@(item.UserId)" @(ee == null ? "" : "checked=checked") />@(item.User.DisplayName)
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <label class="col-xs-3">比例:</label>
+                                                                        <div class="col-xs-9">
+                                                                            <div class="input-group input-group-sm">
+                                                                                <input type="text" class="form-control" name="PPercent" value="@(ee==null?0:ee.Percent)" />
+                                                                                <span class="input-group-addon">%</span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <label class="col-xs-3">备注：</label>
+                                                                        <div class="col-xs-9">
+                                                                            <textarea class="form-control" rows="3" name="PContent" placeholder="备注">@(ee == null ? " " : ee.Content)</textarea>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                </div>
                                             }
                                         </div>
                                     </div>

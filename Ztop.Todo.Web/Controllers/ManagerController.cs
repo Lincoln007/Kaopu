@@ -459,5 +459,35 @@ namespace Ztop.Todo.Web.Controllers
             return View();
         }
 
+
+        public ActionResult ManagerGroup()
+        {
+            var list = Core.PowerGroupManager.GetList();
+            ViewBag.List = list;
+            return View();
+        }
+
+
+        public ActionResult ViewGroups(int id)
+        {
+            var user = Core.UserManager.GetUser2(id);
+            ViewBag.User = user;
+            var groups = Core.PowerGroupManager.GetList();
+            ViewBag.Groups = groups;
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult SaveGroups(int userId,int[] groupId)
+        {
+            if (!Core.PowerGroupManager.SaveGroups(userId, groupId))
+            {
+                return ErrorJsonResult("保存更改权限失败！");
+            }
+            return SuccessJsonResult();
+        }
+
+        
+
     }
 }

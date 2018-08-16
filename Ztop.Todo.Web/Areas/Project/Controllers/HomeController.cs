@@ -28,9 +28,9 @@ namespace Ztop.Todo.Web.Areas.Project.Controllers
         // GET: Project/Home
         public ActionResult Index(
             string name=null,string town=null,
-            int? year=null,string cityName=null,
+            int? year=null,string cityName=null,string number=null,
             int? fid=null,int? seid=null, string groupName=null,
-            ProjectOrder order=ProjectOrder.ID,int? chargeId=null,
+            ProjectOrder order=ProjectOrder.SerialDescending,int? chargeId=null,
             int page=1,int rows=20
             )
         {
@@ -41,11 +41,13 @@ namespace Ztop.Todo.Web.Areas.Project.Controllers
                 Year = year,
                 CityName = cityName,
                 GroupName = groupName,
-                FID=fid,
-                SEID=seid,
-                Order=order,
-                ChargeID=chargeId,
-                IsRecord=true,
+                FID = fid,
+                SEID = seid,
+                Order = order,
+                ChargeID = chargeId,
+                IsRecord = true,
+                Number = number,
+                NumberIsNull = false
                 //Page = new PageParameter(page, rows)
             };
             var stringkey = Identity.UserID + ParameterManager.ParameterKey;
@@ -54,6 +56,8 @@ namespace Ztop.Todo.Web.Areas.Project.Controllers
             SearchBase(parameter);
             ViewBag.Group = Core.UserGroupManager.Get();
             ViewBag.Charges = Core.ProjectUserManager.GetChargeList(groupName);
+            //var manager = Core.UserGroupManager.GetManager(Identity.UserID);
+            //ViewBag.Manager = manager;
             return View();
         }
         private void SearchBase(ProjectParameter parameter)
@@ -77,7 +81,7 @@ namespace Ztop.Todo.Web.Areas.Project.Controllers
         public ActionResult Search(
             string name = null, string town = null,
             int? year = null, string cityName = null,
-            int? fid = null, ProjectOrder order = ProjectOrder.ID, int page = 1, int rows = 20)
+            int? fid = null, ProjectOrder order = ProjectOrder.SerialDescending, int page = 1, int rows = 20)
         {
             var parameter = new ProjectParameter
             {
@@ -110,9 +114,9 @@ namespace Ztop.Todo.Web.Areas.Project.Controllers
         /// <param name="rows"></param>
         /// <returns></returns>
         public ActionResult Manager(
-            string name = null, string town = null,
+            string name = null, string town = null,string number=null,
             int? year = null, string cityName = null, string groupName = null,
-            int? fid = null, ProjectOrder order = ProjectOrder.ID, int? chargeId = null,
+            int? fid = null, ProjectOrder order = ProjectOrder.SerialDescending, int? chargeId = null,
             int page = 1, int rows = 20)
         {
             var parameter = new ProjectParameter
@@ -126,6 +130,9 @@ namespace Ztop.Todo.Web.Areas.Project.Controllers
                 Order = order,
                 ChargeID = chargeId,
                 IsRecord=false,
+                Number=number,
+                NumberIsNull=true,
+                FlowDataState=FlowwDataState.Done,
                 Page = new PageParameter(page, rows)
             };
             SearchBase(parameter);
@@ -230,19 +237,18 @@ namespace Ztop.Todo.Web.Areas.Project.Controllers
             }
             else//录入项目 
             {
+                var flowData = Core.FlowwDataManager.CreateData(Floww.ID, project.Name);
+                if (flowData != null)
+                {
+                    project.FlowDataId = flowData.ID;
+                }
                 project.ProjectUser = relations;
 
                 project.SerialNumber = serialNumber;
                 var id = Core.ProjectManager.Add(project);
                 if (id > 0)
                 {
-                    //Core.NotificationManager.Add(project);
-                    var recordId = Core.ProjectRecordManager.Save(new ProjectRecord { ProjectId = id, Content = string.Format("{0}录入项目{1}", Identity.Name, project.Name) });
-                    var flowwData = Core.FlowwDataManager.Save(new FlowwData
-                    {
-                        InfoId = id,
-                        FlowwId = Floww.ID
-                    });
+                    var recordId = Core.ProjectRecordManager.Save(new ProjectRecord { ProjectId = id,UserId=Identity.UserID, Content = string.Format("{0}录入项目{1}", Identity.Name, project.Name) });
                     return SuccessJsonResult(id);
                 }
                 return ErrorJsonResult("保存失败");
@@ -254,7 +260,7 @@ namespace Ztop.Todo.Web.Areas.Project.Controllers
         {
             var model = Core.ProjectManager.Get(id);
             ViewBag.Model = model;
-            ViewBag.FlowwData = Core.FlowwDataManager.Get(id, Floww.ID);
+            //ViewBag.FlowwData = Core.FlowwDataManager.Get(id, Floww.ID);
             var progress = Core.Project_ProgressManager.Get(id);
             ViewBag.Progress = progress;
             var records = Core.ProjectRecordManager.Get(id);
@@ -336,5 +342,89 @@ namespace Ztop.Todo.Web.Areas.Project.Controllers
             SearchBase(parameter);
             return View();
         }
+
+
+
+        public ActionResult Check()
+        {
+            var parameter = new ProjectParameter
+            {
+                GroupId = Identity.GroupId,
+                FlowDataState = FlowwDataState.Checking,
+                NumberIsNull = true
+            };
+            var list = Core.ProjectManager.Search(parameter);
+            ViewBag.List = list;
+
+            return View();
+        }
+
+
+        /// <summary>
+        /// 项目管理系统 欢迎页
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="projectId"></param>
+        /// <param name="page"></param>
+        /// <param name="rows"></param>
+        /// <returns></returns>
+
+        public ActionResult Welcome(int? userId=null,int? projectId=null,int page=1,int rows=20)
+        {
+            var parameter = new ProjectRecordParameter
+            {
+                ProjectId = projectId,
+                UserId = userId,
+                Page = new PageParameter(page, rows)
+            };
+            var list = Core.ProjectRecordManager.Search(parameter);
+            ViewBag.List = list;
+            ViewBag.Parameter = parameter;
+            ViewBag.Users = Core.UserManager.GetAllUser2();
+            ViewBag.Projects = Core.ProjectManager.Search(new ProjectParameter { NumberIsNull = false });
+            return View();
+        }
+
+        public ActionResult File(int projectId)
+        {
+            var project = Core.ProjectManager.Get(projectId);
+            ViewBag.Project = project;
+            return View();
+        }
+
+
+        [HttpPost]
+        public ActionResult SaveFile(int projectId)
+        {
+            var project = Core.ProjectManager.Get(projectId);
+            if (project == null)
+            {
+                throw new ArgumentException("未找到项目信息！");
+            }
+            var replayPath = string.Empty;
+            if (Request.Files.Count > 0)
+            {
+                var file = HttpContext.Request.Files[0];
+                var fileName = file.FileName;
+                if (!string.IsNullOrEmpty(fileName))
+                {
+                    var ext = System.IO.Path.GetExtension(fileName);
+                    if (ext == ".pdf")
+                    {
+                        replayPath = FileManager.UploadProject(file, project.Name);
+                    }
+                }
+            }
+            if (!string.IsNullOrEmpty(replayPath))
+            {
+                if (!Core.ProjectManager.ChangeFile(projectId, replayPath))
+                {
+                    throw new ArgumentException("项目参数ID错误");
+                }
+            }
+
+            return RedirectToAction("Detail", new { Id = projectId });
+        }
+
     }
 }

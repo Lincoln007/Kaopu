@@ -1,0 +1,13 @@
+﻿@{ 
+    Layout = null;
+    List<Contract> list = ViewBag.List;
+}
+
+@if (list.Count > 0)
+{
+    <div class="alert alert-danger alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <strong>提示!</strong>@string.Format("当前系统中存在相同甲方和金额的{0}条合同记录",list.Count)
+    </div>
+}
+

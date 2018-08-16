@@ -133,33 +133,7 @@ function StatisticPersonal() {
 }
 
 
-$("button[name='SubSide-OK']").click(function () {
-    if (CheckUsers()) {
 
-        if (StatisticSubSide()) {
-            return true;
-        } else {
-            return false;
-        }
-    } else {
-        alert("目前尚有用户未制定时间");
-        return false;
-    }
-
-});
-//核对是否所有用户都填写时间了
-function CheckUsers() {
-    var persons = $("input[name='Persons']").val().split(';');
-    var checks = [];
-    $("#ViewSubSide input[name='mans']:checked:disabled").each(function () {
-        checks.push($(this).val());
-    });
-    if (checks.length != persons.length) {
-        return false;
-    } else {
-        return true;
-    }
-}
 
 //统计出差补贴金额
 function StatisticSubSide() {

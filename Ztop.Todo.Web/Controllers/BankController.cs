@@ -27,6 +27,7 @@ namespace Ztop.Todo.Web.Controllers
             ViewBag.Evaluations = heads.Where(e => e.Company == Company.Evaluation).ToList();
             ViewBag.Projections = heads.Where(e => e.Company == Company.Projection).ToList();
             ViewBag.Projection2s = heads.Where(e => e.Company == Company.Projection2).ToList();
+            ViewBag.ZheJiang = heads.Where(e => e.Company == Company.ZheJiangUniversity).ToList();
             ViewBag.Sheets = Core.SheetManager.Collect();
             return View();
         }
@@ -197,13 +198,14 @@ namespace Ztop.Todo.Web.Controllers
         }
 
         /// <summary>
-        /// 作用：导入评估银行对账单
+        /// 作用：导入评估银行对账单 或者浙江大学
         /// 作者：汪建龙
         /// 编写时间：2016年12月6日10:39:54
         /// </summary>
         /// <returns></returns>
-        public ActionResult InputEvaluation()
+        public ActionResult InputEvaluation(Company company=Company.Evaluation)
         {
+            ViewBag.Company = company;
             return View();
         }
         public ActionResult Check(int year,int month,Company company)

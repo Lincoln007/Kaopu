@@ -52,12 +52,12 @@
                     @{ Html.RenderAction("ManagerReport");}
                 </div>
                 <div role="tabpanel" class="tab-pane" id="Authority">
-
+                    @{ Html.RenderAction("ManagerGroup");}
                 </div>
                 <div role="tabpanel" class="tab-pane" id="System">
                     @{ Html.RenderAction("Index","OASystem");}
                 </div>
-                <div role="tabpanel" class="tab-pane" id="User">
+                <div role="tabpanel" class="tab-pane @(category==SystemCategory.User?"active":"")" id="User">
                     @{ Html.RenderAction("ManagerUser");}
                 </div>
                 <div role="tabpanel" class="tab-pane" id="ClientMessage">

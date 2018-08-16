@@ -1,0 +1,66 @@
+﻿
+@{
+    ViewBag.Title = "流程管理";
+    Layout = "~/Areas/ZtopSystem/Views/Shared/_Layout.cshtml";
+
+    List<Floww> list = ViewBag.List;
+}
+
+<script>
+    $(function () {
+        $("a[name='Move']").click(function () {
+            var href = $(this).attr("href");
+            var url = $(this).attr("Url");
+            $.request(href, null, function (json) {
+                if (json.result === 1) {
+                    location.href = url;
+                } else {
+                    alert(json.content);
+                }
+            });
+
+            return false;
+        });
+    });
+</script>
+
+<div class="page-header">
+    <h3>流程管理</h3>
+    <a href="/ZtopSystem/Flow/Create" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#Modal"><i class="fa fa-plus"></i>添加流程</a>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+        @foreach(var flow in list)
+        {
+            <div class="col-xs-12">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">@(flow.Name)</h4>
+                    </div>
+                    <div class="panel-body">
+                        @(flow.Content)
+
+                        <div class="pull-right">
+                            <a href="/ZtopSystem/FlowNode/Create?flowId=@(flow.ID)" class="btn btn-success btn-xs" data-toggle="modal" data-target="#Modal"><i class="fa fa-plus"></i></a>
+                            <a href="/ZtopSystem/Flow/Create?id=@(flow.ID)" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#Modal"><i class="fa fa-edit"></i></a>
+                            <a href="/ZtopSystem/Flow/Delete?id=@(flow.ID)" class="btn btn-danger btn-xs" name="Delete" Url="/ZtopSystem/Flow/Index"><i class="fa fa-remove"></i></a>
+                        </div>
+                    </div>
+                    <ul class="list-group">
+                        @if (flow.Nodes != null)
+                        {
+                            var first = flow.GetFirstNode();
+                            if (first != null)
+                            {
+                                Html.RenderPartial("_showNode", first as object);
+                            }
+                        }
+                    </ul>
+                    <div class="panel-footer"></div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+

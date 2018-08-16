@@ -39,6 +39,7 @@ namespace Ztop.Todo.Model
         public bool? IsRecord { get; set; }
         public int? PartId { get; set; }
         public string Participation { get; set; }
-
+        public bool? NumberIsNull { get; set; }
+        public FlowwDataState? FlowDataState { get; set; }
     }
 }

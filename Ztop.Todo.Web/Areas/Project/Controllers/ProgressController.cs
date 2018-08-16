@@ -11,6 +11,8 @@ namespace Ztop.Todo.Web.Areas.Project.Controllers
 {
     public class ProgressController : ProjectControllerBase
     {
+
+
         // GET: Project/Progress
         public ActionResult Index()
         {
@@ -27,13 +29,13 @@ namespace Ztop.Todo.Web.Areas.Project.Controllers
         }
 
         [HttpPost]
-        public ActionResult Save(ProjectProgress progress,double Min,string projectName,string replyRemark,int[] userId, bool? isReply=null)
+        public ActionResult Save(ProjectProgress progress,double Min,string projectName,string replyRemark,int[] userId)
         {
-            //应袁总要求，工作进度可以随便填写，不需要验证
-            if (progress.Percent <= Min)
-            {
-                throw new ArgumentException("录入的项目进度百分比不能低于之前的百分比，请核对！");
-            }
+            //应袁总要求，工作进度可以随便填写，不需要验证 20180702 修改注释
+            //if (progress.Percent <= Min)
+            //{
+            //    throw new ArgumentException("录入的项目进度百分比不能低于之前的百分比，请核对！");
+            //}
             var replyPath = string.Empty;
             var flag = false;
             if (Math.Abs(progress.Percent - 100) < 0.01)//输入100%的时候,进行校验
@@ -70,40 +72,20 @@ namespace Ztop.Todo.Web.Areas.Project.Controllers
                 #endregion
 
                 #region 核对批复文件
-                if (isReply.HasValue)
+                if (Request.Files.Count > 0)
                 {
-                    if (isReply.Value == true)
+                    var file = HttpContext.Request.Files[0];
+                    var fileName = file.FileName;
+                    if (!string.IsNullOrEmpty(fileName))
                     {
-                        if (Request.Files.Count > 0)
+                        var ext = Path.GetExtension(fileName);
+                        if (ext == ".pdf")
                         {
-                            var file = HttpContext.Request.Files[0];
-                            var fileName = file.FileName;
-                            if (!string.IsNullOrEmpty(fileName))
-                            {
-                                var ext = Path.GetExtension(fileName);
-                                if (ext == ".pdf")
-                                {
-                                    replyPath = FileManager.UploadProject(file, projectName);
-                                }
-                            }
-                        }
-                        if (string.IsNullOrEmpty(replyPath))
-                        {
-                            throw new ArgumentException("请上传批复文件！");
-                        }
-                    }
-                    else
-                    {
-                        if (string.IsNullOrEmpty(replyRemark))
-                        {
-                            throw new ArgumentException("无批复文件，请填写无批复说明！");
+                            replyPath = FileManager.UploadProject(file, projectName);
                         }
                     }
                 }
-                else
-                {
-                    throw new ArgumentException("请有无批复文件中选择一个");
-                }
+
                 #endregion
 
                 flag = true;
@@ -115,13 +97,19 @@ namespace Ztop.Todo.Web.Areas.Project.Controllers
                 Core.ProjectRecordManager.Save(new ProjectRecord
                 {
                     Content = string.Format("{0}录入工作进度", Identity.Name),
-                    ProjectId = progress.ProjectID
+                    ProjectId = progress.ProjectID,
+                    UserId=progress.UserID
                 });
                 if (flag)//一旦录入项目进度为100%；并通过校验
                 {
                     if (Core.ProjectManager.Done(progress.ProjectID,true,replyPath,replyRemark))
                     {
-                        var recordId = Core.ProjectRecordManager.Save(new ProjectRecord { ProjectId = progress.ProjectID, Content = string.Format("{0}标记项目完成100%{1}", Identity.Name, string.IsNullOrEmpty(replyPath) ? "" : ";并上传项目批复文件") });
+                        var recordId = Core.ProjectRecordManager.Save(new ProjectRecord
+                        {
+                            ProjectId = progress.ProjectID,
+                            Content = string.Format("{0}标记项目完成100%{1}", Identity.Name, string.IsNullOrEmpty(replyPath) ? "" : ";并上传项目批复文件"),
+                            UserId=progress.UserID
+                        });
                         return Redirect("/Project/Home/Detail?id=" + progress.ProjectID);
                     }
                     else

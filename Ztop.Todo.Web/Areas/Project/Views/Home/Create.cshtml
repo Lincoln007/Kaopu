@@ -68,12 +68,13 @@
             }
             <div class="col-md-6 col-xs-12 col-sm-12">
                 <input type="hidden" name="ID" value="@(project!=null?project.ID:0)" />
-                <div class="form-group">
+                @*<div class="form-group">
                     <label class="control-label col-md-4">所属部门：</label>
                     <div class="col-md-8">
+                        <input type="hidden" name="GroupId" value="@(project==null?group!=null?group.ID:0:project.GroupId)" />
                         <input type="text" name="GroupName" class="form-control input-sm" value="@(group!=null?group.Name:"")" readonly />
                     </div>
-                </div>
+                </div>*@
                 <div class="form-group">
                     <label class="control-label col-md-4">城市（县级）：</label>
                     <div class="col-md-8">
@@ -144,7 +145,7 @@
                                     <a href="/UserGroup/Select" class="btn btn-primary" name="Select" data-toggle="modal" data-target="#Modal"><i class="glyphicon glyphicon-search"></i></a>
                                 </div>
                             </div>
-                            <p><ins><strong>请务必确认每一位参与人员！一旦确认，只能追加，不能删减！</strong> </ins></p>
+                            <h3 class="text-danger"><ins><strong>请务必确认每一位参与人员！一旦确认，只能追加，不能删减！</strong> </ins></h3>
                         }
                         else
                         {

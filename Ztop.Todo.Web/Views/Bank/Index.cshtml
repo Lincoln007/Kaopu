@@ -5,6 +5,7 @@
     List<Bill_Head> evaluations = ViewBag.Evaluations;
     List<Bill_Head> projections = ViewBag.Projections;
     List<Bill_Head> projection2s = ViewBag.Projection2s;
+    List<Bill_Head> zheJiang = ViewBag.ZheJiang;
     List<Sheet> sheets = ViewBag.Sheets;
     List<string> list = sheets.OrderByDescending(e => e.CheckTime.Value.Year).ThenByDescending(e => e.CheckTime.Value.Month).Select(e => string.Format("{0}年{1}月", e.CheckTime.Value.Year, e.CheckTime.Value.Month)).Distinct().ToList();
 }
@@ -32,6 +33,7 @@
 
     <div class="btn-group" role="group">
         <a data-toggle="modal" data-target="#Modal" href="/Bank/InputEvaluation" class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-plus"></i>录入评估银行账单</a>
+        <a data-toggle="modal" data-target="#Modal" href="/Bank/InputEvaluation?company=@(Company.ZheJiangUniversity)" class="btn btn-danger btn-sm"><i class="glyphicon glyphicon-plus"></i>录入浙江大学账单</a>
         <a data-toggle="modal" data-target="#Modal" href="/Bank/InputProjection" class="btn btn-success btn-sm"><i class="glyphicon glyphicon-plus"></i>录入规划玉泉支行账单</a>
         <a data-toggle="modal" data-target="#Modal" href="/Bank/InputProjection?company=@(Company.Projection2)" class="btn btn-warning btn-sm"><i class="glyphicon glyphicon-plus"></i>录入规划文化广场支行账单</a>
         <a data-toggle="modal" data-target="#Modal" href="/Bank/InputProjection?company=@(Company.ZheJiangUniversity)" class="btn btn-default btn-sm"><i class="glyphicon glyphicon-plus"></i>录入规划文化广场支行账单</a>
@@ -67,6 +69,7 @@
             <ul class="nav nav-pills nav-stacked" role="tablist">
                 <li role="presentation" class="active"><a href="#@(Company.Evaluation)" role="tab" data-toggle="tab">房地产评估咨询有限公司</a></li>
                 <li role="presentation"><a href="#@(Company.Projection)" role="tab" data-toggle="tab"> 土地规划设计咨询有限公司</a></li>
+                <li role="progressbar"><a href="#@(Company.ZheJiangUniversity)" role="tab" data-toggle="tab">浙江大学</a></li>
                 <li role="presentation"><a href="#@(Company.Cash)" role="tab" data-toggle="tab">现金收支</a></li>
                 <li role="presentation"><a href="#@(Company.Sum)" role="tab" data-toggle="tab">收支汇总</a></li>
             </ul>
@@ -133,6 +136,25 @@
                                 </table>
                             </div>
 
+                        </div>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="@(Company.ZheJiangUniversity)">
+                    <div class="panel panel-red">
+                        <div class="panel panel-heading">
+                            <h3 class="panel-title">
+                                浙江大学  对账单
+                            </h3>
+                        </div>
+                        <div class="panel panel-body">
+                            <table class="table table-striped">
+                                @foreach (var head in zheJiang.OrderByDescending(e => e.Year).ThenByDescending(e => e.Month))
+                                {
+                                    <tr>
+                                        <td><a href="/Bank/ViewEvaluation?id=@(head.ID)">@(head.Head)</a></td>
+                                    </tr>
+                                }
+                            </table>
                         </div>
                     </div>
                 </div>

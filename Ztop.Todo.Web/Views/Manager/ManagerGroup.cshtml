@@ -1,0 +1,29 @@
+﻿@{ 
+    Layout = null;
+    List<PowerGroup> Groups = ViewBag.List;
+}
+
+
+<div class="page-header">
+    <h3 class="text-center">权限管理</h3>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>名称</th>
+            <th>描述</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var item in Groups)
+        {
+            <tr>
+                <td>@(item.ID)</td>
+                <td>@(item.Name)</td>
+                <td>@(item.Description)</td>
+            </tr>
+        }
+    </tbody>
+</table>

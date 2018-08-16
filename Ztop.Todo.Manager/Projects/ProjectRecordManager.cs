@@ -20,5 +20,22 @@ namespace Ztop.Todo.Manager
         {
             return DB.Project_Records.Where(e => e.ProjectId == projectId).OrderBy(e => e.Time).ToList();
         }
+
+
+        public List<ProjectRecord> Search(ProjectRecordParameter parameter)
+        {
+            var query = DB.Project_Records.AsQueryable();
+
+            if (parameter.ProjectId.HasValue)
+            {
+                query = query.Where(e => e.ProjectId == parameter.ProjectId.Value);
+            }
+            if (parameter.UserId.HasValue)
+            {
+                query = query.Where(e => e.UserId == parameter.UserId.Value);
+            }
+            query = query.OrderByDescending(e=>e.Time).SetPage(parameter.Page);
+            return query.ToList();
+        }
     }
 }

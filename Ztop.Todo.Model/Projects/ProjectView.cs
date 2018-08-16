@@ -22,6 +22,7 @@ namespace Ztop.Todo.Model
         public string Number { get; set; }
         public int CityId { get; set; }
         public string CityName { get; set; }
+
         public string Town { get; set; }
         public string Mark { get; set; }
         public string Name { get; set; }
@@ -36,6 +37,8 @@ namespace Ztop.Todo.Model
         public string UserIds { get; set; }
         public string Participation { get; set; }
         public double? Percent { get; set; }
+        public int? FlowDataId { get; set; }
+        public FlowwDataState? FlowwDataState { get; set; }
         [NotMapped]
         public string Serial
         {

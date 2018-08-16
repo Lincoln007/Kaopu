@@ -36,9 +36,14 @@ namespace Ztop.Todo.Model
         }
         [NotMapped]
         public List<User> Users { get; set; }
+        /// <summary>
+        /// 是否检验 项目一部  项目二部
+        /// </summary>
+        public bool IsCheckGroup { get; set; }
+        public string Remark { get; set; }
         public int FlowwId { get; set; }
-        public int PrevId { get; set; }
         public virtual Floww Floww { get; set; }
+        public int PrevId { get; set; }
         [NotMapped]
         public FlowwNode Next { get; set; }
         

@@ -11,7 +11,7 @@
 <div class="page-header">
     <h3>项目工作量查看</h3>
     <div class="btn-group btn-group-sm">
-        @if (project.Charge.UserId == Identity.UserID)
+        @if (project.Charge.UserId == Identity.UserID|| Identity.Groups.Contains("部门经理") || Identity.Groups.Contains("高级"))
         {
             if (project.Tables != null && project.Tables.Count > 0)
             {
@@ -20,17 +20,6 @@
             else
             {
                 <a href="/Project/WorkLoad/Create?projectId=@(project.ID)" class="btn btn-primary"><i class="fa fa-star"></i>录入工作量</a>
-            }
-        }
-        else
-        {
-            if (project.Tables != null && project.Tables.Count > 0)
-            {
-                Html.RenderAction("Get", "Power", new { area = "", id = 28, Parameter = string.Format("projectId={0}",project.ID), Type = PowerType.Windows });
-            }
-            else
-            {
-                Html.RenderAction("Get", "Power", new { area = "", id = 29, Parameter = string.Format("projectId={0}",project.ID), Type = PowerType.Windows });
             }
         }
 

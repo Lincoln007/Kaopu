@@ -26,7 +26,14 @@ namespace Ztop.Todo.Model
 
         public DateTime? CompletedTime { get; set; }
 
+        /// <summary>
+        /// 任务标题
+        /// </summary>
         public string Title { get; set; }
+        /// <summary>
+        /// 任务内容
+        /// </summary>
+        public string Content { get; set; }
 
         public DateTime? ScheduledTime { get; set; }
 

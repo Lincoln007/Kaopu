@@ -1,0 +1,37 @@
+﻿@model FlowwNode
+
+@{ 
+    if (Model == null)
+    {
+        return;
+    }
+}
+
+<li class="list-group-item">
+    <span class="label label-primary">@(Model.Name)</span>
+    审核人：
+    @if (Model.Users != null)
+            {
+                foreach (var user in Model.Users)
+                {
+            <span class="label label-info">@(user.DisplayName)</span>
+        }
+    }
+
+    备注：@(Model.Remark)
+    @if (Model.IsCheckGroup)
+    {
+        <label class="label label-warning">分组审核</label>
+    }
+    <div class="pull-right">
+        <a href="/ZtopSystem/FlowNode/Prev?id=@(Model.ID)" class="btn btn-xs btn-default" name="Move" Url=""><i class="fa fa-arrow-up"></i></a>
+        <a href="/ZtopSystem/FlowNode/Later?id=@(Model.ID)" class="btn btn-xs btn-default" name="Move" Url=""><i class="fa fa-arrow-down"></i></a>
+        <a href="/ZtopSystem/FlowNode/Create?id=@(Model.ID)" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#Modal"><i class="fa fa-edit"></i></a>
+        <a href="/ZtopSystem/FlowNode/Delete?id=@(Model.ID)" class="btn btn-xs btn-danger" name="Delete" Url=""><i class="fa fa-times"></i></a>
+    </div>
+
+</li>
+@if (Model.Next != null)
+{
+    Html.RenderPartial("_showNode", Model.Next as object);
+}

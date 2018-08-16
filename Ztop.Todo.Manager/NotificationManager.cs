@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,23 @@ namespace Ztop.Todo.Manager
 {
     public class NotificationManager : ManagerBase
     {
+
+        public int HasAllRead(int userId)
+        {
+            var count = 0;
+            var connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["DbConnection"].ConnectionString;
+            using (MySqlConnection connection=new MySqlConnection(connectionString))
+            {
+                var sqlText = string.Format("UPDATE notification SET HasRead=1 where ReceiverID = {0} AND HasRead = 0", userId);
+                connection.Open();
+                using(MySqlCommand command=new MySqlCommand(sqlText, connection))
+                {
+                    count = command.ExecuteNonQuery();
+                }
+                connection.Close();
+            }
+            return count;
+        }
         public Notification GetNewest(int userId)
         {
             using (var db = GetDbContext())

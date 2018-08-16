@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 
 namespace Ztop.Todo.Model
 {
+
+
     [Table("project_record")]
     public class ProjectRecord
     {
@@ -23,6 +25,11 @@ namespace Ztop.Todo.Model
         public int ProjectId { get; set; }
         [ForeignKey("ProjectId")]
         public virtual Project Project { get; set; }
+        public int? UserId { get; set; }
+        [ForeignKey("UserId")]
+        public virtual User User { get; set; }
 
     }
+
+
 }

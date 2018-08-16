@@ -34,7 +34,8 @@ namespace Ztop.Todo.Web.Areas.Project.Controllers
                 Core.ProjectRecordManager.Save(new ProjectRecord
                 {
                     Content = string.Format("{0}编辑工作情况", Identity.Name),
-                    ProjectId = situation.ProjectId
+                    ProjectId = situation.ProjectId,
+                    UserId=situation.UserId
                 });
             }
             else
@@ -47,7 +48,8 @@ namespace Ztop.Todo.Web.Areas.Project.Controllers
                 var recordId = Core.ProjectRecordManager.Save(new ProjectRecord
                 {
                     Content = string.Format("{0}录入工作情况", Identity.Name),
-                    ProjectId = situation.ProjectId
+                    ProjectId = situation.ProjectId,
+                    UserId=situation.UserId
                 });
             }
             return SuccessJsonResult();

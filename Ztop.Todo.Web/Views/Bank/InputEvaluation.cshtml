@@ -1,5 +1,6 @@
 ﻿@{ 
     Layout = null;
+    Company company = ViewBag.Company;
 }
 <script >
     $(function () {
@@ -11,7 +12,7 @@
 </script>
 
 
-<h3 class="text-center">导入评估公司银行对账单</h3>
+<h3 class="text-center">@string.Format("导入{0}银行对账单",company==Company.Evaluation?"评估公司":company.GetDescription()) </h3>
 <div class="alert alert-warning" role="alert" name="Message" style="display:none;">
     <i class="icon-spin icon-spinner icon-large"></i>
     <span></span>
@@ -44,7 +45,7 @@
             <div class="form-group">
                 <label class="control-label col-md-3">账单文件：</label>
                 <div class="col-md-8">
-                    <input type="hidden" name="Company" value="@(Company.Evaluation)" />
+                    <input type="hidden" name="Company" value="@(company)" />
                     <input type="file" name="File" class="form-control" />
                 </div>
             </div>

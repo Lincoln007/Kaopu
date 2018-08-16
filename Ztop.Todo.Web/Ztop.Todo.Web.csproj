@@ -146,6 +146,9 @@
   <ItemGroup>
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Areas\Earnest\Controllers\HomeController.cs" />
+    <Compile Include="Areas\Earnest\EarnestAreaRegistration.cs" />
+    <Compile Include="Areas\Earnest\EarnestControllerBase.cs" />
     <Compile Include="Areas\Jurisdiction\Common\UploadHelper.cs" />
     <Compile Include="Areas\Jurisdiction\Controllers\AdminController.cs" />
     <Compile Include="Areas\Jurisdiction\JurisdictionAreaRegistration.cs" />
@@ -157,6 +160,11 @@
     <Compile Include="Areas\Project\Controllers\WorkloadController.cs" />
     <Compile Include="Areas\Project\ProjectAreaRegistration.cs" />
     <Compile Include="Areas\Project\ProjectControllerBase.cs" />
+    <Compile Include="Areas\ZtopSystem\Controllers\FlowController.cs" />
+    <Compile Include="Areas\ZtopSystem\Controllers\FlowNodeController.cs" />
+    <Compile Include="Areas\ZtopSystem\Controllers\HomeController.cs" />
+    <Compile Include="Areas\ZtopSystem\ZtopSystemAreaRegistration.cs" />
+    <Compile Include="Areas\ZtopSystem\ZtopSystemControllerBase.cs" />
     <Compile Include="Common\AuthenticateModule.cs" />
     <Compile Include="Common\AuthUtils.cs">
       <SubType>Code</SubType>
@@ -291,9 +299,24 @@
     <Content Include="Areas\Project\Views\Situation\Create.cshtml" />
     <Content Include="Areas\Project\Views\Progress\Edit.cshtml" />
     <Content Include="Areas\Project\Views\Home\Groups.cshtml" />
+    <Content Include="Areas\Project\Views\Home\Check.cshtml" />
+    <Content Include="Areas\ZtopSystem\Views\web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Areas\ZtopSystem\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\ZtopSystem\Views\Flow\Index.cshtml" />
+    <Content Include="Areas\ZtopSystem\Views\Flow\_showNode.cshtml" />
+    <Content Include="Areas\ZtopSystem\Views\FlowNode\Create.cshtml" />
+    <Content Include="Areas\ZtopSystem\Views\Flow\Create.cshtml" />
+    <Content Include="Areas\Project\Views\Home\Welcome.cshtml" />
+    <Content Include="Areas\Project\Views\Home\File.cshtml" />
+    <Content Include="Areas\Earnest\Views\web.config" />
+    <Content Include="Areas\Earnest\Views\Shared\_Layout.cshtml" />
     <None Include="Properties\PublishProfiles\TODO.pubxml" />
     <None Include="Scripts\jquery-1.9.1.intellisense.js" />
-    <Content Include="ProjectInfo.xml" />
+    <Content Include="ProjectInfo.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Scripts\2\Chart.js" />
     <Content Include="Scripts\2\CLodopfuncs.js" />
     <Content Include="Scripts\2\TodoChart.js" />
@@ -321,6 +344,7 @@
     <Content Include="Scripts\sb-admin-2.js" />
     <Content Include="Scripts\TodoMessage.js" />
     <Content Include="Scripts\tree.jquery.js" />
+    <Content Include="Scripts\Ztop.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="SystemInfo.xml">
       <SubType>Designer</SubType>
@@ -516,20 +540,28 @@
     <Content Include="Views\Shared\Workloads.cshtml" />
     <Content Include="Areas\Project\Views\User\AddUser.cshtml" />
     <Content Include="Views\Shared\ADProjects.cshtml" />
+    <Content Include="Views\Home\HasRead.cshtml" />
+    <Content Include="Views\Finance\Simliar.cshtml" />
+    <Content Include="Views\Manager\ManagerGroup.cshtml" />
+    <Content Include="Views\Manager\ViewGroups.cshtml" />
+    <Content Include="Views\Floww\Detail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Areas\Earnest\Models\" />
+    <Folder Include="Areas\Earnest\Views\Home\" />
     <Folder Include="Areas\Jurisdiction\Models\" />
     <Folder Include="Areas\Jurisdiction\Views\JurisdictionControllerBase\" />
     <Folder Include="Areas\Project\Models\" />
     <Folder Include="Areas\Project\Views\ProjectControllerBase\" />
+    <Folder Include="Areas\ZtopSystem\Models\" />
+    <Folder Include="Areas\ZtopSystem\Views\Home\" />
     <Folder Include="BarCodes\" />
     <Folder Include="Models\" />
     <Folder Include="Views\Attachment\" />
     <Folder Include="Views\Comment\" />
     <Folder Include="Views\Download\" />
     <Folder Include="Views\File\" />
-    <Folder Include="Views\Floww\" />
     <Folder Include="Views\Notification\" />
     <Folder Include="Views\Query\" />
   </ItemGroup>

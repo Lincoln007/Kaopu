@@ -17,10 +17,19 @@ namespace Ztop.Todo.Model
         public bool IsCreator { get; set; }
 
         public int CreatorID { get; set; }
+        public int? CreatorId2 { get; set; }
 
         public int ReceiverID { get; set; }
-
+        public int? ReceiverId2 { get; set; }
         public string SearchKey { get; set; }
+        /// <summary>
+        /// 标题关键字
+        /// </summary>
+        public string TitleKey { get; set; }
+        /// <summary>
+        /// 内容关键词
+        /// </summary>
+        public string ContentKey { get; set; }
 
         public bool? IsCompleted { get; set; }
 

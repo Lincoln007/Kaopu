@@ -20,5 +20,17 @@ namespace Ztop.Todo.Manager
         {
             return DB.Floww_Node_Datas.Find(id);
         }
+
+        public bool Edit(FlowwNodeData flowNodeData)
+        {
+            var model = DB.Floww_Node_Datas.Find(flowNodeData.ID);
+            if (model == null)
+            {
+                return false;
+            }
+            DB.Entry(model).CurrentValues.SetValues(flowNodeData);
+            DB.SaveChanges();
+            return true;
+        }
     }
 }

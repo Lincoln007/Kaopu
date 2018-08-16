@@ -27,6 +27,7 @@ namespace Ztop.Todo.Web.Common
         public static readonly UserIdentity Guest = new UserIdentity() { GroupType = GroupType.Guest };
         public int UserID { get; set; }
         public GroupType GroupType { get; set; }
+        public int GroupId { get; set; }
         public string AuthenticationType { get { return "Web.Session"; } }
         public string Name { get; set; }
         //是否为审核人
@@ -37,6 +38,7 @@ namespace Ztop.Todo.Web.Common
         public bool Market { get; set; }
         public bool iPad { get; set; }
         public string sAMAccountName { get; set; }
+        public string[] Groups { get; set; }
         public bool IsAuthenticated
         {
             get { return UserID > 0; }

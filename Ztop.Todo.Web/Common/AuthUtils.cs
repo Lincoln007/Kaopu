@@ -22,7 +22,7 @@ namespace Ztop.Todo.Web
 
         public static string GenerateToken(this HttpContextBase context, User user)
         {
-            var ticket = new FormsAuthenticationTicket(1, user.ID + "|" + user.DisplayName + "|" + user.Type+"|"+user.Username, DateTime.Now, DateTime.MaxValue, true, "user_token");
+            var ticket = new FormsAuthenticationTicket(1, user.ID + "|" + user.DisplayName + "|" + user.Type+"|"+user.Username+"|"+user.GroupID+"|"+user.GroupNames, DateTime.Now, DateTime.MaxValue, true, "user_token");
             var token = FormsAuthentication.Encrypt(ticket);
             return token;
         }
@@ -58,23 +58,40 @@ namespace Ztop.Todo.Web
                 if (ticket != null && !string.IsNullOrEmpty(ticket.Name))
                 {
                     var values = ticket.Name.Split('|');
-                    if (values.Length == 4)
+                    if (values.Length == 6)
                     {
                         var type = GroupType.Guest;
                         var name = values[1];
-                        return new UserIdentity
+                        var entry = new UserIdentity
                         {
                             UserID = int.Parse(values[0]),
                             Name = name,
                             GroupType = Enum.TryParse(values[2], out type) ? type : GroupType.Guest,
-                            sAMAccountName=values[3],
-                            Director=_directors.Contains(name),
-                            Project=_projects.Contains(name),
-                            Finance=_finances.Contains(name),
-                            Admin=_admins.Contains(name),
-                            Market=_markets.Contains(name),
-                            iPad=_loowoo.Contains(name)
+                            sAMAccountName = values[3],
+                            Director = _directors.Contains(name),
+                            Project = _projects.Contains(name),
+                            Finance = _finances.Contains(name),
+                            Admin = _admins.Contains(name),
+                            Market = _markets.Contains(name),
+                            iPad = _loowoo.Contains(name)
                         };
+                        if (!string.IsNullOrEmpty(values[4]))
+                        {
+                            var a = 0;
+                            if(int.TryParse(values[4],out a))
+                            {
+                                entry.GroupId = a;
+                            }
+                        }
+                        if (!string.IsNullOrEmpty(values[5]))
+                        {
+                            entry.Groups = values[5].Split(',');
+                        }
+                        else
+                        {
+                            entry.Groups = new string[] { };
+                        }
+                        return entry;
                     }
                 }
             }

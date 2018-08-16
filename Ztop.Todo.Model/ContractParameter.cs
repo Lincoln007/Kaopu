@@ -15,6 +15,7 @@ namespace Ztop.Todo.Model
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
         public ContractState? Status { get; set; }
+        public double? Money { get; set; }
         
     }
 

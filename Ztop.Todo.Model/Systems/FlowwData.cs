@@ -13,8 +13,8 @@ namespace Ztop.Todo.Model
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
-        public int InfoId { get; set; }
         public int FlowwId { get; set; }
+        [ForeignKey("FlowwId")]
         public virtual Floww Floww { get; set; }
         public FlowwDataState FlowwDataState { get; set; }
         public string Content { get; set; }

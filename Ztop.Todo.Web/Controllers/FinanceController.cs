@@ -79,6 +79,13 @@ namespace Ztop.Todo.Web.Controllers
             return RedirectToAction("Detail", new { id = id });
         }
 
+        public ActionResult Simliar(string company,double money)
+        {
+            var list = Core.ContractManager.Simliar(company, money);
+            ViewBag.List = list;
+            return View();
+        }
+
         /// <summary>
         /// 作用：录入合同扫描件
         /// 作者：汪建龙
@@ -395,7 +402,7 @@ namespace Ztop.Todo.Web.Controllers
         public ActionResult SearchContract(
             string name = null, string otherside = null,
             DateTime? starttime = null, DateTime? endtime = null,
-            double? minmoney = null, double? maxmoney = null,
+            double? minmoney = null, double? maxmoney = null,double? money=null,
             string ztopcompany = null, int page = 1)
         {
             var parameter = new ContractParameter()
@@ -406,6 +413,7 @@ namespace Ztop.Todo.Web.Controllers
                 EndTime = endtime,
                 MinMoney = minmoney,
                 MaxMoney = maxmoney,
+                Money=money,
                 Page = new PageParameter(page, 15)
             };
             if (!string.IsNullOrEmpty(ztopcompany))

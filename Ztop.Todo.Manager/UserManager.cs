@@ -46,6 +46,16 @@ namespace Ztop.Todo.Manager
             }
             return Cache.HGet<User>(_userCacheKey, id.ToString());
         }
+
+        public User GetUser2(int id)
+        {
+            return DB.Users.Find(id);
+        }
+
+        public List<User> GetAllUser2()
+        {
+            return DB.Users.Where(e => e.Delete == false).ToList();
+        }
         /// <summary>
         /// 作用：通过登录名获取用户信息
         /// 作者：汪建龙
@@ -63,6 +73,31 @@ namespace Ztop.Todo.Manager
             if (user != null)
             {
                 user.Type = GetGroupType(username);
+                if (user.GroupIds != null)
+                {
+                    user.Groups = Core.PowerGroupManager.GetList(user.GroupIds);
+                }
+               
+            }
+
+            return user;
+        }
+
+        public User GetUser2(string userName)
+        {
+            if (string.IsNullOrEmpty(userName))
+            {
+                return null;
+            }
+
+            var user = DB.Users.FirstOrDefault(e => e.Username.ToLower() == userName.ToLower());
+            if (user != null)
+            {
+                user.Type = GetGroupType(userName);
+                if (user.GroupIds != null)
+                {
+                    user.Groups = Core.PowerGroupManager.GetList(user.GroupIds);
+                }
             }
 
             return user;

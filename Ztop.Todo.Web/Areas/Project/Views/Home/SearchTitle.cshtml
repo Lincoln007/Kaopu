@@ -6,6 +6,7 @@
     List<ProjectType> stypes = ViewBag.STypes;
     ProjectParameter parameter = ViewBag.Parameter;
     List<User> charges = ViewBag.Charges;
+    Ztop.Todo.Model.Base.UserGroupManager manager = ViewBag.Manager;
 }
 
 <script src="~/Scripts/ProjectType.js"></script>
@@ -58,9 +59,9 @@
                     <div class="col-md-12">
                         <div class="input-group input-group-sm">
                             <div class="input-group-btn">
-                                <button type="button" class="btn btn-success" name="Number">全部</button>
+                                <button type="button" class="btn btn-@(string.IsNullOrEmpty(parameter.Number)?"success":"default")" name="Number">全部</button>
                             </div>
-                            <input type="text" name="Number" class="form-control" placeholder="登记编号" />
+                            <input type="text" name="Number" class="form-control" placeholder="登记编号" value="@(parameter.Number)" />
                         </div>
                     </div>
                 </div>
@@ -176,7 +177,10 @@
                     <label class="control-label">查询:</label>
                     <div class="col-md-12">
                         <button type="submit" class="btn btn-sm btn-primary" name="Search"><i class="glyphicon glyphicon-search"></i>立即查询</button>
-                       
+                       @if (manager != null)
+                       {
+                           <a href="/project/Home/Check" class="btn btn-success btn-sm"><i class="fa fa-legal"></i>项目审核</a>
+                       }
                     </div>
                 </div>
             </div>
@@ -196,9 +200,19 @@
             }
             
 
-            @if(ViewBag.Action.ToLower() == "Index".ToLower())
+            @if (ViewBag.Action.ToLower() == "Index".ToLower())
             {
                 Html.RenderAction("GetPartialView", "Power", new { area = "", id = 30, viewName = "ADProjects" });
+                if (Identity.Groups.Contains("部门经理") || Identity.Groups.Contains("高级"))
+                {
+                    <div class="form-group">
+                        <label class="control-label">下载：</label>
+                        <div class="col-xs-12">
+                            <a href="/Download/Projects" class="btn btn-sm btn-success"><i class="fa fa-download"></i>下载项目清单</a>
+                        </div>
+                    </div>
+                }
+
             }
         </div>
     </div>

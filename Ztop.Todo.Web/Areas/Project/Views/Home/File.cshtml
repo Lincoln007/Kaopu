@@ -1,0 +1,30 @@
+﻿@{ 
+    Layout = null;
+    Project project = ViewBag.Project;
+}
+
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+    <h3 class="modal-title">批复文件</h3>
+</div>
+
+
+<form class="form-horizontal" method="post" action="/Project/Home/SaveFile" enctype="multipart/form-data">
+    
+    <div class="modal-body">
+        <div class="form-group">
+            <label class="control-label col-xs-3">批复文件：</label>
+            <div class="col-xs-7">
+                <input type="hidden" name="ProjectId" value="@(project==null?0:project.ID)" />
+                <input type="file" class="form-control" name="file"/>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i>确定</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> 取消</button>
+    </div>
+</form>

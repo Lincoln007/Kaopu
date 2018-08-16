@@ -140,7 +140,10 @@
                     <label class="control-label col-md-3">批复文件：</label>
                     <div class="col-md-7">
                         <input type="hidden" name="ProjectName" value="@(project.Name)" />
-                        <div class="input-group input-group-sm">
+                        <input type="file" class="form-control" name="file"/>
+
+
+                        @*<div class="input-group input-group-sm">
                             <span class="input-group-addon">
                                 <input type="radio" name="isReply" value="false" />无批复文件
                             </span>
@@ -153,7 +156,7 @@
                                 <input type="radio" name="IsReply" value="true" />批复文件
                             </span>
                             <input type="file" name="file" class="form-control" />
-                        </div>
+                        </div>*@
                     </div>
                 </div>
 

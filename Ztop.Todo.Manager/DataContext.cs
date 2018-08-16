@@ -161,6 +161,7 @@ namespace Ztop.Todo.Manager
         public DbSet<OASystem> OASystems { get; set; }
         public DbSet<Power> Powers { get; set; }
         public DbSet<PowerItem> Items { get; set; }
+        public DbSet<PowerGroup> PowerGroups { get; set; }
         /// <summary>
         /// 客户端消息类型列表
         /// </summary>

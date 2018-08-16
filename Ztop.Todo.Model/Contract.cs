@@ -88,6 +88,9 @@ namespace Ztop.Todo.Model
         [NotMapped]
         public List<ContractFile> ContractFiles { get; set; }
 
+        /// <summary>
+        /// deleted为falase的发票列表
+        /// </summary>
         [NotMapped]
         public List<Invoice> Invoices { get; set; }
         /// <summary>
